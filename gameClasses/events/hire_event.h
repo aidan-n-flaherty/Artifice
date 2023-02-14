@@ -11,14 +11,18 @@
 class HireEvent : public Event
 {
 private:
-    Player* owner;
-    Specialist* specialist;
+    std::shared_ptr<Player> owner;
+    std::shared_ptr<Specialist> specialist;
 
 public:
     HireEvent(){};
-    HireEvent(time_t timestamp, Player* owner, Specialist* specialist) : Event(timestamp), owner(owner), specialist(specialist) {}
-
-    bool referencesObject(int id) const override { return false; }
+    HireEvent(time_t timestamp, std::shared_ptr<Player> owner, std::shared_ptr<Specialist> specialist) : Event(timestamp), owner(owner), specialist(specialist) {}
+    HireEvent(const std::shared_ptr<HireEvent> other, Game* game);
+    void updatePointers(Game *game) override {
+        Event::updatePointers(game);
+        owner = game->getPlayer(owner->getID());
+        specialist = game->getSpecialist(specialist->getID());
+    }
 
     void run(Game* game) const override {
         owner->hireSpecialist(specialist);

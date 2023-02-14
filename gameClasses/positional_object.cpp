@@ -1,13 +1,13 @@
 #include "positional_object.h"
+#include "game.h"
+
+
+void PositionalObject::updatePointers(Game* game) {
+    for(std::shared_ptr<Specialist> &a : this->specialists) a = game->getSpecialist(a->getID());
+}
 
 double PositionalObject::distance(const Point &dimensions, const Point &other) const {
     return position.distance(position.closest(dimensions, other));
-}
-
-void PositionalObject::moveTowards(const Point &dimensions, const Point &other, double distance) {
-    position += (position.closest(dimensions, other) - position).normalized(distance);
-
-    position.constrain(dimensions);
 }
 
 bool PositionalObject::canRemoveUnits(int count) const {
@@ -19,13 +19,13 @@ int PositionalObject::removeUnits(int count) {
     return count;
 }
 
-void PositionalObject::addSpecialists(std::list<Specialist*> specialists) {
+void PositionalObject::addSpecialists(std::list<std::shared_ptr<Specialist>> specialists) {
     this->specialists.splice(this->specialists.end(), specialists);
 }
 
 bool PositionalObject::canRemoveSpecialists(std::list<int> specialistIDs) const {
     int contains = 0;
-    for(Specialist* a : this->specialists) for(int id : specialistIDs) {
+    for(std::shared_ptr<Specialist> a : this->specialists) for(int id : specialistIDs) {
         if(a->getID() == id) {
             contains++;
             break;
@@ -35,9 +35,9 @@ bool PositionalObject::canRemoveSpecialists(std::list<int> specialistIDs) const 
     return contains >= specialists.size();
 }
 
-std::list<Specialist*> PositionalObject::removeSpecialists(std::list<Specialist*> specialists) {
+std::list<std::shared_ptr<Specialist>> PositionalObject::removeSpecialists(std::list<std::shared_ptr<Specialist>> specialists) {
     for(auto it = this->specialists.begin(); it != this->specialists.end(); it++) {
-        for(Specialist* other : specialists) {
+        for(std::shared_ptr<Specialist> other : specialists) {
             if((*it)->getID() == other->getID()) {
                 this->specialists.erase(it);
                 break;

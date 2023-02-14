@@ -6,6 +6,8 @@
 #include "helpers/point.h"
 #include "gameObjects/specialist.h"
 
+class Game;
+
 class PositionalObject : public GameObject
 {
 private:
@@ -13,27 +15,32 @@ private:
 
     Point position;
 
-    std::list<Specialist*> specialists;
+    std::list<std::shared_ptr<Specialist>> specialists;
 
 public:
     PositionalObject(){}
     PositionalObject(Point position, int numUnits) : numUnits(numUnits), position(position) {}
-    PositionalObject(Point position, int numUnits, std::list<Specialist*> specialists) : numUnits(numUnits), position(position), specialists(specialists) {}
+    PositionalObject(Point position, int numUnits, std::list<std::shared_ptr<Specialist>> specialists) : numUnits(numUnits), position(position), specialists(specialists) {}
     PositionalObject(double x, double y, int numUnits) : numUnits(numUnits), position(x, y) {}
-    PositionalObject(double x, double y, int numUnits, std::list<Specialist*> specialists) : numUnits(numUnits), position(x, y), specialists(specialists) {}
+    PositionalObject(double x, double y, int numUnits, std::list<std::shared_ptr<Specialist>> specialists) : numUnits(numUnits), position(x, y), specialists(specialists) {}
+    PositionalObject(std::shared_ptr<PositionalObject> other, Game* game);
+    void updatePointers(Game* game);
 
     const Point& getPosition() const { return position; }
-    virtual const Point getTargetPos(const Point& dimensions) const { return position; }
+    virtual const Point getTargetPos(const Point& dimensions) { return position; }
     double distance(const Point &dimensions, const Point &other) const;
 
-    void moveTowards(const Point &dimensions, const Point &other, double distance);
+    virtual Point getPositionAt(const Point& dimensions, double timeDiff) { return getPosition(); }
+    void updatePosition(const Point& dimensions, double timeDiff) { position = getPositionAt(dimensions, timeDiff); }
 
+    virtual int getUnitsAt(double timeDiff) { return numUnits; }
     int getUnits() { return numUnits; }
-    std::list<Specialist*> getSpecialists() { return specialists; }
+
+    std::list<std::shared_ptr<Specialist>> getSpecialists() const { return specialists; }
     virtual double getSpeed() const { return 0; };
 
     void addUnits(int count) { numUnits += count; }
-    void addSpecialists(std::list<Specialist*> specialists);
+    void addSpecialists(std::list<std::shared_ptr<Specialist>> specialists);
 
     bool hasSpecialist(SpecialistType t) const;
 
@@ -43,7 +50,7 @@ public:
     // returns the number of units removed
     int removeUnits(int count);
     // returns the specialists that were removed
-    std::list<Specialist*> removeSpecialists(std::list<Specialist*> specialists);
+    std::list<std::shared_ptr<Specialist>> removeSpecialists(std::list<std::shared_ptr<Specialist>> specialists);
 };
 
 #endif

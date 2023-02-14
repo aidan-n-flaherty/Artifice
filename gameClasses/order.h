@@ -6,8 +6,9 @@
 #include <list>
 #include <ctime>
 
-enum OrderType {
+enum class OrderType {
     SEND, // params: [originID, targetID, numUnits, list of specialist IDs]
+    REROUTE, // params: [vesselID, targetID]
     HIRE, // params: [specialistID]
     PROMOTE // params: [specialistID]
 };
@@ -31,13 +32,14 @@ public:
 
     std::list<int>& getParams() { return params; }
 
-    int getSenderID(){ return senderID; }
+    int getSenderID() const { return senderID; }
 
     OrderType getType() { return order; }
 
     bool operator<(const Order& other) const
     {
-        return difftime(other.getTimestamp(), getTimestamp()) > 0;
+        double diff = difftime(other.getTimestamp(), getTimestamp());
+        return diff == 0 ? getSenderID() < other.getSenderID() : diff > 0;
     }
 };
 

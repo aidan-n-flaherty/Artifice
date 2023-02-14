@@ -16,26 +16,32 @@ class Game;
 class Vessel : public PositionalObject, public Possessable
 {
 private:
-    Outpost* origin;
-    PositionalObject* target;
+    std::shared_ptr<Outpost> origin;
+    std::shared_ptr<PositionalObject> target;
 
 public:
-    Vessel(){};
-    Vessel(Player* owner, Point position, Outpost* origin, PositionalObject* target, int numUnits, const std::list<Specialist*> &specialists) :
-        PositionalObject(position, numUnits, specialists), Possessable(owner), origin(origin), target(target) {};
+    Vessel(){}
+    Vessel(std::shared_ptr<Player> owner, Point position, std::shared_ptr<Outpost> origin, 
+        std::shared_ptr<PositionalObject> target, int numUnits,
+        const std::list<std::shared_ptr<Specialist>> &specialists) :
+        PositionalObject(position, numUnits, specialists), Possessable(owner), origin(origin), target(target) {}
+    void updatePointers(Game* game) override;
 
-    void collision(const Point &dimensions, Vessel* other, time_t timestamp, std::multiset<Event*> &events);
-    void collision(const Point &dimensions, Outpost* other, time_t timestamp, std::multiset<Event*> &events);
+    void collision(const Point &dimensions, std::shared_ptr<Vessel> vessel, std::shared_ptr<Vessel> other, time_t timestamp, std::multiset<std::shared_ptr<Event>, EventOrder> &events);
+    void collision(const Point &dimensions, std::shared_ptr<Vessel> vessel, std::shared_ptr<Outpost> other, time_t timestamp, std::multiset<std::shared_ptr<Event>, EventOrder> &events);
 
-    Outpost* getOrigin() { return origin; }
+    std::shared_ptr<Outpost> getOrigin() { return origin; }
     int getOriginID() const { return origin->getID(); }
-    PositionalObject* getTarget() { return target; }
-    const Point getTargetPos(const Point& dimensions) const override;
+
     double getSpeed() const override;
 
+    std::shared_ptr<PositionalObject> getTarget() { return target; }
+    const Point getTargetPos(const Point& dimensions) override;
     int getTargetID() const { return target->getID(); }
 
-    void setTarget(PositionalObject* target) { this->target = target; }
+    Point getPositionAt(const Point& dimensions, double timeDiff) override;
+
+    void setTarget(std::shared_ptr<PositionalObject> target) { setRefresh(true); this->target = target; }
 
     void update(const Point &dimensions, double timeDiff);
 };

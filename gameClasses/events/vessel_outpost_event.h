@@ -12,21 +12,27 @@
 class VesselOutpostEvent : public Event
 {
 private:
-    Vessel* vessel;
-    Outpost* outpost;
+    std::shared_ptr<Vessel> vessel;
+    std::shared_ptr<Outpost> outpost;
 
 public:
     VesselOutpostEvent(){};
-    VesselOutpostEvent(time_t timestamp, Vessel* vessel, Outpost* outpost) : Event(timestamp), vessel(vessel), outpost(outpost) {}
+    VesselOutpostEvent(time_t timestamp, std::shared_ptr<Vessel> vessel, std::shared_ptr<Outpost> outpost) : Event(timestamp), vessel(vessel), outpost(outpost) {}
+    VesselOutpostEvent(const std::shared_ptr<VesselOutpostEvent> other, Game* game);
+    void updatePointers(Game *game) override {
+        Event::updatePointers(game);
+        vessel = game->getVessel(vessel->getID());
+        outpost = game->getOutpost(outpost->getID());
+    }
 
     bool referencesObject(int id) const override { return vessel->getID() == id || outpost->getID() == id; }
 
     void run(Game* game) const override {
+        std::cout << "Vessel-Outpost combat: " << vessel->getOwnerID() << ", " << outpost->getOwnerID() << std::endl;
         if(outpost->getOwnerID() == vessel->getOwnerID()) {
             outpost->addUnits(vessel->getUnits());
         } else {
             int val = std::min(vessel->getUnits(), outpost->getUnits() + outpost->getShield());
-            std::cout << vessel->getUnits() << ", " << outpost->getUnits() << ", " << outpost->getShield() << std::endl;
             vessel->removeUnits(val);
             outpost->removeUnits(val - outpost->removeShield(val));
 
@@ -40,7 +46,7 @@ public:
         }
 
         outpost->addSpecialists(vessel->getSpecialists());
-        game->removeVessel(*vessel);
+        game->removeVessel(vessel);
     }
 };
 

@@ -13,6 +13,8 @@ enum OutpostType {
     MINE
 };
 
+class Game;
+
 class Outpost : public PositionalObject, public Possessable
 {
 private:
@@ -32,6 +34,10 @@ public:
     void setMaxShield(int maxShieldCharge) { this->maxShieldCharge = maxShieldCharge; }
 
     int removeShield(int amount);
+
+    int getUnitsAt(double timeDiff) override;
+
+    int getShieldAt(double timeDiff);
 
     void update(double timeDiff);
 };

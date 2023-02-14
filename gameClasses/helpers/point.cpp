@@ -7,7 +7,22 @@ double Point::distance(const Point &other) const {
 Point Point::normalized(double val) {
     double dist = distance(Point(0, 0));
     return dist == 0 ? Point(0, 0) : Point(getX() * val/dist, getY() * val/dist);
-} 
+}
+
+Point Point::movedTowards(const Point &dimensions, const Point &other, double distance) const {
+    Point p(x, y);
+    p += (p.closest(dimensions, other) - p).normalized(distance);
+
+    p.constrain(dimensions);
+
+    return p;
+}
+
+void Point::moveTowards(const Point &dimensions, const Point &other, double distance) {
+    *this += (closest(dimensions, other) - *this).normalized(distance);
+
+    constrain(dimensions);
+}
 
 void Point::constrain(const Point &dimensions) {
     while(x >= dimensions.getX()) x -=  dimensions.getX();

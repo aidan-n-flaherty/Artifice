@@ -28,6 +28,10 @@ public:
 
     Point closest(const Point& dimensions, const Point &other) const;
 
+    void moveTowards(const Point &dimensions, const Point &other, double distance);
+
+    Point movedTowards(const Point &dimensions, const Point &other, double distance) const;
+
     void constrain(const Point& dimensions);
 
     Point normalized(double val);
@@ -54,6 +58,14 @@ public:
 
     double operator*(const Point &other) {
          return x * other.x + y * other.y;
+    }
+
+    bool operator==(const Point &other) {
+        return x == other.x && y == other.y;
+    }
+
+    bool operator!=(const Point &other) {
+        return x != other.x || y != other.y;
     }
 };
 

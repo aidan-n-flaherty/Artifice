@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <cmath>
 #include <time.h>
+#include <memory>
 
 class Game;
 
@@ -13,17 +14,19 @@ class Game;
 class Event
 {
 private:
+    static int counter;
+    const int id;
     time_t timestamp;
 
 public:
-    Event(){}
-    Event(time_t timestamp) : timestamp(timestamp) {}
+    Event() : id(counter++) {}
+    Event(time_t timestamp) : timestamp(timestamp), id(counter++) {}
+    Event(const std::shared_ptr<Event> other, Game* game);
+    virtual void updatePointers(Game *game) {}
 
     virtual void run(Game* game) const {}
 
     virtual bool referencesObject(int id) const { return false; }
-
-    virtual bool valid() { return true; }
 
     time_t getTimestamp() const { return timestamp; }
 
@@ -32,9 +35,23 @@ public:
         return difftime(other.getTimestamp(), getTimestamp()) > 0;
     }
 
-    bool operator()(const Event* lhs, const Event* rhs) const  {
-        return difftime(lhs->getTimestamp(), rhs->getTimestamp()) < 0;
+    int getID() const { return id; }
+
+    bool operator()(const std::shared_ptr<Event> &lhs, const std::shared_ptr<Event> &rhs) const 
+    {
+        double diff = difftime(lhs->getTimestamp(), rhs->getTimestamp());
+        return diff == 0 ? lhs->getID() < rhs->getID() : diff < 0;
     }
 };
+
+struct EventOrder
+{
+    bool operator()(const std::shared_ptr<Event> &lhs, const std::shared_ptr<Event> &rhs) const 
+    {
+        double diff = difftime(lhs->getTimestamp(), rhs->getTimestamp());
+        return diff == 0 ? lhs->getID() < rhs->getID() : diff < 0;
+    }
+};
+
 
 #endif
