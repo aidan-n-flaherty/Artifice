@@ -47,7 +47,7 @@ void run() {
 	std::cout << "Elapsed: " << difftime(game.getTime(), start)/3600 << " hours" << std::endl;
 	std::shared_ptr<Game> cachedState = game.lastState(getTime() + 60 * 60 * 2);
 	Point pos = cachedState->getVessel(5)->getPositionAt(cachedState->getDimensions(), getTime() + 60 * 60 * 2 - cachedState->getTime());
-	std::cout << pos.getX() << ", " << pos.getY() << std::endl;
+	std::cout << "Vessel 5 targeting vessel 3 at 2 hours in: "<< pos.getX() << ", " << pos.getY() << std::endl;
 }
 
 

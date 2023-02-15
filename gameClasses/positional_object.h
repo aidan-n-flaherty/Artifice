@@ -27,14 +27,13 @@ public:
     void updatePointers(Game* game);
 
     const Point& getPosition() const { return position; }
-    virtual const Point getTargetPos(const Point& dimensions) { return position; }
-    double distance(const Point &dimensions, const Point &other) const;
+    virtual const Point getPositionAt(const Point& dimensions, double timeDiff) const { return getPosition(); }
+    virtual const Point getTargetPos(const Point& dimensions) const { return getPosition(); }
+    double distance(const Point& dimensions, const Point& other) const;
+    void moveTowards(const Point& dimensions, const Point& other, double distance) { position.moveTowards(dimensions, other, distance); };
 
-    virtual Point getPositionAt(const Point& dimensions, double timeDiff) { return getPosition(); }
-    void updatePosition(const Point& dimensions, double timeDiff) { position = getPositionAt(dimensions, timeDiff); }
-
-    virtual int getUnitsAt(double timeDiff) { return numUnits; }
-    int getUnits() { return numUnits; }
+    virtual int getUnitsAt(double timeDiff) const { return numUnits; }
+    int getUnits() const { return numUnits; }
 
     std::list<std::shared_ptr<Specialist>> getSpecialists() const { return specialists; }
     virtual double getSpeed() const { return 0; };

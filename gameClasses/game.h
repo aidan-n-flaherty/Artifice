@@ -69,13 +69,19 @@ public:
     // Assuming that init has already been run, takes all orders issued and simulates the game.
     std::list<int> run();
 
-    std::list<Order>& getInvalid() { return invalidOrders; }
     std::shared_ptr<Player> getPlayer(const int id) { return players[id]; }
     std::shared_ptr<Vessel> getVessel(const int id) { return vessels[id]; }
     std::shared_ptr<Outpost> getOutpost(const int id) { return outposts[id]; }
     std::shared_ptr<Specialist> getSpecialist(const int id) { return specialists[id]; }
     std::shared_ptr<PositionalObject> getPosObject(const int id) { if(hasOutpost(id)) return getOutpost(id); else return getVessel(id); }
+    
     const std::unordered_map<int, std::shared_ptr<Vessel>>& getVessels() { return vessels; }
+    const std::unordered_map<int, std::shared_ptr<Outpost>>& getOutposts() { return outposts; }
+    const std::unordered_map<int, std::shared_ptr<Player>>& getPlayers() { return players; }
+    const std::unordered_map<int, std::shared_ptr<Specialist>>& getSpecialists() { return specialists; }
+    const std::multiset<std::shared_ptr<Event>, EventOrder>& getEvents() { return events; }
+    const std::multiset<Order>& getOrders() { return orders; }
+    const std::list<Order>& getInvalid() { return invalidOrders; }
 
     bool hasPlayer(const int id) const { return players.count(id) != 0; }
     bool hasVessel(const int id) const { return vessels.count(id) != 0; }

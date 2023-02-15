@@ -30,16 +30,16 @@ public:
     void collision(const Point &dimensions, std::shared_ptr<Vessel> vessel, std::shared_ptr<Vessel> other, time_t timestamp, std::multiset<std::shared_ptr<Event>, EventOrder> &events);
     void collision(const Point &dimensions, std::shared_ptr<Vessel> vessel, std::shared_ptr<Outpost> other, time_t timestamp, std::multiset<std::shared_ptr<Event>, EventOrder> &events);
 
-    std::shared_ptr<Outpost> getOrigin() { return origin; }
+    std::shared_ptr<Outpost> getOrigin() const { return origin; }
     int getOriginID() const { return origin->getID(); }
 
     double getSpeed() const override;
 
-    std::shared_ptr<PositionalObject> getTarget() { return target; }
-    const Point getTargetPos(const Point& dimensions) override;
+    std::shared_ptr<PositionalObject> getTarget() const { return target; }
+    const Point getTargetPos(const Point& dimensions) const override;
     int getTargetID() const { return target->getID(); }
 
-    Point getPositionAt(const Point& dimensions, double timeDiff) override;
+    const Point getPositionAt(const Point& dimensions, double timeDiff) const override;
 
     void setTarget(std::shared_ptr<PositionalObject> target) { setRefresh(true); this->target = target; }
 

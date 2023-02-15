@@ -10,9 +10,13 @@ private:
     double x;
     double y;
 
+    bool invalid;
+
 public:
-    Point(){};
-    Point(double x, double y) : x(x), y(y) {};
+    Point() : x(-1), y(-1), invalid(true) {};
+    Point(double x, double y) : x(x), y(y), invalid(false) {};
+
+    bool isInvalid() { return invalid; }
 
     double getX() const { return x; }
 

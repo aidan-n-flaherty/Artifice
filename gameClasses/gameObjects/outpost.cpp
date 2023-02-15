@@ -1,7 +1,7 @@
 #include "vessel.h"
 #include <list>
 
-int Outpost::getUnitsAt(double timeDiff) {
+int Outpost::getUnitsAt(double timeDiff) const {
     double fractionalProduction = this->fractionalProduction;
     int units = getUnits();
 

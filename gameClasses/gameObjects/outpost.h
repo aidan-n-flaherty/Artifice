@@ -35,7 +35,7 @@ public:
 
     int removeShield(int amount);
 
-    int getUnitsAt(double timeDiff) override;
+    int getUnitsAt(double timeDiff) const override;
 
     int getShieldAt(double timeDiff);
 

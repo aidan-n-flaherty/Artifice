@@ -9,7 +9,7 @@
 void Vessel::updatePointers(Game* game) {
     PositionalObject::updatePointers(game);
     Possessable::updatePointers(game);
-    
+
     origin = game->getOutpost(origin->getID());
     target = game->getPosObject(target->getID());
 }
@@ -18,7 +18,7 @@ void Vessel::updatePointers(Game* game) {
 ** movement into account.
 ** Uses law of sines to derive answer.
 */
-const Point Vessel::getTargetPos(const Point &dimensions) {
+const Point Vessel::getTargetPos(const Point &dimensions) const {
     // return the target position if the target does not move
     Point targetPos = getPosition().closest(dimensions, target->getPosition());
     if(getSpeed() == 0 || target->getSpeed() == 0) return targetPos;
@@ -56,10 +56,7 @@ const Point Vessel::getTargetPos(const Point &dimensions) {
         // there's a shorter path if the projected arrival happens outside the wrap-around box
         if(returnVal == getPosition().closest(dimensions, returnVal) && length <= mag1 && length >= 0) break;
         // if both paths fail, then return to origin
-        else if(i == 1) {
-            setTarget(origin);
-            return getTargetPos(dimensions);
-        }
+        else if(i == 1) return Point();
 
         targetTarget = getPosition().closest(dimensions, target->getTargetPos(dimensions));
         targetPos = targetTarget.closest(dimensions, target->getPosition());
@@ -68,16 +65,28 @@ const Point Vessel::getTargetPos(const Point &dimensions) {
     return returnVal;
 }
 
-Point Vessel::getPositionAt(const Point &dimensions, double timeDiff) {
-    if(target->isDeleted()) setTarget(origin);
-
+const Point Vessel::getPositionAt(const Point &dimensions, double timeDiff) const {
     double distance = getSpeed() * timeDiff;
 
-    return getPosition().movedTowards(dimensions, getTargetPos(dimensions), distance);
+    Point target = getTargetPos(dimensions);
+    if(target.isInvalid()) {
+        target = getPosition().closest(dimensions, origin->getPosition());
+    }
+
+    return getPosition().movedTowards(dimensions, target, distance);
 }
 
 void Vessel::update(const Point &dimensions, double timeDiff) {
-    updatePosition(dimensions, timeDiff);
+    if(target->isDeleted()) setTarget(origin);
+    double distance = getSpeed() * timeDiff;
+
+    Point targetedPos = getTargetPos(dimensions);
+    if(targetedPos.isInvalid()) {
+        setTarget(origin);
+        targetedPos = getTargetPos(dimensions);
+    }
+
+    moveTowards(dimensions, targetedPos, distance);
 }
 
 // should be modified to work with specialist effects
