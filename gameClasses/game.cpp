@@ -149,6 +149,8 @@ void Game::updateEvents() {
 
         vessel->setRefresh(false);
     }
+
+    cacheState();
 }
 
 void Game::updateState(time_t timestamp) {
@@ -213,8 +215,6 @@ std::list<int> Game::run() {
         e->run(this);
 
         updateEvents();
-
-        cacheState();
     }
 
     std::list<int> scores;
