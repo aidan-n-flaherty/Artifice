@@ -5,6 +5,7 @@
 #include <cmath>
 #include <time.h>
 #include <memory>
+#include "gameObjects/positional_object.h"
 
 class Game;
 
@@ -15,18 +16,23 @@ class Event
 {
 private:
     static int counter;
-    const int id;
+
+    const int ID;
+    
     time_t timestamp;
 
 public:
-    Event() : id(counter++) {}
-    Event(time_t timestamp) : timestamp(timestamp), id(counter++) {}
+    Event() : ID(counter++) {}
+    Event(time_t timestamp) : timestamp(timestamp), ID(counter++) {}
     Event(const std::shared_ptr<Event> other, Game* game);
+
     virtual void updatePointers(Game *game) {}
 
     virtual void run(Game* game) const {}
 
     virtual bool referencesObject(int id) const { return false; }
+
+    void lossEffect(Game* game, std::shared_ptr<PositionalObject> o) const;
 
     time_t getTimestamp() const { return timestamp; }
 
@@ -35,7 +41,7 @@ public:
         return difftime(other.getTimestamp(), getTimestamp()) > 0;
     }
 
-    int getID() const { return id; }
+    int getID() const { return ID; }
 
     bool operator()(const std::shared_ptr<Event> &lhs, const std::shared_ptr<Event> &rhs) const 
     {

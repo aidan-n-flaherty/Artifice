@@ -2,5 +2,5 @@
 #include "game.h"
 
 void Possessable::updatePointers(Game* game) {
-    owner = game->getPlayer(owner->getID());
+    if(game->hasPlayer(owner->getID())) owner = game->getPlayer(owner->getID());
 }

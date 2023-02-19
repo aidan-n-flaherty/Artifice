@@ -14,7 +14,7 @@
 #include "gameObjects/specialist.h"
 #include "order.h"
 #include "event.h"
-#include "positional_object.h"
+#include "gameObjects/positional_object.h"
 
 class Game;
 
@@ -28,9 +28,6 @@ struct GameOrder {
 class Game
 {
 private:
-    // Convert an order to an event. Can only be run after all past events have been simulated.
-    std::shared_ptr<Event> processOrder(Order &order);
-
     // Given a game element flagged for modification, discards all events it's associated with.
     void removeRelevant(int id);
 
@@ -44,7 +41,6 @@ private:
     void cacheState();
 
     bool cacheEnabled;
-    int idCounter;
     time_t stateTime;
     int width;
     int height;
@@ -55,8 +51,8 @@ private:
     std::unordered_map<int, std::shared_ptr<Specialist>> specialists;
 
     std::multiset<std::shared_ptr<Event>, EventOrder> events;
-    std::multiset<Order> orders;
-    std::list<Order> invalidOrders;
+    std::multiset<std::shared_ptr<Order>, OrderOrder> orders;
+    std::list<std::shared_ptr<Order>> invalidOrders;
 
     std::set<std::shared_ptr<Game>, GameOrder> cache;
 
@@ -80,19 +76,21 @@ public:
     const std::unordered_map<int, std::shared_ptr<Player>>& getPlayers() { return players; }
     const std::unordered_map<int, std::shared_ptr<Specialist>>& getSpecialists() { return specialists; }
     const std::multiset<std::shared_ptr<Event>, EventOrder>& getEvents() { return events; }
-    const std::multiset<Order>& getOrders() { return orders; }
-    const std::list<Order>& getInvalid() { return invalidOrders; }
+    const std::multiset<std::shared_ptr<Order>, OrderOrder>& getOrders() { return orders; }
+    const std::list<std::shared_ptr<Order>>& getInvalid() { return invalidOrders; }
 
     bool hasPlayer(const int id) const { return players.count(id) != 0; }
     bool hasVessel(const int id) const { return vessels.count(id) != 0; }
     bool hasOutpost(const int id) const { return outposts.count(id) != 0; }
+    bool hasSpecialist(const int id) const { return specialists.count(id) != 0; }
     bool hasPosObject(const int id) const { return hasOutpost(id) || hasVessel(id); }
     bool hasSpecialist(SpecialistType t, std::list<int> specialists) const; 
 
     void addPlayer(Player* p);
     void addVessel(Vessel* v);
     void addOutpost(Outpost* o);
-    void addOrder(Order o);
+    void addSpecialist(Specialist* o);
+    void addOrder(Order* o);
     
     void removeVessel(std::shared_ptr<Vessel> v);
     void removePlayer(std::shared_ptr<Player> p);
@@ -102,7 +100,8 @@ public:
     Point getDimensions() { return Point(width, height); }
     time_t getTime() const { return stateTime; }
 
-    std::shared_ptr<Game> lastState(time_t timestamp);
+    std::shared_ptr<Game> lastState(time_t timestamp) const;
+    time_t nextState(time_t timestamp);
 };
 
 #endif

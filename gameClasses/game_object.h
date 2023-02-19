@@ -9,26 +9,26 @@ class Game;
 class GameObject
 {
 private:
-    int ID;
+    static int counter;
+
+    const int ID;
 
     bool stale;
 
     bool deleted;
 
 public:
-    GameObject() : ID(-1), stale(true), deleted(false) {}
-    GameObject(int ID) : ID(ID), stale(true), deleted(false) {}
-    GameObject(const GameObject &other, Game &game);
-    GameObject(std::shared_ptr<GameObject> other, Game* game);
+    GameObject() : ID(counter++), stale(true), deleted(false) {}
 
     int getID() const { return ID; }
-    void setID(int ID) { this->ID = ID; }
 
     bool needsRefresh() const { return stale; }
     void setRefresh(bool refresh) { stale = refresh; }
     
     void remove() { deleted = true; }
     bool isDeleted() const { return deleted; }
+
+    static int getIDCounter() { return counter; }
 };
 
 #endif

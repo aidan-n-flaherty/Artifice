@@ -18,6 +18,7 @@ public:
     HireEvent(){};
     HireEvent(time_t timestamp, std::shared_ptr<Player> owner, std::shared_ptr<Specialist> specialist) : Event(timestamp), owner(owner), specialist(specialist) {}
     HireEvent(const std::shared_ptr<HireEvent> other, Game* game);
+    
     void updatePointers(Game *game) override {
         Event::updatePointers(game);
         owner = game->getPlayer(owner->getID());

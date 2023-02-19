@@ -20,6 +20,7 @@ public:
     IntervesselEvent(time_t timestamp, std::shared_ptr<Vessel> vesselA, std::shared_ptr<Vessel> vesselB) :
         Event(timestamp), vesselA(vesselA), vesselB(vesselB) {}
     IntervesselEvent(const std::shared_ptr<IntervesselEvent> other, Game* game);
+
     void updatePointers(Game *game) override {
         Event::updatePointers(game);
         vesselA = game->getVessel(vesselA->getID());
@@ -35,29 +36,49 @@ public:
 
             game->removeVessel(vesselB);
         } else {
-            int val = std::min(vesselA->getUnits(), vesselB->getUnits());
+            // start with specialist phase
+            int originalUnitsA = vesselA->getUnits(), originalUnitsB = vesselB->getUnits();
+            int unitsA = vesselA->getUnits(), unitsB = vesselB->getUnits();
 
-            vesselA->removeUnits(val);
-            vesselB->removeUnits(val);
-            int unitsA = vesselA->getOwner()->attackPower(vesselA->getUnits());
-            int unitsB = vesselB->getOwner()->attackPower(vesselB->getUnits());
+            vesselA->specialistPhase(unitsA, unitsB, vesselB);
+            vesselB->specialistPhase(unitsB, unitsA, vesselA);
+            unitsA = vesselA->setUnits(unitsA);
+            unitsB = vesselB->setUnits(unitsB);
+
+            vesselA->postSpecialistPhase(unitsA, unitsB, vesselB);
+            vesselB->postSpecialistPhase(unitsB, unitsA, vesselA);
+            unitsA = vesselA->setUnits(unitsA);
+            unitsB = vesselB->setUnits(unitsB);
+
+            // remove units until one vessel has nothing left
+            int val = std::min(unitsA, unitsB);
+
+            unitsA -= vesselA->removeUnits(val);
+            unitsB -= vesselB->removeUnits(val);
 
             std::cout << unitsA << ", " << unitsB << " at ";
             std::cout << "(" << vesselA->getPosition().getX() << ", " << vesselA->getPosition().getY() << ")" << std::endl;
 
-            // use specialists as tie breaker
-            if(unitsA == unitsB) {
-                unitsA += vesselA->getSpecialists().size();
-                unitsB += vesselB->getSpecialists().size();
-            }
+            bool vesselAWins = (unitsB < unitsA) || (unitsB == unitsA && vesselB->getSpecialists().size() < vesselA->getSpecialists().size());
+            bool tie = unitsA == unitsB && vesselB->getSpecialists().size() == vesselA->getSpecialists().size();
 
-            if(unitsA == unitsB) {
+            if(tie) {
                 // in an event of a tie, both subs are sent back
                 vesselA->setTarget(vesselA->getOrigin());
                 vesselB->setTarget(vesselB->getOrigin());
+            } else {
+                std::shared_ptr<Vessel> winner = vesselAWins ? vesselA : vesselB;
+                std::shared_ptr<Vessel> loser = vesselAWins ? vesselB : vesselA; 
+                int winnerDelta = vesselAWins ? originalUnitsA - unitsA : originalUnitsB - unitsB;
+                int loserDelta = !vesselAWins ? originalUnitsA - unitsA : originalUnitsB - unitsB;
+
+                loser->defeatSpecialistPhase(loserDelta, winnerDelta, winner);
+                winner->victorySpecialistPhase(winnerDelta, loserDelta, loser);
+                lossEffect(game, loser);
+
+                if(!loser->getSpecialists().empty()) loser->setOwner(winner->getOwner());
+                else game->removeVessel(loser);
             }
-            else if(unitsA < unitsB) game->removeVessel(vesselA);
-            else game->removeVessel(vesselB);
         }
     }
 };

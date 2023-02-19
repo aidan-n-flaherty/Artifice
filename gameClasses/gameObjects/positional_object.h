@@ -2,13 +2,13 @@
 #define _POSITIONAL_OBJECT_H_
 
 #include <cstdlib>
-#include "game_object.h"
-#include "helpers/point.h"
-#include "gameObjects/specialist.h"
+#include "../game_object.h"
+#include "../helpers/point.h"
+#include "specialist.h"
 
 class Game;
 
-class PositionalObject : public GameObject
+class PositionalObject : public GameObject, public Possessable
 {
 private:
     int numUnits;
@@ -24,6 +24,7 @@ public:
     PositionalObject(double x, double y, int numUnits) : numUnits(numUnits), position(x, y) {}
     PositionalObject(double x, double y, int numUnits, std::list<std::shared_ptr<Specialist>> specialists) : numUnits(numUnits), position(x, y), specialists(specialists) {}
     PositionalObject(std::shared_ptr<PositionalObject> other, Game* game);
+
     void updatePointers(Game* game);
 
     const Point& getPosition() const { return position; }
@@ -39,9 +40,25 @@ public:
     virtual double getSpeed() const { return 0; };
 
     void addUnits(int count) { numUnits += count; }
+    void addSpecialist(std::shared_ptr<Specialist> specialists);
     void addSpecialists(std::list<std::shared_ptr<Specialist>> specialists);
 
+    // just ignore setting to negative units
+    int setUnits(int count) { numUnits = count >= 0 ? count : 0; return numUnits; }
+
+    /* Note that int references are supplied in the function so that unit counts are only modified
+    ** after phases on both sides are run, independent of order of execution.
+    ** otherUnits should be a copy of the number of units the other positional object has.
+    */
+    void specialistPhase(int& unitDelta, int& otherUnitDelta, std::shared_ptr<PositionalObject> other);
+    void postSpecialistPhase(int& unitDelta, int& otherUnitDelta, std::shared_ptr<PositionalObject> other);
+    void victorySpecialistPhase(int unitDelta, int otherUnitDelta, std::shared_ptr<PositionalObject> other);
+    void defeatSpecialistPhase(int unitDelta, int otherUnitDelta, std::shared_ptr<PositionalObject> other);
+
+    int specialistCount(SpecialistType t) const;
     bool hasSpecialist(SpecialistType t) const;
+
+    std::shared_ptr<Specialist> getSpecialist(SpecialistType t);
 
     bool canRemoveSpecialists(std::list<int> specialistIDs) const;
     bool canRemoveUnits(int count) const;

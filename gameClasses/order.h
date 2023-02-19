@@ -5,6 +5,7 @@
 #include <cmath>
 #include <list>
 #include <ctime>
+#include <set>
 
 enum class OrderType {
     SEND, // params: [originID, targetID, numUnits, list of specialist IDs]
@@ -13,28 +14,52 @@ enum class OrderType {
     PROMOTE // params: [specialistID]
 };
 
+class Order;
+
+struct OrderOrder {
+    bool operator()(const std::shared_ptr<Order> &lhs, const std::shared_ptr<Order> &rhs) const;
+};
+
+class Event;
+
+class Game;
+
 class Order
 {
 private:
+    static int counter;
+
+    const int ID;
+
+    // this variable is important to determine which game state this order was created off of
+    const int referenceID;
+
     time_t timestamp;
 
     int senderID;
 
-    OrderType order;
-
-    std::list<int> params;
-
 public:
-    Order(){};
-    Order(time_t timestamp, int senderID, OrderType order, std::list<int> params) : timestamp(timestamp), senderID(senderID), order(order), params(params) {}
+    Order() : ID(counter++), referenceID(-1) {};
+    Order(time_t timestamp, int senderID) : ID(counter++), timestamp(timestamp), senderID(senderID), referenceID(-1) {}
+    Order(time_t timestamp, int senderID, int referenceID) : ID(counter++), timestamp(timestamp), senderID(senderID), referenceID(referenceID) {}
+
+    virtual void adjustIDs(int createdID) {}
+
+    void updateOrders(const std::multiset<std::shared_ptr<Order>, OrderOrder> &orders) const;
 
     time_t getTimestamp() const { return timestamp; }
 
-    std::list<int>& getParams() { return params; }
-
     int getSenderID() const { return senderID; }
 
-    OrderType getType() { return order; }
+    int getID() const { return ID; }
+
+    int getReferenceID() const { return referenceID; }
+
+    /* IMPORTANT: All order validity preprocessing occurs in this function.
+    ** It should be expected that no error checking occurs after the order is
+    ** processed and converted to an event.
+    */
+    virtual std::shared_ptr<Event> convert(Game* game) { return nullptr;};
 
     bool operator<(const Order& other) const
     {

@@ -93,8 +93,10 @@ void Vessel::update(const Point &dimensions, double timeDiff) {
 double Vessel::getSpeed() const {
     double speed = 1;
 
+    if(hasSpecialist(SpecialistType::GENERAL) || hasSpecialist(SpecialistType::LIEUTENANT)) speed = fmax(speed, 1.5);
     if(getSpecialists().empty() && getOwner()->hasSpecialist(SpecialistType::ADMIRAL)) speed = fmax(speed, 1.5);
     if(hasSpecialist(SpecialistType::ADMIRAL)) speed = fmax(speed, 2);
+    if(hasSpecialist(SpecialistType::SMUGGLER) && getTarget()->getOwnerID() == getOwnerID()) speed = fmax(speed, 3);
 
     return speed;
 }
@@ -150,4 +152,43 @@ void Vessel::collision(const Point &dimensions, std::shared_ptr<Vessel> vessel, 
 
         return;
     }
+}
+
+void Vessel::specialistPhase(int& units, int& otherUnits, std::shared_ptr<Vessel> other) {
+    // check if only one side has a revered elder
+    if(hasSpecialist(SpecialistType::REVERED_ELDER) != other->hasSpecialist(SpecialistType::REVERED_ELDER)) return;
+
+    PositionalObject::specialistPhase(units, otherUnits, other);
+
+    if(hasSpecialist(SpecialistType::SABOTEUR)) other->setTarget(other->getOrigin());
+
+    if(hasSpecialist(SpecialistType::DOUBLE_AGENT)) {
+        // change ownership of all specialists
+        for(std::shared_ptr<Specialist> specialist : getSpecialists()) {
+            getOwner()->removeSpecialist(specialist);
+            other->getOwner()->addSpecialist(specialist);
+        }
+
+        for(std::shared_ptr<Specialist> specialist : other->getSpecialists()) {
+            getOwner()->removeSpecialist(specialist);
+            other->getOwner()->addSpecialist(specialist);
+        }
+
+        units = 0;
+        otherUnits = 0;
+
+        // swap owners
+        std::shared_ptr<Player> otherOwner = other->getOwner();
+        other->setOwner(getOwner());
+        setOwner(otherOwner);
+    }
+}
+
+void Vessel::specialistPhase(int& units, int& otherUnits, std::shared_ptr<Outpost> other) {
+    // check if only one side has a revered elder
+    if(hasSpecialist(SpecialistType::REVERED_ELDER) != other->hasSpecialist(SpecialistType::REVERED_ELDER)) return;
+
+    PositionalObject::specialistPhase(units, otherUnits, other);
+
+    if(hasSpecialist(SpecialistType::INFILTRATOR)) other->removeShield(other->getShield());
 }

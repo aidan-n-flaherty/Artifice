@@ -9,6 +9,7 @@
 #include <fstream>
 #include <set>
 #include "gameClasses/game.h"
+#include "gameClasses/orders/send_order.h"
 
 time_t getTime() {
 	time_t rawtime;
@@ -26,27 +27,25 @@ void run() {
 
 	time_t start = getTime();
 	Game game(start, players, 42083, true);
-	std::list<int> params;
-	params.push_back(0);
-	params.push_back(2);
-	params.push_back(20);
-	game.addOrder(Order(getTime(), 123456, OrderType::SEND, params));
-	params.clear();
-	params.push_back(2);
-	params.push_back(0);
-	params.push_back(20);
-	game.addOrder(Order(getTime(), 987654, OrderType::SEND, params));
-	params.clear();
-	params.push_back(1);
-	params.push_back(3);
-	params.push_back(10);
-	game.addOrder(Order(getTime() + 1, 654321, OrderType::SEND, params));
+	std::list<int> specialists;
+	specialists.push_back(1);
+	game.addOrder(new SendOrder(getTime(), 123456, 20, specialists, 0, 4, -1));
+	specialists.clear();
+	specialists.push_back(5);
+	game.addOrder(new SendOrder(getTime(), 987654, 20, specialists, 4, 0, -1));
+	specialists.clear();
+	game.addOrder(new SendOrder(getTime() + 1, 654321, 10, specialists, 2, 6, 0));
 	game.run();
-	std::cout << "Rejected: " << game.getInvalid().size() << std::endl;
-	std::cout << game.getOutpost(0)->getUnits() << ", " << game.getOutpost(1)->getUnits() << ", " << game.getOutpost(2)->getUnits() << std::endl;
+	std::cout << "Rejected: ";
+	for(auto& o : game.getInvalid()) std::cout << o->getID() << ", ";
+	if(game.getInvalid().empty()) std::cout << "none";
+	std::cout << std::endl;
+	std::cout << game.getOutpost(0)->getOwner()->getName() << " owns " << game.getOutpost(0)->getUnits() << " at (" << game.getOutpost(0)->getPosition().getX() << ", " << game.getOutpost(0)->getPosition().getY() << ")" << std::endl;
+	std::cout << game.getOutpost(2)->getOwner()->getName() << " owns " << game.getOutpost(2)->getUnits() << " at (" << game.getOutpost(2)->getPosition().getX() << ", " << game.getOutpost(2)->getPosition().getY() << ")" << std::endl;
+	std::cout << game.getOutpost(4)->getOwner()->getName() << " owns " << game.getOutpost(4)->getUnits() << " at (" << game.getOutpost(4)->getPosition().getX() << ", " << game.getOutpost(4)->getPosition().getY() << ")" << std::endl;
 	std::cout << "Elapsed: " << difftime(game.getTime(), start)/3600 << " hours" << std::endl;
 	std::shared_ptr<Game> cachedState = game.lastState(getTime() + 60 * 60 * 2);
-	Point pos = cachedState->getVessel(5)->getPositionAt(cachedState->getDimensions(), getTime() + 60 * 60 * 2 - cachedState->getTime());
+	Point pos = cachedState->getVessel(8)->getPositionAt(cachedState->getDimensions(), getTime() + 60 * 60 * 2 - cachedState->getTime());
 	std::cout << "Vessel 5 targeting vessel 3 at 2 hours in: "<< pos.getX() << ", " << pos.getY() << std::endl;
 }
 
