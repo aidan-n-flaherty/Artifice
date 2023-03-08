@@ -27,8 +27,8 @@ int Outpost::getUnitsAt(double& fractionalProduction, double timeDiff) const {
         fractionalProduction -= 6;
 
         int productionAmount = getOwner()->globalProductionAmount();
-        if(hasSpecialist(SpecialistType::FOREMAN)) productionAmount += 6;
-        if(hasSpecialist(SpecialistType::TYCOON)) productionAmount += 3;
+        if(controlsSpecialist(SpecialistType::FOREMAN)) productionAmount += 6;
+        if(controlsSpecialist(SpecialistType::TYCOON)) productionAmount += 3;
 
         units += std::fmin(std::fmax(0, getOwner()->getCapacity() - getOwner()->getUnits()), productionAmount);
     }
@@ -43,12 +43,12 @@ int Outpost::getShieldAt(double& fractionalShield, double timeDiff) const {
     while(fractionalShield >= 1) {
         fractionalShield -= 1;
         
-        if(hasSpecialist(SpecialistType::TINKERER)) shieldCharge -= 3;
+        if(controlsSpecialist(SpecialistType::TINKERER)) shieldCharge -= 3;
         else shieldCharge++;
     }
 
     shieldCharge = std::fmax(0, std::fmin(shieldCharge, getMaxShield()));
-    if(hasSpecialist(SpecialistType::INSPECTOR)) shieldCharge = getMaxShield();
+    if(controlsSpecialist(SpecialistType::INSPECTOR)) shieldCharge = getMaxShield();
 
     return shieldCharge;
 }
@@ -81,13 +81,13 @@ int Outpost::getMaxShield() const {
 int Outpost::getSonarRange() const {
     int range = sonarRange;
 
-    range = int((getOwner()->globalSonar() + 0.5 * hasSpecialist(SpecialistType::PRINCESS)) * range);
+    range = int((getOwner()->globalSonar() + 0.5 * controlsSpecialist(SpecialistType::PRINCESS)) * range);
 
     return range;
 }
 
 void Outpost::specialistPhase(int& units, int& otherUnits, std::shared_ptr<Vessel> other) {
     // check if only one side has a revered elder
-    if(hasSpecialist(SpecialistType::REVERED_ELDER) != other->hasSpecialist(SpecialistType::REVERED_ELDER)) return;
+    if(controlsSpecialist(SpecialistType::REVERED_ELDER) != other->controlsSpecialist(SpecialistType::REVERED_ELDER)) return;
 
 }

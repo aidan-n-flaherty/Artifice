@@ -22,10 +22,11 @@ int PositionalObject::removeUnits(int count) {
 
 void PositionalObject::addSpecialist(std::shared_ptr<Specialist> specialist) {
     specialists.push_back(specialist);
+    specialist->setContainer(this);
 }
 
 void PositionalObject::addSpecialists(std::list<std::shared_ptr<Specialist>> specialists) {
-    this->specialists.splice(this->specialists.end(), specialists);
+    for(std::shared_ptr<Specialist>& specialist : specialists) addSpecialist(specialist);
 }
 
 bool PositionalObject::canRemoveSpecialists(std::list<int> specialistIDs) const {
@@ -63,7 +64,7 @@ int PositionalObject::specialistCount(SpecialistType t) const {
     return count;
 }
 
-bool PositionalObject::hasSpecialist(SpecialistType t) const {
+bool PositionalObject::controlsSpecialist(SpecialistType t) const {
     for(auto it = specialists.begin(); it != specialists.end(); ++it){
         if((*it)->getType() == t && (*it)->getOwnerID() == getOwnerID()) {
             return true;
@@ -96,14 +97,31 @@ void PositionalObject::specialistPhase(int &units, int& otherUnits, std::shared_
 
 
 void PositionalObject::postSpecialistPhase(int& units, int& otherUnits, std::shared_ptr<PositionalObject> other) {
-    if(hasSpecialist(SpecialistType::KING)) otherUnits -= int(getUnits()/3.0);
+    if(controlsSpecialist(SpecialistType::KING)) otherUnits -= int(getUnits()/3.0);
 }
 
 void PositionalObject::victorySpecialistPhase(int lostUnits, int otherLostUnits, std::shared_ptr<PositionalObject> other) {
-    if(hasSpecialist(SpecialistType::ENGINEER)) addUnits(int(0.25 * lostUnits));
-    if(getOwner()->hasSpecialist(SpecialistType::ENGINEER)) addUnits(int(0.25 * lostUnits));
+    if(controlsSpecialist(SpecialistType::ENGINEER)) addUnits(int(0.25 * lostUnits));
+    if(getOwner()->controlsSpecialist(SpecialistType::ENGINEER)) addUnits(int(0.25 * lostUnits));
 }
 
 void PositionalObject::defeatSpecialistPhase(int lostUnits, int otherLostUnits, std::shared_ptr<PositionalObject> other) {
 
+}
+
+void PositionalObject::postCombatSpecialistPhase(Game* game) {
+    if(controlsSpecialist(SpecialistType::MARTYR)) {
+        int range = 20;
+
+        for(const auto &v : game->getVessels()) {
+            if(distance(game->getDimensions(), v.second->getPosition()) <= range) game->removeVessel(v.second);
+        }
+
+        for(const auto &o : game->getOutposts()) {
+            if(distance(game->getDimensions(), o.second->getPosition()) <= range) {
+                o.second->setType(OutpostType::BROKEN);
+                o.second->setUnits(0);
+            }
+        }
+    }
 }

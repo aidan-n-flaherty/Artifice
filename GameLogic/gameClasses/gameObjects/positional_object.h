@@ -54,9 +54,10 @@ public:
     void postSpecialistPhase(int& unitDelta, int& otherUnitDelta, std::shared_ptr<PositionalObject> other);
     void victorySpecialistPhase(int unitDelta, int otherUnitDelta, std::shared_ptr<PositionalObject> other);
     void defeatSpecialistPhase(int unitDelta, int otherUnitDelta, std::shared_ptr<PositionalObject> other);
+    void postCombatSpecialistPhase(Game* game);
 
     int specialistCount(SpecialistType t) const;
-    bool hasSpecialist(SpecialistType t) const;
+    bool controlsSpecialist(SpecialistType t) const;
 
     std::shared_ptr<Specialist> getSpecialist(SpecialistType t);
 

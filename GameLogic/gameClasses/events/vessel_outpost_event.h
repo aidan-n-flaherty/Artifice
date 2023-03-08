@@ -62,16 +62,17 @@ public:
             int winnerDelta = vesselWins ? originalVesselUnits - vesselUnits : originalOutpostUnits - outpostUnits;
             int loserDelta = !vesselWins ? originalVesselUnits - vesselUnits : originalOutpostUnits - outpostUnits;
 
-
             loser->defeatSpecialistPhase(loserDelta, winnerDelta, winner);
             winner->victorySpecialistPhase(winnerDelta, loserDelta, loser);
-            lossEffect(game, loser);
+
+            vessel->postCombatSpecialistPhase(game);
+            outpost->postCombatSpecialistPhase(game);
         }
 
         outpost->addSpecialists(vessel->getSpecialists());
         game->removeVessel(vessel);
 
-        if(outpost->hasSpecialist(SpecialistType::HYPNOTIST)) {
+        if(outpost->controlsSpecialist(SpecialistType::HYPNOTIST)) {
             for(const std::shared_ptr<Specialist> &s : outpost->getSpecialists()) {
                 s->setOwner(outpost->getOwner());
             }

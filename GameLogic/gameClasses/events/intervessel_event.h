@@ -74,11 +74,13 @@ public:
 
                 loser->defeatSpecialistPhase(loserDelta, winnerDelta, winner);
                 winner->victorySpecialistPhase(winnerDelta, loserDelta, loser);
-                lossEffect(game, loser);
 
                 if(!loser->getSpecialists().empty()) loser->setOwner(winner->getOwner());
                 else game->removeVessel(loser);
             }
+
+            vesselA->postCombatSpecialistPhase(game);
+            vesselB->postCombatSpecialistPhase(game);
         }
     }
 };

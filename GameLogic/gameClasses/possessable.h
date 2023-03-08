@@ -22,7 +22,9 @@ public:
     int getOwnerID() const { return owner->getID(); }
     std::shared_ptr<Player> getOwner() const { return owner; }
 
-    void setOwner(std::shared_ptr<Player> owner) { this->owner = owner; }
+    // you must override both of these functions if you intend to override one
+    virtual void setOwner(std::shared_ptr<Player> owner) { this->owner = owner; }
+    virtual void setOwner(Player* owner) { setOwner(std::shared_ptr<Player>(owner)); }
 };
 
 #endif

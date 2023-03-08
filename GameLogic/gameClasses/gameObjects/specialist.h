@@ -41,12 +41,14 @@ enum class SpecialistType {
 
 class Game;
 
+class PositionalObject;
+
 class Specialist : public GameObject, public Possessable
 {
 private:
     SpecialistType type;
 
-    bool captured;
+    PositionalObject* container;
 
 public:
     Specialist(){}
@@ -58,9 +60,10 @@ public:
 
     void setType(SpecialistType type) { this->type = type; }
 
-    bool isCaptured() const { return captured; }
+    virtual void setOwner(std::shared_ptr<Player> player) override;
+    virtual void setOwner(Player* player) override { setOwner(std::shared_ptr<Player>(player)); }
 
-    void setCaptured(bool captured) { this->captured = captured; }
+    void setContainer(PositionalObject* o) { container = o; }
 };
 
 #endif

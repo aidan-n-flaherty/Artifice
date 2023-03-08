@@ -42,8 +42,8 @@ private:
 
     bool cacheEnabled;
     time_t stateTime;
-    int width;
-    int height;
+    static int width;
+    static int height;
 
     std::unordered_map<int, std::shared_ptr<Player>> players;
     std::unordered_map<int, std::shared_ptr<Vessel>> vessels;
@@ -52,6 +52,7 @@ private:
 
     std::multiset<std::shared_ptr<Event>, EventOrder> events;
     std::multiset<std::shared_ptr<Order>, OrderOrder> orders;
+    std::list<std::shared_ptr<Event>> simulatedEvents;
     std::list<std::shared_ptr<Order>> invalidOrders;
 
     std::set<std::shared_ptr<Game>, GameOrder> cache;
@@ -82,9 +83,9 @@ public:
     bool hasPlayer(const int id) const { return players.count(id) != 0; }
     bool hasVessel(const int id) const { return vessels.count(id) != 0; }
     bool hasOutpost(const int id) const { return outposts.count(id) != 0; }
-    bool hasSpecialist(const int id) const { return specialists.count(id) != 0; }
+    bool controlsSpecialist(const int id) const { return specialists.count(id) != 0; }
     bool hasPosObject(const int id) const { return hasOutpost(id) || hasVessel(id); }
-    bool hasSpecialist(SpecialistType t, std::list<int> specialists) const; 
+    bool controlsSpecialist(SpecialistType t, std::list<int> specialists) const; 
 
     void addPlayer(Player* p);
     void addVessel(Vessel* v);
@@ -95,13 +96,15 @@ public:
     void removeVessel(std::shared_ptr<Vessel> v);
     void removePlayer(std::shared_ptr<Player> p);
 
-    int getWidth() const { return width; }
-    int getHeight() const { return height; }
-    Point getDimensions() { return Point(width, height); }
+    static int getWidth() { return width; }
+    static int getHeight() { return height; }
+    static Point getDimensions() { return Point(width, height); }
     time_t getTime() const { return stateTime; }
 
+    // These functions are strictly for client side rendering
     std::shared_ptr<Game> lastState(time_t timestamp) const;
     time_t nextState(time_t timestamp);
+    const std::shared_ptr<Event> nextAssociatedEvent(time_t timestamp, int id);
 };
 
 #endif

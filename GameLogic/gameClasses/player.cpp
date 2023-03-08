@@ -72,7 +72,7 @@ int Player::specialistCount(SpecialistType t) const {
     return count;
 }
 
-bool Player::hasSpecialist(SpecialistType t) const {
+bool Player::controlsSpecialist(SpecialistType t) const {
     for(auto it = specialists.begin(); it != specialists.end(); ++it){
         if((*it)->getType() == t) {
             return true;
@@ -82,7 +82,7 @@ bool Player::hasSpecialist(SpecialistType t) const {
     return false;
 }
 
-bool Player::hasSpecialists(std::list<int> specialists) {
+bool Player::controlsSpecialists(std::list<int> specialists) {
     int count = 0;
 
     for(std::shared_ptr<Specialist> specialist : this->specialists) {
@@ -101,7 +101,24 @@ bool Player::hasSpecialists(std::list<int> specialists) {
 }
 
 void Player::addSpecialist(std::shared_ptr<Specialist> specialist) {
+    if(specialist->getOwner()) specialist->getOwner()->removeSpecialist(specialist);
+
+    specialist->setOwner(this);
     specialists.push_back(specialist);
+    for(const std::shared_ptr<Vessel>& v : getVessels()) v.setRefresh(true);
+}
+
+void Player::addSpecialist(Specialist* specialist) {
+    addSpecialist(std::shared_ptr<Specialist>(specialist));
+}
+
+void Player::addOutpost(Outpost* outpost) {
+    addOutpost(std::shared_ptr<Outpost>(outpost));
+}
+
+void Player::addVessel(Vessel* vessel) {
+    vessel->setRefresh(true);
+    addVessel(std::shared_ptr<Vessel>(vessel));
 }
 
 void Player::removeSpecialist(std::shared_ptr<Specialist> specialist) {
@@ -111,6 +128,53 @@ void Player::removeSpecialist(std::shared_ptr<Specialist> specialist) {
             break;
         }
     }
+
+    specialist->setOwner(nullptr);
+    for(const std::shared_ptr<Vessel>& v : getVessels()) v.setRefresh(true);
+}
+
+void Player::addOutpost(std::shared_ptr<Outpost> outpost) {
+    if(outpost->getOwner()) outpost->getOwner()->removeOutpost(outpost);
+
+    outpost->setOwner(this);
+    outposts.push_back(outpost);
+}
+
+void Player::removeOutpost(std::shared_ptr<Outpost> outpost) {
+    for(auto it = outposts.begin(); it != outposts.end(); it++) {
+        if((*it)->getID() == outpost->getID()) {
+            outposts.erase(it);
+            break;
+        }
+    }
+
+    if(!outpost->getSpecialists().empty()) {
+        for(const std::shared_ptr<Vessel>& v : getVessels()) v.setRefresh(true);
+    }
+
+    outpost->setOwner(nullptr);
+}
+
+void Player::addVessel(std::shared_ptr<Vessel> vessel) {
+    if(vessel->getOwner()) vessel->getOwner()->removeVessel(vessel);
+
+    vessel->setOwner(this);
+    vessels.push_back(vessel);
+}
+
+void Player::removeVessel(std::shared_ptr<Vessel> vessel) {
+    for(auto it = vessels.begin(); it != vessels.end(); it++) {
+        if((*it)->getID() == vessel->getID()) {
+            vessels.erase(it);
+            break;
+        }
+    }
+
+    if(!vessel->getSpecialists().empty()) {
+        for(const std::shared_ptr<Vessel>& v : getVessels()) v.setRefresh(true);
+    }
+
+    vessel->setOwner(nullptr);
 }
 
 int Player::getCapacity() const {
@@ -130,13 +194,9 @@ int Player::getCapacity() const {
 int Player::getUnits() const {
     int totalUnits = 0;
 
-    for(const std::shared_ptr<Outpost>& o : outposts) {
-        totalUnits += o->getUnits();
-    }
+    for(const std::shared_ptr<Outpost>& o : outposts) totalUnits += o->getUnits();
 
-    for(const std::shared_ptr<Vessel>& v : vessels) {
-        totalUnits += v->getUnits();
-    }
+    for(const std::shared_ptr<Vessel>& v : vessels) totalUnits += v->getUnits();
 
     return totalUnits;
 }

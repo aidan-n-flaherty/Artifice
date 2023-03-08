@@ -10,7 +10,8 @@
 enum OutpostType {
     GENERATOR,
     FACTORY,
-    MINE
+    MINE,
+    BROKEN
 };
 
 class Game;
@@ -34,6 +35,7 @@ public:
         maxShieldCharge(10), sonarRange(100), fractionalProduction(0), fractionalShield(0), type(type) {}
 
     OutpostType getType() const { return type; }
+    void setType(OutpostType type) { this->type = type; }
 
     void specialistPhase(int& units, int& otherUnits, std::shared_ptr<Vessel> other);
 

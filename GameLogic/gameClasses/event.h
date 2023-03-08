@@ -32,8 +32,6 @@ public:
 
     virtual bool referencesObject(int id) const { return false; }
 
-    void lossEffect(Game* game, std::shared_ptr<PositionalObject> o) const;
-
     time_t getTimestamp() const { return timestamp; }
 
     bool operator<(const Event& other) const

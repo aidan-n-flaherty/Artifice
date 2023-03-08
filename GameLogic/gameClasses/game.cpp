@@ -10,6 +10,9 @@
 #include "events/send_event.h"
 #include "events/reroute_event.h"
 
+int Game::width = 0;
+int Game::height = 0;
+
 /* The game constructor should create the entire starting state deterministically based on
 ** the random seed provided.
 */
@@ -27,7 +30,7 @@ Game::Game(time_t startTime, std::map<int, std::string> &playerInfo, int seed, b
         Outpost* o = new Outpost(OutpostType::FACTORY, 20, 10000 + 10000 * (t % 2), 10000 + 10000 * (t % 3) * (t % 3));
         o->setOwner(getPlayer(pair.first));
 
-        Specialist* s = new Specialist(SpecialistType::INFILTRATOR);
+        Specialist* s = new Specialist(SpecialistType::MARTYR);
         s->setOwner(getPlayer(pair.first));
         addSpecialist(s);
         o->addSpecialist(getSpecialist(s->getID()));
@@ -39,8 +42,7 @@ Game::Game(time_t startTime, std::map<int, std::string> &playerInfo, int seed, b
     }
 }
 
-Game::Game(const Game& game) : stateTime(game.stateTime), width(game.width), height(game.height),
-    cacheEnabled(game.cacheEnabled) {
+Game::Game(const Game& game) : stateTime(game.stateTime), cacheEnabled(game.cacheEnabled) {
     for(const std::shared_ptr<Event>& event : game.events) events.insert(std::shared_ptr<Event>(new Event(*event)));
     for(const auto& pair : game.vessels) vessels[pair.first] = std::shared_ptr<Vessel>(new Vessel(*pair.second));
     for(const auto& pair : game.players) players[pair.first] = std::shared_ptr<Player>(new Player(*pair.second));
@@ -154,6 +156,7 @@ std::list<int> Game::run() {
         updateState(e->getTimestamp());
         
         e->run(this);
+        simulatedEvents.push_back(e);
 
         updateEvents();
     }
@@ -182,6 +185,14 @@ time_t Game::nextState(time_t timestamp) {
     }
 
     return returnTime;
+}
+
+const std::shared_ptr<Event> Game::nextAssociatedEvent(time_t timestamp, int id) {
+    for(const std::shared_ptr<Event>& event : simulatedEvents) {
+        if(event->getTimestamp() > timestamp && event->referencesObject(id)) return event;
+    }
+
+    return nullptr;
 }
 
 void Game::addPlayer(Player* p) {

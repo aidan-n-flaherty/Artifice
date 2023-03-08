@@ -54,20 +54,23 @@ public:
     void setDefeated() { defeated = true; }
 
     int specialistCount(SpecialistType t) const;
-    bool hasSpecialist(SpecialistType t) const;
-    bool hasSpecialists(std::list<int> specialists);
+    bool controlsSpecialist(SpecialistType t) const;
+    bool controlsSpecialists(std::list<int> specialists);
 
     std::list<std::shared_ptr<Specialist>> getSpecialists() const { return specialists; }
+    void addSpecialist(Specialist* specialist);
     void addSpecialist(std::shared_ptr<Specialist> specialist);
     void removeSpecialist(std::shared_ptr<Specialist> specialist);
 
     std::list<std::shared_ptr<Outpost>> getOutposts() const { return outposts; }
-    void addOutpost(std::shared_ptr<Outpost> outpost) { outposts.push_back(outpost); }
-    void removeOutpost(std::shared_ptr<Outpost> outpost) { outposts.remove(outpost); }
+    void addOutpost(Outpost* outpost);
+    void addOutpost(std::shared_ptr<Outpost> outpost);
+    void removeOutpost(std::shared_ptr<Outpost> outpost);
 
     std::list<std::shared_ptr<Vessel>> getVessels() const { return vessels; }
-    void addVessel(std::shared_ptr<Vessel> vessel) { vessels.push_back(vessel); }
-    void removeVessel(std::shared_ptr<Vessel> vessel) { vessels.remove(vessel); }
+    void addVessel(Vessel* vessel);
+    void addVessel(std::shared_ptr<Vessel> vessel);
+    void removeVessel(std::shared_ptr<Vessel> vessel);
 
     int getID() const { return id; }
     const std::string& getName() const { return name; }
