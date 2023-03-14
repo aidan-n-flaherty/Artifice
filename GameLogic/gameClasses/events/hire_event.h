@@ -1,10 +1,10 @@
-#ifndef _SEND_EVENT_H_
-#define _SEND_EVENT_H_
+#ifndef _HIRE_EVENT_H_
+#define _HIRE_EVENT_H_
 
 #include <cstdlib>
 #include <cmath>
 #include "../event.h"
-#include "../player.h"
+#include "../gameObjects/player.h"
 #include "../gameObjects/specialist.h"
 #include "../game.h"
 
@@ -17,7 +17,6 @@ private:
 public:
     HireEvent(){};
     HireEvent(time_t timestamp, std::shared_ptr<Player> owner, std::shared_ptr<Specialist> specialist) : Event(timestamp), owner(owner), specialist(specialist) {}
-    HireEvent(const std::shared_ptr<HireEvent> other, Game* game);
     
     void updatePointers(Game *game) override {
         Event::updatePointers(game);
@@ -26,7 +25,7 @@ public:
     }
 
     void run(Game* game) const override {
-        owner->hireSpecialist(specialist);
+        owner->addSpecialist(specialist);
     }
 };
 

@@ -94,7 +94,7 @@ double Vessel::getSpeed() const {
     double speed = 1;
 
     if(controlsSpecialist(SpecialistType::GENERAL) || controlsSpecialist(SpecialistType::LIEUTENANT)) speed = fmax(speed, 1.5);
-    if(getSpecialists().empty() && getOwner()->controlsSpecialist(SpecialistType::ADMIRAL)) speed = fmax(speed, 1.5);
+    if(getSpecialists().empty() && ownerControlsSpecialist(SpecialistType::ADMIRAL)) speed = fmax(speed, 1.5);
     if(controlsSpecialist(SpecialistType::ADMIRAL)) speed = fmax(speed, 2);
     if(controlsSpecialist(SpecialistType::SMUGGLER) && getTarget()->getOwnerID() == getOwnerID()) speed = fmax(speed, 3);
 
@@ -155,8 +155,7 @@ void Vessel::collision(const Point &dimensions, std::shared_ptr<Vessel> vessel, 
 }
 
 void Vessel::specialistPhase(int& units, int& otherUnits, std::shared_ptr<Vessel> other) {
-    // check if only one side has a revered elder
-    if(controlsSpecialist(SpecialistType::REVERED_ELDER) != other->controlsSpecialist(SpecialistType::REVERED_ELDER)) return;
+    if(controlsSpecialist(SpecialistType::REVERED_ELDER) || other->controlsSpecialist(SpecialistType::REVERED_ELDER)) return;
 
     PositionalObject::specialistPhase(units, otherUnits, other);
 
@@ -165,30 +164,34 @@ void Vessel::specialistPhase(int& units, int& otherUnits, std::shared_ptr<Vessel
     if(controlsSpecialist(SpecialistType::DOUBLE_AGENT)) {
         // change ownership of all specialists
         for(std::shared_ptr<Specialist> specialist : getSpecialists()) {
-            getOwner()->removeSpecialist(specialist);
-            other->getOwner()->addSpecialist(specialist);
+            if(hasOwner()) getOwner()->removeSpecialist(specialist);
+            if(other->hasOwner()) other->getOwner()->addSpecialist(specialist);
         }
 
         for(std::shared_ptr<Specialist> specialist : other->getSpecialists()) {
-            getOwner()->removeSpecialist(specialist);
-            other->getOwner()->addSpecialist(specialist);
+            if(hasOwner()) getOwner()->removeSpecialist(specialist);
+            if(other->hasOwner()) other->getOwner()->addSpecialist(specialist);
         }
 
         units = 0;
         otherUnits = 0;
 
         // swap owners
-        std::shared_ptr<Player> otherOwner = other->getOwner();
+        Player* otherOwner = other->getOwner();
         other->setOwner(getOwner());
         setOwner(otherOwner);
     }
 }
 
 void Vessel::specialistPhase(int& units, int& otherUnits, std::shared_ptr<Outpost> other) {
-    // check if only one side has a revered elder
-    if(controlsSpecialist(SpecialistType::REVERED_ELDER) != other->controlsSpecialist(SpecialistType::REVERED_ELDER)) return;
+    if(controlsSpecialist(SpecialistType::REVERED_ELDER) || other->controlsSpecialist(SpecialistType::REVERED_ELDER)) return;
 
     PositionalObject::specialistPhase(units, otherUnits, other);
 
     if(controlsSpecialist(SpecialistType::INFILTRATOR)) other->removeShield(other->getShield());
+}
+
+void Vessel::returnHome() {
+    if(hasOwner() && !getOwner()->getOutposts().empty()) setTarget(getOwner()->sortedOutposts(this).front());
+    else setTarget(returnOutpost);
 }

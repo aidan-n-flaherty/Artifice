@@ -11,20 +11,26 @@
 #include "../event.h"
 #include "../possessable.h"
 
+class Player;
+
 class Game;
 
 class Vessel : public PositionalObject
 {
 private:
+    std::shared_ptr<Outpost> returnOutpost;
     std::shared_ptr<Outpost> origin;
     std::shared_ptr<PositionalObject> target;
 
+    bool gift;
+
 public:
     Vessel(){}
-    Vessel(std::shared_ptr<Player> owner, Point position, std::shared_ptr<Outpost> origin, 
+    Vessel(Player* owner, Point position, std::shared_ptr<Outpost> origin, 
         std::shared_ptr<PositionalObject> target, int numUnits,
         const std::list<std::shared_ptr<Specialist>> &specialists) :
-        PositionalObject(position, numUnits, specialists), origin(origin), target(target) { setOwner(owner); }
+        PositionalObject(position, numUnits, specialists), origin(origin),
+        returnOutpost(origin), target(target), gift(false) { setOwner(owner); }
     void updatePointers(Game* game) override;
 
     void collision(const Point &dimensions, std::shared_ptr<Vessel> vessel, std::shared_ptr<Vessel> other, time_t timestamp, std::multiset<std::shared_ptr<Event>, EventOrder> &events);
@@ -38,13 +44,20 @@ public:
 
     double getSpeed() const override;
 
+    bool isGift() const { return gift; }
+    void setGift() { gift = true; } 
+
     std::shared_ptr<PositionalObject> getTarget() const { return target; }
     const Point getTargetPos(const Point& dimensions) const override;
     int getTargetID() const { return target->getID(); }
-
     const Point getPositionAt(const Point& dimensions, double timeDiff) const override;
 
-    void setTarget(std::shared_ptr<PositionalObject> target) { setRefresh(true); this->target = target; }
+    void setTarget(std::shared_ptr<PositionalObject> target) {
+        setRefresh(this->target == nullptr || this->target->getID() != target->getID());
+        this->target = target;
+    }
+
+    void returnHome();
 
     void update(const Point &dimensions, double timeDiff);
 };

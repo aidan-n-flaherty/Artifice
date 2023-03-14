@@ -25,7 +25,7 @@ public:
     PositionalObject(double x, double y, int numUnits, std::list<std::shared_ptr<Specialist>> specialists) : numUnits(numUnits), position(x, y), specialists(specialists) {}
     PositionalObject(std::shared_ptr<PositionalObject> other, Game* game);
 
-    void updatePointers(Game* game);
+    void updatePointers(Game* game) override;
 
     const Point& getPosition() const { return position; }
     virtual const Point getPositionAt(const Point& dimensions, double timeDiff) const { return getPosition(); }
@@ -43,6 +43,11 @@ public:
     void addSpecialist(std::shared_ptr<Specialist> specialists);
     void addSpecialists(std::list<std::shared_ptr<Specialist>> specialists);
 
+    void setOwner(Player* player) override {
+        Possessable::setOwner(player);
+        setRefresh(true);
+    }
+
     // just ignore setting to negative units
     int setUnits(int count) { numUnits = count >= 0 ? count : 0; return numUnits; }
 
@@ -54,8 +59,10 @@ public:
     void postSpecialistPhase(int& unitDelta, int& otherUnitDelta, std::shared_ptr<PositionalObject> other);
     void victorySpecialistPhase(int unitDelta, int otherUnitDelta, std::shared_ptr<PositionalObject> other);
     void defeatSpecialistPhase(int unitDelta, int otherUnitDelta, std::shared_ptr<PositionalObject> other);
-    void postCombatSpecialistPhase(Game* game);
+    void postCombatSpecialistPhase(Game* game, std::shared_ptr<PositionalObject> other);
 
+    bool ownerControlsSpecialist(SpecialistType type) const;
+    int ownerSpecialistCount(SpecialistType type) const;
     int specialistCount(SpecialistType t) const;
     bool controlsSpecialist(SpecialistType t) const;
 
@@ -68,6 +75,10 @@ public:
     int removeUnits(int count);
     // returns the specialists that were removed
     std::list<std::shared_ptr<Specialist>> removeSpecialists(std::list<std::shared_ptr<Specialist>> specialists);
+    std::shared_ptr<Specialist> removeSpecialist(std::shared_ptr<Specialist> specialist);
+
+    // removes and returns all specialists contained in this object
+    std::list<std::shared_ptr<Specialist>> removeSpecialists();
 };
 
 #endif

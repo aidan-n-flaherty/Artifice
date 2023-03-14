@@ -2,16 +2,15 @@
 #define _GAME_OBJECT_H_
 
 #include <cstdlib>
-#include "player.h"
 
 class Game;
 
 class GameObject
 {
 private:
-    static int counter;
+    static unsigned int counter;
 
-    const int ID;
+    const unsigned int ID;
 
     bool stale;
 
@@ -20,7 +19,7 @@ private:
 public:
     GameObject() : ID(counter++), stale(true), deleted(false) {}
 
-    int getID() const { return ID; }
+    unsigned int getID() const { return ID; }
 
     bool needsRefresh() const { return stale; }
     void setRefresh(bool refresh) { stale = refresh; }

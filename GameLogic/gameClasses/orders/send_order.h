@@ -45,6 +45,20 @@ public:
         std::list<std::shared_ptr<Specialist>> specialists;
         for(int specialistID : specialistIDs) specialists.push_back(game->getSpecialist(specialistID));
 
+        // only pirates may target vessels
+        if(game->hasVessel(targetID)) {
+            bool hasPirate = false;
+
+            for(const std::shared_ptr<Specialist> &specialist : specialists) {
+                if(specialist->getType() == SpecialistType::PIRATE) {
+                    hasPirate = true;
+                    break;
+                }
+            }
+
+            if(!hasPirate) return nullptr;
+        }
+
         updateOrders(game->getOrders());
 
         return std::shared_ptr<Event>(new SendEvent(getTimestamp(), numUnits, specialists, outpost, target));

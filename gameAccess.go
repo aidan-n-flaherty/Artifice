@@ -417,9 +417,9 @@ func uploadOrder(db *sql.DB, token string, order Order) (Order, error) {
 
 	results.Scan(&order.SenderID)
 
-	query = "REPLACE INTO orders (gameID, senderID, type, parameters, timestamp) VALUES (?, ?, ?, ?, ?);"
+	query = "REPLACE INTO orders (gameID, senderID, referenceID, type, parameters, timestamp) VALUES (?, ?, ?, ?, ?);"
 
-	res, err := db.Exec(query, order.GameID, order.SenderID, order.Type, serialize(order.ArgumentIDs), order.Timestamp)
+	res, err := db.Exec(query, order.GameID, order.SenderID, order.ReferenceID, order.Type, serialize(order.ArgumentIDs), order.Timestamp)
 	if err != nil {
 		return order, err
 	}

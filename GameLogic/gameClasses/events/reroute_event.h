@@ -15,8 +15,9 @@ public:
     RerouteEvent(){};
     RerouteEvent(time_t timestamp, std::shared_ptr<Vessel> vessel, std::shared_ptr<PositionalObject> target) :
         Event(timestamp), vessel(vessel), target(target) {}
-    RerouteEvent(const std::shared_ptr<RerouteEvent> other, Game* game);
     
+    bool referencesObject(int id) const override { return vessel->getID() == id; }
+
     void updatePointers(Game *game) override {
         Event::updatePointers(game);
         vessel = game->getVessel(vessel->getID());

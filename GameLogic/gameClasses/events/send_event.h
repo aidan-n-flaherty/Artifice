@@ -22,6 +22,8 @@ public:
     SendEvent(time_t timestamp, int numUnits, const std::list<std::shared_ptr<Specialist>> &specialists, std::shared_ptr<Outpost> outpost, std::shared_ptr<PositionalObject> target) :
         Event(timestamp), numUnits(numUnits), specialists(specialists), outpost(outpost), target(target) {}
 
+    bool referencesObject(int id) const override { return target->getID() == id; }
+
     void updatePointers(Game *game) override {
         Event::updatePointers(game);
         for(std::shared_ptr<Specialist> &a : this->specialists) a = game->getSpecialist(a->getID());

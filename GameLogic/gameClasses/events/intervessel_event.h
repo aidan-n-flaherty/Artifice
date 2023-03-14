@@ -19,7 +19,6 @@ public:
     IntervesselEvent(){};
     IntervesselEvent(time_t timestamp, std::shared_ptr<Vessel> vesselA, std::shared_ptr<Vessel> vesselB) :
         Event(timestamp), vesselA(vesselA), vesselB(vesselB) {}
-    IntervesselEvent(const std::shared_ptr<IntervesselEvent> other, Game* game);
 
     void updatePointers(Game *game) override {
         Event::updatePointers(game);
@@ -30,7 +29,13 @@ public:
     bool referencesObject(int id) const override { return vesselA->getID() == id || vesselB->getID() == id; }
 
     void run(Game* game) const override {
-        if(vesselA->getOwnerID() == vesselB->getOwnerID()) {
+        if(vesselA->isGift() && vesselB->isGift()) {
+            return;
+        } else if(vesselA->isGift() && !vesselB->isGift()) {
+            vesselB->getOwner()->addVessel(vesselA);
+        } else if(vesselB->isGift() && !vesselA->isGift()) {
+            vesselA->getOwner()->addVessel(vesselB);
+        } else if(vesselA->getOwnerID() == vesselB->getOwnerID()) {
             vesselA->addUnits(vesselB->removeUnits(vesselB->getUnits()));
             vesselA->addSpecialists(vesselB->getSpecialists());
 
@@ -63,9 +68,12 @@ public:
             bool tie = unitsA == unitsB && vesselB->getSpecialists().size() == vesselA->getSpecialists().size();
 
             if(tie) {
+                vesselA->postCombatSpecialistPhase(game, vesselB);
+                vesselB->postCombatSpecialistPhase(game, vesselA);
+
                 // in an event of a tie, both subs are sent back
-                vesselA->setTarget(vesselA->getOrigin());
-                vesselB->setTarget(vesselB->getOrigin());
+                vesselA->returnHome();
+                vesselB->returnHome();
             } else {
                 std::shared_ptr<Vessel> winner = vesselAWins ? vesselA : vesselB;
                 std::shared_ptr<Vessel> loser = vesselAWins ? vesselB : vesselA; 
@@ -75,12 +83,22 @@ public:
                 loser->defeatSpecialistPhase(loserDelta, winnerDelta, winner);
                 winner->victorySpecialistPhase(winnerDelta, loserDelta, loser);
 
-                if(!loser->getSpecialists().empty()) loser->setOwner(winner->getOwner());
-                else game->removeVessel(loser);
-            }
+                vesselA->postCombatSpecialistPhase(game, vesselB);
+                vesselB->postCombatSpecialistPhase(game, vesselA);
 
-            vesselA->postCombatSpecialistPhase(game);
-            vesselB->postCombatSpecialistPhase(game);
+                if(vesselA->hasOwner() && !vesselA->getOwner()->controlsSpecialist(SpecialistType::QUEEN)) {
+                    vesselA->getOwner()->setDefeated(game);
+                }
+
+                if(vesselB->hasOwner() && !vesselB->getOwner()->controlsSpecialist(SpecialistType::QUEEN)) {
+                    vesselB->getOwner()->setDefeated(game);
+                }
+
+                if(!loser->getSpecialists().empty()) {
+                    winner->getOwner()->addVessel(loser);
+                    loser->returnHome();
+                } else game->removeVessel(loser);
+            }
         }
     }
 };

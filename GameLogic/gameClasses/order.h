@@ -59,7 +59,7 @@ public:
     ** It should be expected that no error checking occurs after the order is
     ** processed and converted to an event.
     */
-    virtual std::shared_ptr<Event> convert(Game* game) { return nullptr;};
+    virtual std::shared_ptr<Event> convert(Game* game) { return nullptr; }
 
     bool operator<(const Order& other) const
     {

@@ -1,14 +1,62 @@
 #include "player.h"
-#include "gameObjects/specialist.h"
-#include "gameObjects/outpost.h"
-#include "game.h"
+#include "specialist.h"
+#include "outpost.h"
+#include "../game.h"
+#include "../events/win_condition_event.h"
+#include "../game_settings.h"
 
 void Player::updatePointers(Game* game) {
     for(std::shared_ptr<Specialist>& s : this->specialists) s = game->getSpecialist(s->getID());
     for(std::shared_ptr<Outpost>& o : this->outposts) o = game->getOutpost(o->getID());
+    for(std::shared_ptr<Vessel>& v : this->vessels) v = game->getVessel(v->getID());
 }
 
 void Player::update(double timeDiff) {
+    fractionalProduction += timeDiff * resourceProductionSpeed();
+    while(fractionalProduction >= 1) {
+        fractionalProduction -= 1;
+        resources++;
+    }
+}
+
+void Player::setDefeated(Game* game) {
+    defeated = true;
+    defeatedTime = game->getTime();
+
+    for(const std::shared_ptr<Vessel>& v : vessels) v->setOwner(nullptr);
+    for(const std::shared_ptr<Outpost>& o : outposts) o->setOwner(nullptr);
+    for(const std::shared_ptr<Specialist>& s : specialists) s->setOwner(nullptr);
+
+    vessels.clear();
+    outposts.clear();
+    specialists.clear();
+
+    if(game->hasEnded()) game->endGame();
+}
+
+std::list<std::shared_ptr<Outpost>> Player::sortedOutposts(PositionalObject* obj) {
+    std::list<std::shared_ptr<Outpost>> outposts;
+
+    for(const std::shared_ptr<Outpost>& o : getOutposts()) {
+        outposts.push_back(o);
+    }
+
+    outposts.sort([=](const std::shared_ptr<Outpost>& a, const std::shared_ptr<Outpost>& b) -> bool
+    { 
+        return obj->distance(Game::getDimensions(), a->getPosition()) < obj->distance(Game::getDimensions(), b->getPosition()); 
+    });
+
+    return outposts;
+}
+
+void Player::projectedVictory(std::shared_ptr<Player> player, time_t timestamp, std::multiset<std::shared_ptr<Event>, EventOrder> &events) {
+    if(resourceProductionSpeed() > 0) {
+        int diff = ceil((GameSettings::resourcesToWin - (getResources() + fractionalProduction)) / resourceProductionSpeed());
+        events.insert(std::shared_ptr<Event>(new WinConditionEvent(timestamp + diff, player)));
+    }
+}
+
+double Player::resourceProductionSpeed() {
     int outpostCount = 0;
     int mineCount = 0;
 
@@ -17,11 +65,7 @@ void Player::update(double timeDiff) {
         outpostCount++;
     }
 
-    fractionalProduction += timeDiff * (mineCount * outpostCount / (24.0 * 60.0 * 60.0));
-    while(fractionalProduction >= 1) {
-        fractionalProduction -= 1;
-        resources++;
-    }
+    return (mineCount * outpostCount) / (24.0 * 60.0 * 60.0);
 }
 
 double Player::globalSpeed(){
@@ -74,7 +118,7 @@ int Player::specialistCount(SpecialistType t) const {
 
 bool Player::controlsSpecialist(SpecialistType t) const {
     for(auto it = specialists.begin(); it != specialists.end(); ++it){
-        if((*it)->getType() == t) {
+        if((*it)->getType() == t && (*it)->getContainer()->getOwnerID() == getID()) {
             return true;
         }
     }
@@ -87,7 +131,7 @@ bool Player::controlsSpecialists(std::list<int> specialists) {
 
     for(std::shared_ptr<Specialist> specialist : this->specialists) {
         for(int id : specialists) {
-            if(specialist->getID() == id){
+            if(specialist->getID() == id && specialist->getContainer()->getOwnerID() == getID()){
                 count++;
                 
                 if(count == specialists.size()) {
@@ -101,24 +145,15 @@ bool Player::controlsSpecialists(std::list<int> specialists) {
 }
 
 void Player::addSpecialist(std::shared_ptr<Specialist> specialist) {
-    if(specialist->getOwner()) specialist->getOwner()->removeSpecialist(specialist);
+    if(specialist->hasOwner()) specialist->getOwner()->removeSpecialist(specialist);
 
     specialist->setOwner(this);
     specialists.push_back(specialist);
-    for(const std::shared_ptr<Vessel>& v : getVessels()) v.setRefresh(true);
+    for(const std::shared_ptr<Vessel>& v : getVessels()) v->setRefresh(true);
 }
 
-void Player::addSpecialist(Specialist* specialist) {
-    addSpecialist(std::shared_ptr<Specialist>(specialist));
-}
-
-void Player::addOutpost(Outpost* outpost) {
-    addOutpost(std::shared_ptr<Outpost>(outpost));
-}
-
-void Player::addVessel(Vessel* vessel) {
-    vessel->setRefresh(true);
-    addVessel(std::shared_ptr<Vessel>(vessel));
+void Player::addSpecialists(std::list<std::shared_ptr<Specialist>> specialists) {
+    for(std::shared_ptr<Specialist>& specialist : specialists) addSpecialist(specialist);
 }
 
 void Player::removeSpecialist(std::shared_ptr<Specialist> specialist) {
@@ -130,13 +165,14 @@ void Player::removeSpecialist(std::shared_ptr<Specialist> specialist) {
     }
 
     specialist->setOwner(nullptr);
-    for(const std::shared_ptr<Vessel>& v : getVessels()) v.setRefresh(true);
+    for(const std::shared_ptr<Vessel>& v : getVessels()) v->setRefresh(true);
 }
 
 void Player::addOutpost(std::shared_ptr<Outpost> outpost) {
-    if(outpost->getOwner()) outpost->getOwner()->removeOutpost(outpost);
+    if(outpost->hasOwner()) outpost->getOwner()->removeOutpost(outpost);
 
     outpost->setOwner(this);
+    outpost->setRefresh(true);
     outposts.push_back(outpost);
 }
 
@@ -149,16 +185,17 @@ void Player::removeOutpost(std::shared_ptr<Outpost> outpost) {
     }
 
     if(!outpost->getSpecialists().empty()) {
-        for(const std::shared_ptr<Vessel>& v : getVessels()) v.setRefresh(true);
+        for(const std::shared_ptr<Vessel>& v : getVessels()) v->setRefresh(true);
     }
 
     outpost->setOwner(nullptr);
 }
 
 void Player::addVessel(std::shared_ptr<Vessel> vessel) {
-    if(vessel->getOwner()) vessel->getOwner()->removeVessel(vessel);
+    if(vessel->hasOwner()) vessel->getOwner()->removeVessel(vessel);
 
     vessel->setOwner(this);
+    vessel->setRefresh(true);
     vessels.push_back(vessel);
 }
 
@@ -171,7 +208,7 @@ void Player::removeVessel(std::shared_ptr<Vessel> vessel) {
     }
 
     if(!vessel->getSpecialists().empty()) {
-        for(const std::shared_ptr<Vessel>& v : getVessels()) v.setRefresh(true);
+        for(const std::shared_ptr<Vessel>& v : getVessels()) v->setRefresh(true);
     }
 
     vessel->setOwner(nullptr);

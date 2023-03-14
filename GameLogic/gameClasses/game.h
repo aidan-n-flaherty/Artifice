@@ -8,7 +8,7 @@
 #include <ctime>
 #include <set>
 #include <map>
-#include "player.h"
+#include "gameObjects/player.h"
 #include "gameObjects/vessel.h"
 #include "gameObjects/outpost.h"
 #include "gameObjects/specialist.h"
@@ -40,8 +40,12 @@ private:
     // client-side support for easy time machine usage
     void cacheState();
 
+    // returns a list of players sorted in order of ranking, paired with their corresponding rating change
+    std::list<std::pair<int, int>> getScores();
+
     bool cacheEnabled;
     time_t stateTime;
+    time_t endTime;
     static int width;
     static int height;
 
@@ -60,11 +64,18 @@ private:
 public:
     // Deterministically creates a pseudo-random map and initializes all player states.
     Game(){};
-    Game(time_t startTime, std::map<int, std::string>& players, int seed, bool cacheEnabled);
+    Game(time_t startTime, time_t endTime, std::map<int, std::string>& players, int seed, bool cacheEnabled);
     Game(const Game& game);
 
-    // Assuming that init has already been run, takes all orders issued and simulates the game.
-    std::list<int> run();
+    // Uses the orders supplied and runs a full simulation of the game, returns player ids and rating changes
+    std::list<std::pair<int, int>> run();
+
+    // sorts players by how close they are to victory
+    std::vector<std::shared_ptr<Player>> sortedPlayers() const;
+
+    bool hasEnded() const;
+
+    void endGame();
 
     std::shared_ptr<Player> getPlayer(const int id) { return players[id]; }
     std::shared_ptr<Vessel> getVessel(const int id) { return vessels[id]; }
@@ -72,14 +83,14 @@ public:
     std::shared_ptr<Specialist> getSpecialist(const int id) { return specialists[id]; }
     std::shared_ptr<PositionalObject> getPosObject(const int id) { if(hasOutpost(id)) return getOutpost(id); else return getVessel(id); }
     
-    const std::unordered_map<int, std::shared_ptr<Vessel>>& getVessels() { return vessels; }
-    const std::unordered_map<int, std::shared_ptr<Outpost>>& getOutposts() { return outposts; }
-    const std::unordered_map<int, std::shared_ptr<Player>>& getPlayers() { return players; }
-    const std::unordered_map<int, std::shared_ptr<Specialist>>& getSpecialists() { return specialists; }
-    const std::multiset<std::shared_ptr<Event>, EventOrder>& getEvents() { return events; }
-    const std::multiset<std::shared_ptr<Order>, OrderOrder>& getOrders() { return orders; }
+    const std::unordered_map<int, std::shared_ptr<Vessel>>& getVessels() const { return vessels; }
+    const std::unordered_map<int, std::shared_ptr<Outpost>>& getOutposts() const { return outposts; }
+    const std::unordered_map<int, std::shared_ptr<Player>>& getPlayers() const { return players; }
+    const std::unordered_map<int, std::shared_ptr<Specialist>>& getSpecialists() const { return specialists; }
+    const std::multiset<std::shared_ptr<Event>, EventOrder>& getEvents() const { return events; }
+    const std::multiset<std::shared_ptr<Order>, OrderOrder>& getOrders() const { return orders; }
     const std::list<std::shared_ptr<Order>>& getInvalid() { return invalidOrders; }
-
+    
     bool hasPlayer(const int id) const { return players.count(id) != 0; }
     bool hasVessel(const int id) const { return vessels.count(id) != 0; }
     bool hasOutpost(const int id) const { return outposts.count(id) != 0; }
@@ -92,14 +103,16 @@ public:
     void addOutpost(Outpost* o);
     void addSpecialist(Specialist* o);
     void addOrder(Order* o);
+    void addEvent(Event* e);
     
     void removeVessel(std::shared_ptr<Vessel> v);
-    void removePlayer(std::shared_ptr<Player> p);
+    void removeSpecialist(std::shared_ptr<Specialist> s);
 
     static int getWidth() { return width; }
     static int getHeight() { return height; }
     static Point getDimensions() { return Point(width, height); }
     time_t getTime() const { return stateTime; }
+    time_t getEndTime() const { return endTime; }
 
     // These functions are strictly for client side rendering
     std::shared_ptr<Game> lastState(time_t timestamp) const;

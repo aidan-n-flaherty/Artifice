@@ -24,7 +24,6 @@ private:
 public:
     Event() : ID(counter++) {}
     Event(time_t timestamp) : timestamp(timestamp), ID(counter++) {}
-    Event(const std::shared_ptr<Event> other, Game* game);
 
     virtual void updatePointers(Game *game) {}
 

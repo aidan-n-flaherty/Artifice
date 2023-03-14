@@ -43,12 +43,14 @@ class Game;
 
 class PositionalObject;
 
+class Player;
+
 class Specialist : public GameObject, public Possessable
 {
 private:
     SpecialistType type;
 
-    PositionalObject* container;
+    PositionalObject* container = nullptr;
 
 public:
     Specialist(){}
@@ -58,10 +60,11 @@ public:
 
     SpecialistType getType() const { return type; }
 
+    PositionalObject* getContainer() { return container; }
+
     void setType(SpecialistType type) { this->type = type; }
 
-    virtual void setOwner(std::shared_ptr<Player> player) override;
-    virtual void setOwner(Player* player) override { setOwner(std::shared_ptr<Player>(player)); }
+    virtual void setOwner(Player* player) override;
 
     void setContainer(PositionalObject* o) { container = o; }
 };

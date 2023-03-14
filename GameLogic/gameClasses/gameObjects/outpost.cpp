@@ -1,6 +1,8 @@
 #include "vessel.h"
 #include <list>
 #include <cmath>
+#include "player.h"
+#include "../game_settings.h"
 
 int Outpost::getUnitsAt(double timeDiff) const {
     double fractionalProduction = this->fractionalProduction;
@@ -78,8 +80,12 @@ int Outpost::getMaxShield() const {
     return std::fmax(0, shield);
 }
 
+int Outpost::getFireRange() const {
+    return GameSettings::defaultSonar/2;
+}
+
 int Outpost::getSonarRange() const {
-    int range = sonarRange;
+    int range = GameSettings::defaultSonar;
 
     range = int((getOwner()->globalSonar() + 0.5 * controlsSpecialist(SpecialistType::PRINCESS)) * range);
 
@@ -87,7 +93,7 @@ int Outpost::getSonarRange() const {
 }
 
 void Outpost::specialistPhase(int& units, int& otherUnits, std::shared_ptr<Vessel> other) {
-    // check if only one side has a revered elder
-    if(controlsSpecialist(SpecialistType::REVERED_ELDER) != other->controlsSpecialist(SpecialistType::REVERED_ELDER)) return;
+    if(controlsSpecialist(SpecialistType::REVERED_ELDER) || other->controlsSpecialist(SpecialistType::REVERED_ELDER)) return;
 
+    PositionalObject::specialistPhase(units, otherUnits, other);
 }

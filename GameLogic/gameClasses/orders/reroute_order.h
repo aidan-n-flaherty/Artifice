@@ -35,8 +35,8 @@ public:
 
         if(vessel->getOwnerID() != getSenderID()) return nullptr;
 
+        if(!vessel->controlsSpecialist(SpecialistType::NAVIGATOR)) return nullptr;
         if(game->hasVessel(targetID) && !vessel->controlsSpecialist(SpecialistType::PIRATE)) return nullptr;
-        else if(game->hasOutpost(targetID) && !vessel->controlsSpecialist(SpecialistType::NAVIGATOR)) return nullptr;
 
         return std::shared_ptr<Event>(new RerouteEvent(getTimestamp(), vessel, target));
     }

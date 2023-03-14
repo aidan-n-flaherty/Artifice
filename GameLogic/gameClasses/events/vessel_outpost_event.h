@@ -5,7 +5,7 @@
 #include <cmath>
 #include <iostream>
 #include "../event.h"
-#include "../player.h"
+#include "../gameObjects/player.h"
 #include "../gameObjects/outpost.h"
 #include "../game.h"
 
@@ -18,7 +18,6 @@ private:
 public:
     VesselOutpostEvent(){};
     VesselOutpostEvent(time_t timestamp, std::shared_ptr<Vessel> vessel, std::shared_ptr<Outpost> outpost) : Event(timestamp), vessel(vessel), outpost(outpost) {}
-    VesselOutpostEvent(const std::shared_ptr<VesselOutpostEvent> other, Game* game);
 
     void updatePointers(Game *game) override {
         Event::updatePointers(game);
@@ -26,12 +25,13 @@ public:
         outpost = game->getOutpost(outpost->getID());
     }
 
-    bool referencesObject(int id) const override { return vessel->getID() == id || outpost->getID() == id; }
+    bool referencesObject(int id) const override { return vessel->getID() == id; }
 
     void run(Game* game) const override {
         std::cout << "Vessel-Outpost combat: " << vessel->getOwner()->getName() << ", " << outpost->getOwner()->getName() << std::endl;
-        if(outpost->getOwnerID() == vessel->getOwnerID()) {
+        if(outpost->getOwnerID() == vessel->getOwnerID() || vessel->isGift()) {
             outpost->addUnits(vessel->getUnits());
+            if(vessel->isGift()) outpost->getOwner()->addSpecialists(vessel->getSpecialists());
         } else {
             int originalVesselUnits = vessel->getUnits(), originalOutpostUnits = outpost->getUnits();
             int vesselUnits = vessel->getUnits(), outpostUnits = outpost->getUnits();
@@ -51,11 +51,6 @@ public:
             outpostUnits -= outpost->removeUnits(val - outpost->removeShield(val));
 
             bool vesselWins = (outpostUnits < vesselUnits) || (outpostUnits == vesselUnits && outpost->getSpecialists().size() < vessel->getSpecialists().size());
-            
-            if(vesselWins) {
-                outpost->setOwner(vessel->getOwner());
-                outpost->addUnits(vesselUnits - outpostUnits);
-            }
 
             std::shared_ptr<PositionalObject> loser = vesselWins ? (std::shared_ptr<PositionalObject>)outpost : (std::shared_ptr<PositionalObject>)vessel;
             std::shared_ptr<PositionalObject> winner = !vesselWins ? (std::shared_ptr<PositionalObject>)outpost : (std::shared_ptr<PositionalObject>)vessel; 
@@ -65,18 +60,25 @@ public:
             loser->defeatSpecialistPhase(loserDelta, winnerDelta, winner);
             winner->victorySpecialistPhase(winnerDelta, loserDelta, loser);
 
-            vessel->postCombatSpecialistPhase(game);
-            outpost->postCombatSpecialistPhase(game);
-        }
+            vessel->postCombatSpecialistPhase(game, outpost);
+            outpost->postCombatSpecialistPhase(game, vessel);
 
-        outpost->addSpecialists(vessel->getSpecialists());
-        game->removeVessel(vessel);
+            if(vessel->hasOwner() && !vessel->getOwner()->controlsSpecialist(SpecialistType::QUEEN)) {
+                vessel->getOwner()->setDefeated(game);
+            }
 
-        if(outpost->controlsSpecialist(SpecialistType::HYPNOTIST)) {
-            for(const std::shared_ptr<Specialist> &s : outpost->getSpecialists()) {
-                s->setOwner(outpost->getOwner());
+            if(outpost->hasOwner() && !outpost->getOwner()->controlsSpecialist(SpecialistType::QUEEN)) {
+                outpost->getOwner()->setDefeated(game);
+            }
+
+            if(vesselWins) {
+                outpost->setOwner(vessel->getOwner());
+                outpost->addUnits(vessel->getUnits() - outpost->getUnits());
             }
         }
+
+        outpost->addSpecialists(vessel->removeSpecialists());
+        game->removeVessel(vessel);
     }
 };
 

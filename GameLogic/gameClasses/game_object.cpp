@@ -1,3 +1,3 @@
 #include "game_object.h"
 
-int GameObject::counter = 0;
+unsigned int GameObject::counter = 0;
