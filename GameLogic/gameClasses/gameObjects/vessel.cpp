@@ -18,13 +18,13 @@ void Vessel::updatePointers(Game* game) {
 ** movement into account.
 ** Uses law of sines to derive answer.
 */
-const Point Vessel::getTargetPos(const Point &dimensions) const {
+const Point Vessel::getTargetPos() const {
     // return the target position if the target does not move
-    Point targetPos = getPosition().closest(dimensions, target->getPosition());
+    Point targetPos = getPosition().closest(target->getPosition());
     if(getSpeed() == 0 || target->getSpeed() == 0) return targetPos;
 
     Point returnVal;
-    Point targetTarget = targetPos.closest(dimensions, target->getTargetPos(dimensions));
+    Point targetTarget = targetPos.closest(target->getTargetPos());
 
     /* Construct a triangle with sides A: x, B: yx, and C: z, where y is the ratio between
     ** sides B and A, and z is the current distance between the vessels. We know the angle 
@@ -54,39 +54,39 @@ const Point Vessel::getTargetPos(const Point &dimensions) const {
         returnVal = vec1.normalized(length) + targetPos;
 
         // there's a shorter path if the projected arrival happens outside the wrap-around box
-        if(returnVal == getPosition().closest(dimensions, returnVal) && length <= mag1 && length >= 0) break;
+        if(returnVal == getPosition().closest(returnVal) && length <= mag1 && length >= 0) break;
         // if both paths fail, then return to origin
         else if(i == 1) return Point();
 
-        targetTarget = getPosition().closest(dimensions, target->getTargetPos(dimensions));
-        targetPos = targetTarget.closest(dimensions, target->getPosition());
+        targetTarget = getPosition().closest(target->getTargetPos());
+        targetPos = targetTarget.closest(target->getPosition());
     }
 
     return returnVal;
 }
 
-const Point Vessel::getPositionAt(const Point &dimensions, double timeDiff) const {
+const Point Vessel::getPositionAt(double timeDiff) const {
     double distance = getSpeed() * timeDiff;
 
-    Point target = getTargetPos(dimensions);
+    Point target = getTargetPos();
     if(target.isInvalid()) {
-        target = getPosition().closest(dimensions, origin->getPosition());
+        target = getPosition().closest(origin->getPosition());
     }
 
-    return getPosition().movedTowards(dimensions, target, distance);
+    return getPosition().movedTowards(target, distance);
 }
 
-void Vessel::update(const Point &dimensions, double timeDiff) {
+void Vessel::update(double timeDiff) {
     if(target->isDeleted()) setTarget(origin);
     double distance = getSpeed() * timeDiff;
 
-    Point targetedPos = getTargetPos(dimensions);
+    Point targetedPos = getTargetPos();
     if(targetedPos.isInvalid()) {
         setTarget(origin);
-        targetedPos = getTargetPos(dimensions);
+        targetedPos = getTargetPos();
     }
 
-    moveTowards(dimensions, targetedPos, distance);
+    moveTowards(targetedPos, distance);
 }
 
 // should be modified to work with specialist effects
@@ -102,7 +102,7 @@ double Vessel::getSpeed() const {
 }
 
 // generate collision events for other vessels
-void Vessel::collision(const Point &dimensions, std::shared_ptr<Vessel> vessel, std::shared_ptr<Vessel> other, time_t timestamp, std::multiset<std::shared_ptr<Event>, EventOrder> &events) {
+void Vessel::collision(std::shared_ptr<Vessel> vessel, std::shared_ptr<Vessel> other, time_t timestamp, std::multiset<std::shared_ptr<Event>, EventOrder> &events) {
     if(vessel->getOwnerID() == other->getOwnerID() || vessel->getTargetID() == -1 || vessel->getOriginID() == -1) return;
 
     int seconds = -1;
@@ -111,7 +111,7 @@ void Vessel::collision(const Point &dimensions, std::shared_ptr<Vessel> vessel, 
         float speedDiff = vessel->getSpeed() - other->getSpeed();
 
         if(speedDiff != 0) {
-            seconds = (vessel->distance(dimensions, target->getPosition()) - vessel->distance(dimensions, other->getPosition()))/speedDiff;
+            seconds = (vessel->distance(target->getPosition()) - vessel->distance(other->getPosition()))/speedDiff;
         }
     }
     // Case 2: both are heading towards each other, so they are guaranteed to collide
@@ -119,15 +119,15 @@ void Vessel::collision(const Point &dimensions, std::shared_ptr<Vessel> vessel, 
         || (vessel->getID() == other->getTargetID() && vessel->getTargetID() == other->getID())) {
         float speedSum = vessel->getSpeed() + other->getSpeed();
 
-        if(speedSum > 0) seconds = vessel->distance(dimensions, other->getPosition())/speedSum;
+        if(speedSum > 0) seconds = vessel->distance(other->getPosition())/speedSum;
     }
     // Case 3: this vessel is targeting the other
     else if(vessel->getTargetID() == other->getID()) {
-        if(vessel->getSpeed() > 0) seconds = vessel->distance(dimensions, vessel->getTargetPos(dimensions))/vessel->getSpeed();
+        if(vessel->getSpeed() > 0) seconds = vessel->distance(vessel->getTargetPos())/vessel->getSpeed();
     }
     // Case 3: the other vessel is targeting this one
     else if(other->getTargetID() == vessel->getID()) {
-        if(other->getSpeed() > 0) seconds = vessel->distance(dimensions, other->getTargetPos(dimensions))/other->getSpeed();
+        if(other->getSpeed() > 0) seconds = vessel->distance(other->getTargetPos())/other->getSpeed();
     }
 
     if(seconds >= 0) {
@@ -139,11 +139,11 @@ void Vessel::collision(const Point &dimensions, std::shared_ptr<Vessel> vessel, 
 }
 
 // generate collision events for outposts
-void Vessel::collision(const Point &dimensions, std::shared_ptr<Vessel> vessel, std::shared_ptr<Outpost> outpost, time_t timestamp, std::multiset<std::shared_ptr<Event>, EventOrder> &events) {
+void Vessel::collision(std::shared_ptr<Vessel> vessel, std::shared_ptr<Outpost> outpost, time_t timestamp, std::multiset<std::shared_ptr<Event>, EventOrder> &events) {
     int seconds = -1;
 
     if(vessel->getTargetID() == outpost->getID() && vessel->getTargetID() != -1) {
-        if(vessel->getSpeed() > 0) seconds = int(vessel->distance(dimensions, outpost->getPosition())/vessel->getSpeed());
+        if(vessel->getSpeed() > 0) seconds = int(vessel->distance(outpost->getPosition())/vessel->getSpeed());
     }
 
     if(seconds >= 0) {

@@ -1,3 +1,6 @@
+
+#include "helpers/point.h"
+
 #ifndef _GAME_SETTINGS_H_
 #define _GAME_SETTINGS_H_
 
@@ -15,6 +18,9 @@ public:
     static int eloKValue;
     static int defaultSonar;
     static int defaultMaxShield;
+    static int fireRate;
+    static int width;
+    static int height;
 };
 
 #endif

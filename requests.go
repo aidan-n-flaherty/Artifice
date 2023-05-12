@@ -220,6 +220,51 @@ func fetchGames(w http.ResponseWriter, r *http.Request) {
 	w.Write(returnData)
 }
 
+// GET, Arguments: token (string), gameID (int)
+// get the data of a specific game
+func fetchGameDetails(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/fetchGameDetails" {
+		http.Error(w, "404 not found.", http.StatusNotFound)
+		fmt.Printf("Invalid path\n")
+		return
+	}
+
+	if r.Method != "GET" {
+		http.Error(w, "Method is not supported.", http.StatusNotFound)
+		fmt.Printf("Method not supported\n")
+		return
+	}
+
+	data, err := getValues(r, "token", "id")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	gameID, err := strconv.ParseUint(data["gameID"], 10, 32)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	response, err := getGame(db, data["token"], uint32(gameID))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	returnData, err := json.Marshal(response)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+
+	w.WriteHeader(http.StatusAccepted)
+	w.Write(returnData)
+}
+
 // GET, Arguments: token (string), past (boolean)
 // returns all games that a user has access to
 // returns ongoing or past games based on the 'past' boolean parameter

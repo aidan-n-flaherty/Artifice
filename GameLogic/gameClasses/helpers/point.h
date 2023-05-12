@@ -30,13 +30,13 @@ public:
 
     double distance(const Point &other) const;
 
-    Point closest(const Point& dimensions, const Point &other) const;
+    Point closest(const Point &other) const;
 
-    void moveTowards(const Point &dimensions, const Point &other, double distance);
+    void moveTowards(const Point &other, double distance);
 
-    Point movedTowards(const Point &dimensions, const Point &other, double distance) const;
+    Point movedTowards(const Point &other, double distance) const;
 
-    void constrain(const Point& dimensions);
+    void constrain();
 
     Point normalized(double val);
 

@@ -11,12 +11,51 @@ void Player::updatePointers(Game* game) {
     for(std::shared_ptr<Vessel>& v : this->vessels) v = game->getVessel(v->getID());
 }
 
-void Player::update(double timeDiff) {
+int Player::getResourcesAt(double timeDiff) const {
+    double fractionalProduction = this->fractionalProduction;
+    
+    return getResourcesAt(fractionalProduction, timeDiff);
+}
+
+int Player::getHiresAt(double timeDiff) const {
+    double fractionalHires = this->fractionalHires;
+
+    return getHiresAt(fractionalHires, timeDiff);
+}
+
+/* The following two functions do not modify this instance unless you pass in
+** references to the actual member variables, allowing them to be used for interpolation
+** or updating the game state.
+*/
+int Player::getResourcesAt(double& fractionalProduction, double timeDiff) const {
+    int resources = this->resources;
+
+    // while loops necessary in case a tick doesn't happen for several hours
     fractionalProduction += timeDiff * resourceProductionSpeed();
     while(fractionalProduction >= 1) {
         fractionalProduction -= 1;
-        resources++;
+        resources += 1;
     }
+
+    return resources;
+}
+
+int Player::getHiresAt(double& fractionalHires, double timeDiff) const {
+    int hires = this->hires;
+
+    fractionalHires += timeDiff * (1.0 / (24 * 60 * 60));
+    while(fractionalHires >= 1) {
+        fractionalHires -= 1;
+        hires += 1;
+    }
+
+    return hires;
+}
+
+void Player::update(double timeDiff) {
+    resources = getResourcesAt(this->fractionalProduction, timeDiff);
+
+    hires = getHiresAt(this->fractionalHires, timeDiff);
 }
 
 void Player::setDefeated(Game* game) {
@@ -43,7 +82,7 @@ std::list<std::shared_ptr<Outpost>> Player::sortedOutposts(PositionalObject* obj
 
     outposts.sort([=](const std::shared_ptr<Outpost>& a, const std::shared_ptr<Outpost>& b) -> bool
     { 
-        return obj->distance(Game::getDimensions(), a->getPosition()) < obj->distance(Game::getDimensions(), b->getPosition()); 
+        return obj->distance(a->getPosition()) < obj->distance(b->getPosition()); 
     });
 
     return outposts;
@@ -56,11 +95,11 @@ void Player::projectedVictory(std::shared_ptr<Player> player, time_t timestamp, 
     }
 }
 
-double Player::resourceProductionSpeed() {
+double Player::resourceProductionSpeed() const {
     int outpostCount = 0;
     int mineCount = 0;
 
-    for(std::shared_ptr<Outpost>& o : outposts) {
+    for(const std::shared_ptr<Outpost>& o : outposts) {
         if(o->getType() == OutpostType::MINE) mineCount++;
         outpostCount++;
     }
@@ -68,11 +107,11 @@ double Player::resourceProductionSpeed() {
     return (mineCount * outpostCount) / (24.0 * 60.0 * 60.0);
 }
 
-double Player::globalSpeed(){
+double Player::globalSpeed() const {
     return 1;
 }
 
-int Player::globalMaxShield() {
+int Player::globalMaxShield() const {
     int maxShield = 0;
 
     maxShield += 10 * specialistCount(SpecialistType::SECURITY_CHIEF);
@@ -82,7 +121,7 @@ int Player::globalMaxShield() {
     return maxShield;
 }
 
-int Player::globalProductionAmount() {
+int Player::globalProductionAmount() const {
     int amount = 6;
 
     amount -= specialistCount(SpecialistType::MINISTER_OF_ENERGY);
@@ -90,7 +129,7 @@ int Player::globalProductionAmount() {
     return amount;
 }
 
-double Player::globalProductionSpeed() {
+double Player::globalProductionSpeed() const {
     double productionSpeed = 1;
 
     productionSpeed += 0.5 * specialistCount(SpecialistType::TYCOON);
@@ -98,7 +137,7 @@ double Player::globalProductionSpeed() {
     return productionSpeed;
 }
 
-double Player::globalSonar() {
+double Player::globalSonar() const {
     double range = 1;
 
     range = 1 + 0.25 * specialistCount(SpecialistType::INTELLIGENCE_OFFICER);
@@ -126,7 +165,7 @@ bool Player::controlsSpecialist(SpecialistType t) const {
     return false;
 }
 
-bool Player::controlsSpecialists(std::list<int> specialists) {
+bool Player::controlsSpecialists(std::list<int> specialists) const {
     int count = 0;
 
     for(std::shared_ptr<Specialist> specialist : this->specialists) {

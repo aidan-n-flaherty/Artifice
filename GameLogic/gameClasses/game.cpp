@@ -4,6 +4,7 @@
 #include <set>
 #include <map>
 #include <vector>
+#include <limits>
 #include "game.h"
 #include "gameObjects/vessel.h"
 #include "order.h"
@@ -13,31 +14,32 @@
 #include "events/outpost_range_event.h"
 #include "game_settings.h"
 
-int Game::width = 0;
-int Game::height = 0;
-
 /* The game constructor should create the entire starting state deterministically based on
 ** the random seed provided.
 */
-Game::Game(time_t startTime, time_t endTime, std::map<int, std::string> &playerInfo, int seed, bool cacheEnabled) :
+Game::Game(int simulatorID, time_t startTime, time_t endTime, std::map<int, std::string> &playerInfo, int seed, bool cacheEnabled) :
     stateTime(startTime), endTime(endTime), cacheEnabled(cacheEnabled) {
     std::srand(seed);
 
-    width = 100000;
-    height = 100000;
+    // necessary since godot likes to instantiate unnecessary game objects for fun
+    int offset = GameObject::getIDCounter();
 
-    for(auto pair : playerInfo) addPlayer(new Player(pair.second, pair.first, 1000));
+    for(auto pair : playerInfo) {
+        Player* p = new Player(pair.second, pair.first, 100);
+        if(pair.first == simulatorID) simulatorID = p->getID();
+        addPlayer(p);
+    }
 
     int t = 0;
     for(auto pair : playerInfo) {
-        Outpost* o = new Outpost(OutpostType::FACTORY, 20, 10000 + 10000 * (t % 2), 10000 + 10000 * (t % 3) * (t % 3));
+        Outpost* o = new Outpost(OutpostType::FACTORY, 20, 10 + 10 * (t % 2), 10 + 10 * (t % 3) * (t % 3));
         addOutpost(o);
-        getPlayer(t)->addOutpost(getOutpost(o->getID()));
+        getPlayer(offset + t)->addOutpost(getOutpost(o->getID()));
 
         Specialist* s = new Specialist(t == 1 ? SpecialistType::PIRATE : SpecialistType::INFILTRATOR);
         addSpecialist(s);
         o->addSpecialist(getSpecialist(s->getID()));
-        getPlayer(t)->addSpecialist(getSpecialist(s->getID()));
+        getPlayer(offset + t)->addSpecialist(getSpecialist(s->getID()));
 
         t++;
         std::cout << pair.second << " has an outpost at (" << o->getPosition().getX() << ", " << o->getPosition().getY() << ")" << std::endl;
@@ -47,13 +49,13 @@ Game::Game(time_t startTime, time_t endTime, std::map<int, std::string> &playerI
     for(auto pair : playerInfo) {
         Specialist* s = new Specialist(SpecialistType::QUEEN);
         addSpecialist(s);
-        getPlayer(t)->getOutposts().front()->addSpecialist(getSpecialist(s->getID()));
-        getPlayer(t)->addSpecialist(getSpecialist(s->getID()));
+        getPlayer(offset + t)->getOutposts().front()->addSpecialist(getSpecialist(s->getID()));
+        getPlayer(offset + t)->addSpecialist(getSpecialist(s->getID()));
         t++;
     }
 }
 
-Game::Game(const Game& game) : stateTime(game.stateTime), cacheEnabled(game.cacheEnabled) {
+Game::Game(const Game& game) : stateTime(game.stateTime), cacheEnabled(game.cacheEnabled), endTime(game.endTime), referenceID(game.referenceID) {
     for(const std::shared_ptr<Event>& event : game.events) events.insert(std::shared_ptr<Event>(new Event(*event)));
     for(const auto& pair : game.vessels) vessels[pair.first] = std::shared_ptr<Vessel>(new Vessel(*pair.second));
     for(const auto& pair : game.players) players[pair.first] = std::shared_ptr<Player>(new Player(*pair.second));
@@ -69,6 +71,7 @@ Game::Game(const Game& game) : stateTime(game.stateTime), cacheEnabled(game.cach
 
     orders = game.orders;
     invalidOrders = game.invalidOrders;
+    simulatedEvents = game.simulatedEvents;
 
     // note that even though the cache is full of pointers, there's no need for a deep copy
     // since whenever we modify a game state it leaves the cache
@@ -107,10 +110,6 @@ void Game::updateEvents() {
                 s->setOwner(outpost->getOwner());
             }
         }
-
-        if(outpost->controlsSpecialist(SpecialistType::SENTRY)) {
-            addEvent(new OutpostRangeEvent(getTime(), outpost));
-        }
     }
 
     // All vessels flagged for update (e.g. global speed change) may have different combat times.
@@ -125,13 +124,13 @@ void Game::updateEvents() {
             if(itA == itB) continue;
             const std::shared_ptr<Vessel>& otherVessel = itB->second;
             
-            vessel->collision(Point(getWidth(), getHeight()), vessel, otherVessel, stateTime, events);
+            vessel->collision(vessel, otherVessel, stateTime, events);
         }
 
         for(auto itB = outposts.begin(); itB != outposts.end(); itB++) {
             const std::shared_ptr<Outpost>& outpost = itB->second;
 
-            vessel->collision(Point(getWidth(), getHeight()), vessel, outpost, stateTime, events);
+            vessel->collision(vessel, outpost, stateTime, events);
         }
 
         vessel->setRefresh(false);
@@ -143,7 +142,7 @@ void Game::updateEvents() {
 void Game::updateState(time_t timestamp) {
     double secondsElapsed = difftime(timestamp, stateTime);
 
-    for(auto& pair : vessels) pair.second->update(Point(getWidth(), getHeight()), secondsElapsed);
+    for(auto& pair : vessels) pair.second->update(secondsElapsed);
     for(auto& pair : outposts) pair.second->update(secondsElapsed);
     
     stateTime = timestamp;
@@ -160,6 +159,8 @@ void Game::cacheState() {
 */
 std::list<std::pair<int, int>> Game::run() {
     events.clear();
+
+    addEvent(new OutpostRangeEvent(getTime()));
     updateEvents();
 
     // loops until no events or orders remain.
@@ -182,6 +183,8 @@ std::list<std::pair<int, int>> Game::run() {
             // converts a order to an event
             std::shared_ptr<Event> converted = order->convert(this);
             orders.erase(orderIt);
+
+            if(order->getID() > referenceID && order->getSenderID() != simulatorID) referenceID = order->getID(); 
 
             if(!converted) {
                 invalidOrders.push_back(order);
@@ -256,7 +259,7 @@ bool Game::hasEnded() const {
     case Mode::MINING:
         if(sorted.front()->getResources() < GameSettings::resourcesToWin) return false;
         break;
-    default: break;
+    default: return false;
     }
 
     return true;
@@ -310,7 +313,7 @@ time_t Game::nextState(time_t timestamp) {
         if((*it)->getTime() > timestamp) break;
     }
 
-    return returnTime;
+    return returnTime < timestamp ? std::numeric_limits<time_t>::max() : returnTime;
 }
 
 const std::shared_ptr<Event> Game::nextAssociatedEvent(time_t timestamp, int id) {
@@ -319,6 +322,10 @@ const std::shared_ptr<Event> Game::nextAssociatedEvent(time_t timestamp, int id)
     }
 
     return nullptr;
+}
+
+int Game::getReferenceID() {
+    return referenceID;
 }
 
 void Game::addPlayer(Player* p) {

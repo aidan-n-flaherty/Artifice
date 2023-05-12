@@ -20,7 +20,7 @@ func getGames(db *sql.DB, token string) ([]GameDetails, error) {
 		return response, err
 	}
 
-	query := "SELECT hostID, lobbyName, password, playerCount, playerCap, ratingConstraints, activeTimes, createdAt, startTime, simulationSpeed, version FROM games WHERE startTime < NOW() AND playerCount < playerCap;"
+	query := "SELECT id, hostID, lobbyName, password, playerCount, playerCap, ratingConstraints, activeTimes, createdAt, startTime, simulationSpeed, version FROM games WHERE startTime < NOW() AND playerCount < playerCap;"
 
 	results, err := db.Query(query)
 	if err != nil {
@@ -63,7 +63,7 @@ func getGame(db *sql.DB, token string, gameID uint32) (GameDetails, error) {
 		return game, err
 	}
 
-	query := "SELECT hostID, lobbyName, password, playerCount, playerCap, ratingConstraints, activeTimes, createdAt, startTime, simulationSpeed, version FROM games WHERE id = ?;"
+	query := "SELECT id, hostID, lobbyName, password, playerCount, playerCap, ratingConstraints, activeTimes, createdAt, startTime, simulationSpeed, version FROM games WHERE id = ?;"
 
 	results, err := db.Query(query, gameID)
 	if err != nil {
@@ -76,7 +76,7 @@ func getGame(db *sql.DB, token string, gameID uint32) (GameDetails, error) {
 		return game, errors.New("No game found.")
 	}
 
-	err = results.Scan(&game.Data.HostID, &game.Settings.LobbyName, &game.Settings.Password,
+	err = results.Scan(&game.Data.ID, &game.Data.HostID, &game.Settings.LobbyName, &game.Settings.Password,
 		&game.Data.PlayerCount, &game.Settings.PlayerCap, &game.Settings.RatingConstraints,
 		&game.Settings.ActiveTimes, &game.Data.CreatedAt, &game.Settings.StartTime,
 		&game.Settings.SimulationSpeed, &game.Data.Version)

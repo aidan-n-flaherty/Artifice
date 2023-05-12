@@ -42,6 +42,7 @@ public:
     Order() : ID(counter++), referenceID(-1) {};
     Order(time_t timestamp, int senderID) : ID(counter++), timestamp(timestamp), senderID(senderID), referenceID(-1) {}
     Order(time_t timestamp, int senderID, int referenceID) : ID(counter++), timestamp(timestamp), senderID(senderID), referenceID(referenceID) {}
+    Order(int id, time_t timestamp, int senderID, int referenceID) : ID(id), timestamp(timestamp), senderID(senderID), referenceID(referenceID) {}
 
     virtual void adjustIDs(int createdID) {}
 

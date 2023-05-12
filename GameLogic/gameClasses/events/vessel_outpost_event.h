@@ -28,7 +28,7 @@ public:
     bool referencesObject(int id) const override { return vessel->getID() == id; }
 
     void run(Game* game) const override {
-        std::cout << "Vessel-Outpost combat: " << vessel->getOwner()->getName() << ", " << outpost->getOwner()->getName() << std::endl;
+        std::cout << "Vessel-Outpost combat: " << game->getTime() << ", " << vessel->getOwner()->getName() << ", " << outpost->getOwner()->getName() << std::endl;
         if(outpost->getOwnerID() == vessel->getOwnerID() || vessel->isGift()) {
             outpost->addUnits(vessel->getUnits());
             if(vessel->isGift()) outpost->getOwner()->addSpecialists(vessel->getSpecialists());

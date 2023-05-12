@@ -6,8 +6,8 @@ void PositionalObject::updatePointers(Game* game) {
     for(std::shared_ptr<Specialist> &a : this->specialists) a = game->getSpecialist(a->getID());
 }
 
-double PositionalObject::distance(const Point &dimensions, const Point &other) const {
-    return position.distance(position.closest(dimensions, other));
+double PositionalObject::distance(const Point &other) const {
+    return position.distance(position.closest(other));
 }
 
 bool PositionalObject::canRemoveUnits(int count) const {
@@ -153,11 +153,11 @@ void PositionalObject::postCombatSpecialistPhase(Game* game, std::shared_ptr<Pos
         int range = GameSettings::defaultSonar/4;
 
         for(const auto &v : game->getVessels()) {
-            if(distance(game->getDimensions(), v.second->getPosition()) <= range) game->removeVessel(v.second);
+            if(distance(v.second->getPosition()) <= range) game->removeVessel(v.second);
         }
 
         for(const auto &o : game->getOutposts()) {
-            if(distance(game->getDimensions(), o.second->getPosition()) <= range) {
+            if(distance(o.second->getPosition()) <= range) {
                 o.second->setType(OutpostType::BROKEN);
                 o.second->setUnits(0);
 

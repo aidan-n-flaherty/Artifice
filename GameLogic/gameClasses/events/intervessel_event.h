@@ -29,6 +29,8 @@ public:
     bool referencesObject(int id) const override { return vesselA->getID() == id || vesselB->getID() == id; }
 
     void run(Game* game) const override {
+        std::cout << "Vessel-Vessel combat: " << game->getTime() << ", " << vesselA->getOwner()->getName() << ", " << vesselB->getOwner()->getName() << std::endl;
+
         if(vesselA->isGift() && vesselB->isGift()) {
             return;
         } else if(vesselA->isGift() && !vesselB->isGift()) {

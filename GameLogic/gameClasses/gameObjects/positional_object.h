@@ -19,19 +19,19 @@ private:
 
 public:
     PositionalObject(){}
-    PositionalObject(Point position, int numUnits) : numUnits(numUnits), position(position) {}
-    PositionalObject(Point position, int numUnits, std::list<std::shared_ptr<Specialist>> specialists) : numUnits(numUnits), position(position), specialists(specialists) {}
+    PositionalObject(const Point &position, int numUnits) : numUnits(numUnits), position(position) {}
+    PositionalObject(const Point &position, int numUnits, const std::list<std::shared_ptr<Specialist>> &specialists) : numUnits(numUnits), position(position), specialists(specialists) {}
     PositionalObject(double x, double y, int numUnits) : numUnits(numUnits), position(x, y) {}
-    PositionalObject(double x, double y, int numUnits, std::list<std::shared_ptr<Specialist>> specialists) : numUnits(numUnits), position(x, y), specialists(specialists) {}
+    PositionalObject(double x, double y, int numUnits, const std::list<std::shared_ptr<Specialist>> &specialists) : numUnits(numUnits), position(x, y), specialists(specialists) {}
     PositionalObject(std::shared_ptr<PositionalObject> other, Game* game);
 
     void updatePointers(Game* game) override;
 
     const Point& getPosition() const { return position; }
-    virtual const Point getPositionAt(const Point& dimensions, double timeDiff) const { return getPosition(); }
-    virtual const Point getTargetPos(const Point& dimensions) const { return getPosition(); }
-    double distance(const Point& dimensions, const Point& other) const;
-    void moveTowards(const Point& dimensions, const Point& other, double distance) { position.moveTowards(dimensions, other, distance); };
+    virtual const Point getPositionAt(double timeDiff) const { return getPosition(); }
+    virtual const Point getTargetPos() const { return getPosition(); }
+    double distance(const Point& other) const;
+    void moveTowards(const Point& other, double distance) { position.moveTowards(other, distance); };
 
     virtual int getUnitsAt(double timeDiff) const { return numUnits; }
     int getUnits() const { return numUnits; }

@@ -228,6 +228,7 @@ func main() {
     http.HandleFunc("/fetchGames", fetchGames)
     http.HandleFunc("/fetchUserGames", fetchUserGames)
     http.HandleFunc("/fetchGameState", fetchGameState)
+    http.HandleFunc("/fetchGameDetails", fetchGameDetails)
     http.HandleFunc("/createMatch", createMatch)
     http.HandleFunc("/editMatch", editMatch)
     http.HandleFunc("/joinMatch", joinMatch)

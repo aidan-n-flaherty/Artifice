@@ -1,5 +1,5 @@
-#ifndef _HIRE_EVENT_H_
-#define _HIRE_EVENT_H_
+#ifndef _PROMOTE_EVENT_H_
+#define _PROMOTE_EVENT_H_
 
 #include <cstdlib>
 #include <cmath>
@@ -8,15 +8,17 @@
 #include "../gameObjects/specialist.h"
 #include "../game.h"
 
-class HireEvent : public Event
+class PromoteEvent : public Event
 {
 private:
     std::shared_ptr<Player> owner;
     std::shared_ptr<Specialist> specialist;
 
+    SpecialistType promotion;
+
 public:
-    HireEvent(){};
-    HireEvent(time_t timestamp, std::shared_ptr<Player> owner, std::shared_ptr<Specialist> specialist) : Event(timestamp), owner(owner), specialist(specialist) {}
+    PromoteEvent(){};
+    PromoteEvent(time_t timestamp, std::shared_ptr<Player> owner, std::shared_ptr<Specialist> specialist, SpecialistType promotion) : Event(timestamp), owner(owner), specialist(specialist), promotion(promotion) {}
     
     void updatePointers(Game *game) override {
         Event::updatePointers(game);
@@ -25,8 +27,7 @@ public:
     }
 
     void run(Game* game) const override {
-        owner->addSpecialist(specialist);
-        owner->removeHire();
+        specialist->setType(promotion);
     }
 };
 

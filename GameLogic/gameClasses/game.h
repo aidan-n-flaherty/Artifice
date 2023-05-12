@@ -23,7 +23,7 @@ struct GameOrder {
 };
 
 /* Contains all the data necessary to run a complete simulation of a game.
-** Note that this class should be run once and then immediately discarded.
+** Note that on the server-side, this class should be run once and then immediately discarded.
 */
 class Game
 {
@@ -46,8 +46,11 @@ private:
     bool cacheEnabled;
     time_t stateTime;
     time_t endTime;
-    static int width;
-    static int height;
+
+    // client side variables to determine the most recent order sent by another player to use as a reference for IDs,
+    // as well as the ID of the current player
+    int referenceID;
+    int simulatorID = -1;
 
     std::unordered_map<int, std::shared_ptr<Player>> players;
     std::unordered_map<int, std::shared_ptr<Vessel>> vessels;
@@ -64,7 +67,7 @@ private:
 public:
     // Deterministically creates a pseudo-random map and initializes all player states.
     Game(){};
-    Game(time_t startTime, time_t endTime, std::map<int, std::string>& players, int seed, bool cacheEnabled);
+    Game(int simulatorID, time_t startTime, time_t endTime, std::map<int, std::string>& players, int seed, bool cacheEnabled);
     Game(const Game& game);
 
     // Uses the orders supplied and runs a full simulation of the game, returns player ids and rating changes
@@ -107,10 +110,7 @@ public:
     
     void removeVessel(std::shared_ptr<Vessel> v);
     void removeSpecialist(std::shared_ptr<Specialist> s);
-
-    static int getWidth() { return width; }
-    static int getHeight() { return height; }
-    static Point getDimensions() { return Point(width, height); }
+    
     time_t getTime() const { return stateTime; }
     time_t getEndTime() const { return endTime; }
 
@@ -118,6 +118,8 @@ public:
     std::shared_ptr<Game> lastState(time_t timestamp) const;
     time_t nextState(time_t timestamp);
     const std::shared_ptr<Event> nextAssociatedEvent(time_t timestamp, int id);
+
+    int getReferenceID();
 };
 
 #endif
