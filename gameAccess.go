@@ -148,7 +148,7 @@ func getGameState(db *sql.DB, token string, gameID uint32) (GameState, error) {
 		return response, err
 	}
 
-	query := "SELECT id, username, gamesWon, gamesLost, averageRank, rating, tier participantNumber FROM participants INNER JOIN PROFILES ON id = participantID WHERE gameID = ?;"
+	query := "SELECT id, username, gamesWon, gamesLost, averageRank, rating, tier participantNumber FROM participants INNER JOIN users ON id = participantID WHERE gameID = ?;"
 
 	results, err := db.Query(query, gameID)
 	if err != nil {
@@ -436,7 +436,7 @@ func uploadOrder(db *sql.DB, token string, order Order) (Order, error) {
 
 // alert all players that the game state has changed
 func distributeGameState(gameID uint32) {
-	query := "SELECT participantID FROM profiles WHERE gameID = ?;"
+	query := "SELECT participantID FROM users WHERE gameID = ?;"
 
 	results, err := db.Query(query, gameID)
 	if err != nil {

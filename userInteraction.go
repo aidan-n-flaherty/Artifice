@@ -251,7 +251,7 @@ func sendTextMessage(db *sql.DB, token string, chatID uint32, content string) er
 
 // send message to websocket if possible, otherwise send a push notification
 func distributeMessage(userID uint32, chatID uint32, message Message) {
-	query := "SELECT username FROM profiles WHERE id = ?;"
+	query := "SELECT username FROM users WHERE id = ?;"
 
 	results, err := db.Query(query, userID)
 	if err != nil {

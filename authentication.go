@@ -86,7 +86,7 @@ func getID(db *sql.DB, sessionID string) (uint32, error) {
 func invalidAccess(db *sql.DB, id uint32, password string) bool {
 	var userPassword []byte
 
-	query := "SELECT password FROM profiles WHERE id = ?;"
+	query := "SELECT password FROM users WHERE id = ?;"
 
 	results, err := db.Query(query, id)
 	if err != nil {

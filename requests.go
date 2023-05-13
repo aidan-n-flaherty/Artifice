@@ -81,7 +81,7 @@ func signup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	str := "INSERT INTO profiles (username, password, pushEnabled) VALUES(?, ?, ?);"
+	str := "INSERT INTO users (username, password, pushEnabled) VALUES(?, ?, ?);"
 
 	dbPass, err := hashPassword(user.Password)
 	if err != nil {
