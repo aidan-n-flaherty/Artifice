@@ -163,7 +163,7 @@ func login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token := strconv.FormatUint(uint64(uniqueKey), 10)
+	token := strconv.FormatUint(uniqueKey, 10)
 
 	if hasPushToken && data["pushToken"] != "" {
 		addPushToken(db, token, data["pushToken"])
