@@ -432,7 +432,7 @@ func uploadOrder(db *sql.DB, token string, gameID uint32, order Order) (Order, e
 
 	results.Scan(&order.SenderID)
 
-	query = "REPLACE INTO orders (gameID, senderID, referenceID, type, parameters, FROM_UNIXTIME(timestamp)) VALUES (?, ?, ?, ?, ?, ?);"
+	query = "REPLACE INTO orders (gameID, senderID, referenceID, type, parameters, timestamp) VALUES (?, ?, ?, ?, ?, FROM_UNIXTIME(?));"
 
 	res, err := db.Exec(query, gameID, order.SenderID, order.ReferenceID, order.Type, serialize(order.ArgumentIDs), order.Timestamp)
 	if err != nil {

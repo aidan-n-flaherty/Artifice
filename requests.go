@@ -537,10 +537,12 @@ func updateOrder(w http.ResponseWriter, r *http.Request) {
 	order, err = uploadOrder(db, data["token"], uint32(gameID), order)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
 	}
 
 	returnData, err := json.Marshal(order); if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
