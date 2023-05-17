@@ -405,7 +405,7 @@ func leaveGame(db *sql.DB, token string, gameID uint32) bool {
 }
 
 // uploads a new or existing order to the game
-func uploadOrder(db *sql.DB, token string, order Order) (Order, error) {
+func uploadOrder(db *sql.DB, token string, gameID uint32, order Order) (Order, error) {
 	if order.Timestamp < uint64(time.Now().UTC().Unix()) {
 		return order, errors.New("Cannot send or update an order in the past")
 	}
@@ -420,7 +420,7 @@ func uploadOrder(db *sql.DB, token string, order Order) (Order, error) {
 	// find the id that should be used to send the order
 	query := "SELECT participantNumber FROM participants WHERE participantID = ? AND gameID = ?;"
 
-	results, err := db.Query(query, id, order.GameID)
+	results, err := db.Query(query, id, gameID)
 	if err != nil {
 		return order, err
 	}
@@ -434,7 +434,7 @@ func uploadOrder(db *sql.DB, token string, order Order) (Order, error) {
 
 	query = "REPLACE INTO orders (gameID, senderID, referenceID, type, parameters, FROM_UNIXTIME(timestamp)) VALUES (?, ?, ?, ?, ?);"
 
-	res, err := db.Exec(query, order.GameID, order.SenderID, order.ReferenceID, order.Type, serialize(order.ArgumentIDs), order.Timestamp)
+	res, err := db.Exec(query, gameID, order.SenderID, order.ReferenceID, order.Type, serialize(order.ArgumentIDs), order.Timestamp)
 	if err != nil {
 		return order, err
 	}

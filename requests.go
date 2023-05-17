@@ -528,7 +528,13 @@ func updateOrder(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	order, err = uploadOrder(db, data["token"], order)
+	gameID, err := strconv.ParseUint(data["gameID"], 10, 32)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	order, err = uploadOrder(db, data["token"], uint32(gameID), order)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}

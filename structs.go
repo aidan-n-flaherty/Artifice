@@ -50,7 +50,6 @@ type Order struct {
 	ID          uint32   `json:"id"`
 	SenderID    uint32   `json:"senderID"`
 	ReferenceID uint32   `json:"referenceID"`
-	GameID      uint32   `json:"gameID"`
 	Type        string   `json:"type"`
 	ArgumentIDs []uint32 `json:"argumentIDs"`
 	Timestamp   uint64   `json:"timestamp"`
