@@ -19,7 +19,7 @@ type UserStats struct {
 type GameData struct {
 	ID          uint32 `json:"id"`
 	HostID      uint32 `json:"hostID"`
-	CreatedAt   string `json:"createdAt"`
+	CreatedAt   uint64 `json:"createdAt"`
 	PlayerCount uint   `json:"playerCount"`
 	HasPassword bool   `json:"hasPassword"`
 	Version     string `json:"version"`
@@ -53,7 +53,7 @@ type Order struct {
 	GameID      uint32   `json:"gameID"`
 	Type        string   `json:"type"`
 	ArgumentIDs []uint32 `json:"argumentIDs"`
-	Timestamp   string   `json:"timestamp"`
+	Timestamp   uint64   `json:"timestamp"`
 }
 
 type PushToken struct {
@@ -65,12 +65,12 @@ type Chat struct {
 	ID            uint32    `json:"id"`
 	Participants  []uint32  `json:"participants"`
 	Messages      []Message `json:"messages"`
-	ReadTimestamp string    `json:"readTimestamp"`
+	ReadTimestamp uint64    `json:"readTimestamp"`
 }
 
 type Message struct {
 	ID        uint32 `json:"id"`
 	SenderID  uint32 `json:"senderID"`
 	Content   string `json:"content"`
-	Timestamp string `json:"timestamp"`
+	Timestamp uint64 `json:"timestamp"`
 }

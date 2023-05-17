@@ -56,7 +56,7 @@ func getChat(db *sql.DB, token string, chatID uint32) (Chat, error) {
 		return chat, err
 	}
 
-	query := "SELECT readTimestamp FROM chatAccess c WHERE chatID = ? AND participantID = ?;"
+	query := "SELECT UNIX_TIMESTAMP(readTimestamp) FROM chatAccess c WHERE chatID = ? AND participantID = ?;"
 
 	results, err := db.Query(query, chatID, id)
 	if err != nil {
@@ -157,7 +157,7 @@ func getMessages(db *sql.DB, token string, chatID uint32, offset int) ([]Message
 		return messages, err
 	}
 
-	query := "SELECT id, senderID, content, timestamp FROM messages WHERE chatID = ? AND senderID NOT IN (SELECT blockedID FROM blocked WHERE userID = ?) ORDER BY timestamp DESC LIMIT ?, 20;"
+	query := "SELECT id, senderID, content, UNIX_TIMESTAMP(timestamp) FROM messages WHERE chatID = ? AND senderID NOT IN (SELECT blockedID FROM blocked WHERE userID = ?) ORDER BY timestamp DESC LIMIT ?, 20;"
 
 	results, err := db.Query(query, chatID, userID, offset)
 	if err != nil {
@@ -242,7 +242,7 @@ func sendTextMessage(db *sql.DB, token string, chatID uint32, content string) er
 		message.ID = uint32(id)
 	}
 
-	message.Timestamp = time.Now().UTC().Format(timeFormat)
+	message.Timestamp = uint64(time.Now().UTC().Unix())
 
 	distributeMessage(senderID, chatID, message)
 

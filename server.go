@@ -31,7 +31,7 @@ var outdatedGames = make(map[uint32]bool)
 const timeFormat = "20060102150405" // standard for MySQL timestamps
 
 // this time represents the next time any game will update
-var nextUpdateTime = time.Now().UTC().Format(timeFormat)
+var nextUpdateTime = uint64(time.Now().UTC().Unix())
 
 // maintain a websocket connection for a specific user
 func processConnection(c *websocket.Conn, userID uint32, timeout time.Duration) {
@@ -94,7 +94,7 @@ func clientUpdateLoop() {
 
 	// every second check if there are any orders that need to be sent to clients
 	s.Every(1).Seconds().Do(func() {
-		var currentTime = time.Now().UTC().Format(timeFormat)
+		var currentTime = uint64(time.Now().UTC().Unix())
 
 		// only query the database when an order goes through
 		if currentTime < nextUpdateTime {
@@ -102,7 +102,7 @@ func clientUpdateLoop() {
 		}
 
 		var gamesToUpdate = make(map[uint32]bool)
-		query := "SELECT gameID FROM orders WHERE timestamp <= ?;"
+		query := "SELECT gameID FROM orders WHERE timestamp <= FROM_UNIXTIME(?);"
 
 		results, err := db.Query(query, currentTime)
 		if err != nil {
@@ -126,21 +126,21 @@ func clientUpdateLoop() {
 		}
 
 		// move the order from orders to sentOrders
-		query = "INSERT INTO sentOrders SELECT * FROM orders WHERE timestamp <= ?;"
+		query = "INSERT INTO sentOrders SELECT * FROM orders WHERE timestamp <= FROM_UNIXTIME(?);"
 
 		_, err = db.Exec(query, currentTime)
 		if err != nil {
 			return
 		}
 
-		query = "DELETE FROM orders WHERE timestamp <= ?;"
+		query = "DELETE FROM orders WHERE timestamp <= FROM_UNIXTIME(?);"
 
 		_, err = db.Exec(query, currentTime)
 		if err != nil {
 			return
 		}
 
-		query = "SELECT MIN(timestamp) FROM orders;"
+		query = "SELECT MIN(UNIX_TIMESTAMP(timestamp)) FROM orders;"
 
 		results, err = db.Query(query)
 		if err != nil {
@@ -150,13 +150,13 @@ func clientUpdateLoop() {
 		// find the next update time to wait for
 		defer results.Close()
 		if results.Next() {
-			var nextTimestamp string
+			var nextTimestamp uint64
 
 			results.Scan(&nextTimestamp)
 
 			nextUpdateTime = nextTimestamp
 		} else {
-			nextUpdateTime = time.Now().UTC().Add(24 * time.Hour).Format(timeFormat)
+			nextUpdateTime = uint64(time.Now().UTC().Add(24 * time.Hour).Unix())
 		}
 	})
 

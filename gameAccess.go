@@ -185,7 +185,7 @@ func getGameState(db *sql.DB, token string, gameID uint32) (GameState, error) {
 	}
 
 	// select all orders that have already been sent or were sent by this user
-	query = "SELECT id, senderID, type, parameters, timestamp FROM orders CROSS JOIN sentOrders WHERE gameID = ? AND (timestamp <= NOW() OR senderID = ?);"
+	query = "SELECT id, senderID, type, parameters, UNIX_TIMESTAMP(timestamp) FROM orders CROSS JOIN sentOrders WHERE gameID = ? AND (timestamp <= NOW() OR senderID = ?);"
 
 	results, err = db.Query(query, gameID, userID)
 	if err != nil {
@@ -197,7 +197,7 @@ func getGameState(db *sql.DB, token string, gameID uint32) (GameState, error) {
 	for results.Next() {
 		var order Order
 
-		err = results.Scan(&order.ID, &order.SenderID, &order.Type, &order.ArgumentIDs)
+		err = results.Scan(&order.ID, &order.SenderID, &order.Type, &order.ArgumentIDs, &order.Timestamp)
 		if err != nil {
 			return response, err
 		}
@@ -406,11 +406,11 @@ func leaveGame(db *sql.DB, token string, gameID uint32) bool {
 
 // uploads a new or existing order to the game
 func uploadOrder(db *sql.DB, token string, order Order) (Order, error) {
-	if order.Timestamp < time.Now().UTC().Format(timeFormat) {
+	if order.Timestamp < uint64(time.Now().UTC().Unix()) {
 		return order, errors.New("Cannot send or update an order in the past")
 	}
 
-	nextUpdateTime = min(order.Timestamp, nextUpdateTime)
+	nextUpdateTime = minInt(order.Timestamp, nextUpdateTime)
 
 	id, err := getID(db, token)
 	if err != nil {
@@ -432,7 +432,7 @@ func uploadOrder(db *sql.DB, token string, order Order) (Order, error) {
 
 	results.Scan(&order.SenderID)
 
-	query = "REPLACE INTO orders (gameID, senderID, referenceID, type, parameters, timestamp) VALUES (?, ?, ?, ?, ?);"
+	query = "REPLACE INTO orders (gameID, senderID, referenceID, type, parameters, FROM_UNIXTIME(timestamp)) VALUES (?, ?, ?, ?, ?);"
 
 	res, err := db.Exec(query, order.GameID, order.SenderID, order.ReferenceID, order.Type, serialize(order.ArgumentIDs), order.Timestamp)
 	if err != nil {

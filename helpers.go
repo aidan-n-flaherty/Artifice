@@ -15,7 +15,15 @@ func min(a string, b string) string {
 	}
 }
 
-func serialize[T int | uint | uint32](arr []T) string {
+func minInt[T int | uint | uint32 | uint64](a T, b T) T {
+	if a < b {
+		return a
+	} else {
+		return b
+	}
+}
+
+func serialize[T int | uint | uint32 | uint64](arr []T) string {
 	str := ""
 
 	for i, elem := range arr {
