@@ -113,7 +113,7 @@ func userGames(db *sql.DB, token string, history bool) ([]GameDetails, error) {
 		return response, err
 	}
 
-	query := "SELECT id, hostID, lobbyName, password, playerCount, playerCap, ratingConstraints, activeTimes, weekdays, createdAt, startTime, simulationSpeed, version FROM games INNER JOIN participants ON participantID = ? AND gameID = id;"
+	query := "SELECT id, hostID, lobbyName, password, playerCount, playerCap, ratingConstraints, activeTimes, weekdays, UNIX_TIMESTAMP(createdAt), UNIX_TIMESTAMP(startTime), simulationSpeed, version FROM games INNER JOIN participants ON participantID = ? AND gameID = id;"
 
 	results, err := db.Query(query, userID)
 	if err != nil {

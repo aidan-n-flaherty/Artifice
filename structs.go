@@ -30,7 +30,7 @@ type GameSettings struct {
 	Password          string   `json:"password"`
 	PlayerCap         uint     `json:"playerCap"`
 	RatingConstraints []uint32 `json:"ratingConstraints"`
-	StartTime         string   `json:"startTime"`
+	StartTime         uint32   `json:"startTime"`
 	SimulationSpeed   float64  `json:"simulationSpeed"`
 	Weekdays          []string `json:"weekdays"`
 	ActiveTimes       []string `json:"activeTimes"`
