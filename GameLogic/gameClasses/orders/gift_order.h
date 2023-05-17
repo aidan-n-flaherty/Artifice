@@ -18,6 +18,8 @@ public:
     GiftOrder(){};
     GiftOrder(time_t timestamp, int senderID, int vesselID, int referenceID) :
         Order(timestamp, senderID, referenceID), vesselID(vesselID) {}
+    GiftOrder(int id, time_t timestamp, int senderID, int vesselID, int referenceID) :
+        Order(id, timestamp, senderID, referenceID), vesselID(vesselID) {}
 
     void adjustIDs(int createdID) override {
         if(vesselID >= createdID) vesselID++;

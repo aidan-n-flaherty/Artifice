@@ -107,6 +107,8 @@ public:
     void addSpecialist(Specialist* o);
     void addOrder(Order* o);
     void addEvent(Event* e);
+
+    std::shared_ptr<Game> processOrder(const std::string &type, int ID, int referenceID, long timestamp, int senderID, int argumentIDs[], int argCount);
     
     void removeVessel(std::shared_ptr<Vessel> v);
     void removeSpecialist(std::shared_ptr<Specialist> s);
@@ -119,7 +121,8 @@ public:
     time_t nextState(time_t timestamp);
     const std::shared_ptr<Event> nextAssociatedEvent(time_t timestamp, int id);
 
-    int getReferenceID();
+    int getReferenceID() { return referenceID; };
+    int getSimulatorID() { return simulatorID; };
 };
 
 #endif

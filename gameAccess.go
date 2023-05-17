@@ -63,7 +63,7 @@ func getGame(db *sql.DB, token string, gameID uint32) (GameDetails, error) {
 		return game, err
 	}
 
-	query := "SELECT id, hostID, lobbyName, password, playerCount, playerCap, ratingConstraints, activeTimes, createdAt, startTime, simulationSpeed, version FROM games WHERE id = ?;"
+	query := "SELECT id, hostID, lobbyName, password, playerCount, playerCap, ratingConstraints, activeTimes, weekdays, createdAt, startTime, simulationSpeed, version FROM games WHERE id = ?;"
 
 	results, err := db.Query(query, gameID)
 	if err != nil {
@@ -76,10 +76,18 @@ func getGame(db *sql.DB, token string, gameID uint32) (GameDetails, error) {
 		return game, errors.New("No game found.")
 	}
 
+	var ratingConstraints string
+	var activeTimes string
+	var weekdays string
 	err = results.Scan(&game.Data.ID, &game.Data.HostID, &game.Settings.LobbyName, &game.Settings.Password,
-		&game.Data.PlayerCount, &game.Settings.PlayerCap, &game.Settings.RatingConstraints,
-		&game.Settings.ActiveTimes, &game.Data.CreatedAt, &game.Settings.StartTime,
+		&game.Data.PlayerCount, &game.Settings.PlayerCap, &ratingConstraints,
+		&activeTimes, &weekdays, &game.Data.CreatedAt, &game.Settings.StartTime,
 		&game.Settings.SimulationSpeed, &game.Data.Version)
+
+	game.Settings.RatingConstraints = deserialize(ratingConstraints)
+	game.Settings.ActiveTimes = strings.Split(activeTimes, ",")
+	game.Settings.Weekdays = strings.Split(weekdays, ",")
+
 	if err != nil {
 		return game, err
 	}
@@ -105,7 +113,7 @@ func userGames(db *sql.DB, token string, history bool) ([]GameDetails, error) {
 		return response, err
 	}
 
-	query := "SELECT id, hostID, lobbyName, password, playerCount, playerCap, ratingConstraints, activeTimes, createdAt, startTime, simulationSpeed, version FROM games INNER JOIN participants ON participantID = ? AND gameID = id;"
+	query := "SELECT id, hostID, lobbyName, password, playerCount, playerCap, ratingConstraints, activeTimes, weekdays, createdAt, startTime, simulationSpeed, version FROM games INNER JOIN participants ON participantID = ? AND gameID = id;"
 
 	results, err := db.Query(query, userID)
 	if err != nil {
@@ -117,13 +125,20 @@ func userGames(db *sql.DB, token string, history bool) ([]GameDetails, error) {
 	for results.Next() {
 		var game GameDetails
 
+		var ratingConstraints string
+		var activeTimes string
+		var weekdays string
 		err = results.Scan(&game.Data.ID, &game.Data.HostID, &game.Settings.LobbyName,
 			&game.Settings.Password, &game.Data.PlayerCount, &game.Settings.PlayerCap,
-			&game.Settings.RatingConstraints, &game.Settings.ActiveTimes, &game.Data.CreatedAt,
+			&ratingConstraints, &activeTimes, &weekdays, &game.Data.CreatedAt,
 			&game.Settings.StartTime, &game.Settings.SimulationSpeed, &game.Data.Version)
 		if err != nil {
 			continue
 		}
+
+		game.Settings.RatingConstraints = deserialize(ratingConstraints)
+		game.Settings.ActiveTimes = strings.Split(activeTimes, ",")
+		game.Settings.Weekdays = strings.Split(weekdays, ",")
 
 		if game.Settings.Password != "" {
 			game.Data.HasPassword = true
@@ -148,7 +163,7 @@ func getGameState(db *sql.DB, token string, gameID uint32) (GameState, error) {
 		return response, err
 	}
 
-	query := "SELECT id, username, gamesWon, gamesLost, averageRank, rating, tier participantNumber FROM participants INNER JOIN users ON id = participantID WHERE gameID = ?;"
+	query := "SELECT id, username, gamesWon, gamesLost, averageRank, rating, tier, participantNumber FROM participants INNER JOIN users ON id = participantID WHERE gameID = ?;"
 
 	results, err := db.Query(query, gameID)
 	if err != nil {

@@ -20,6 +20,8 @@ public:
     PromoteOrder(){};
     PromoteOrder(time_t timestamp, int senderID, int specialistID, int referenceID) :
         Order(timestamp, senderID, referenceID), specialistID(specialistID) {}
+    PromoteOrder(int id, time_t timestamp, int senderID, int specialistID, int referenceID) :
+        Order(id, timestamp, senderID, referenceID), specialistID(specialistID) {}
 
     std::shared_ptr<Event> convert(Game* game) override {
         if(!game->hasPlayer(getSenderID())) return nullptr;

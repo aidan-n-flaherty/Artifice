@@ -19,6 +19,8 @@ public:
     RerouteOrder(){};
     RerouteOrder(time_t timestamp, int senderID, int vesselID, int targetID, int referenceID) :
         Order(timestamp, senderID, referenceID), vesselID(vesselID), targetID(targetID) {}
+    RerouteOrder(int id, time_t timestamp, int senderID, int vesselID, int targetID, int referenceID) :
+        Order(id, timestamp, senderID, referenceID), vesselID(vesselID), targetID(targetID) {}
 
     void adjustIDs(int createdID) override {
         if(vesselID >= createdID) vesselID++;

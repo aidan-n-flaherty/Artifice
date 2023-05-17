@@ -8,6 +8,11 @@
 #include "game.h"
 #include "gameObjects/vessel.h"
 #include "order.h"
+#include "orders/send_order.h"
+#include "orders/gift_order.h"
+#include "orders/hire_order.h"
+#include "orders/reroute_order.h"
+#include "orders/promote_order.h"
 #include "helpers/point.h"
 #include "events/send_event.h"
 #include "events/reroute_event.h"
@@ -324,8 +329,44 @@ const std::shared_ptr<Event> Game::nextAssociatedEvent(time_t timestamp, int id)
     return nullptr;
 }
 
-int Game::getReferenceID() {
-    return referenceID;
+std::shared_ptr<Game> Game::processOrder(const std::string &type, int ID, int referenceID, long timestamp, int senderID, int arguments[], int argCount) {
+    time_t time = timestamp;
+
+    std::list<int> argumentIDs;
+    for(int i = 0; i < argCount; i++) argumentIDs.push_back(arguments[i]);
+
+    std::shared_ptr<Game> game = lastState(timestamp);
+
+    if(type == "SEND" && argumentIDs.size() >= 3) {
+        int numUnits = argumentIDs.front();
+        argumentIDs.pop_front();
+        int originID = argumentIDs.front();
+        argumentIDs.pop_front();
+        int targetID = argumentIDs.front();
+        game->addOrder(new SendOrder(ID, time, senderID, numUnits, argumentIDs, originID, targetID, referenceID));
+    } else if(type == "HIRE" && argumentIDs.size() >= 1) {
+        int specialistID = argumentIDs.front();
+        argumentIDs.pop_front();
+        game->addOrder(new HireOrder(ID, time, senderID, specialistID, referenceID));
+    } else if(type == "GIFT" && argumentIDs.size() >= 1) {
+        int vesselID = argumentIDs.front();
+        argumentIDs.pop_front();
+        game->addOrder(new GiftOrder(ID, time, senderID, vesselID, referenceID));
+    } else if(type == "PROMOTE" && argumentIDs.size() >= 1) {
+        int specialistID = argumentIDs.front();
+        argumentIDs.pop_front();
+        game->addOrder(new PromoteOrder(ID, time, senderID, specialistID, referenceID));
+    } else if(type == "REROUTE" && argumentIDs.size() >= 2) {
+        int vesselID = argumentIDs.front();
+        argumentIDs.pop_front();
+        int targetID = argumentIDs.front();
+        argumentIDs.pop_front();
+        game->addOrder(new RerouteOrder(ID, time, senderID, vesselID, targetID, referenceID));
+    } else {
+        std::cout << "Unknown order type" << std::endl;
+    }
+
+    return game;
 }
 
 void Game::addPlayer(Player* p) {

@@ -18,6 +18,8 @@ public:
     HireOrder(){};
     HireOrder(time_t timestamp, int senderID, int specialistTypeID, int referenceID) :
         Order(timestamp, senderID, referenceID), specialistTypeID(specialistTypeID) {}
+    HireOrder(int id, time_t timestamp, int senderID, int specialistTypeID, int referenceID) :
+        Order(id, timestamp, senderID, referenceID), specialistTypeID(specialistTypeID) {}
 
     std::shared_ptr<Event> convert(Game* game) override {
         if(!game->hasPlayer(getSenderID())) return nullptr;
