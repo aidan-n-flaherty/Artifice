@@ -49,7 +49,7 @@ type GameState struct {
 type Order struct {
 	ID          uint32   `json:"id"`
 	SenderID    uint32   `json:"senderID"`
-	ReferenceID uint32   `json:"referenceID"`
+	ReferenceID int32    `json:"referenceID"`
 	Type        string   `json:"type"`
 	ArgumentIDs []uint32 `json:"argumentIDs"`
 	Timestamp   uint64   `json:"timestamp"`
