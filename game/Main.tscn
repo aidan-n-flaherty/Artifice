@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://clnrcxnm4vlul"]
+
+[ext_resource type="Script" path="res://Main.gd" id="1_8rua5"]
+[ext_resource type="PackedScene" uid="uid://byq6mjwxv3tt" path="res://MainMenu.tscn" id="2_lddey"]
+
+[node name="Main" type="Node2D"]
+script = ExtResource("1_8rua5")
+
+[node name="MainMenu" parent="." instance=ExtResource("2_lddey")]
+anchors_preset = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_right = 1080.0
+offset_bottom = 1920.0
+grow_horizontal = 1
+grow_vertical = 1

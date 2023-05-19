@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3 uid="uid://t7xhfw3yqw8n"]
+
+[ext_resource type="PackedScene" uid="uid://44oxio5mi3yi" path="res://GameList.tscn" id="1_ffgsx"]
+[ext_resource type="Script" path="res://CurrentGameList.gd" id="2_4sr2a"]
+
+[node name="CurrentGameList" instance=ExtResource("1_ffgsx")]
+anchors_preset = 15
+script = ExtResource("2_4sr2a")
+GameButton = null

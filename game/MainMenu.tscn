@@ -1,0 +1,87 @@
+[gd_scene load_steps=3 format=3 uid="uid://byq6mjwxv3tt"]
+
+[ext_resource type="Script" path="res://MainMenu.gd" id="1_jslh6"]
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_gxotn"]
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("1_jslh6")
+playScreen = "res://CurrentGameList.tscn"
+searchScreen = "res://OpenGameList.tscn"
+historyScreen = "res://PastGameList.tscn"
+settingsScreen = "res://GameMenu.tscn"
+createScreen = "res://GameCreator.tscn"
+
+[node name="Content" type="Control" parent="."]
+anchors_preset = 0
+offset_right = 1080.0
+offset_bottom = 1920.0
+
+[node name="VSplitContainer" type="VSplitContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="Spacer" type="Control" parent="VSplitContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VSplitContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.1
+
+[node name="Play" type="Button" parent="VSplitContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+toggle_mode = true
+button_group = SubResource("ButtonGroup_gxotn")
+text = "Play"
+
+[node name="Search" type="Button" parent="VSplitContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+button_group = SubResource("ButtonGroup_gxotn")
+text = "Search"
+
+[node name="Create" type="Button" parent="VSplitContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+button_group = SubResource("ButtonGroup_gxotn")
+text = "Create"
+
+[node name="History" type="Button" parent="VSplitContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+toggle_mode = true
+button_group = SubResource("ButtonGroup_gxotn")
+text = "History"
+
+[node name="Settings" type="Button" parent="VSplitContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+toggle_mode = true
+button_group = SubResource("ButtonGroup_gxotn")
+text = "Settings"
+
+[connection signal="pressed" from="VSplitContainer/HBoxContainer/Play" to="." method="_on_play_pressed"]
+[connection signal="pressed" from="VSplitContainer/HBoxContainer/Search" to="." method="_on_search_pressed"]
+[connection signal="pressed" from="VSplitContainer/HBoxContainer/Create" to="." method="_on_create_pressed"]
+[connection signal="pressed" from="VSplitContainer/HBoxContainer/History" to="." method="_on_history_pressed"]
+[connection signal="pressed" from="VSplitContainer/HBoxContainer/Settings" to="." method="_on_settings_pressed"]

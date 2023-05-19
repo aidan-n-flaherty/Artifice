@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://b16kytc1dy61a"]
+
+[ext_resource type="PackedScene" uid="uid://d4ii5no4bmuk" path="res://resources/City.glb" id="1_s5le8"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_bgwis"]
+size = Vector3(2, 8, 2)
+
+[node name="CityMesh" type="Area3D"]
+
+[node name="City" parent="." instance=ExtResource("1_s5le8")]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 0)
+shape = SubResource("BoxShape3D_bgwis")

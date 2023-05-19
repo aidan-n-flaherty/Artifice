@@ -1,0 +1,9 @@
+[configuration]
+
+entry_symbol = "gamelogic_library_init"
+
+[libraries]
+
+linux.64="res://bin/libgdgamelogic.linux.64.so"
+windows.x86_64="res://bin/libgdgamelogic.windows.x86_64.dll"
+macos="res://bin/libgdgamelogic.macos.template_debug.framework"

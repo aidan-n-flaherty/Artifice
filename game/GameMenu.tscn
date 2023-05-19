@@ -1,0 +1,57 @@
+[gd_scene load_steps=3 format=3 uid="uid://1uo32prj4rnw"]
+
+[ext_resource type="Script" path="res://GameMenu.gd" id="1_xaoyy"]
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_60jl3"]
+
+[node name="GameMenu" type="MarginContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/margin_left = 150
+theme_override_constants/margin_top = 150
+theme_override_constants/margin_right = 150
+theme_override_constants/margin_bottom = 150
+script = ExtResource("1_xaoyy")
+MenuScreen = "res://MainMenu.tscn"
+OpenGameList = "res://OpenGameList.tscn"
+
+[node name="VBoxOuter" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Back" type="Button" parent="VBoxOuter"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Back"
+
+[node name="VBoxInner" type="VBoxContainer" parent="VBoxOuter"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxOuter/VBoxInner"]
+layout_mode = 2
+
+[node name="Progress" type="Button" parent="VBoxOuter/VBoxInner/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+button_group = SubResource("ButtonGroup_60jl3")
+text = "Games in Progress"
+
+[node name="Open" type="Button" parent="VBoxOuter/VBoxInner/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+button_pressed = true
+button_group = SubResource("ButtonGroup_60jl3")
+text = "Open Games"
+
+[node name="Content" type="Control" parent="VBoxOuter/VBoxInner"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[connection signal="pressed" from="VBoxOuter/Back" to="." method="_on_back_pressed"]
+[connection signal="pressed" from="VBoxOuter/VBoxInner/HBoxContainer/Progress" to="." method="_on_progress_pressed"]
+[connection signal="pressed" from="VBoxOuter/VBoxInner/HBoxContainer/Open" to="." method="_on_open_pressed"]

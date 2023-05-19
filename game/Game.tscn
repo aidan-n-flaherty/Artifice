@@ -1,0 +1,95 @@
+[gd_scene load_steps=5 format=3 uid="uid://77a7ri5anqje"]
+
+[ext_resource type="Script" path="res://Game.gd" id="1_s53r2"]
+[ext_resource type="Script" path="res://CameraPivot.gd" id="2_t2ckv"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_ol6jw"]
+size = Vector2(10, 10)
+
+[sub_resource type="BoxMesh" id="BoxMesh_3bhja"]
+
+[node name="Game" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+mouse_filter = 1
+script = ExtResource("1_s53r2")
+
+[node name="Viewport" type="Node3D" parent="."]
+visible = false
+
+[node name="Floor" type="MeshInstance3D" parent="Viewport"]
+transform = Transform3D(1000, 0, 0, 0, 1000, 0, 0, 0, 1000, 0, 0, 0)
+mesh = SubResource("PlaneMesh_ol6jw")
+skeleton = NodePath("../..")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Viewport"]
+transform = Transform3D(0.727054, -0.4974, -0.473271, 0.68658, 0.526722, 0.50117, 0, -0.689316, 0.724461, 0, 1.63363, 0)
+
+[node name="CameraPivot" type="Marker3D" parent="Viewport"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 1000, -1000)
+script = ExtResource("2_t2ckv")
+
+[node name="Camera3D" type="Camera3D" parent="Viewport/CameraPivot"]
+transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 0, 0)
+projection = 1
+size = 100.0
+near = 0.005
+far = 10000.0
+
+[node name="Box" type="MeshInstance3D" parent="Viewport"]
+transform = Transform3D(0.640552, 0.683955, 0.349139, -0.767915, 0.570518, 0.291233, 0, -0.454659, 0.890666, 2.77783, 8.09643, 1.42934)
+mesh = SubResource("BoxMesh_3bhja")
+skeleton = NodePath("../..")
+
+[node name="Chat" type="MarginContainer" parent="."]
+visible = false
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="TabView" type="Control" parent="."]
+anchors_preset = 0
+offset_right = 1080.0
+offset_bottom = 1920.0
+mouse_filter = 1
+
+[node name="VSplitContainer" type="VSplitContainer" parent="TabView"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="Spacer" type="Control" parent="TabView/VSplitContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="TabView/VSplitContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.1
+
+[node name="Game" type="Button" parent="TabView/VSplitContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Game"
+
+[node name="Chat" type="Button" parent="TabView/VSplitContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Chat"
+
+[node name="Production" type="Button" parent="TabView/VSplitContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Production"
+
+[node name="Logs" type="Button" parent="TabView/VSplitContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Logs"
+
+[connection signal="pressed" from="TabView/VSplitContainer/HBoxContainer/Game" to="." method="_on_game_pressed"]
+[connection signal="pressed" from="TabView/VSplitContainer/HBoxContainer/Chat" to="." method="_on_chat_pressed"]
+[connection signal="pressed" from="TabView/VSplitContainer/HBoxContainer/Production" to="." method="_on_production_pressed"]
+[connection signal="pressed" from="TabView/VSplitContainer/HBoxContainer/Logs" to="." method="_on_logs_pressed"]
