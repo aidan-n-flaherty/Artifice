@@ -4,6 +4,7 @@
 #include "game_interface.h"
 #include "vessel_node.h"
 #include "outpost_node.h"
+#include "floor_display.h"
 
 #include <gdextension_interface.h>
 #include <godot_cpp/core/defs.hpp>
@@ -18,10 +19,11 @@ void initialize_gamelogic_module(ModuleInitializationLevel p_level) {
     }
 
     ClassDB::register_class<GDExample>();
-		ClassDB::register_class<GameInterface>();
-		ClassDB::register_class<PositionalNode>();
-		ClassDB::register_class<VesselNode>();
-		ClassDB::register_class<OutpostNode>();
+    ClassDB::register_class<GameInterface>();
+    ClassDB::register_class<FloorDisplay>();
+    ClassDB::register_class<PositionalNode>();
+    ClassDB::register_class<VesselNode>();
+    ClassDB::register_class<OutpostNode>();
 }
 
 void uninitialize_gamelogic_module(ModuleInitializationLevel p_level) {

@@ -61,6 +61,7 @@ func _deferred_goto_node(node) -> void:
 func viewGame(id):
 	if(!games.has(id)):
 		games[id] = GameInterface.new()
+		games[id].init(self.id)
 	
 	var node = Game.instantiate()
 	node.gameID = id
@@ -75,7 +76,7 @@ func viewGameDetails(id):
 	goto_node(node)
 	
 func login():
-	id = 3
+	id = 654321
 	token = 5577006791947779410
 	
 func loadGames():

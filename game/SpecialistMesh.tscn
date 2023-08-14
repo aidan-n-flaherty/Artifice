@@ -1,0 +1,52 @@
+[gd_scene load_steps=5 format=3 uid="uid://820462udup0w"]
+
+[ext_resource type="Script" path="res://SpecialistMesh.gd" id="1_ka51b"]
+[ext_resource type="Texture2D" uid="uid://c1f04o6gimvxl" path="res://resources/images/whiteCircle.png" id="2_puof1"]
+[ext_resource type="Texture2D" uid="uid://b01ch1xp0y68k" path="res://resources/specialistIcons/Smuggler.png" id="3_wml8q"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hwfx3"]
+
+[node name="SpecialistMesh" type="Node3D"]
+script = ExtResource("1_ka51b")
+
+[node name="Area2D" type="Area2D" parent="."]
+scale = Vector2(0.2, 0.2)
+
+[node name="Background" type="TextureRect" parent="Area2D"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -130.0
+offset_top = -130.0
+offset_right = 130.0
+offset_bottom = 130.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("2_puof1")
+expand_mode = 1
+
+[node name="Texture" type="TextureRect" parent="Area2D"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -115.0
+offset_top = -115.0
+offset_right = 115.0
+offset_bottom = 115.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("3_wml8q")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+scale = Vector2(13, 13)
+shape = SubResource("RectangleShape2D_hwfx3")
+
+[connection signal="input_event" from="Area2D" to="." method="_on_area_2d_input_event"]

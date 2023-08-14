@@ -13,7 +13,7 @@ private:
     PositionalObject* target;
 public:
     RerouteEvent(){};
-    RerouteEvent(time_t timestamp, Vessel* vessel, PositionalObject* target) :
+    RerouteEvent(double timestamp, Vessel* vessel, PositionalObject* target) :
         Event(timestamp), vessel(vessel), target(target) {}
     
     Event* copy() override { return new RerouteEvent(*this); }
@@ -26,8 +26,9 @@ public:
         target = game->getPosObject(target->getID());
     }
 
-    void run(Game* game) const override {
+    void run(Game* game) override {
         vessel->setTarget(target);
+        vessel->setOrigin(nullptr);
     }
 };
 

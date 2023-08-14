@@ -88,7 +88,7 @@ std::list<Outpost*> Player::sortedOutposts(PositionalObject* obj) {
     return outposts;
 }
 
-void Player::projectedVictory(Player* player, time_t timestamp, std::multiset<Event*, EventOrder> &events) {
+void Player::projectedVictory(Player* player, double timestamp, std::multiset<Event*, EventOrder> &events) {
     if(resourceProductionSpeed() > 0) {
         int diff = ceil((GameSettings::resourcesToWin - (getResources() + fractionalProduction)) / resourceProductionSpeed());
         events.insert(new WinConditionEvent(timestamp + diff, player));

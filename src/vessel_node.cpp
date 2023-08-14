@@ -17,26 +17,19 @@
 
 using namespace godot;
 
-VesselNode::VesselNode(Vessel* vessel, time_t referenceTime) : PositionalNode("res://AirshipMesh.tscn", vessel, referenceTime), vessel(vessel) {
+VesselNode::VesselNode(Vessel* vessel) : PositionalNode("res://AirshipMesh.tscn", vessel), vessel(vessel) {
 	double angle = atan2(vessel->getTargetPos().getY() - vessel->getPosition().getY(), vessel->getTargetPos().getX() - vessel->getPosition().getX());
 	
-	rotate_y(-angle);
+	for(int i = 0; i < get_child_count(); i++) {
+		Node3D* n = cast_to<Node3D>(get_child(i));
+		if(n) n->set_rotation(Vector3(0, -angle, 0));
+	}
 }
 
 void VesselNode::_process(double delta) {	
-		PositionalNode::_process(delta);
+	PositionalNode::_process(delta);
 		
-		if(vessel == nullptr) return;
+	if(vessel == nullptr) return;
 		
-		time_t current;
-		time(&current);
-		
-		auto now = std::chrono::system_clock::now();
-		auto seconds = std::chrono::time_point_cast<std::chrono::seconds>(now);
-		auto fraction = std::chrono::duration_cast<std::chrono::milliseconds>(now - seconds).count()/1000.0;
-		time_t cnow = std::chrono::system_clock::to_time_t(now);
-
-		double timeDiff = difftime(cnow, getReferenceTime()) + fraction;
-		
-    set_position(Vector3(vessel->getPositionAt(timeDiff).getX(), 10, vessel->getPositionAt(timeDiff).getY()));
+    set_position(Vector3(vessel->getPositionAt(getDiff()).getX(), 10 + (1.0 / (0.001 + getTimePassed() * getTimePassed())), vessel->getPositionAt(getDiff()).getY()));
 }

@@ -8,8 +8,9 @@
 #include "../gameObjects/vessel.h"
 #include "../event.h"
 #include "../game.h"
+#include "battle_event.h"
 
-class IntervesselEvent : public Event
+class IntervesselEvent : public BattleEvent
 {
 private:
     Vessel* vesselA;
@@ -17,20 +18,20 @@ private:
 
 public:
     IntervesselEvent(){};
-    IntervesselEvent(time_t timestamp, Vessel* vesselA, Vessel* vesselB) :
-        Event(timestamp), vesselA(vesselA), vesselB(vesselB) {}
+    IntervesselEvent(double timestamp, Vessel* vesselA, Vessel* vesselB) :
+        BattleEvent(timestamp, vesselA, vesselB), vesselA(vesselA), vesselB(vesselB) {}
 
     Event* copy() override { return new IntervesselEvent(*this); }
 
     void updatePointers(Game *game) override {
-        Event::updatePointers(game);
+        BattleEvent::updatePointers(game);
         vesselA = game->getVessel(vesselA->getID());
         vesselB = game->getVessel(vesselB->getID());
     }
 
-    bool referencesObject(int id) const override { return vesselA->getID() == id || vesselB->getID() == id; }
+    void run(Game* game) override {
+        BattleEvent::run(game);
 
-    void run(Game* game) const override {
         std::cout << "Vessel-Vessel combat: " << game->getTime() << ", " << (vesselA->hasOwner() ? vesselA->getOwner()->getName() : "none") << ", " << (vesselB->hasOwner() ? vesselB->getOwner()->getName() : "none") << std::endl;
 
         if(vesselA->isGift() && vesselB->isGift()) {
@@ -46,49 +47,35 @@ public:
             game->removeVessel(vesselB);
         } else {
             // start with specialist phase
-            int originalUnitsA = vesselA->getUnits(), originalUnitsB = vesselB->getUnits();
-            int unitsA = vesselA->getUnits(), unitsB = vesselB->getUnits();
-
-            vesselA->specialistPhase(unitsA, unitsB, vesselB);
-            vesselB->specialistPhase(unitsB, unitsA, vesselA);
-            unitsA = vesselA->setUnits(unitsA);
-            unitsB = vesselB->setUnits(unitsB);
-
-            vesselA->postSpecialistPhase(unitsA, unitsB, vesselB);
-            vesselB->postSpecialistPhase(unitsB, unitsA, vesselA);
-            unitsA = vesselA->setUnits(unitsA);
-            unitsB = vesselB->setUnits(unitsB);
+            specialistPhase(game);
+            postSpecialistPhase(game);
 
             // remove units until one vessel has nothing left
-            int val = std::min(unitsA, unitsB);
+            int val = std::min(vesselA->getUnits(), vesselB->getUnits());
 
-            unitsA -= vesselA->removeUnits(val);
-            unitsB -= vesselB->removeUnits(val);
+            vesselA->removeUnits(val);
+            vesselB->removeUnits(val);
 
-            std::cout << unitsA << ", " << unitsB << " at ";
-            std::cout << "(" << vesselA->getPosition().getX() << ", " << vesselA->getPosition().getY() << ")" << std::endl;
-
-            bool vesselAWins = (unitsB < unitsA) || (unitsB == unitsA && vesselB->getSpecialists().size() < vesselA->getSpecialists().size());
-            bool tie = unitsA == unitsB && vesselB->getSpecialists().size() == vesselA->getSpecialists().size();
+            bool vesselAWins = (vesselB->getUnits() < vesselA->getUnits()) || (vesselA->getUnits() == vesselB->getUnits() && vesselB->getSpecialists().size() < vesselA->getSpecialists().size());
+            bool tie = vesselA->getUnits() == vesselB->getUnits() && vesselB->getSpecialists().size() == vesselA->getSpecialists().size();
 
             if(tie) {
-                vesselA->postCombatSpecialistPhase(game, vesselB);
-                vesselB->postCombatSpecialistPhase(game, vesselA);
+                postCombatSpecialistPhase(game);
 
                 // in an event of a tie, both subs are sent back
-                vesselA->returnHome();
-                vesselB->returnHome();
+                if(!vesselA->getSpecialists().empty()) vesselA->returnHome();
+                else game->removeVessel(vesselA);
+
+                if(!vesselB->getSpecialists().empty()) vesselB->returnHome();
+                else game->removeVessel(vesselB);
             } else {
                 Vessel* winner = vesselAWins ? vesselA : vesselB;
                 Vessel* loser = vesselAWins ? vesselB : vesselA; 
-                int winnerDelta = vesselAWins ? originalUnitsA - unitsA : originalUnitsB - unitsB;
-                int loserDelta = !vesselAWins ? originalUnitsA - unitsA : originalUnitsB - unitsB;
+                setVictor(winner->getOwnerID());
 
-                loser->defeatSpecialistPhase(loserDelta, winnerDelta, winner);
-                winner->victorySpecialistPhase(winnerDelta, loserDelta, loser);
-
-                vesselA->postCombatSpecialistPhase(game, vesselB);
-                vesselB->postCombatSpecialistPhase(game, vesselA);
+                defeatSpecialistPhase(game);
+                victorySpecialistPhase(game);
+                postCombatSpecialistPhase(game);
 
                 Player* vesselAOwner = vesselA->getOwner();
                 Player* vesselBOwner = vesselB->getOwner();

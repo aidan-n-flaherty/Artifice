@@ -4,10 +4,11 @@
 #include <cstdlib>
 #include <cmath>
 #include <list>
+#include <string>
 #include "../game_object.h"
 #include "../possessable.h"
 
-enum class SpecialistType {
+enum SpecialistType {
     QUEEN,
     PRINCESS,
     PIRATE,
@@ -67,6 +68,40 @@ public:
     virtual void setOwner(Player* player) override;
 
     void setContainer(PositionalObject* o) { container = o; }
+
+    std::string typeAsString() {
+        return (const std::string[]) {
+            "Queen",
+            "Princess",
+            "Pirate",
+            "Admiral",
+            "Navigator",
+            "Assassin",
+            "Infiltrator",
+            "Lieutenant",
+            "Thief",
+            "DoubleAgent",
+            "Inspector",
+            "Martyr",
+            "ReveredElder",
+            "Saboteur",
+            "Sentry",
+            "Smuggler",
+            "Diplomat",
+            "Foreman",
+            "Helmsman",
+            "Hypnotist",
+            "IntelligenceOfficer",
+            "Tinkerer",
+            "Engineer",
+            "General",
+            "King",
+            "MinisterOfEnergy",
+            "SecurityChief",
+            "Tycoon",
+            "WarHero"
+        }[type];
+    }
 };
 
 #endif

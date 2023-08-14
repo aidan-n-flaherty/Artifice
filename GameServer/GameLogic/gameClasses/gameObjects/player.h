@@ -9,7 +9,7 @@
 #include "../game_object.h"
 #include "../event.h"
 
-enum class SpecialistType;
+enum SpecialistType;
 
 class Game;
 
@@ -31,7 +31,7 @@ private:
     std::string name;
 
     bool defeated;
-    time_t defeatedTime;
+    double defeatedTime;
 
     std::list<Specialist*> specialists;
     std::list<Outpost*> outposts;
@@ -61,11 +61,11 @@ public:
     double resourceProductionSpeed() const;
 
     bool hasLost() const { return defeated; }
-    time_t getDefeatedTime() const { return defeatedTime; }
+    double getDefeatedTime() const { return defeatedTime; }
 
     void setDefeated(Game* game);
 
-    void projectedVictory(Player* player, time_t timestamp, std::multiset<Event*, EventOrder> &events);
+    void projectedVictory(Player* player, double timestamp, std::multiset<Event*, EventOrder> &events);
 
     int specialistCount(SpecialistType t) const;
     bool controlsSpecialist(SpecialistType t) const;

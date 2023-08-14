@@ -14,7 +14,7 @@ class OutpostRangeEvent : public Event
 {
 public:
     OutpostRangeEvent(){};
-    OutpostRangeEvent(time_t timestamp) : Event(timestamp) {}
+    OutpostRangeEvent(double timestamp) : Event(timestamp) {}
 
     Event* copy() override { return new OutpostRangeEvent(*this); }
 
@@ -22,7 +22,7 @@ public:
         Event::updatePointers(game);
     }
 
-    void run(Game* game) const override {
+    void run(Game* game) override {
         // sentries will sequentially target vessels with highest units
         for(auto itA = game->getOutposts().begin(); itA != game->getOutposts().end(); itA++) {
             Outpost* outpost = itA->second;

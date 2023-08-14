@@ -4,6 +4,5 @@
 [ext_resource type="Script" path="res://OpenGameList.gd" id="1_j6ila"]
 
 [node name="OpenGameList" instance=ExtResource("1_4qlik")]
-anchors_preset = 15
 script = ExtResource("1_j6ila")
 GameButton = null

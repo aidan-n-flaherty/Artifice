@@ -14,17 +14,24 @@ class OutpostNode : public PositionalNode {
 private:
 	Outpost* outpost;
 
+protected:
+	static void _bind_methods();
+
 public:
-    OutpostNode(Outpost* outpost, time_t referenceTime);
-		OutpostNode() {};
-    ~OutpostNode() {};
+    OutpostNode(Outpost* outpost);
+	OutpostNode() {}
+    ~OutpostNode() {}
 
     void _process(double delta) override;
 		
-		void setReference(Outpost* outpost, time_t referenceTime) {
-			PositionalNode::setReference(outpost, referenceTime);
-			this->outpost = outpost;
-		}
+	void setReference(Outpost* outpost) {
+		PositionalNode::setReference(outpost);
+		this->outpost = outpost;
+	}
+
+	Outpost* getOutpost(){ return outpost; }
+
+	int getShield() { return outpost != nullptr ? outpost->getShieldAt(getDiff()) : 0; }
 };
 
 }

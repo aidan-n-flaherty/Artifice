@@ -16,16 +16,25 @@ private:
 	Vessel* vessel;
 	
 public:
-    VesselNode(Vessel* vessel, time_t referenceTime);
-		VesselNode() {};
-    ~VesselNode() {};
+    VesselNode(Vessel* vessel);
+	VesselNode() {}
+    ~VesselNode() {}
 
     void _process(double delta) override;
 		
-		void setReference(Vessel* vessel, time_t referenceTime) {
-			PositionalNode::setReference(vessel, referenceTime);
-			this->vessel = vessel;
+	void setReference(Vessel* vessel) {
+		PositionalNode::setReference(vessel);
+		this->vessel = vessel;
+
+		double angle = atan2(vessel->getTargetPos().getY() - vessel->getPosition().getY(), vessel->getTargetPos().getX() - vessel->getPosition().getX());
+		
+		for(int i = 0; i < get_child_count(); i++) {
+			Node3D* n = cast_to<Node3D>(get_child(i));
+			if(n) n->set_rotation(Vector3(0, -angle, 0));
 		}
+	}
+
+	Vessel* getVessel() { return vessel; }
 };
 
 }

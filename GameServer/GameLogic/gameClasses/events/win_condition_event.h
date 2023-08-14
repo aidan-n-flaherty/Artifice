@@ -18,7 +18,7 @@ private:
 
 public:
     WinConditionEvent(){};
-    WinConditionEvent(time_t timestamp, Player* player) : Event(timestamp), player(player) {}
+    WinConditionEvent(double timestamp, Player* player) : Event(timestamp), player(player) {}
     
     Event* copy() override { return new WinConditionEvent(*this); }
 
@@ -29,7 +29,7 @@ public:
         player = game->getPlayer(player->getID());
     }
 
-    void run(Game* game) const override {
+    void run(Game* game) override {
         if(game->hasEnded()) game->endGame();
     }
 };

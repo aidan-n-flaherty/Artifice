@@ -11,17 +11,17 @@
 
 using namespace godot;
 
-OutpostNode::OutpostNode(Outpost* outpost, time_t referenceTime) : PositionalNode("res://CityMesh.tscn", outpost, referenceTime), outpost(outpost) {
+void OutpostNode::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("getShield"), &OutpostNode::getShield);
+}
+
+OutpostNode::OutpostNode(Outpost* outpost) : PositionalNode("res://CityMesh.tscn", outpost), outpost(outpost) {
 	
 }
 
 void OutpostNode::_process(double delta) {
-		PositionalNode::_process(delta);
-		if(outpost == nullptr) return;
-	
-		time_t current;
-		time(&current);
+	PositionalNode::_process(delta);
+	if(outpost == nullptr) return;
 		
-		double timeDiff = difftime(current, getReferenceTime());
-    set_position(Vector3(outpost->getPositionAt(timeDiff).getX(), 0, outpost->getPositionAt(timeDiff).getY()));
+    set_position(Vector3(outpost->getPositionAt(getDiff()).getX(), 0, outpost->getPositionAt(getDiff()).getY()));
 }

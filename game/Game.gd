@@ -5,14 +5,24 @@ var game
 
 var viewing
 
+var startTime
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	game = GameData.getGame(gameID)
 	game.connect("addOrder", addOrder)
 	
-	get_node("Viewport").add_child(game)
+	startTime = int(Time.get_unix_time_from_system())
 	
-	viewing = get_node("Viewport")
+	$Viewport/Viewport3D.add_child(game)
+	$Viewport/VSplitContainer/VBoxContainer/Timeline.game = game
+	$Viewport/Viewport3D/CameraPivot.game = game
+	$Viewport/Viewport3D/CameraPivot/FloorDisplay.add_child(game.getFloorDisplay())
+
+	viewing = $Viewport
+	viewing.show()
+	for child in viewing.get_children():
+		child.show()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -20,22 +30,29 @@ func _process(delta):
 
 func setView(node):
 	viewing.hide()
+	for child in viewing.get_children():
+		child.hide()
+		
 	viewing = node
+	
 	viewing.show()
+	for child in viewing.get_children():
+		child.show()
 
 func _on_game_pressed():
-	setView(get_node("Viewport"))
+	setView($Viewport)
 
 func _on_chat_pressed():
-	setView(get_node("Chat"))
+	setView($Chat)
 
 func _on_production_pressed():
-	setView(get_node("Viewport"))
+	setView($Viewport)
 
 func _on_logs_pressed():
-	setView(get_node("Viewport"))
+	setView($Viewport)
 	
 func addOrder(type, referenceID, timestamp, arguments):
+	print(timestamp + 2 - int(Time.get_unix_time_from_system()))
 	var order = await HTTPManager.putReq("/updateOrder", {
 		"type": type,
 		"referenceID": referenceID,
@@ -50,3 +67,7 @@ func addOrder(type, referenceID, timestamp, arguments):
 	game.addOrder(order.type, int(order.id), int(order.referenceID), int(order.timestamp), int(order.senderID), PackedInt32Array(order.argumentIDs), int(order.argumentIDs.size()))
 	
 	print("Order registered")
+
+
+func _on_percent_bar_value_changed(value):
+	game.setPercent(value);

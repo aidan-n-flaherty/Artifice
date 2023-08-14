@@ -15,7 +15,7 @@ private:
 
 public:
     GiftEvent(){};
-    GiftEvent(time_t timestamp, Vessel* vessel) : Event(timestamp), vessel(vessel) {}
+    GiftEvent(double timestamp, Vessel* vessel) : Event(timestamp), vessel(vessel) {}
     
     Event* copy() override { return new GiftEvent(*this); }
 
@@ -24,7 +24,7 @@ public:
         vessel = game->getVessel(vessel->getID());
     }
 
-    void run(Game* game) const override {
+    void run(Game* game) override {
         vessel->setGift();
     }
 };

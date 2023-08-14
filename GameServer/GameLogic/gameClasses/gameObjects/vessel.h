@@ -33,14 +33,15 @@ public:
         returnOutpost(origin), target(target), gift(false) { setOwner(owner); }
     void updatePointers(Game* game) override;
 
-    void collision(Vessel* vessel, Vessel* other, time_t timestamp, std::multiset<Event*, EventOrder> &events);
-    void collision(Vessel* vessel, Outpost* other, time_t timestamp, std::multiset<Event*, EventOrder> &events);
+    void collision(Vessel* vessel, Vessel* other, double timestamp, std::multiset<Event*, EventOrder> &events);
+    void collision(Vessel* vessel, Outpost* other, double timestamp, std::multiset<Event*, EventOrder> &events);
 
     void specialistPhase(int& units, int& otherUnits, Vessel* other);
     void specialistPhase(int& units, int& otherUnits, Outpost* other);
 
     Outpost* getOrigin() const { return origin; }
-    int getOriginID() const { return origin->getID(); }
+    int getOriginID() const { return origin != nullptr ? origin->getID() : -1; }
+    void setOrigin(Outpost* origin) { this->origin = origin; };
 
     double getSpeed() const override;
 

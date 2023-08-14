@@ -18,9 +18,9 @@ private:
 
 public:
     PromoteOrder(){};
-    PromoteOrder(time_t timestamp, int senderID, int specialistID, int referenceID) :
+    PromoteOrder(double timestamp, int senderID, int specialistID, int referenceID) :
         Order(timestamp, senderID, referenceID), specialistID(specialistID) {}
-    PromoteOrder(int id, time_t timestamp, int senderID, int specialistID, int referenceID) :
+    PromoteOrder(int id, double timestamp, int senderID, int specialistID, int referenceID) :
         Order(id, timestamp, senderID, referenceID), specialistID(specialistID) {}
 
     Event* convert(Game* game) override {

@@ -3,14 +3,20 @@
 [ext_resource type="PackedScene" uid="uid://bgu1u3cvnedo4" path="res://resources/airship.glb" id="1_r6xqw"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_s31l7"]
-radius = 2.0
-height = 10.0
+radius = 1.0
+height = 9.0
 
 [node name="AirshipMesh" type="Area3D"]
+
+[node name="airship" parent="." instance=ExtResource("1_r6xqw")]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
 
-[node name="Mesh" parent="." instance=ExtResource("1_r6xqw")]
-
 [node name="CollisionShape" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
+transform = Transform3D(-4.37114e-08, 1, -4.37114e-08, 0, -4.37114e-08, -1, -1, -4.37114e-08, 1.91069e-15, 0, 0, 0)
 shape = SubResource("CapsuleShape3D_s31l7")
+
+[node name="Label" type="Label3D" parent="."]
+transform = Transform3D(-1, -8.74228e-08, -3.82137e-15, 0, -4.37114e-08, 1, -8.74228e-08, 1, 4.37114e-08, 0.855, 1.1, 0)
+text = "Testing "
+font_size = 200
+uppercase = true

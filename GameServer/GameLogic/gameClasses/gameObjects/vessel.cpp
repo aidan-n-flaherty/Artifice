@@ -77,12 +77,12 @@ const Point Vessel::getPositionAt(double timeDiff) const {
 }
 
 void Vessel::update(double timeDiff) {
-    if(target->isDeleted()) setTarget(origin);
+    if(target == nullptr || target->isDeleted()) setTarget(origin);
     double distance = getSpeed() * timeDiff;
 
     Point targetedPos = getTargetPos();
     if(targetedPos.isInvalid()) {
-        setTarget(origin);
+        returnHome();
         targetedPos = getTargetPos();
     }
 
@@ -102,10 +102,10 @@ double Vessel::getSpeed() const {
 }
 
 // generate collision events for other vessels
-void Vessel::collision(Vessel* vessel, Vessel* other, time_t timestamp, std::multiset<Event*, EventOrder> &events) {
+void Vessel::collision(Vessel* vessel, Vessel* other, double timestamp, std::multiset<Event*, EventOrder> &events) {
     if(vessel->getOwnerID() == other->getOwnerID() || vessel->getTargetID() == -1 || vessel->getOriginID() == -1) return;
 
-    int seconds = -1;
+    double seconds = -1;
     // Case 1: both are heading in the same direction, so it's a matter of whether the one behind can catch up
     if(vessel->getOriginID() == other->getOriginID() && vessel->getTargetID() == other->getTargetID()) {
         float speedDiff = vessel->getSpeed() - other->getSpeed();
@@ -139,8 +139,8 @@ void Vessel::collision(Vessel* vessel, Vessel* other, time_t timestamp, std::mul
 }
 
 // generate collision events for outposts
-void Vessel::collision(Vessel* vessel, Outpost* outpost, time_t timestamp, std::multiset<Event*, EventOrder> &events) {
-    int seconds = -1;
+void Vessel::collision(Vessel* vessel, Outpost* outpost, double timestamp, std::multiset<Event*, EventOrder> &events) {
+    double seconds = -1;
 
     if(vessel->getTargetID() == outpost->getID() && vessel->getTargetID() != -1) {
         if(vessel->getSpeed() > 0) seconds = int(vessel->distance(outpost->getPosition())/vessel->getSpeed());
@@ -152,43 +152,6 @@ void Vessel::collision(Vessel* vessel, Outpost* outpost, time_t timestamp, std::
 
         return;
     }
-}
-
-void Vessel::specialistPhase(int& units, int& otherUnits, Vessel* other) {
-    if(controlsSpecialist(SpecialistType::REVERED_ELDER) || other->controlsSpecialist(SpecialistType::REVERED_ELDER)) return;
-
-    PositionalObject::specialistPhase(units, otherUnits, other);
-
-    if(controlsSpecialist(SpecialistType::SABOTEUR)) other->setTarget(other->getOrigin());
-
-    if(controlsSpecialist(SpecialistType::DOUBLE_AGENT)) {
-        // change ownership of all specialists
-        for(Specialist* specialist : getSpecialists()) {
-            if(hasOwner()) getOwner()->removeSpecialist(specialist);
-            if(other->hasOwner()) other->getOwner()->addSpecialist(specialist);
-        }
-
-        for(Specialist* specialist : other->getSpecialists()) {
-            if(hasOwner()) getOwner()->removeSpecialist(specialist);
-            if(other->hasOwner()) other->getOwner()->addSpecialist(specialist);
-        }
-
-        units = 0;
-        otherUnits = 0;
-
-        // swap owners
-        Player* otherOwner = other->getOwner();
-        other->setOwner(getOwner());
-        setOwner(otherOwner);
-    }
-}
-
-void Vessel::specialistPhase(int& units, int& otherUnits, Outpost* other) {
-    if(controlsSpecialist(SpecialistType::REVERED_ELDER) || other->controlsSpecialist(SpecialistType::REVERED_ELDER)) return;
-
-    PositionalObject::specialistPhase(units, otherUnits, other);
-
-    if(controlsSpecialist(SpecialistType::INFILTRATOR)) other->removeShield(other->getShield());
 }
 
 void Vessel::returnHome() {

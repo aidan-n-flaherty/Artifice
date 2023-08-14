@@ -34,21 +34,21 @@ private:
     // this variable is important to determine which game state this order was created off of
     const int referenceID;
 
-    time_t timestamp;
+    double timestamp;
 
     int senderID;
 
 public:
     Order() : ID(counter++), referenceID(-1) {};
-    Order(time_t timestamp, int senderID) : ID(counter++), timestamp(timestamp), senderID(senderID), referenceID(-1) {}
-    Order(time_t timestamp, int senderID, int referenceID) : ID(counter++), timestamp(timestamp), senderID(senderID), referenceID(referenceID) {}
-    Order(int id, time_t timestamp, int senderID, int referenceID) : ID(id), timestamp(timestamp), senderID(senderID), referenceID(referenceID) {}
+    Order(double timestamp, int senderID) : ID(counter++), timestamp(timestamp), senderID(senderID), referenceID(-1) {}
+    Order(double timestamp, int senderID, int referenceID) : ID(counter++), timestamp(timestamp), senderID(senderID), referenceID(referenceID) {}
+    Order(int id, double timestamp, int senderID, int referenceID) : ID(id), timestamp(timestamp), senderID(senderID), referenceID(referenceID) {}
 
     virtual void adjustIDs(int createdID) {}
 
     void updateOrders(const std::multiset<Order*, OrderOrder> &orders) const;
 
-    time_t getTimestamp() const { return timestamp; }
+    double getTimestamp() const { return timestamp; }
 
     int getSenderID() const { return senderID; }
 
@@ -64,7 +64,7 @@ public:
 
     bool operator<(const Order& other) const
     {
-        double diff = difftime(other.getTimestamp(), getTimestamp());
+        double diff = other.getTimestamp() - getTimestamp();
         return diff == 0 ? getSenderID() < other.getSenderID() : diff > 0;
     }
 };

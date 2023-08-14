@@ -50,16 +50,6 @@ public:
     // just ignore setting to negative units
     int setUnits(int count) { numUnits = count >= 0 ? count : 0; return numUnits; }
 
-    /* Note that int references are supplied in the function so that unit counts are only modified
-    ** after phases on both sides are run, independent of order of execution.
-    ** otherUnits should be a copy of the number of units the other positional object has.
-    */
-    void specialistPhase(int& unitDelta, int& otherUnitDelta, PositionalObject* other);
-    void postSpecialistPhase(int& unitDelta, int& otherUnitDelta, PositionalObject* other);
-    void victorySpecialistPhase(int unitDelta, int otherUnitDelta, PositionalObject* other);
-    void defeatSpecialistPhase(int unitDelta, int otherUnitDelta, PositionalObject* other);
-    void postCombatSpecialistPhase(Game* game, PositionalObject* other);
-
     bool ownerControlsSpecialist(SpecialistType type) const;
     int ownerSpecialistCount(SpecialistType type) const;
     int specialistCount(SpecialistType t) const;

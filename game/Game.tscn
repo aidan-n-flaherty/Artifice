@@ -1,12 +1,23 @@
-[gd_scene load_steps=5 format=3 uid="uid://77a7ri5anqje"]
+[gd_scene load_steps=13 format=3 uid="uid://dgp4l24s2rulk"]
 
 [ext_resource type="Script" path="res://Game.gd" id="1_s53r2"]
 [ext_resource type="Script" path="res://CameraPivot.gd" id="2_t2ckv"]
+[ext_resource type="PackedScene" uid="uid://n0lobms04k46" path="res://Timeline.tscn" id="3_jhu7k"]
+[ext_resource type="StyleBox" uid="uid://coornuougjr7i" path="res://resources/themes/MenuButton/ButtonNormal.tres" id="4_fdg00"]
+[ext_resource type="StyleBox" uid="uid://d2ba8dokdt8od" path="res://resources/themes/VSlider/SliderBackground.tres" id="4_vrtfm"]
+[ext_resource type="StyleBox" uid="uid://eumwqqqm3xf5" path="res://resources/themes/VSlider/SliderGrabber.tres" id="5_6xaao"]
+[ext_resource type="StyleBox" uid="uid://bbcqsraqxn7j" path="res://resources/themes/MenuButton/ButtonHover.tres" id="5_j8x77"]
+[ext_resource type="StyleBox" uid="uid://btgfmsxfwcri7" path="res://resources/themes/MenuButton/ButtonPress.tres" id="6_h0r5t"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_ol6jw"]
 size = Vector2(10, 10)
 
-[sub_resource type="BoxMesh" id="BoxMesh_3bhja"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_beyj4"]
+viewport_path = NodePath("Viewport/Viewport3D/CameraPivot/FloorDisplay")
+
+[sub_resource type="ImageTexture" id="ImageTexture_rv1si"]
+
+[sub_resource type="ImageTexture" id="ImageTexture_0go2v"]
 
 [node name="Game" type="Control"]
 layout_mode = 3
@@ -14,32 +25,124 @@ anchors_preset = 0
 mouse_filter = 1
 script = ExtResource("1_s53r2")
 
-[node name="Viewport" type="Node3D" parent="."]
-visible = false
+[node name="Viewport" type="Control" parent="."]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+mouse_filter = 1
 
-[node name="Floor" type="MeshInstance3D" parent="Viewport"]
+[node name="Viewport3D" type="Node3D" parent="Viewport"]
+
+[node name="Floor" type="MeshInstance3D" parent="Viewport/Viewport3D"]
 transform = Transform3D(1000, 0, 0, 0, 1000, 0, 0, 0, 1000, 0, 0, 0)
 mesh = SubResource("PlaneMesh_ol6jw")
-skeleton = NodePath("../..")
+skeleton = NodePath("../../..")
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Viewport"]
-transform = Transform3D(0.727054, -0.4974, -0.473271, 0.68658, 0.526722, 0.50117, 0, -0.689316, 0.724461, 0, 1.63363, 0)
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Viewport/Viewport3D"]
+transform = Transform3D(0.727054, -0.4974, -0.473271, 0.68658, 0.526722, 0.50117, 0, -0.689316, 0.724461, -60.8826, 234.624, -212.372)
+shadow_enabled = true
+shadow_bias = 0.01
+shadow_normal_bias = 3.0
+shadow_reverse_cull_face = true
+shadow_blur = 0.0
+directional_shadow_mode = 0
+directional_shadow_max_distance = 200.0
+directional_shadow_pancake_size = 0.0
+sky_mode = 1
 
-[node name="CameraPivot" type="Marker3D" parent="Viewport"]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 1000, -1000)
+[node name="CameraPivot" type="Marker3D" parent="Viewport/Viewport3D"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 50, -50)
 script = ExtResource("2_t2ckv")
 
-[node name="Camera3D" type="Camera3D" parent="Viewport/CameraPivot"]
+[node name="Camera3D" type="Camera3D" parent="Viewport/Viewport3D/CameraPivot"]
 transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 0, 0)
+keep_aspect = 0
 projection = 1
+fov = 37.8493
 size = 100.0
-near = 0.005
-far = 10000.0
+near = 0.001
+far = 200.0
 
-[node name="Box" type="MeshInstance3D" parent="Viewport"]
-transform = Transform3D(0.640552, 0.683955, 0.349139, -0.767915, 0.570518, 0.291233, 0, -0.454659, 0.890666, 2.77783, 8.09643, 1.42934)
-mesh = SubResource("BoxMesh_3bhja")
-skeleton = NodePath("../..")
+[node name="FloorDisplay" type="SubViewport" parent="Viewport/Viewport3D/CameraPivot"]
+transparent_bg = true
+size = Vector2i(1000, 2600)
+
+[node name="Sprite3D" type="Sprite3D" parent="Viewport/Viewport3D/CameraPivot"]
+transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, -49.99, -50)
+pixel_size = 0.1
+axis = 1
+texture = SubResource("ViewportTexture_beyj4")
+
+[node name="VSplitContainer" type="VSplitContainer" parent="Viewport"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 27.023
+anchor_bottom = 47.989
+offset_right = -0.920044
+offset_bottom = 0.439941
+theme_override_constants/separation = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Viewport/VSplitContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 0
+
+[node name="Spacer" type="Control" parent="Viewport/VSplitContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 1
+
+[node name="Timeline" parent="Viewport/VSplitContainer/VBoxContainer" instance=ExtResource("3_jhu7k")]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.05
+
+[node name="Spacer" type="Control" parent="Viewport/VSplitContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.1
+mouse_filter = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Viewport"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 27.0
+anchor_bottom = 48.0
+offset_right = -0.00012207
+offset_bottom = -0.00012207
+
+[node name="SpacerTop" type="Control" parent="Viewport/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Viewport/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 3.0
+
+[node name="Spacer" type="Control" parent="Viewport/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+
+[node name="PercentBar" type="VSlider" parent="Viewport/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 3.0
+theme_override_icons/grabber = SubResource("ImageTexture_rv1si")
+theme_override_icons/grabber_highlight = SubResource("ImageTexture_0go2v")
+theme_override_styles/slider = ExtResource("4_vrtfm")
+theme_override_styles/grabber_area = ExtResource("5_6xaao")
+theme_override_styles/grabber_area_highlight = ExtResource("5_6xaao")
+max_value = 1.0
+step = 0.01
+value = 0.5
+
+[node name="SpacerBottom" type="Control" parent="Viewport/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
 
 [node name="Chat" type="MarginContainer" parent="."]
 visible = false
@@ -51,44 +154,72 @@ offset_bottom = 40.0
 anchors_preset = 0
 offset_right = 1080.0
 offset_bottom = 1920.0
-mouse_filter = 1
+mouse_filter = 2
 
 [node name="VSplitContainer" type="VSplitContainer" parent="TabView"]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
 anchor_bottom = 1.0
+mouse_filter = 2
+theme_override_constants/separation = 0
 
 [node name="Spacer" type="Control" parent="TabView/VSplitContainer"]
 layout_mode = 2
 size_flags_vertical = 3
-mouse_filter = 1
+mouse_filter = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="TabView/VSplitContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 size_flags_stretch_ratio = 0.1
+mouse_filter = 2
 
 [node name="Game" type="Button" parent="TabView/VSplitContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = ExtResource("4_fdg00")
+theme_override_styles/hover = ExtResource("5_j8x77")
+theme_override_styles/pressed = ExtResource("6_h0r5t")
 text = "Game"
 
 [node name="Chat" type="Button" parent="TabView/VSplitContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = ExtResource("4_fdg00")
+theme_override_styles/hover = ExtResource("5_j8x77")
+theme_override_styles/pressed = ExtResource("6_h0r5t")
 text = "Chat"
 
 [node name="Production" type="Button" parent="TabView/VSplitContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = ExtResource("4_fdg00")
+theme_override_styles/hover = ExtResource("5_j8x77")
+theme_override_styles/pressed = ExtResource("6_h0r5t")
 text = "Production"
 
 [node name="Logs" type="Button" parent="TabView/VSplitContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = ExtResource("4_fdg00")
+theme_override_styles/hover = ExtResource("5_j8x77")
+theme_override_styles/pressed = ExtResource("6_h0r5t")
 text = "Logs"
 
+[connection signal="value_changed" from="Viewport/VBoxContainer/HBoxContainer/PercentBar" to="." method="_on_percent_bar_value_changed"]
 [connection signal="pressed" from="TabView/VSplitContainer/HBoxContainer/Game" to="." method="_on_game_pressed"]
 [connection signal="pressed" from="TabView/VSplitContainer/HBoxContainer/Chat" to="." method="_on_chat_pressed"]
 [connection signal="pressed" from="TabView/VSplitContainer/HBoxContainer/Production" to="." method="_on_production_pressed"]

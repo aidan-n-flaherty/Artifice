@@ -16,9 +16,9 @@ private:
 
 public:
     GiftOrder(){};
-    GiftOrder(time_t timestamp, int senderID, int vesselID, int referenceID) :
+    GiftOrder(double timestamp, int senderID, int vesselID, int referenceID) :
         Order(timestamp, senderID, referenceID), vesselID(vesselID) {}
-    GiftOrder(int id, time_t timestamp, int senderID, int vesselID, int referenceID) :
+    GiftOrder(int id, double timestamp, int senderID, int vesselID, int referenceID) :
         Order(id, timestamp, senderID, referenceID), vesselID(vesselID) {}
 
     void adjustIDs(int createdID) override {

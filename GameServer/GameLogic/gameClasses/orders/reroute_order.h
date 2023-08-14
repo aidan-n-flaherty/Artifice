@@ -17,9 +17,9 @@ private:
 
 public:
     RerouteOrder(){};
-    RerouteOrder(time_t timestamp, int senderID, int vesselID, int targetID, int referenceID) :
+    RerouteOrder(double timestamp, int senderID, int vesselID, int targetID, int referenceID) :
         Order(timestamp, senderID, referenceID), vesselID(vesselID), targetID(targetID) {}
-    RerouteOrder(int id, time_t timestamp, int senderID, int vesselID, int targetID, int referenceID) :
+    RerouteOrder(int id, double timestamp, int senderID, int vesselID, int targetID, int referenceID) :
         Order(id, timestamp, senderID, referenceID), vesselID(vesselID), targetID(targetID) {}
 
     void adjustIDs(int createdID) override {
@@ -32,6 +32,8 @@ public:
         
         if(!game->hasVessel(vesselID) || !game->hasPosObject(targetID)) return nullptr;
 
+        if(targetID == vesselID) return nullptr;
+        
         Vessel* vessel = game->getVessel(vesselID);
         PositionalObject* target = game->getPosObject(targetID);
 

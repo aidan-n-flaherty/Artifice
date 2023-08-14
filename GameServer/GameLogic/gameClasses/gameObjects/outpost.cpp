@@ -95,9 +95,3 @@ int Outpost::getSonarRange() const {
 
     return range;
 }
-
-void Outpost::specialistPhase(int& units, int& otherUnits, Vessel* other) {
-    if(controlsSpecialist(SpecialistType::REVERED_ELDER) || other->controlsSpecialist(SpecialistType::REVERED_ELDER)) return;
-
-    PositionalObject::specialistPhase(units, otherUnits, other);
-}

@@ -17,12 +17,13 @@
 #include "events/send_event.h"
 #include "events/reroute_event.h"
 #include "events/outpost_range_event.h"
+#include "events/battle_event.h"
 #include "game_settings.h"
 
 /* The game constructor should create the entire starting state deterministically based on
 ** the random seed provided.
 */
-Game::Game(int simulatorID, time_t startTime, time_t endTime, std::map<int, std::string> &playerInfo, int seed, bool cacheEnabled) :
+Game::Game(int simulatorID, double startTime, double endTime, std::map<int, std::string> &playerInfo, int seed, bool cacheEnabled) :
     stateTime(startTime), endTime(endTime), cacheEnabled(cacheEnabled) {
     std::srand(seed);
 
@@ -31,7 +32,7 @@ Game::Game(int simulatorID, time_t startTime, time_t endTime, std::map<int, std:
 
     for(auto pair : playerInfo) {
         Player* p = new Player(pair.second, pair.first, 100);
-        if(pair.first == simulatorID) simulatorID = p->getID();
+        if(pair.first == simulatorID) this->simulatorID = p->getID();
         addPlayer(p);
     }
 
@@ -129,6 +130,25 @@ void Game::updateEvents() {
         }
     }
 
+    for(auto itA = vessels.begin(); itA != vessels.end();) {
+        Vessel* vessel = itA->second;
+
+        if(vessel->isDeleted()) {
+            removeRelevant(vessel->getID());
+            itA = vessels.erase(itA);
+            delete vessel;
+        } else itA++;
+    }
+
+    for(auto itA = specialists.begin(); itA != specialists.end();) {
+        Specialist* specialist = itA->second;
+
+        if(specialist->isDeleted()) {
+            itA = specialists.erase(itA);
+            delete specialist;
+        } else itA++;
+    }
+
     // All vessels flagged for update (e.g. global speed change) may have different combat times.
     for(auto itA = vessels.begin(); itA != vessels.end(); itA++) {
         Vessel* vessel = itA->second;
@@ -156,8 +176,8 @@ void Game::updateEvents() {
     cacheState();
 }
 
-void Game::updateState(time_t timestamp) {
-    double secondsElapsed = difftime(timestamp, stateTime);
+void Game::updateState(double timestamp) {
+    double secondsElapsed = timestamp - stateTime;
 
     for(auto& pair : vessels) pair.second->update(secondsElapsed);
     for(auto& pair : outposts) pair.second->update(secondsElapsed);
@@ -308,7 +328,7 @@ std::list<std::pair<int, int>> Game::getScores() {
     return scores;
 }
 
-std::shared_ptr<Game> Game::lastState(time_t timestamp) {
+std::shared_ptr<Game> Game::lastState(double timestamp) {
     std::shared_ptr<Game> returnVal = shared_from_this();
 
     for(auto it = cache.begin(); it != cache.end(); it++) {
@@ -321,18 +341,18 @@ std::shared_ptr<Game> Game::lastState(time_t timestamp) {
     return returnVal;
 }
 
-time_t Game::nextState(time_t timestamp) {
-    time_t returnTime = timestamp;
+double Game::nextState(double timestamp) {
+    double returnTime = timestamp;
 
     for(auto it = cache.begin(); it != cache.end(); it++) {
         returnTime = (*it)->getTime();
         if((*it)->getTime() > timestamp) break;
     }
 
-    return returnTime < timestamp ? std::numeric_limits<time_t>::max() : returnTime;
+    return returnTime < timestamp ? std::numeric_limits<double>::max() : returnTime;
 }
 
-Event* Game::nextAssociatedEvent(time_t timestamp, int id) {
+Event* Game::nextAssociatedEvent(double timestamp, int id) {
     for(Event* event : simulatedEvents) {
         if(event->getTimestamp() > timestamp && event->referencesObject(id)) return event;
     }
@@ -340,8 +360,46 @@ Event* Game::nextAssociatedEvent(time_t timestamp, int id) {
     return nullptr;
 }
 
+// method should only be called by the final game state
+const BattleEvent* Game::nextBattle(int id, double timestamp) {
+    for(Event* event : simulatedEvents) {
+        if(event->getTimestamp() > timestamp && event->referencesObject(id)) {
+            BattleEvent* b = dynamic_cast<BattleEvent*>(event);
+            if(b) return b;
+        }
+    }
+
+    return nullptr;
+}
+
+// method should only be called by the current game state, and returned battles are only predictions
+std::list<BattleEvent*> Game::nextBattles(int id) {
+    std::list<BattleEvent*> l;
+
+    for(Event* event : events) {
+        if(event->referencesObject(id)) {
+            BattleEvent* b = dynamic_cast<BattleEvent*>(event);
+            if(b) l.push_back(b);
+        }
+    }
+
+    return l;
+}
+
+// assuming the client is looking at forecasted battles, this finds the battles that actually end up taking place
+const BattleEvent* Game::simulatedBattle(int eventID) {
+    for(Event* event : simulatedEvents) {
+        if(event->getID() == eventID) {
+            BattleEvent* b = dynamic_cast<BattleEvent*>(event);
+            if(b) return b;
+        }
+    }
+
+    return nullptr;
+}
+
 std::shared_ptr<Game> Game::processOrder(const std::string &type, int ID, int referenceID, long timestamp, int senderID, int arguments[], int argCount) {
-    time_t time = timestamp;
+    double time = timestamp;
 
     std::list<int> argumentIDs;
     for(int i = 0; i < argCount; i++) argumentIDs.push_back(arguments[i]);
@@ -406,23 +464,18 @@ void Game::addEvent(Event* e) {
 }
 
 void Game::removeVessel(Vessel* v) {
-    removeRelevant(v->getID());
     if(v->hasOwner()) v->getOwner()->removeVessel(v);
     while(!v->getSpecialists().empty()) removeSpecialist(v->getSpecialists().front());
     v->remove();
-    
-    vessels.erase(v->getID());
 }
 
 void Game::removeSpecialist(Specialist* s) {
     if(s->hasOwner()) s->getOwner()->removeSpecialist(s);
     if(s->getContainer() != nullptr) s->getContainer()->removeSpecialist(s);
     s->remove();
-
-    specialists.erase(s->getID());
 }
 
 bool GameOrder::operator()(const std::shared_ptr<Game> &lhs, const std::shared_ptr<Game> &rhs) const {
-    double diff = difftime(lhs->getTime(), rhs->getTime());
+    double diff = lhs->getTime() - rhs->getTime();
     return diff == 0 ? lhs->simulatedEventCount() - rhs->simulatedEventCount() < 0 : diff < 0;
 }

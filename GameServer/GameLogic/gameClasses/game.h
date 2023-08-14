@@ -12,11 +12,13 @@
 #include "gameObjects/vessel.h"
 #include "gameObjects/outpost.h"
 #include "gameObjects/specialist.h"
+#include "gameObjects/positional_object.h"
 #include "order.h"
 #include "event.h"
-#include "gameObjects/positional_object.h"
 
 class Game;
+
+class BattleEvent;
 
 struct GameOrder {
     bool operator()(const std::shared_ptr<Game> &lhs, const std::shared_ptr<Game> &rhs) const;
@@ -35,7 +37,7 @@ private:
     void updateEvents();
 
     // Moves the game state a specific number of seconds into the future.
-    void updateState(time_t timestamp);
+    void updateState(double timestamp);
 
     // client-side support for easy time machine usage
     void cacheState();
@@ -44,8 +46,8 @@ private:
     std::list<std::pair<int, int>> getScores();
 
     bool cacheEnabled;
-    time_t stateTime;
-    time_t endTime;
+    double stateTime;
+    double endTime;
 
     // client side variables to determine the most recent order sent by another player to use as a reference for IDs,
     // as well as the ID of the current player
@@ -67,7 +69,7 @@ private:
 public:
     // Deterministically creates a pseudo-random map and initializes all player states.
     Game(){};
-    Game(int simulatorID, time_t startTime, time_t endTime, std::map<int, std::string>& players, int seed, bool cacheEnabled);
+    Game(int simulatorID, double startTime, double endTime, std::map<int, std::string>& players, int seed, bool cacheEnabled);
     Game(const Game& game);
     ~Game();
 
@@ -115,13 +117,16 @@ public:
     void removeVessel(Vessel* v);
     void removeSpecialist(Specialist* s);
     
-    time_t getTime() const { return stateTime; }
-    time_t getEndTime() const { return endTime; }
+    double getTime() const { return stateTime; }
+    double getEndTime() const { return endTime; }
 
     // These functions are strictly for client side rendering
-    std::shared_ptr<Game> lastState(time_t timestamp);
-    time_t nextState(time_t timestamp);
-    Event* nextAssociatedEvent(time_t timestamp, int id);
+    std::shared_ptr<Game> lastState(double timestamp);
+    double nextState(double timestamp);
+    Event* nextAssociatedEvent(double timestamp, int id);
+    const BattleEvent* nextBattle(int id, double timestamp);
+    std::list<BattleEvent*> nextBattles(int id);
+    const BattleEvent* simulatedBattle(int eventID);
 
     int getReferenceID() { return referenceID; };
     int getSimulatorID() { return simulatorID; };

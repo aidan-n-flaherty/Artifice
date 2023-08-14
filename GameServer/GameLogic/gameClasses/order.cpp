@@ -17,6 +17,6 @@ void Order::updateOrders(const std::multiset<Order*, OrderOrder> &orders) const 
 
 bool OrderOrder::operator()(Order* lhs, Order* rhs) const 
 {
-    double diff = difftime(lhs->getTimestamp(), rhs->getTimestamp());
+    double diff = lhs->getTimestamp() - rhs->getTimestamp();
     return diff == 0 ? lhs->getID() < rhs->getID() : diff < 0;
 }

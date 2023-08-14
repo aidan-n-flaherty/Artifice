@@ -16,9 +16,9 @@ private:
 
 public:
     HireOrder(){};
-    HireOrder(time_t timestamp, int senderID, int specialistTypeID, int referenceID) :
+    HireOrder(double timestamp, int senderID, int specialistTypeID, int referenceID) :
         Order(timestamp, senderID, referenceID), specialistTypeID(specialistTypeID) {}
-    HireOrder(int id, time_t timestamp, int senderID, int specialistTypeID, int referenceID) :
+    HireOrder(int id, double timestamp, int senderID, int specialistTypeID, int referenceID) :
         Order(id, timestamp, senderID, referenceID), specialistTypeID(specialistTypeID) {}
 
     Event* convert(Game* game) override {

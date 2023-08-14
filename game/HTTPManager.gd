@@ -33,6 +33,7 @@ func postReq(path, data, includeToken=true):
 	
 	if(response_code < 200 || response_code > 299):
 		print("Bad response code")
+		print(response[3].get_string_from_utf8())
 		
 	if(body == null):
 		print("Bad JSON")
@@ -71,6 +72,7 @@ func putReq(path, data, params, includeToken=true):
 	
 	if(response_code < 200 || response_code > 299):
 		print("Bad response code")
+		print(response[3].get_string_from_utf8())
 		
 	if(body == null):
 		print("Bad JSON")
@@ -102,6 +104,7 @@ func getReq(path, params):
 	
 	if(response_code < 200 || response_code > 299):
 		print("Bad response code")
+		print(response[3].get_string_from_utf8())
 		
 	if(body == null):
 		print("Bad JSON")

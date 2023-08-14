@@ -3,7 +3,9 @@
 
 #include <godot_cpp/classes/node3d.hpp>
 #include <godot_cpp/classes/camera3d.hpp>
+#include <godot_cpp/classes/camera2d.hpp>
 #include <godot_cpp/classes/input_event.hpp>
+#include <godot_cpp/classes/texture_rect.hpp>
 #include "../GameServer/GameLogic/gameClasses/gameObjects/positional_object.h"
 
 namespace godot {
@@ -14,30 +16,45 @@ class PositionalNode : public Node3D {
 private:
 	PositionalObject* obj;
 	
-	time_t referenceTime;
+	double timeDiff;
+
+	bool selected;
+
+	double timePassed;
 
 protected:
 	static void _bind_methods();
 	
 public:
-    PositionalNode(const StringName &file, PositionalObject* obj, time_t referenceTime);
-		PositionalNode() {};
-    ~PositionalNode() {};
+    PositionalNode(const StringName &file, PositionalObject* obj);
+	PositionalNode() {}
+    ~PositionalNode() {}
 
     virtual void _process(double delta) override;
+
+	double getTimePassed() { return timePassed; }
 		
-		virtual void setReference(PositionalObject* obj, time_t referenceTime) {
-			this->obj = obj;
-			this->referenceTime = referenceTime;
-		}
-		
-		int getID() { return obj->getID(); }
-		
-		int getOwnerID() { return obj->getOwnerID(); }
-		
-		time_t getReferenceTime() { return referenceTime; }
-		
-		void select(Camera3D *camera, const Ref<InputEvent> &event, const Vector3 &position, const Vector3 &normal, int32_t shape_idx);
+	void setDiff(double diff) { timeDiff = diff; }
+	
+	double getDiff() { return timeDiff; }
+	
+	virtual void setReference(PositionalObject* obj);
+	
+	int getID() { return obj->getID(); }
+	
+	int getOwnerID() { return obj->getOwnerID(); }
+
+	int getUnits() { return obj != nullptr ? obj->getUnitsAt(timeDiff) : 0; }
+	
+	void select(Camera3D *camera, const Ref<InputEvent> &event, const Vector3 &position, const Vector3 &normal, int32_t shape_idx);
+	
+	void selectSpecialist(Camera2D *camera, const Ref<InputEvent> &event, int32_t id);
+
+	PositionalObject* getObj() { return obj; }
+
+	void setSelected(bool selected);
+
+	bool isSelected() { return selected; }
 };
 
 }

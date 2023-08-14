@@ -22,10 +22,10 @@ private:
 
 public:
     SendOrder(){};
-    SendOrder(time_t timestamp, int senderID, int numUnits, std::list<int> specialistIDs, int originID, int targetID, int referenceID) :
+    SendOrder(double timestamp, int senderID, int numUnits, std::list<int> specialistIDs, int originID, int targetID, int referenceID) :
         Order(timestamp, senderID, referenceID), numUnits(numUnits), specialistIDs(specialistIDs),
         originID(originID), targetID(targetID) {}
-    SendOrder(int id, time_t timestamp, int senderID, int numUnits, std::list<int> specialistIDs, int originID, int targetID, int referenceID) :
+    SendOrder(int id, double timestamp, int senderID, int numUnits, std::list<int> specialistIDs, int originID, int targetID, int referenceID) :
         Order(id, timestamp, senderID, referenceID), numUnits(numUnits), specialistIDs(specialistIDs),
         originID(originID), targetID(targetID) {}
 
@@ -39,6 +39,8 @@ public:
         if(!game->hasPlayer(getSenderID()) || game->getPlayer(getSenderID())->hasLost()) return nullptr;
 
         if(!game->hasOutpost(originID) || !game->hasPosObject(targetID)) return nullptr;
+
+        if(originID == targetID) return nullptr;
 
         Outpost* outpost = game->getOutpost(originID);
         PositionalObject* target = game->getPosObject(targetID);

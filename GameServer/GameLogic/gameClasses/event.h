@@ -19,32 +19,32 @@ private:
 
     const int ID;
     
-    time_t timestamp;
+    double timestamp;
 
 public:
     Event() : ID(counter++) {}
-    Event(time_t timestamp) : timestamp(timestamp), ID(counter++) {}
+    Event(double timestamp) : timestamp(timestamp), ID(counter++) {}
 
     virtual void updatePointers(Game *game) {}
 
-    virtual void run(Game* game) const {}
+    virtual void run(Game* game) {}
 
     virtual Event* copy() { return new Event(*this); }
 
     virtual bool referencesObject(int id) const { return false; }
 
-    time_t getTimestamp() const { return timestamp; }
+    double getTimestamp() const { return timestamp; }
 
     bool operator<(const Event& other) const
     {
-        return difftime(other.getTimestamp(), getTimestamp()) > 0;
+        return other.getTimestamp() - getTimestamp() > 0;
     }
 
     int getID() const { return ID; }
 
     bool operator()(Event* lhs, Event* rhs) const 
     {
-        double diff = difftime(lhs->getTimestamp(), rhs->getTimestamp());
+        double diff = lhs->getTimestamp() - rhs->getTimestamp();
         return diff == 0 ? lhs->getID() < rhs->getID() : diff < 0;
     }
 };
@@ -53,7 +53,7 @@ struct EventOrder
 {
     bool operator()(const Event* lhs, const Event* rhs) const 
     {
-        double diff = difftime(lhs->getTimestamp(), rhs->getTimestamp());
+        double diff = lhs->getTimestamp() - rhs->getTimestamp();
         return diff == 0 ? lhs->getID() < rhs->getID() : diff < 0;
     }
 };

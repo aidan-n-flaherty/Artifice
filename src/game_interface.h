@@ -3,12 +3,16 @@
 
 #include <godot_cpp/classes/node3d.hpp>
 #include <list>
+#include <tuple>
 #include <unordered_map>
+#include <unordered_set>
 #include "../GameServer/GameLogic/gameClasses/game.h"
 #include "../GameServer/GameLogic/gameClasses/gameObjects/vessel.h"
 #include "../GameServer/GameLogic/gameClasses/gameObjects/outpost.h"
+#include "../GameServer/GameLogic/gameClasses/game_settings.h"
 #include "vessel_node.h"
 #include "outpost_node.h"
+#include "floor_display.h"
 
 namespace godot {
 
@@ -21,41 +25,64 @@ private:
 	
 	std::unordered_map<int, VesselNode*> vessels;
 	std::unordered_map<int, OutpostNode*> outposts;
+
+	FloorDisplay* floorDisplay;
 	
-	time_t nextState;
+	int userID, userGameID;
+
+	double nextState;
 	
 	int selectedObj = -1;
 	
-	std::list<int> selectedSpecialists;
+	std::unordered_set<int> selectedSpecialists;
 	
-	time_t current;
+	double current;
 	
 	bool future = true;
+
+	double percent = 1.0;
 
 protected:
 	static void _bind_methods();
 
 public:
-    GameInterface();
-    ~GameInterface() {};
+    GameInterface() {
+		floorDisplay = memnew(FloorDisplay(this));
+	}
 
-		void init();
+    ~GameInterface() {}
+
+	void init(int userID);
 		
     void _process(double delta) override;
 		
-		void update();
+	void update();
+
+	FloorDisplay* getFloorDisplay() { return floorDisplay; }
+
+	std::shared_ptr<Game> getCompleteGame() { return completeGame; }
+	std::shared_ptr<Game> getGame() { return game; }
+
+	int getUserGameID() { return userGameID; }
 		
-		void select(int id);
+	void select(int id);
+	void setSelected(int id);
+	void unselect() { setSelected(-1); }
+	int getSelected() { return selectedObj; }
 		
-		void setTime(uint32_t t);
+	void setTime(double t);
+	double getTime() { return current; }
+
+	void setPercent(double percent) { this->percent = percent; }
+	double getPercent() { return percent; }
+
+	int getWidth() { return GameSettings::width; }
+	int getHeight() { return GameSettings::height; }
 		
-		uint32_t getTime() { return current; };
+	void bulkAddOrder(const String &type, uint32_t ID, int32_t referenceID, uint32_t timestamp, uint32_t senderID, PackedInt32Array arguments, uint32_t argCount);
+	void endBulkAdd();
 		
-		void bulkAddOrder(const String &type, uint32_t ID, int32_t referenceID, uint32_t timestamp, uint32_t senderID, PackedInt32Array arguments, uint32_t argCount);
-		
-		void endBulkAdd();
-		
-		void addOrder(const String &type, uint32_t ID, int32_t referenceID, uint32_t timestamp, uint32_t senderID, PackedInt32Array arguments, uint32_t argCount);
+	void addOrder(const String &type, uint32_t ID, int32_t referenceID, uint32_t timestamp, uint32_t senderID, PackedInt32Array arguments, uint32_t argCount);
 };
 
 }

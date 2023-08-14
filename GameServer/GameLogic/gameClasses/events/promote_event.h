@@ -18,7 +18,7 @@ private:
 
 public:
     PromoteEvent(){};
-    PromoteEvent(time_t timestamp, Player* owner, Specialist* specialist, SpecialistType promotion) : Event(timestamp), owner(owner), specialist(specialist), promotion(promotion) {}
+    PromoteEvent(double timestamp, Player* owner, Specialist* specialist, SpecialistType promotion) : Event(timestamp), owner(owner), specialist(specialist), promotion(promotion) {}
     
     Event* copy() override { return new PromoteEvent(*this); }
 
@@ -28,7 +28,7 @@ public:
         specialist = game->getSpecialist(specialist->getID());
     }
 
-    void run(Game* game) const override {
+    void run(Game* game) override {
         specialist->setType(promotion);
     }
 };

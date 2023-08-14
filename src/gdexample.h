@@ -22,8 +22,8 @@ public:
 
     void _process(double delta) override;
 		
-		void set_amplitude(const double amplitude);
-		double get_amplitude() const;
+    void set_amplitude(const double amplitude);
+    double get_amplitude() const;
 		
     void set_speed(double p_speed);
     double get_speed() const;
