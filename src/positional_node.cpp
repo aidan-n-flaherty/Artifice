@@ -80,45 +80,24 @@ void PositionalNode::selectSpecialist(Camera2D *camera, const Ref<InputEvent> &e
 void PositionalNode::setReference(PositionalObject* obj) {
 	std::list<int> specialistAddition;
 
-	PositionalObject* tmp = this->obj;
+	//PositionalObject* tmp = this->obj;
 
 	this->obj = obj;
 
-	if(tmp != nullptr) {
+	/*if(tmp != nullptr) {
 		for(Specialist* s1 : obj->getSpecialists()) {
 			std::list<Specialist*> specialists = tmp->getSpecialists();
 			if(!std::any_of(specialists.begin(), specialists.end(), [&s1](auto s2) {
 				return s1->getID() == s2->getID();
 			})) specialistAddition.push_back(s1->getID());
 		}
-
-	} else {
+	} else {*/
 		for(Specialist* s : obj->getSpecialists()) specialistAddition.push_back(s->getID());
-	}
+	//}
 
 	for(int i = 0; i < get_child_count(); i++) {
 		Node* n = get_child(i);
 		
-		/*for(int j = 0; j < n->get_child_count(); j++) {
-			Node* child = n->get_child(j);
-
-			if(child->get_name().contains("Specialist")) {
-				child->queue_free();
-				n->remove_child(child);
-				j--;
-			}
-		}
-
-		int offset = 0;
-
-		for(const Specialist* sp : obj->getSpecialists()) {
-			Ref<PackedScene> sMesh = ResourceLoader::get_singleton()->load("res://SpecialistMesh.tscn");
-			Node3D* s = cast_to<Node3D>(sMesh->instantiate());
-			s->set_name(("Specialist" + std::to_string(sp->getID())).c_str());
-			s->connect("input_event", Callable(this, "selectSpecialist"), Object::CONNECT_DEFERRED);
-			s->set_position(Vector3(10 * (offset++ - (obj->getSpecialists().size() - 1) / 2.0), 0, 0));
-			n->add_child(s);
-		}*/
 		std::list<Node3D*> currentSpecialists;
 		
 		std::list<Specialist*> specialists = obj->getSpecialists();
@@ -126,9 +105,9 @@ void PositionalNode::setReference(PositionalObject* obj) {
 		for(int j = 0; j < n->get_child_count(); j++) {
 			Node* child = n->get_child(j);
 
-			if(!std::any_of(specialists.begin(), specialists.end(), [&child](auto s) {
+			if(/*!std::any_of(specialists.begin(), specialists.end(), [&child](auto s) {
 				return child->get_name() == StringName(("Specialist" + std::to_string(s->getID())).c_str());
-			}) && child->get_name().contains("Specialist")) {
+			}) && */child->get_name().contains("Specialist")) {
 				child->queue_free();
 				n->remove_child(child);
 				j--;
@@ -164,38 +143,6 @@ void PositionalNode::setReference(PositionalObject* obj) {
 				currentSpecialists.push_back(s);
 			}
 		}
-
-		/*for(int j = 0; j < n->get_child_count(); j++) {
-			Node* child = n->get_child(j);
-
-			if(!std::any_of(specialistRemoval.begin(), specialistRemoval.end(), [&child](auto id) {
-				return child->get_name() == StringName(("Specialist" + std::to_string(id)).c_str()) ;
-			}) && child->get_name().contains("Specialist")) currentSpecialists.push_back(cast_to<Node3D>(child));
-		}
-
-		for(int id : specialistRemoval) {
-			for(int j = 0; j < n->get_child_count(); j++) {
-				Node* child = n->get_child(j);
-
-				if(child->get_name() == StringName(("Specialist" + std::to_string(id)).c_str())) {
-					child->queue_free();
-					n->remove_child(child);
-					j--;
-				}
-			}
-		}
-
-		for(int id : specialistAddition) {
-			Ref<PackedScene> sMesh = ResourceLoader::get_singleton()->load("res://SpecialistMesh.tscn");
-			Node3D* s = cast_to<Node3D>(sMesh->instantiate());
-			s->set_name(("Specialist" + std::to_string(id)).c_str());
-			s->connect("input_event", Callable(this, "selectSpecialist"), Object::CONNECT_DEFERRED);
-			n->add_child(s);
-
-			if(i == 0) UtilityFunctions::print(s->get_name());
-
-			currentSpecialists.push_back(s);
-		}*/
 
 		int offset = 0;
 
