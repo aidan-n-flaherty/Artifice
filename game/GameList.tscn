@@ -9,7 +9,6 @@ anchor_bottom = 1.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource("1_3i7b2")
-GameButton = "res://GameButton.tscn"
 
 [node name="ScrollContainer" type="ScrollContainer" parent="."]
 layout_mode = 2

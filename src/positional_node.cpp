@@ -7,6 +7,7 @@
 #include <godot_cpp/variant/utility_functions.hpp>
 #include <godot_cpp/classes/camera3d.hpp>
 #include <godot_cpp/classes/camera2d.hpp>
+#include <godot_cpp/classes/canvas_item.hpp>
 #include <godot_cpp/classes/input_event.hpp>
 #include <godot_cpp/classes/input_event_mouse_button.hpp>
 #include <godot_cpp/classes/global_constants.hpp>
@@ -78,8 +79,6 @@ void PositionalNode::selectSpecialist(Camera2D *camera, const Ref<InputEvent> &e
 }
 
 void PositionalNode::setReference(PositionalObject* obj) {
-	std::list<int> specialistAddition;
-
 	//PositionalObject* tmp = this->obj;
 
 	this->obj = obj;
@@ -92,27 +91,44 @@ void PositionalNode::setReference(PositionalObject* obj) {
 			})) specialistAddition.push_back(s1->getID());
 		}
 	} else {*/
-		for(Specialist* s : obj->getSpecialists()) specialistAddition.push_back(s->getID());
+		//for(Specialist* s : obj->getSpecialists()) specialistAddition.push_back(s->getID());
 	//}
 
 	for(int i = 0; i < get_child_count(); i++) {
 		Node* n = get_child(i);
-		
-		std::list<Node3D*> currentSpecialists;
+	
+		std::list<int> specialistAddition;
+
+		for(Specialist* s : obj->getSpecialists()) {
+			bool found = false;
+
+			for(int j = 0; j < n->get_child_count(); j++) {
+				Node* child = n->get_child(j);
+
+				if(child->get_name() == StringName(("Specialist" + std::to_string(s->getID())).c_str())) {
+					found = true;
+					break;
+				}
+			}
+
+			if(!found) specialistAddition.push_back(s->getID());
+		}
 		
 		std::list<Specialist*> specialists = obj->getSpecialists();
 
 		for(int j = 0; j < n->get_child_count(); j++) {
 			Node* child = n->get_child(j);
 
-			if(/*!std::any_of(specialists.begin(), specialists.end(), [&child](auto s) {
+			if(!std::any_of(specialists.begin(), specialists.end(), [&child](auto s) {
 				return child->get_name() == StringName(("Specialist" + std::to_string(s->getID())).c_str());
-			}) && */child->get_name().contains("Specialist")) {
+			}) && child->get_name().contains("Specialist")) {
 				child->queue_free();
 				n->remove_child(child);
 				j--;
 			}
 		}
+		
+		std::list<Node3D*> currentSpecialists;
 
 		for(Specialist* sp : specialists) {
 			bool contains = false;
@@ -137,6 +153,9 @@ void PositionalNode::setReference(PositionalObject* obj) {
 				Ref<Texture2D> img = ResourceLoader::get_singleton()->load((std::string("res://resources/specialistIcons/") + sp->typeAsString() + ".png").c_str());
 				TextureRect* texture = cast_to<TextureRect>(s->get_node_or_null(NodePath("Area2D/Texture")));	
 				texture->set_texture(img);
+				
+				CanvasItem* item = cast_to<CanvasItem>(s->get_node_or_null(NodePath("Area2D")));
+				item->set_modulate(Color(1.0, 1.0, 1.0, selectedSpecialists.find(sp->getID()) != selectedSpecialists.end() ? 1.0 : 0.5));
 
 				n->add_child(s);
 
@@ -148,6 +167,24 @@ void PositionalNode::setReference(PositionalObject* obj) {
 
 		for(Node3D* child : currentSpecialists) {
 			child->set_position(Vector3(10 * (offset++ - (obj->getSpecialists().size() - 1) / 2.0), 0, 0));
+		}
+	}
+}
+
+void PositionalNode::setSpecialistSelected(int specialistID, bool selected) {
+	if(selected) selectedSpecialists.insert(specialistID);
+	else selectedSpecialists.erase(specialistID);
+
+	for(int i = 0; i < get_child_count(); i++) {
+		Node* n = get_child(i);
+
+		for(int j = 0; j < n->get_child_count(); j++) {
+			Node* child = n->get_child(j);
+
+			if(child->get_name() == StringName(("Specialist" + std::to_string(specialistID)).c_str())) {
+				CanvasItem* item = cast_to<CanvasItem>(child->get_node_or_null(NodePath("Area2D")));
+				item->set_modulate(Color(1.0, 1.0, 1.0, selected ? 1.0 : 0.5));
+			}
 		}
 	}
 }

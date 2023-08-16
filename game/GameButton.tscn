@@ -1,7 +1,21 @@
-[gd_scene format=3 uid="uid://cjk6c8mh5xqbe"]
+[gd_scene load_steps=2 format=3 uid="uid://cjk6c8mh5xqbe"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1hby1"]
+bg_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
 
 [node name="GameButton" type="Button"]
+custom_minimum_size = Vector2(0, 60)
+anchors_preset = -1
+anchor_right = 0.007
+anchor_bottom = 0.004
+offset_right = -7.56
+offset_bottom = -7.68
 size_flags_horizontal = 3
+theme_override_styles/normal = SubResource("StyleBoxFlat_1hby1")
 
 [node name="Margin" type="MarginContainer" parent="."]
 layout_mode = 2

@@ -24,13 +24,15 @@ private:
 
     bool gift;
 
+    double speedModifier = 1;
+
 public:
     Vessel(){}
-    Vessel(Player* owner, Point position, Outpost* origin, 
+    Vessel(Player* owner, const Point& position, Outpost* origin, 
         PositionalObject* target, int numUnits,
         const std::list<Specialist*> &specialists) :
-        PositionalObject(position, numUnits, specialists), origin(origin),
-        returnOutpost(origin), target(target), gift(false) { setOwner(owner); }
+        PositionalObject(position, numUnits, specialists),
+        returnOutpost(origin), origin(origin), target(target), gift(false) { setOwner(owner); }
     void updatePointers(Game* game) override;
 
     void collision(Vessel* vessel, Vessel* other, double timestamp, std::multiset<Event*, EventOrder> &events);
@@ -44,6 +46,7 @@ public:
     void setOrigin(Outpost* origin) { this->origin = origin; };
 
     double getSpeed() const override;
+    void setSpeedModifier(double speed) { this->speedModifier = speed; }
 
     bool isGift() const { return gift; }
     void setGift() { gift = true; } 

@@ -7,6 +7,7 @@
 #include <godot_cpp/classes/input_event.hpp>
 #include <godot_cpp/classes/texture_rect.hpp>
 #include "../GameServer/GameLogic/gameClasses/gameObjects/positional_object.h"
+#include <unordered_set>
 
 namespace godot {
 
@@ -17,6 +18,8 @@ private:
 	PositionalObject* obj;
 	
 	double timeDiff;
+
+	std::unordered_set<int> selectedSpecialists;
 
 	bool selected;
 
@@ -51,6 +54,14 @@ public:
 	void selectSpecialist(Camera2D *camera, const Ref<InputEvent> &event, int32_t id);
 
 	PositionalObject* getObj() { return obj; }
+
+	void clearSelectedSpecialists() {
+		while(!selectedSpecialists.empty()) setSpecialistSelected(*selectedSpecialists.begin(), false);
+	}
+
+	void setSpecialistSelected(int specialistID, bool selected);
+
+	bool hasSelectedSpecialist(int specialistID) { return selectedSpecialists.find(specialistID) != selectedSpecialists.end(); }
 
 	void setSelected(bool selected);
 

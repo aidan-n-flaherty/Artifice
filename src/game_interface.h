@@ -32,7 +32,7 @@ private:
 
 	double nextState;
 	
-	int selectedObj = -1;
+	PositionalNode* selectedNode;
 	
 	std::unordered_set<int> selectedSpecialists;
 	
@@ -65,10 +65,11 @@ public:
 
 	int getUserGameID() { return userGameID; }
 		
+	void setSelectedSpecialist(int id);
 	void select(int id);
 	void setSelected(int id);
-	void unselect() { setSelected(-1); }
-	int getSelected() { return selectedObj; }
+	void unselect();
+	PositionalNode* getSelected() { return selectedNode; }
 		
 	void setTime(double t);
 	double getTime() { return current; }

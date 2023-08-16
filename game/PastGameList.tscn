@@ -5,4 +5,3 @@
 
 [node name="PastGameList" instance=ExtResource("1_e7uii")]
 script = ExtResource("2_b1l86")
-GameButton = null

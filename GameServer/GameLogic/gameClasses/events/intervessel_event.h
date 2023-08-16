@@ -85,6 +85,12 @@ public:
                     loser->returnHome();
                 } else game->removeVessel(loser);
 
+                // winner was a pirate
+                if(winner->getTargetID() == loser->getID()) {
+                    winner->returnHome();
+                    winner->setSpeedModifier(4);
+                }
+
                 if(vesselAOwner && !vesselAOwner->controlsSpecialist(SpecialistType::QUEEN)) {
                     vesselAOwner->setDefeated(game);
                 }

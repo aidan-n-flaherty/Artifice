@@ -5,4 +5,3 @@
 
 [node name="OpenGameList" instance=ExtResource("1_4qlik")]
 script = ExtResource("1_j6ila")
-GameButton = null

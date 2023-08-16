@@ -27,29 +27,33 @@ void run() {
 
 	double start = getTime();
 	std::shared_ptr<Game> game = std::shared_ptr<Game>(new Game(123456, start, start + 48 * 60 * 60, players, 42083, true));
-	/*std::list<int> specialists;
+	std::list<int> specialists;
 	specialists.push_back(4);
-	game->addOrder(new SendOrder(start, 0, 20, specialists, 3, 7, -1));
+	game->addOrder(new SendOrder(start, 0, 10, specialists, 3, 7, -1));
 	specialists = std::list<int>();
 	specialists.push_back(8);
-	game->addOrder(new SendOrder(start, 2, 20, specialists, 7, 3, -1));
+	game->addOrder(new SendOrder(start, 2, 10, specialists, 7, 3, -1));
 	specialists = std::list<int>();
 	specialists.push_back(6);
-	game->run();*/
+	game->run();
 	//game.addOrder(new SendOrder(start + 1, 1, 10, specialists, 5, 12, 0));
 	//int tmp[] { 10, 5, 12, 6};
 	//game = game->processOrder("SEND", 2, 0, start + 1, 1, tmp, 4);
 
 	/*int tmp[] { 1,5,3 };
 	game = game->processOrder("SEND", 42, -1, start + 1, 1, tmp, 3);*/
-	for(int i = 0; i < 20; i++) {
+	/*for(int i = 0; i < 20; i++) {
 		std::list<int> specialists;
 		game->addOrder(new SendOrder(start + i * 10, 2, 1, specialists, 7, 5, -1));
 	}
 	for(int i = 0; i < 10; i++) {
 		std::list<int> specialists;
-		game->addOrder(new SendOrder(start + i * 10, 1, 2, specialists, 5, 7, -1));
+		game->addOrder(new SendOrder(start + 10 + i * 10, 1, 2, specialists, 5, 7, -1));
 	}
+	game->run();*/
+
+	int tmp[] { 20, 5, 12, 6};
+	game = game->processOrder("SEND", 2, 0, start + 1, 1, tmp, 4);
 	game->run();
 	
 	std::cout << "Rejected: ";

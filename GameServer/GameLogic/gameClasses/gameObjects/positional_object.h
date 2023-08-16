@@ -20,9 +20,9 @@ private:
 public:
     PositionalObject(){}
     PositionalObject(const Point &position, int numUnits) : numUnits(numUnits), position(position) {}
-    PositionalObject(const Point &position, int numUnits, const std::list<Specialist*> &specialists) : numUnits(numUnits), position(position), specialists(specialists) {}
+    PositionalObject(const Point &position, int numUnits, const std::list<Specialist*> &specialists) : numUnits(numUnits), position(position) { addSpecialists(specialists); }
     PositionalObject(double x, double y, int numUnits) : numUnits(numUnits), position(x, y) {}
-    PositionalObject(double x, double y, int numUnits, const std::list<Specialist*> &specialists) : numUnits(numUnits), position(x, y), specialists(specialists) {}
+    PositionalObject(double x, double y, int numUnits, const std::list<Specialist*> &specialists) : numUnits(numUnits), position(x, y), specialists(specialists) { addSpecialists(specialists); }
 
     void updatePointers(Game* game) override;
 

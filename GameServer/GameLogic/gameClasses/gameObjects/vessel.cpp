@@ -68,16 +68,16 @@ const Point Vessel::getTargetPos() const {
 const Point Vessel::getPositionAt(double timeDiff) const {
     double distance = getSpeed() * timeDiff;
 
-    Point target = getTargetPos();
-    if(target.isInvalid()) {
-        target = getPosition().closest(origin->getPosition());
+    Point targetedPos = getTargetPos();
+    if(targetedPos.isInvalid()) {
+        targetedPos = getPosition().closest(origin->getPosition());
     }
 
-    return getPosition().movedTowards(target, distance);
+    return getPosition().movedTowards(targetedPos, distance);
 }
 
 void Vessel::update(double timeDiff) {
-    if(target == nullptr || target->isDeleted()) setTarget(origin);
+    if(!target || target->isDeleted()) setTarget(origin);
     double distance = getSpeed() * timeDiff;
 
     Point targetedPos = getTargetPos();
@@ -91,11 +91,12 @@ void Vessel::update(double timeDiff) {
 
 // should be modified to work with specialist effects
 double Vessel::getSpeed() const {
-    double speed = 1;
+    double speed = speedModifier;
 
     if(controlsSpecialist(SpecialistType::GENERAL) || controlsSpecialist(SpecialistType::LIEUTENANT)) speed = fmax(speed, 1.5);
     if(getSpecialists().empty() && ownerControlsSpecialist(SpecialistType::ADMIRAL)) speed = fmax(speed, 1.5);
     if(controlsSpecialist(SpecialistType::ADMIRAL)) speed = fmax(speed, 2);
+    if(dynamic_cast<Vessel*>(getTarget()) && controlsSpecialist(SpecialistType::PIRATE)) speed = fmax(speed, 2);
     if(controlsSpecialist(SpecialistType::SMUGGLER) && getTarget()->getOwnerID() == getOwnerID()) speed = fmax(speed, 3);
 
     return speed;

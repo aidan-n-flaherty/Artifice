@@ -83,10 +83,10 @@ public:
 
     void endGame();
 
-    Player* getPlayer(const int id) { return players[id]; }
-    Vessel* getVessel(const int id) { return vessels[id]; }
-    Outpost* getOutpost(const int id) { return outposts[id]; }
-    Specialist* getSpecialist(const int id) { return specialists[id]; }
+    Player* getPlayer(const int id) { return hasPlayer(id) ? players[id] : nullptr; }
+    Vessel* getVessel(const int id) { return hasVessel(id) ? vessels[id] : nullptr; }
+    Outpost* getOutpost(const int id) { return hasOutpost(id) ? outposts[id] : nullptr; }
+    Specialist* getSpecialist(const int id) { return hasSpecialist(id) ? specialists[id] : nullptr; }
     PositionalObject* getPosObject(const int id) { if(hasOutpost(id)) return getOutpost(id); else return getVessel(id); }
     
     const std::unordered_map<int, Vessel*>& getVessels() const { return vessels; }
@@ -97,12 +97,11 @@ public:
     const std::multiset<Order*, OrderOrder>& getOrders() const { return orders; }
     const std::list<Order*>& getInvalid() { return invalidOrders; }
     
-    bool hasPlayer(const int id) const { return players.count(id) != 0; }
-    bool hasVessel(const int id) const { return vessels.count(id) != 0; }
-    bool hasOutpost(const int id) const { return outposts.count(id) != 0; }
-    bool controlsSpecialist(const int id) const { return specialists.count(id) != 0; }
+    bool hasPlayer(const int id) const { return players.find(id) != players.end(); }
+    bool hasVessel(const int id) const { return vessels.find(id) != vessels.end(); }
+    bool hasOutpost(const int id) const { return outposts.find(id) != outposts.end(); }
+    bool hasSpecialist(const int id) const { return specialists.find(id) != specialists.end(); }
     bool hasPosObject(const int id) const { return hasOutpost(id) || hasVessel(id); }
-    bool controlsSpecialist(SpecialistType t, std::list<int> specialists) const; 
     int simulatedEventCount() const { return simulatedEvents.size(); }
 
     void addPlayer(Player* p);

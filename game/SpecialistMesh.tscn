@@ -26,6 +26,7 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
+mouse_filter = 0
 texture = ExtResource("2_puof1")
 expand_mode = 1
 
