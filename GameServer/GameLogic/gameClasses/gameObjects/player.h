@@ -77,7 +77,7 @@ public:
     void removeSpecialist(Specialist* specialist);
 
     std::list<Outpost*> getOutposts() const { return outposts; }
-    std::list<Outpost*> sortedOutposts(PositionalObject* obj);
+    std::list<Outpost*> sortedOutposts(const PositionalObject* obj);
     void addOutpost(Outpost* outpost);
     void removeOutpost(Outpost* outpost);
 

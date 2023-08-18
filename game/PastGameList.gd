@@ -7,7 +7,7 @@ func _ready():
 	super()
 	
 func generateButton(id) -> Button:
-	var button = preload("res://GameButton.tscn").new()
+	var button = preload("res://GameButton.tscn").instantiate()
 	button.text = str("Game: ", str(id))
 	button.connect("pressed", GameData.viewGame.bind(id))
 	return button

@@ -73,15 +73,12 @@ void Player::setDefeated(Game* game) {
     if(game->hasEnded()) game->endGame();
 }
 
-std::list<Outpost*> Player::sortedOutposts(PositionalObject* obj) {
+std::list<Outpost*> Player::sortedOutposts(const PositionalObject* obj) {
     std::list<Outpost*> outposts;
 
-    for(Outpost* o : getOutposts()) {
-        outposts.push_back(o);
-    }
+    for(Outpost* o : getOutposts()) outposts.push_back(o);
 
-    outposts.sort([=](Outpost* a, Outpost* b) -> bool
-    { 
+    outposts.sort([&obj](Outpost* a, Outpost* b) { 
         return obj->distance(a->getPosition()) < obj->distance(b->getPosition()); 
     });
 

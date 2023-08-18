@@ -64,6 +64,10 @@ public:
          return x * other.x + y * other.y;
     }
 
+    Point operator*(double scalar) {
+         return Point(x * scalar, y * scalar);
+    }
+
     bool operator==(const Point &other) {
         return x == other.x && y == other.y;
     }

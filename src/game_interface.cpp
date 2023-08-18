@@ -11,6 +11,7 @@
 #include <godot_cpp/classes/viewport.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
 #include <godot_cpp/variant/callable.hpp>
+#include <godot_cpp/variant/packed_vector2_array.hpp>
 #include <cstdlib>
 #include <ctime>
 #include <chrono>
@@ -38,6 +39,7 @@ void GameInterface::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("getPercent"), &GameInterface::getPercent);
 	ClassDB::bind_method(D_METHOD("getWidth"), &GameInterface::getWidth);
 	ClassDB::bind_method(D_METHOD("getHeight"), &GameInterface::getHeight);
+	ClassDB::bind_method(D_METHOD("getOutpostPositions"), &GameInterface::getOutpostPositions);
 	ClassDB::bind_method(D_METHOD("getFloorDisplay"), &GameInterface::getFloorDisplay);
 	ClassDB::bind_method(D_METHOD("addOrder", "type", "ID", "referenceID", "timestamp", "senderID", "arguments", "argCount"), &GameInterface::addOrder);
 	ADD_SIGNAL(MethodInfo("addOrder", PropertyInfo(Variant::STRING, "type"), PropertyInfo(Variant::INT, "referenceID"), PropertyInfo(Variant::INT, "timestamp"), PropertyInfo(Variant::PACKED_INT32_ARRAY, "arguments")));
@@ -134,8 +136,7 @@ void GameInterface::update() {
 				if(!std::any_of(specialists.begin(), specialists.end(), [&it](auto& s){
 					return s->getID() == *it;
 				})) {
-					if(vessels.find(container->getID()) != vessels.end()) vessels[container->getID()]->setSpecialistSelected(*it, false);
-					if(outposts.find(container->getID()) != outposts.end()) outposts[container->getID()]->setSpecialistSelected(*it, false);
+					getObj(container->getID())->setSpecialistSelected(*it, false);
 
 					it = selectedSpecialists.erase(it);
 				} else it++;
@@ -166,6 +167,27 @@ void GameInterface::update() {
 	}
 }
 
+PositionalNode* GameInterface::getObj(int id) {
+	PositionalNode* obj = nullptr;
+
+	if(vessels.find(id) != vessels.end()) obj = vessels[id];
+	if(outposts.find(id) != outposts.end()) obj = outposts[id];
+
+	return obj;
+}
+
+bool GameInterface::willSendWith(SpecialistType type) {
+	if(!selectedNode) return false;
+
+	for(Specialist* s : selectedNode->getObj()->getSpecialists()) {
+		if(s->getType() == type && s->getOwnerID() == getUserGameID() && selectedSpecialists.find(s->getID()) != selectedSpecialists.end()) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
 // event propagated from positional nodes, occurs when something is clicked on
 void GameInterface::select(int id) {
 	// selecting the same thing deselects
@@ -180,11 +202,19 @@ void GameInterface::select(int id) {
 		return;
 	}
 
-	// if an outpost is already selected, check if another outpost is being selected to send a vessel to
-	if(outposts.find(id) != outposts.end()) {
-		OutpostNode* outpost = outposts[id];
+	PositionalNode* target = getObj(id);
 
-		if(dynamic_cast<OutpostNode*>(selectedNode)) {
+	if(selectedNode) {
+		VesselNode* v1 = dynamic_cast<VesselNode*>(selectedNode);
+		OutpostNode* o1 = dynamic_cast<OutpostNode*>(selectedNode);
+
+		VesselNode* v2 = dynamic_cast<VesselNode*>(target);
+		OutpostNode* o2 = dynamic_cast<OutpostNode*>(target);
+
+
+		if(o1) {
+			if(v2 && !willSendWith(SpecialistType::PIRATE)) return;
+
 			int units = selectedNode->getObj()->getUnitsAt(selectedNode->getDiff());
 
 			if(units <= 0) {
@@ -192,45 +222,8 @@ void GameInterface::select(int id) {
 				return;
 			}
 
-			int parameters[] = { std::max(1, int(percent * units)), selectedNode->getID(), outpost->getID() };
-			Array arguments;
 
-			for(int i = 0; i < 3; i++) arguments.push_back(parameters[i]);
-
-			while(!selectedSpecialists.empty()) {
-				arguments.push_back(*selectedSpecialists.begin());
-				selectedSpecialists.erase(selectedSpecialists.begin());
-			}
-
-			emit_signal("addOrder", "SEND", game->getReferenceID(), int(current), arguments);
-
-			unselect();
-			
-			return;
-		} else if(outpost->getOwnerID() != getUserGameID()) return;
-	} else if(vessels.find(id) != vessels.end()) {
-		VesselNode* vessel = vessels[id];
-
-		if(dynamic_cast<OutpostNode*>(selectedNode)) {
-			int units = selectedNode->getObj()->getUnitsAt(selectedNode->getDiff());
-
-			if(units <= 0) {
-				unselect();
-				return;
-			}
-
-			bool hasPirate = false;
-
-			for(Specialist* s : selectedNode->getObj()->getSpecialists()) {
-				if(s->getType() == SpecialistType::PIRATE && selectedSpecialists.find(s->getID()) != selectedSpecialists.end()) {
-					hasPirate = true;
-					break;
-				}
-			}
-
-			if(!hasPirate) return;
-
-			int parameters[] = { std::max(1, int(percent * units)), selectedNode->getID(), vessel->getID() };
+			int parameters[] = { std::max(1, int(percent * units)), selectedNode->getID(), target->getID() };
 			Array arguments;
 
 			for(int i = 0; i < 3; i++) arguments.push_back(parameters[i]);
@@ -246,9 +239,24 @@ void GameInterface::select(int id) {
 			unselect();
 			
 			return;
-		} else if(vessel->getOwnerID() != getUserGameID()) return;
-	}
-	
+		} else if(v1) {
+			if(!selectedNode->getObj()->controlsSpecialist(SpecialistType::NAVIGATOR)) return;
+
+			if(v2 && !selectedNode->getObj()->controlsSpecialist(SpecialistType::PIRATE)) return;
+
+			int parameters[] = { selectedNode->getID(), target->getID() };
+			Array arguments;
+
+			for(int i = 0; i < 2; i++) arguments.push_back(parameters[i]);
+
+			emit_signal("addOrder", "REROUTE", game->getReferenceID(), int(current), arguments);
+
+			unselect();
+			
+			return;
+		}
+	} else if(target->getOwnerID() != getUserGameID()) return;
+
 	setSelected(id);
 }
 
@@ -259,17 +267,11 @@ void GameInterface::unselect() {
 }
 
 void GameInterface::setSelected(int id) {
-	int selectedObj = selectedNode ? selectedNode->getID() : -1;
+	if(selectedNode) selectedNode->setSelected(false);
 
-	if(vessels.find(selectedObj) != vessels.end()) vessels[selectedObj]->setSelected(false);
-	if(outposts.find(selectedObj) != outposts.end()) outposts[selectedObj]->setSelected(false);
+	PositionalNode* obj = getObj(id);
 
-	selectedObj = id;
-
-	PositionalNode* obj = nullptr;
-
-	if(vessels.find(selectedObj) != vessels.end()) (obj = vessels[selectedObj])->setSelected(true);
-	if(outposts.find(selectedObj) != outposts.end()) (obj = outposts[selectedObj])->setSelected(true);
+	if(obj) obj->setSelected(true);
 
 	selectedNode = obj;
 }
@@ -278,20 +280,13 @@ void GameInterface::setSelectedSpecialist(int id) {
 	bool selected = selectedSpecialists.find(id) == selectedSpecialists.end();
 
 	Specialist* s = game->getSpecialist(id);
-	PositionalNode* container;
 
 	int containerID = s->getContainer() ? s->getContainer()->getID() : -1;
 	bool owned = s->getContainer() && s->getContainer()->getOwnerID() == getUserGameID();
+	PositionalNode* container = getObj(containerID);
 
-	if(vessels.find(containerID) != vessels.end()) {
-		container = vessels[containerID];
-		for(auto& pair : vessels) if(pair.first != containerID || !owned) pair.second->clearSelectedSpecialists();
-	}
-
-	if(outposts.find(containerID) != outposts.end()) {
-		container = outposts[containerID];
-		for(auto& pair : outposts) if(pair.first != containerID || !owned) pair.second->clearSelectedSpecialists();
-	}
+	for(auto& pair : vessels) if(pair.first != containerID || !owned) pair.second->clearSelectedSpecialists();
+	for(auto& pair : outposts) if(pair.first != containerID || !owned) pair.second->clearSelectedSpecialists();
 
 	if(container) {
 		container->setSpecialistSelected(id, selected);
@@ -348,4 +343,14 @@ void GameInterface::addOrder(const String &type, uint32_t ID, int32_t referenceI
 	game = nullptr;
 	
 	update();
+}
+
+PackedVector2Array GameInterface::getOutpostPositions() {
+	PackedVector2Array arr;
+
+	for(auto& pair : outposts) {
+		arr.push_back(Vector2(pair.second->get_position().x, pair.second->get_position().z));
+	}
+
+	return arr;
 }

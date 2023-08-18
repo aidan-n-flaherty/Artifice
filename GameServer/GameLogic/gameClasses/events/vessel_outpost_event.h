@@ -34,6 +34,7 @@ public:
         BattleEvent::run(game);
 
         std::cout << "Vessel-Outpost combat: " << game->getTime() << ", " << (vessel->hasOwner() ? vessel->getOwner()->getName() : "none") << ", " << (outpost->hasOwner() ? outpost->getOwner()->getName() : "none") << std::endl;
+        std::cout << outpost->getPosition().getX() << ", " << outpost->getPosition().getY() << std::endl;
 
         if(outpost->getOwnerID() == vessel->getOwnerID() || vessel->isGift()) {
             outpost->addUnits(vessel->getUnits());
@@ -73,6 +74,12 @@ public:
 
             if(outpostOwner && !outpostOwner->controlsSpecialist(SpecialistType::QUEEN)) {
                 outpostOwner->setDefeated(game);
+            }
+        }
+
+        if(outpost->controlsSpecialist(SpecialistType::HYPNOTIST)) {
+            for(Specialist* s : outpost->getSpecialists()) {
+                s->setOwner(outpost->getOwner());
             }
         }
 

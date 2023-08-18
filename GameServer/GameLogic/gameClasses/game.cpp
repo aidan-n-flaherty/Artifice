@@ -23,11 +23,12 @@
 /* The game constructor should create the entire starting state deterministically based on
 ** the random seed provided.
 */
-Game::Game(int simulatorID, double startTime, double endTime, std::map<int, std::string> &playerInfo, int seed, bool cacheEnabled) :
+Game::Game(int simulatorID, double startTime, double endTime, const std::map<int, std::string> &playerInfo, int seed, bool cacheEnabled) :
     stateTime(startTime), endTime(endTime), cacheEnabled(cacheEnabled) {
     std::srand(seed);
 
     // necessary since godot likes to instantiate unnecessary game objects for fun
+    GameObject::resetCounter();
     int offset = GameObject::getIDCounter();
 
     for(auto pair : playerInfo) {
@@ -38,7 +39,7 @@ Game::Game(int simulatorID, double startTime, double endTime, std::map<int, std:
 
     int t = 0;
     for(auto pair : playerInfo) {
-        Outpost* o = new Outpost(OutpostType::FACTORY, 20, 10 + 10 * (t % 2), 10 + 10 * (t % 3) * (t % 3));
+        Outpost* o = new Outpost(OutpostType::FACTORY, 20, 10 + 20 * (t % 2), 10 + 20 * (t % 3) * (t % 3));
         addOutpost(o);
         getPlayer(offset + t)->addOutpost(getOutpost(o->getID()));
 
@@ -57,13 +58,33 @@ Game::Game(int simulatorID, double startTime, double endTime, std::map<int, std:
         addSpecialist(s);
         getPlayer(offset + t)->getOutposts().front()->addSpecialist(getSpecialist(s->getID()));
         getPlayer(offset + t)->addSpecialist(getSpecialist(s->getID()));
+
+        s = new Specialist(SpecialistType::NAVIGATOR);
+        addSpecialist(s);
+        getPlayer(offset + t)->getOutposts().front()->addSpecialist(getSpecialist(s->getID()));
+        getPlayer(offset + t)->addSpecialist(getSpecialist(s->getID()));
+
+        s = new Specialist(SpecialistType::ADMIRAL);
+        addSpecialist(s);
+        getPlayer(offset + t)->getOutposts().front()->addSpecialist(getSpecialist(s->getID()));
+        getPlayer(offset + t)->addSpecialist(getSpecialist(s->getID()));
+
+        s = new Specialist(SpecialistType::SENTRY);
+        addSpecialist(s);
+        getPlayer(offset + t)->getOutposts().front()->addSpecialist(getSpecialist(s->getID()));
+        getPlayer(offset + t)->addSpecialist(getSpecialist(s->getID()));
+
+        s = new Specialist(SpecialistType::TYCOON);
+        addSpecialist(s);
+        getPlayer(offset + t)->getOutposts().front()->addSpecialist(getSpecialist(s->getID()));
+        getPlayer(offset + t)->addSpecialist(getSpecialist(s->getID()));
         t++;
     }
 
     addEvent(new OutpostRangeEvent(getTime()));
 }
 
-Game::Game(const Game& game) : stateTime(game.stateTime), cacheEnabled(game.cacheEnabled), endTime(game.endTime), referenceID(game.referenceID) {
+Game::Game(const Game& game) : stateTime(game.stateTime), cacheEnabled(game.cacheEnabled), endTime(game.endTime), referenceID(game.referenceID), simulatorID(game.simulatorID) {
     for(Event* event : game.events) events.insert(event->copy());
     for(Event* event : game.simulatedEvents) simulatedEvents.push_back(event->copy());
     for(const auto& pair : game.vessels) vessels[pair.first] = new Vessel(*pair.second);
@@ -104,6 +125,26 @@ void Game::removeRelevant(int id) {
 }
 
 void Game::updateEvents() {
+    // delete all objects flagged for deletion
+    for(auto itA = vessels.begin(); itA != vessels.end();) {
+        Vessel* vessel = itA->second;
+
+        if(vessel->isDeleted()) {
+            removeRelevant(vessel->getID());
+            itA = vessels.erase(itA);
+            delete vessel;
+        } else itA++;
+    }
+
+    for(auto itA = specialists.begin(); itA != specialists.end();) {
+        Specialist* specialist = itA->second;
+
+        if(specialist->isDeleted()) {
+            itA = specialists.erase(itA);
+            delete specialist;
+        } else itA++;
+    }
+
     // All players flagged for update (e.g. increased mining rate)
     for(auto itA = players.begin(); itA != players.end(); itA++) {
         Player* player = itA->second;
@@ -122,31 +163,6 @@ void Game::updateEvents() {
         if(!outpost->needsRefresh()) continue;
 
         removeRelevant(outpost->getID());
-
-        if(outpost->controlsSpecialist(SpecialistType::HYPNOTIST)) {
-            for(Specialist* s : outpost->getSpecialists()) {
-                s->setOwner(outpost->getOwner());
-            }
-        }
-    }
-
-    for(auto itA = vessels.begin(); itA != vessels.end();) {
-        Vessel* vessel = itA->second;
-
-        if(vessel->isDeleted()) {
-            removeRelevant(vessel->getID());
-            itA = vessels.erase(itA);
-            delete vessel;
-        } else itA++;
-    }
-
-    for(auto itA = specialists.begin(); itA != specialists.end();) {
-        Specialist* specialist = itA->second;
-
-        if(specialist->isDeleted()) {
-            itA = specialists.erase(itA);
-            delete specialist;
-        } else itA++;
     }
 
     // All vessels flagged for update (e.g. global speed change) may have different combat times.
@@ -218,7 +234,7 @@ std::list<std::pair<int, int>> Game::run() {
             Event* converted = order->convert(this);
             orders.erase(orderIt);
 
-            if(order->getID() > referenceID && order->getSenderID() != simulatorID) referenceID = order->getID(); 
+            if(order->getID() > referenceID && order->getSenderID() != simulatorID) referenceID = order->getID();
 
             if(!converted) {
                 invalidOrders.push_back(order);

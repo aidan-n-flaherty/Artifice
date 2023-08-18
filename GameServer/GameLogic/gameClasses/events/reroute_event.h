@@ -3,6 +3,7 @@
 
 #include <cstdlib>
 #include <cmath>
+#include <iostream>
 #include "../event.h"
 #include "../game.h"
 
@@ -27,6 +28,7 @@ public:
     }
 
     void run(Game* game) override {
+        std::cout << "Rerouted" << std::endl;
         vessel->setTarget(target);
         vessel->setOrigin(nullptr);
     }

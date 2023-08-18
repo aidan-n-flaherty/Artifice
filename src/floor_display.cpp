@@ -18,7 +18,7 @@ void FloorDisplay::_draw() {
 
     Node3D* cameraPivot = cast_to<Node3D>(get_parent()->get_parent());
     double x = cameraPivot->get_position().x - 50;
-    double y = cameraPivot->get_position().z - 130 + 50;
+    double y = cameraPivot->get_position().z - 130 + 100;
 
     for(const auto& pair : current->getVessels()) {
         double x1 = pair.second->getPositionAt(getDiff()).getX();

@@ -28,6 +28,7 @@ public:
     bool isDeleted() const { return deleted; }
 
     static int getIDCounter() { return counter; }
+    static void resetCounter() { counter = 0; }
 };
 
 #endif

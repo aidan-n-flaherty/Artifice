@@ -6,9 +6,11 @@
 #include <tuple>
 #include <unordered_map>
 #include <unordered_set>
+#include <godot_cpp/variant/packed_vector2_array.hpp>
 #include "../GameServer/GameLogic/gameClasses/game.h"
 #include "../GameServer/GameLogic/gameClasses/gameObjects/vessel.h"
 #include "../GameServer/GameLogic/gameClasses/gameObjects/outpost.h"
+#include "../GameServer/GameLogic/gameClasses/gameObjects/specialist.h"
 #include "../GameServer/GameLogic/gameClasses/game_settings.h"
 #include "vessel_node.h"
 #include "outpost_node.h"
@@ -64,18 +66,22 @@ public:
 	std::shared_ptr<Game> getGame() { return game; }
 
 	int getUserGameID() { return userGameID; }
-		
+	
+	bool willSendWith(SpecialistType type);
 	void setSelectedSpecialist(int id);
 	void select(int id);
 	void setSelected(int id);
 	void unselect();
 	PositionalNode* getSelected() { return selectedNode; }
+	PositionalNode* getObj(int id);
 		
 	void setTime(double t);
 	double getTime() { return current; }
 
 	void setPercent(double percent) { this->percent = percent; }
 	double getPercent() { return percent; }
+
+	PackedVector2Array getOutpostPositions();
 
 	int getWidth() { return GameSettings::width; }
 	int getHeight() { return GameSettings::height; }

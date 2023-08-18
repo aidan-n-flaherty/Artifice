@@ -19,7 +19,7 @@ public:
 
     virtual void updatePointers(Game* game);
 
-    bool hasOwner() const { return owner != nullptr; }
+    bool hasOwner() const { return owner; }
 
     int getOwnerID() const;
     Player* getOwner() const { return owner; }

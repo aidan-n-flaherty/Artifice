@@ -9,12 +9,27 @@ var lastDiff
 
 var momentum = Vector2(0, 0)
 
+var pos
+
 var game
+
+func updatePos():
+	pos = Vector2(position.x, position.z + 100)
+	$Water.get_surface_override_material(0).set_shader_parameter("offset", pos)
+	$Floor.get_surface_override_material(0).set_shader_parameter("offset", pos)
+	
+	var arr = game.getOutpostPositions();
+	$Floor.get_surface_override_material(0).set_shader_parameter("outposts", arr)
+	$Floor.get_surface_override_material(0).set_shader_parameter("outpostsLength", arr.size())
 
 func _process(delta):
 	if not dragging:
 		position.x += momentum.x * 0.9
 		position.z += momentum.y * 0.9
+		
+		if(momentum != Vector2(0, 0)):
+			updatePos()
+		
 		momentum *= 0.9
 	
 	pass
@@ -46,3 +61,6 @@ func _unhandled_input(event):
 		
 		position.x = newPos.x
 		position.z = newPos.y
+		
+		updatePos()
+		

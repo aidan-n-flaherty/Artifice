@@ -13,6 +13,8 @@
 #include <godot_cpp/classes/global_constants.hpp>
 #include <godot_cpp/classes/texture2d.hpp>
 #include <godot_cpp/classes/texture_rect.hpp>
+#include <godot_cpp/classes/material.hpp>
+#include <godot_cpp/classes/shader_material.hpp>
 #include <godot_cpp/variant/callable.hpp>
 #include <godot_cpp/variant/string_name.hpp>
 #include <godot_cpp/classes/label3d.hpp>
@@ -155,7 +157,9 @@ void PositionalNode::setReference(PositionalObject* obj) {
 				texture->set_texture(img);
 				
 				CanvasItem* item = cast_to<CanvasItem>(s->get_node_or_null(NodePath("Area2D")));
-				item->set_modulate(Color(1.0, 1.0, 1.0, selectedSpecialists.find(sp->getID()) != selectedSpecialists.end() ? 1.0 : 0.5));
+				ShaderMaterial* mat = cast_to<ShaderMaterial>(item->get_material().ptr());
+				if(selectedSpecialists.find(sp->getID()) != selectedSpecialists.end()) mat->set_shader_parameter("inverted", true);
+				else mat->set_shader_parameter("inverted", false);
 
 				n->add_child(s);
 
@@ -166,7 +170,17 @@ void PositionalNode::setReference(PositionalObject* obj) {
 		int offset = 0;
 
 		for(Node3D* child : currentSpecialists) {
-			child->set_position(Vector3(10 * (offset++ - (obj->getSpecialists().size() - 1) / 2.0), 0, 0));
+			child->set_position(Vector3(4.0 * ((offset + 1) % 3 - 1), 0, 7 * (offset / 3) + 3.0 * abs((offset + 1) % 3 - 1)));
+			offset++;
+		}
+
+		for(Specialist* s : specialists) {
+			Node* specialistNode = n->get_node_or_null(NodePath(("Specialist" + std::to_string(s->getID())).c_str()));
+			
+			if(specialistNode) {
+				CanvasItem* item = cast_to<CanvasItem>(specialistNode->get_node_or_null(NodePath("Area2D")));
+				item->set_modulate(Color(1.0, 1.0, 1.0, s->getContainer() && s->getContainer()->getOwnerID() != s->getOwnerID() ? 0.5 : 1.0));
+			}
 		}
 	}
 }
@@ -183,7 +197,10 @@ void PositionalNode::setSpecialistSelected(int specialistID, bool selected) {
 
 			if(child->get_name() == StringName(("Specialist" + std::to_string(specialistID)).c_str())) {
 				CanvasItem* item = cast_to<CanvasItem>(child->get_node_or_null(NodePath("Area2D")));
-				item->set_modulate(Color(1.0, 1.0, 1.0, selected ? 1.0 : 0.5));
+				
+				ShaderMaterial* mat = cast_to<ShaderMaterial>(item->get_material().ptr());
+				if(selected) mat->set_shader_parameter("inverted", true);
+				else mat->set_shader_parameter("inverted", false);
 			}
 		}
 	}
