@@ -14,13 +14,13 @@ func _draw():
 	var count = int($"../..".get_parent().getShield())
 	
 	var center = Vector2(512, 512)
-	var radius = 256
+	var radius = 400
 	var angle_from = 135
 	var angle_size = 180
 	
 	for i in 1 + count/10:
-		draw_circle_arc(center, radius + i * 30, angle_from, angle_from + angle_size, Color(0, 0, 0, 0.2))
-		draw_circle_arc(center, radius + i * 30, angle_from, angle_from + min(10, count - i * 10) * angle_size / 10, Color(0, 0, 0, 1))
+		draw_circle_arc(center, radius + i * 40, angle_from, angle_from + angle_size, Color(0, 0, 0, 0.2))
+		draw_circle_arc(center, radius + i * 40, angle_from, angle_from + min(10, count - i * 10) * angle_size / 10, Color(0, 0, 0, 1))
 	
 func draw_circle_arc(center, radius, angle_from, angle_to, color):
 	var nb_points = 32
@@ -31,4 +31,4 @@ func draw_circle_arc(center, radius, angle_from, angle_to, color):
 		points_arc.push_back(center + Vector2(cos(angle_point), sin(angle_point)) * radius)
 
 	for index_point in range(nb_points):
-		draw_line(points_arc[index_point], points_arc[index_point + 1], color, 20)
+		draw_line(points_arc[index_point], points_arc[index_point + 1], color, 30)

@@ -21,8 +21,18 @@ vec3 normal(vec2 uv, sampler2D texture_norm) {
 void vertex() {
 	vec2 pos = (UV - 0.5) + vec2(offset.x/100.0, offset.y/260.0);
 	
-	float height = texture(land, pos).r;
 	float height2 = texture(ocean, pos).r;
+	
+	float height = texture(land, pos).r;
+	
+	if(height2 > 0.45 && height2 < 0.6) {
+		vec2 norm = normalize(normal(pos, ocean).xy);
+		
+		float scalar = 5.0 * (height2 - 0.5);
+		VERTEX.z += scalar * norm.y;
+		VERTEX.x -= scalar * norm.x;
+		height = 0.75;
+	}
 	
 	for(int i = 0; i < outpostsLength; i++) {
 		vec2 v = outposts[i];
@@ -34,10 +44,10 @@ void vertex() {
 	
 	VERTEX.y += -2.0 + 2.0 * height - 100.0 * max(0.0, height2 - 0.6);
 	
-	COLOR = vec4(albedo - 0.3 * height, 1.0);
+	COLOR = vec4(albedo - 0.5 * height, 1.0);
 	
-	vec2 norm = normalize(normal(pos, ocean).xy);
 	if(height2 > 0.6) {
+		vec2 norm = normalize(normal(pos, ocean).xy);
 		float scalar = 4.0 * min(1.0, 20.0 * (height2 - 0.6));
 		VERTEX.z += scalar * norm.y;
 		VERTEX.x -= scalar * norm.x;
@@ -51,5 +61,7 @@ void fragment() {
 	
 	ALBEDO = COLOR.rgb;
 	
-	NORMAL = normal(pos, land);
+	vec3 norm = normal(pos, land);
+	norm.y *= 0.75;
+	NORMAL = normalize(norm);
 }

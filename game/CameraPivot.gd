@@ -13,14 +13,21 @@ var pos
 
 var game
 
+var zoom = 0
+
+@export var maxZoom = 1.5
+
+@export var minZoom = 0.5
+
 func updatePos():
 	pos = Vector2(position.x, position.z + 100)
 	$Water.get_surface_override_material(0).set_shader_parameter("offset", pos)
-	$Floor.get_surface_override_material(0).set_shader_parameter("offset", pos)
+	get_parent().get_node("Floor").offset = pos
+	#$Floor.get_surface_override_material(0).set_shader_parameter("offset", pos)
 	
-	var arr = game.getOutpostPositions();
-	$Floor.get_surface_override_material(0).set_shader_parameter("outposts", arr)
-	$Floor.get_surface_override_material(0).set_shader_parameter("outpostsLength", arr.size())
+	#var arr = game.getOutpostPositions();
+	#$Floor.get_surface_override_material(0).set_shader_parameter("outposts", arr)
+	#$Floor.get_surface_override_material(0).set_shader_parameter("outpostsLength", arr.size())
 
 func _process(delta):
 	if not dragging:
@@ -63,4 +70,15 @@ func _unhandled_input(event):
 		position.z = newPos.y
 		
 		updatePos()
+	elif event is InputEventPanGesture:
+		var diff = event.delta.y
 		
+		zoom += 0.1 * diff
+		if(zoom > 3.0): zoom = 3.0
+		elif(zoom < -3.0): zoom = -3.0
+		
+		$Camera3D.size = 100 * ((minZoom + maxZoom)/2.0 + tanh(zoom) * (maxZoom - minZoom) / PI)
+		$Water.get_surface_override_material(0).set_shader_parameter("cameraSize", $Camera3D.size)
+		$Water.scale.z = $Camera3D.size/100.0
+		$Water.scale.x = $Camera3D.size/100.0
+		get_parent().get_node("Floor").cameraSize = $Camera3D.size

@@ -31,5 +31,5 @@ void VesselNode::_process(double delta) {
 		
 	if(vessel == nullptr) return;
 		
-    set_position(Vector3(vessel->getPositionAt(getDiff()).getX(), 10 + (1.0 / (0.001 + getTimePassed() * getTimePassed())), vessel->getPositionAt(getDiff()).getY()));
+    set_position(Vector3(vessel->getPositionAt(getDiff()).getX(), 20 + (1.0 / (0.001 + getTimePassed() * getTimePassed())), vessel->getPositionAt(getDiff()).getY()));
 }

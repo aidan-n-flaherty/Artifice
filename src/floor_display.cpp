@@ -20,6 +20,19 @@ void FloorDisplay::_draw() {
     double x = cameraPivot->get_position().x - 50;
     double y = cameraPivot->get_position().z - 130 + 100;
 
+    /*for(const auto& pair : current->getOutposts()) {
+        double x1 = pair.second->getPositionAt(getDiff()).getX();
+        double y1 = pair.second->getPositionAt(getDiff()).getY();
+
+        int shield = pair.second->getShieldAt(getDiff());
+        int maxShield = pair.second->getMaxShield();
+
+        for(int i = 0; i < maxShield; i += 10) {
+            draw_arc(Vector2(x1 - x, y1 - y) * 10, 300 + i * 3, UtilityFunctions::deg_to_rad(135), UtilityFunctions::deg_to_rad(135 + 10 * 18), 32, Color(0.0, 0.0, 0.0, 0.2), 20.0, true);
+            draw_arc(Vector2(x1 - x, y1 - y) * 10, 300 + i * 3, UtilityFunctions::deg_to_rad(135), UtilityFunctions::deg_to_rad(135 + std::max(0, std::min(10, shield - i)) * 18), 32, Color(0.0, 0.0, 0.0), 20.0, true);
+        }
+    }*/
+
     for(const auto& pair : current->getVessels()) {
         double x1 = pair.second->getPositionAt(getDiff()).getX();
         double y1 = pair.second->getPositionAt(getDiff()).getY();

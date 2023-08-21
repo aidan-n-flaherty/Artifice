@@ -59,25 +59,27 @@ Game::Game(int simulatorID, double startTime, double endTime, const std::map<int
         getPlayer(offset + t)->getOutposts().front()->addSpecialist(getSpecialist(s->getID()));
         getPlayer(offset + t)->addSpecialist(getSpecialist(s->getID()));
 
-        s = new Specialist(SpecialistType::NAVIGATOR);
-        addSpecialist(s);
-        getPlayer(offset + t)->getOutposts().front()->addSpecialist(getSpecialist(s->getID()));
-        getPlayer(offset + t)->addSpecialist(getSpecialist(s->getID()));
+        if(t == 1) {
+            s = new Specialist(SpecialistType::NAVIGATOR);
+            addSpecialist(s);
+            getPlayer(offset + t)->getOutposts().front()->addSpecialist(getSpecialist(s->getID()));
+            getPlayer(offset + t)->addSpecialist(getSpecialist(s->getID()));
 
-        s = new Specialist(SpecialistType::ADMIRAL);
-        addSpecialist(s);
-        getPlayer(offset + t)->getOutposts().front()->addSpecialist(getSpecialist(s->getID()));
-        getPlayer(offset + t)->addSpecialist(getSpecialist(s->getID()));
+            s = new Specialist(SpecialistType::ADMIRAL);
+            addSpecialist(s);
+            getPlayer(offset + t)->getOutposts().front()->addSpecialist(getSpecialist(s->getID()));
+            getPlayer(offset + t)->addSpecialist(getSpecialist(s->getID()));
 
-        s = new Specialist(SpecialistType::SENTRY);
-        addSpecialist(s);
-        getPlayer(offset + t)->getOutposts().front()->addSpecialist(getSpecialist(s->getID()));
-        getPlayer(offset + t)->addSpecialist(getSpecialist(s->getID()));
+            s = new Specialist(SpecialistType::SENTRY);
+            addSpecialist(s);
+            getPlayer(offset + t)->getOutposts().front()->addSpecialist(getSpecialist(s->getID()));
+            getPlayer(offset + t)->addSpecialist(getSpecialist(s->getID()));
 
-        s = new Specialist(SpecialistType::TYCOON);
-        addSpecialist(s);
-        getPlayer(offset + t)->getOutposts().front()->addSpecialist(getSpecialist(s->getID()));
-        getPlayer(offset + t)->addSpecialist(getSpecialist(s->getID()));
+            s = new Specialist(SpecialistType::TYCOON);
+            addSpecialist(s);
+            getPlayer(offset + t)->getOutposts().front()->addSpecialist(getSpecialist(s->getID()));
+            getPlayer(offset + t)->addSpecialist(getSpecialist(s->getID()));
+        }
         t++;
     }
 

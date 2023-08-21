@@ -1,0 +1,42 @@
+[gd_scene load_steps=8 format=3 uid="uid://q0m0em1jdsin"]
+
+[ext_resource type="Shader" path="res://Snow.gdshader" id="1_rr4j7"]
+[ext_resource type="Texture2D" uid="uid://ni2tx8u0abmi" path="res://resources/floorNoise/SnowNoise.tres" id="2_ywdpy"]
+[ext_resource type="Texture2D" uid="uid://bu01kj5jvvq1b" path="res://resources/floorNoise/OceanNoise.tres" id="3_qga6v"]
+[ext_resource type="Shader" path="res://SnowSubsurface.gdshader" id="4_q3jre"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_0g588"]
+size = Vector2(10, 10)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_75rt1"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("1_rr4j7")
+shader_parameter/albedo = Color(1, 1, 1, 1)
+shader_parameter/epsilon = 0.01
+shader_parameter/outposts = null
+shader_parameter/outpostsLength = 0
+shader_parameter/land = ExtResource("2_ywdpy")
+shader_parameter/ocean = ExtResource("3_qga6v")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_k32sm"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("4_q3jre")
+shader_parameter/albedo = Color(0.290196, 0.290196, 0.290196, 1)
+shader_parameter/epsilon = 0.01
+shader_parameter/outposts = null
+shader_parameter/outpostsLength = 0
+
+[node name="FloorTile" type="Node3D"]
+
+[node name="FloorMeshSurface" type="MeshInstance3D" parent="."]
+mesh = SubResource("PlaneMesh_0g588")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("ShaderMaterial_75rt1")
+
+[node name="FloorMesh1" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.01, 0)
+mesh = SubResource("PlaneMesh_0g588")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("ShaderMaterial_k32sm")

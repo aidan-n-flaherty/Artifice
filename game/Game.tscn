@@ -1,4 +1,4 @@
-[gd_scene load_steps=37 format=3 uid="uid://dgp4l24s2rulk"]
+[gd_scene load_steps=36 format=3 uid="uid://dgp4l24s2rulk"]
 
 [ext_resource type="Script" path="res://Game.gd" id="1_s53r2"]
 [ext_resource type="Shader" path="res://Floor.gdshader" id="2_6odax"]
@@ -8,7 +8,10 @@
 [ext_resource type="StyleBox" uid="uid://coornuougjr7i" path="res://resources/themes/MenuButton/ButtonNormal.tres" id="4_fdg00"]
 [ext_resource type="StyleBox" uid="uid://d2ba8dokdt8od" path="res://resources/themes/VSlider/SliderBackground.tres" id="4_vrtfm"]
 [ext_resource type="StyleBox" uid="uid://eumwqqqm3xf5" path="res://resources/themes/VSlider/SliderGrabber.tres" id="5_6xaao"]
+[ext_resource type="Texture2D" uid="uid://ni2tx8u0abmi" path="res://resources/floorNoise/SnowNoise.tres" id="5_32vqg"]
+[ext_resource type="PackedScene" uid="uid://eawm3nae56gi" path="res://Floor.tscn" id="5_da36p"]
 [ext_resource type="StyleBox" uid="uid://bbcqsraqxn7j" path="res://resources/themes/MenuButton/ButtonHover.tres" id="5_j8x77"]
+[ext_resource type="Texture2D" uid="uid://bu01kj5jvvq1b" path="res://resources/floorNoise/OceanNoise.tres" id="6_4cl8h"]
 [ext_resource type="StyleBox" uid="uid://ydy2ph7i0d33" path="res://resources/themes/MenuButton/LeftButtonNormal.tres" id="6_4mo1t"]
 [ext_resource type="StyleBox" uid="uid://btgfmsxfwcri7" path="res://resources/themes/MenuButton/ButtonPress.tres" id="6_h0r5t"]
 [ext_resource type="StyleBox" uid="uid://b31q0joubx7la" path="res://resources/themes/MenuButton/LeftButtonHover.tres" id="7_84ov1"]
@@ -72,8 +75,9 @@ noise = SubResource("FastNoiseLite_h62s7")
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ncubh"]
 render_priority = 0
 shader = ExtResource("2_wnk18")
-shader_parameter/albedo = Color(0, 0, 0, 1)
-shader_parameter/time_speed = 0.001
+shader_parameter/albedo = Color(0.0941176, 0.160784, 0.227451, 1)
+shader_parameter/time_speed = 0.002
+shader_parameter/cameraSize = 100.0
 shader_parameter/offset = null
 shader_parameter/texture_normal = SubResource("NoiseTexture2D_ygbf3")
 shader_parameter/texture_normal2 = SubResource("NoiseTexture2D_lcr0e")
@@ -83,39 +87,24 @@ shader_parameter/texture_normal4 = SubResource("NoiseTexture2D_etdrc")
 [sub_resource type="PlaneMesh" id="PlaneMesh_cggwn"]
 lightmap_size_hint = Vector2i(502, 502)
 size = Vector2(100, 260)
-subdivide_width = 800
-subdivide_depth = 2080
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_217gi"]
-fractal_type = 2
-domain_warp_enabled = true
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_neu8y"]
-width = 400
-height = 1040
-seamless = true
-noise = SubResource("FastNoiseLite_217gi")
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_is21s"]
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ddeny"]
-width = 400
-height = 1040
-seamless = true
-noise = SubResource("FastNoiseLite_is21s")
+subdivide_width = 400
+subdivide_depth = 1040
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_l3p72"]
 render_priority = 0
 shader = ExtResource("2_6odax")
 shader_parameter/albedo = Color(1, 1, 1, 1)
-shader_parameter/epsilon = 0.01
+shader_parameter/epsilon = 0.005
 shader_parameter/offset = null
 shader_parameter/outposts = null
 shader_parameter/outpostsLength = 0
-shader_parameter/land = SubResource("NoiseTexture2D_neu8y")
-shader_parameter/ocean = SubResource("NoiseTexture2D_ddeny")
+shader_parameter/land = ExtResource("5_32vqg")
+shader_parameter/ocean = ExtResource("6_4cl8h")
 
 [sub_resource type="Environment" id="Environment_2wnku"]
+sdfgi_enabled = true
+glow_enabled = true
+glow_normalized = true
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_beyj4"]
 viewport_path = NodePath("Viewport/Viewport3D/CameraPivot/FloorDisplay")
@@ -141,7 +130,7 @@ mouse_filter = 1
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="Viewport/Viewport3D"]
 transform = Transform3D(0.727054, -0.4974, -0.473271, 0.68658, 0.526722, 0.50117, 5.96046e-08, -0.689316, 0.724461, 0, 0, 0)
-light_energy = 2.0
+light_energy = 3.0
 light_bake_mode = 1
 shadow_enabled = true
 shadow_bias = 0.01
@@ -154,18 +143,23 @@ directional_shadow_max_distance = 200.0
 directional_shadow_pancake_size = 0.0
 sky_mode = 1
 
+[node name="Floor" parent="Viewport/Viewport3D" instance=ExtResource("5_da36p")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 8.74228e-06, 0, 0)
+
 [node name="CameraPivot" type="Marker3D" parent="Viewport/Viewport3D"]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 100, -100)
 script = ExtResource("2_t2ckv")
 
 [node name="Water" type="MeshInstance3D" parent="Viewport/Viewport3D/CameraPivot"]
 transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, -100, -100)
+cast_shadow = 0
 mesh = SubResource("PlaneMesh_g8j3o")
 skeleton = NodePath("../..")
 surface_material_override/0 = SubResource("ShaderMaterial_ncubh")
 
-[node name="Floor" type="MeshInstance3D" parent="Viewport/Viewport3D/CameraPivot"]
+[node name="Floor3" type="MeshInstance3D" parent="Viewport/Viewport3D/CameraPivot"]
 transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, -100, -100)
+visible = false
 mesh = SubResource("PlaneMesh_cggwn")
 skeleton = NodePath("../..")
 surface_material_override/0 = SubResource("ShaderMaterial_l3p72")
@@ -195,8 +189,7 @@ layout_mode = 1
 anchors_preset = -1
 anchor_right = 27.023
 anchor_bottom = 47.989
-offset_right = 64.0
-offset_bottom = 88.0
+offset_right = -0.920044
 theme_override_constants/separation = 0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Viewport/VSplitContainer"]

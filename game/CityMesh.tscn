@@ -1,24 +1,38 @@
-[gd_scene load_steps=5 format=3 uid="uid://b16kytc1dy61a"]
+[gd_scene load_steps=8 format=3 uid="uid://b16kytc1dy61a"]
 
+[ext_resource type="Script" path="res://CityMesh.gd" id="1_cq8ip"]
 [ext_resource type="PackedScene" uid="uid://d4ii5no4bmuk" path="res://resources/City.glb" id="1_s5le8"]
+[ext_resource type="PackedScene" uid="uid://csujvs5dvl784" path="res://Tower.tscn" id="2_j6fek"]
 [ext_resource type="Script" path="res://BackgroundCircles.gd" id="3_wcypx"]
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_bgwis"]
-size = Vector3(2, 8, 2)
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ihe3s"]
+radius = 3.0
+height = 16.0
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_we4w1"]
+radius = 4.0
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_2an7a"]
 viewport_path = NodePath("CityInfo")
 
 [node name="CityMesh" type="Area3D"]
+script = ExtResource("1_cq8ip")
+
+[node name="Tower" parent="." instance=ExtResource("2_j6fek")]
 
 [node name="City" parent="." instance=ExtResource("1_s5le8")]
+visible = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 0)
-shape = SubResource("BoxShape3D_bgwis")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8, 0)
+shape = SubResource("CapsuleShape3D_ihe3s")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CylinderShape3D_we4w1")
 
 [node name="Label" type="Label3D" parent="."]
-transform = Transform3D(-1, 8.74228e-08, 3.82137e-15, 0, -4.37114e-08, 1, 8.74228e-08, 1, 4.37114e-08, -2.521, 0.1, -1.621)
+transform = Transform3D(-1, 8.74228e-08, 3.82137e-15, 0, -4.37114e-08, 1, 8.74228e-08, 1, 4.37114e-08, -3.88186, 0.1, -4.05939)
 modulate = Color(0, 0, 0, 1)
 text = "00"
 font_size = 250

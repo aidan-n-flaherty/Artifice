@@ -1,0 +1,24 @@
+[gd_scene load_steps=2 format=3 uid="uid://csujvs5dvl784"]
+
+[ext_resource type="PackedScene" uid="uid://cc31mtqfa63or" path="res://resources/outpost/outpost.blend" id="1_r6ps7"]
+
+[node name="Tower" type="Node3D"]
+
+[node name="outpost" parent="." instance=ExtResource("1_r6ps7")]
+transform = Transform3D(0.433013, 0, 0.25, 0, 0.5, 0, -0.25, 0, 0.433013, 0, -4, 0)
+
+[node name="SpotLight3D2" type="SpotLight3D" parent="."]
+transform = Transform3D(-1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -1, 0, 13, -2.30656)
+visible = false
+light_energy = 10.0
+light_bake_mode = 1
+spot_range = 3.882
+spot_attenuation = 1e-05
+spot_angle_attenuation = 1e-05
+
+[node name="OmniLight3D" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 13, 0)
+visible = false
+light_energy = 2.0
+light_bake_mode = 1
+omni_range = 1.5

@@ -11,7 +11,7 @@ var startTime
 func _ready():
 	game = GameData.getGame(gameID)
 	game.connect("addOrder", addOrder)
-	
+
 	startTime = int(Time.get_unix_time_from_system())
 	
 	$Viewport/Viewport3D.add_child(game)
@@ -63,6 +63,8 @@ func addOrder(type, referenceID, timestamp, arguments):
 	})
 	
 	print(order)
+
+	if(!order): return;
 	
 	game.addOrder(order.type, int(order.id), int(order.referenceID), int(order.timestamp), int(order.senderID), PackedInt32Array(order.argumentIDs), int(order.argumentIDs.size()))
 	
