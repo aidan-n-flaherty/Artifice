@@ -1,62 +1,93 @@
-[gd_scene load_steps=7 format=3 uid="uid://820462udup0w"]
+[gd_scene load_steps=11 format=3 uid="uid://820462udup0w"]
 
 [ext_resource type="Script" path="res://SpecialistMesh.gd" id="1_ka51b"]
-[ext_resource type="Shader" path="res://SpecialistMesh.gdshader" id="2_hrqrp"]
+[ext_resource type="Shader" path="res://SpecialistMesh.gdshader" id="2_lp0fv"]
 [ext_resource type="Texture2D" uid="uid://c1f04o6gimvxl" path="res://resources/images/whiteCircle.png" id="2_puof1"]
+[ext_resource type="Shader" path="res://SpecialistMesh3D.gdshader" id="2_vhvoe"]
 [ext_resource type="Texture2D" uid="uid://b01ch1xp0y68k" path="res://resources/specialistIcons/Smuggler.png" id="3_wml8q"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_uuqim"]
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_ddm8n"]
+height = 0.2
+radius = 2.0
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_vmxwe"]
+top_radius = 2.0
+bottom_radius = 2.0
+height = 0.25
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_fxjoc"]
+render_priority = 0
+shader = ExtResource("2_vhvoe")
+shader_parameter/inverted = false
+shader_parameter/translucent = false
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_xim3k"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_fh2lx"]
 resource_local_to_scene = true
-shader = ExtResource("2_hrqrp")
-shader_parameter/inverted = true
+shader = ExtResource("2_lp0fv")
+shader_parameter/inverted = false
+shader_parameter/translucent = false
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_hwfx3"]
-
-[node name="SpecialistMesh" type="Node3D"]
+[node name="SpecialistMesh" type="Area3D"]
 script = ExtResource("1_ka51b")
 
-[node name="Area2D" type="Area2D" parent="."]
-material = SubResource("ShaderMaterial_uuqim")
-scale = Vector2(0.2, 0.2)
+[node name="Area3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 0, 0)
+shape = SubResource("CylinderShape3D_ddm8n")
 
-[node name="Background" type="TextureRect" parent="Area2D"]
-use_parent_material = true
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -130.0
-offset_top = -130.0
-offset_right = 130.0
-offset_bottom = 130.0
+[node name="Cylinder" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 0, 0)
+layers = 2
+cast_shadow = 0
+mesh = SubResource("CylinderMesh_vmxwe")
+surface_material_override/0 = SubResource("ShaderMaterial_fxjoc")
+
+[node name="Sprite3D" type="Sprite3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.707107, -0.707107, 0, 0.707107, 0.707107, 0, 0.1, -0.1)
+layers = 2
+cast_shadow = 0
+pixel_size = 0.04
+texture = SubResource("ViewportTexture_xim3k")
+
+[node name="SubViewport" type="SubViewport" parent="."]
+transparent_bg = true
+size = Vector2i(100, 100)
+
+[node name="Control" type="Control" parent="SubViewport"]
+material = SubResource("ShaderMaterial_fh2lx")
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
+
+[node name="Background" type="TextureRect" parent="SubViewport/Control"]
+use_parent_material = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 6
+size_flags_vertical = 6
 mouse_filter = 0
 texture = ExtResource("2_puof1")
 expand_mode = 1
 
-[node name="Texture" type="TextureRect" parent="Area2D"]
+[node name="Texture" type="TextureRect" parent="SubViewport/Control"]
 use_parent_material = true
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -115.0
-offset_top = -115.0
-offset_right = 115.0
-offset_bottom = 115.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
+size_flags_horizontal = 6
+size_flags_vertical = 6
 texture = ExtResource("3_wml8q")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
-scale = Vector2(13, 13)
-shape = SubResource("RectangleShape2D_hwfx3")
-
-[connection signal="input_event" from="Area2D" to="." method="_on_area_2d_input_event"]
+[connection signal="input_event" from="." to="." method="_on_input_event"]

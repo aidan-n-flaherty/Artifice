@@ -51,7 +51,7 @@ public:
 	
 	void select(Camera3D *camera, const Ref<InputEvent> &event, const Vector3 &position, const Vector3 &normal, int32_t shape_idx);
 	
-	void selectSpecialist(Camera2D *camera, const Ref<InputEvent> &event, int32_t id);
+	void selectSpecialist(Camera3D *camera, const Ref<InputEvent> &event, int32_t id);
 
 	PositionalObject* getObj() { return obj; }
 

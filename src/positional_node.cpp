@@ -8,6 +8,7 @@
 #include <godot_cpp/classes/camera3d.hpp>
 #include <godot_cpp/classes/camera2d.hpp>
 #include <godot_cpp/classes/canvas_item.hpp>
+#include <godot_cpp/classes/mesh_instance3d.hpp>
 #include <godot_cpp/classes/input_event.hpp>
 #include <godot_cpp/classes/input_event_mouse_button.hpp>
 #include <godot_cpp/classes/global_constants.hpp>
@@ -72,7 +73,7 @@ void PositionalNode::select(Camera3D *camera, const Ref<InputEvent> &event, cons
 	}
 }
 
-void PositionalNode::selectSpecialist(Camera2D *camera, const Ref<InputEvent> &event, int32_t id) {
+void PositionalNode::selectSpecialist(Camera3D *camera, const Ref<InputEvent> &event, int32_t id) {
 	const InputEventMouseButton* e = Object::cast_to<InputEventMouseButton>(event.ptr());
 	
 	if(e != nullptr && e->get_button_index() == MouseButton::MOUSE_BUTTON_LEFT && e->is_pressed()) {
@@ -150,16 +151,33 @@ void PositionalNode::setReference(PositionalObject* obj) {
 				Ref<PackedScene> sMesh = ResourceLoader::get_singleton()->load("res://SpecialistMesh.tscn");
 				Node3D* s = cast_to<Node3D>(sMesh->instantiate());
 				s->set_name(("Specialist" + std::to_string(sp->getID())).c_str());
-				s->connect("input_event", Callable(this, "selectSpecialist"), Object::CONNECT_DEFERRED);
+				s->connect("custom_input_event", Callable(this, "selectSpecialist"), Object::CONNECT_DEFERRED);
 
 				Ref<Texture2D> img = ResourceLoader::get_singleton()->load((std::string("res://resources/specialistIcons/") + sp->typeAsString() + ".png").c_str());
-				TextureRect* texture = cast_to<TextureRect>(s->get_node_or_null(NodePath("Area2D/Texture")));	
+				TextureRect* texture = cast_to<TextureRect>(s->get_node_or_null(NodePath("SubViewport/Control/Texture")));	
 				texture->set_texture(img);
 				
-				CanvasItem* item = cast_to<CanvasItem>(s->get_node_or_null(NodePath("Area2D")));
-				ShaderMaterial* mat = cast_to<ShaderMaterial>(item->get_material().ptr());
-				if(selectedSpecialists.find(sp->getID()) != selectedSpecialists.end()) mat->set_shader_parameter("inverted", true);
-				else mat->set_shader_parameter("inverted", false);
+				CanvasItem* item = cast_to<CanvasItem>(s->get_node_or_null(NodePath("SubViewport/Control")));
+				ShaderMaterial* mat1 = cast_to<ShaderMaterial>(item->get_material().ptr());
+
+				MeshInstance3D* mesh = cast_to<MeshInstance3D>(s->get_node_or_null(NodePath("Cylinder")));
+				ShaderMaterial* mat2 = cast_to<ShaderMaterial>(mesh->get_surface_override_material(0).ptr());
+
+				if(selectedSpecialists.find(sp->getID()) != selectedSpecialists.end()) {
+					mat1->set_shader_parameter("inverted", true);
+					mat2->set_shader_parameter("inverted", true);
+				} else {
+					mat1->set_shader_parameter("inverted", false);
+					mat2->set_shader_parameter("inverted", false);
+				}
+
+				if(sp->getContainer()->getOwnerID() != sp->getOwnerID()) {
+					mat1->set_shader_parameter("translucent", true);
+					mat2->set_shader_parameter("translucent", true);
+				} else {
+					mat1->set_shader_parameter("translucent", false);
+					mat2->set_shader_parameter("translucent", false);
+				}
 
 				n->add_child(s);
 
@@ -170,17 +188,9 @@ void PositionalNode::setReference(PositionalObject* obj) {
 		int offset = 0;
 
 		for(Node3D* child : currentSpecialists) {
-			child->set_position(Vector3(4.0 * ((offset + 1) % 3 - 1), 0, 7 * (offset / 3) + 3.0 * abs((offset + 1) % 3 - 1)));
+			int diagonalDisplacement = 4.0 * (offset / 3) + 2.0 * abs((offset + 1) % 3 - 1);
+			child->set_position(Vector3(3.0 * ((offset + 1) % 3 - 1), 40 + diagonalDisplacement, -40 + diagonalDisplacement));
 			offset++;
-		}
-
-		for(Specialist* s : specialists) {
-			Node* specialistNode = n->get_node_or_null(NodePath(("Specialist" + std::to_string(s->getID())).c_str()));
-			
-			if(specialistNode) {
-				CanvasItem* item = cast_to<CanvasItem>(specialistNode->get_node_or_null(NodePath("Area2D")));
-				item->set_modulate(Color(1.0, 1.0, 1.0, s->getContainer() && s->getContainer()->getOwnerID() != s->getOwnerID() ? 0.5 : 1.0));
-			}
 		}
 	}
 }
@@ -196,11 +206,19 @@ void PositionalNode::setSpecialistSelected(int specialistID, bool selected) {
 			Node* child = n->get_child(j);
 
 			if(child->get_name() == StringName(("Specialist" + std::to_string(specialistID)).c_str())) {
-				CanvasItem* item = cast_to<CanvasItem>(child->get_node_or_null(NodePath("Area2D")));
-				
-				ShaderMaterial* mat = cast_to<ShaderMaterial>(item->get_material().ptr());
-				if(selected) mat->set_shader_parameter("inverted", true);
-				else mat->set_shader_parameter("inverted", false);
+				CanvasItem* item = cast_to<CanvasItem>(child->get_node_or_null(NodePath("SubViewport/Control")));
+				ShaderMaterial* mat1 = cast_to<ShaderMaterial>(item->get_material().ptr());
+
+				MeshInstance3D* mesh = cast_to<MeshInstance3D>(child->get_node_or_null(NodePath("Cylinder")));
+				ShaderMaterial* mat2 = cast_to<ShaderMaterial>(mesh->get_surface_override_material(0).ptr());
+
+				if(selected) {
+					mat1->set_shader_parameter("inverted", true);
+					mat2->set_shader_parameter("inverted", true);
+				} else {
+					mat1->set_shader_parameter("inverted", false);
+					mat2->set_shader_parameter("inverted", false);
+				}
 			}
 		}
 	}

@@ -1,6 +1,6 @@
 extends Node3D
 
-var levels = 20
+var levels = 10
 
 var offset = Vector2()
 
@@ -64,7 +64,7 @@ func generateNoise(x, y):
 	
 	for i in range(levels - 1):
 		var mesh = newTile.get_node("FloorMesh1").duplicate()
-		mesh.position.y -= 0.3 * i
+		mesh.position.y -= 0.75 * i
 		mesh.name = "FloorMesh" + str(i + 2)
 		newTile.add_child(mesh)
 		

@@ -1,25 +1,27 @@
 [gd_scene load_steps=4 format=3 uid="uid://c80qrqpvv8oji"]
 
-[ext_resource type="PackedScene" uid="uid://or7boihinjnj" path="res://resources/airship/airship.blend" id="1_s51uw"]
 [ext_resource type="Script" path="res://AirshipMesh.gd" id="1_yg6xk"]
+[ext_resource type="PackedScene" uid="uid://ksos37w5hi7k" path="res://resources/airship/alternate_airship.blend" id="2_1e350"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_s31l7"]
 radius = 1.0
 height = 9.0
 
 [node name="AirshipMesh" type="Area3D"]
+monitoring = false
+monitorable = false
 script = ExtResource("1_yg6xk")
-
-[node name="airship" parent="." instance=ExtResource("1_s51uw")]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 1.07029, 0.0772297, 0)
 
 [node name="CollisionShape" type="CollisionShape3D" parent="."]
 transform = Transform3D(-4.37114e-08, 1, -4.37114e-08, 0, -4.37114e-08, -1, -1, -4.37114e-08, 1.91069e-15, 0, 0, 0)
 shape = SubResource("CapsuleShape3D_s31l7")
 
 [node name="Label" type="Label3D" parent="."]
-transform = Transform3D(-1, -1.50996e-07, -6.60024e-15, 0, -4.37114e-08, 1, -1.50996e-07, 1, 4.37114e-08, 0.855, 1.22295, 0)
+transform = Transform3D(-1, -1.50996e-07, -6.60024e-15, 0, -4.37114e-08, 1, -1.50996e-07, 1, 4.37114e-08, 0.0937617, 1.56306, 0)
 text = "Testing "
 font_size = 200
 outline_size = 50
 uppercase = true
+
+[node name="airship" parent="." instance=ExtResource("2_1e350")]
+transform = Transform3D(-3.93403e-08, 0, -0.9, 0, 0.9, 0, 0.9, 0, -3.93403e-08, 0.305345, 0, 0)

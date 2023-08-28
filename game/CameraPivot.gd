@@ -21,8 +21,7 @@ var zoom = 0
 
 func updatePos():
 	pos = Vector2(position.x, position.z + 100)
-	$Water.get_surface_override_material(0).set_shader_parameter("offset", pos)
-	get_parent().get_node("Floor").offset = pos
+
 	#$Floor.get_surface_override_material(0).set_shader_parameter("offset", pos)
 	
 	#var arr = game.getOutpostPositions();
@@ -78,7 +77,10 @@ func _unhandled_input(event):
 		elif(zoom < -3.0): zoom = -3.0
 		
 		$Camera3D.size = 100 * ((minZoom + maxZoom)/2.0 + tanh(zoom) * (maxZoom - minZoom) / PI)
-		$Water.get_surface_override_material(0).set_shader_parameter("cameraSize", $Camera3D.size)
-		$Water.scale.z = $Camera3D.size/100.0
-		$Water.scale.x = $Camera3D.size/100.0
-		get_parent().get_node("Floor").cameraSize = $Camera3D.size
+		$SubViewport/VirtualCamera3D.size = $Camera3D.size
+		$Reflection.scale.z = -$Camera3D.size/100.0
+		$Reflection.scale.x = -$Camera3D.size/100.0
+		$Reflection.get_surface_override_material(0).set_shader_parameter("cameraSize", $Camera3D.size)
+		$Floor/Floor1.get_surface_override_material(0).set_shader_parameter("cameraSize", $Camera3D.size)
+		$Floor.scale.z = $Camera3D.size/100.0
+		$Floor.scale.x = $Camera3D.size/100.0
