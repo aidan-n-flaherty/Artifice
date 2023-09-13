@@ -21,19 +21,17 @@ type GameData struct {
 	HostID      uint32 `json:"hostID"`
 	CreatedAt   uint64 `json:"createdAt"`
 	PlayerCount uint   `json:"playerCount"`
+	StartTime   uint64 `json:"startTime"`
 	HasPassword bool   `json:"hasPassword"`
 	Version     string `json:"version"`
 }
 
 type GameSettings struct {
-	LobbyName         string   `json:"lobbyName"`
-	Password          string   `json:"password"`
-	PlayerCap         uint     `json:"playerCap"`
-	RatingConstraints []uint32 `json:"ratingConstraints"`
-	StartTime         uint32   `json:"startTime"`
-	SimulationSpeed   float64  `json:"simulationSpeed"`
-	Weekdays          []string `json:"weekdays"`
-	ActiveTimes       []string `json:"activeTimes"`
+	LobbyName             string                 `json:"lobbyName"`
+	Password              string                 `json:"password"`
+	PlayerCap             uint                   `json:"playerCap"`
+	StartTimeDisplacement uint64                 `json:"startTime"`
+	SettingOverrides      map[string]interface{} `json:"settingOverrides"`
 }
 
 type GameDetails struct {

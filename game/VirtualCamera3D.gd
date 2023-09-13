@@ -8,4 +8,4 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	position = get_parent().get_parent().position - Vector3(0, 200.2, 0)
+	position = get_parent().get_parent().position - Vector3(0, 200.0, 0)

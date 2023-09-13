@@ -16,12 +16,14 @@ script = ExtResource("1_yg6xk")
 transform = Transform3D(-4.37114e-08, 1, -4.37114e-08, 0, -4.37114e-08, -1, -1, -4.37114e-08, 1.91069e-15, 0, 0, 0)
 shape = SubResource("CapsuleShape3D_s31l7")
 
-[node name="Label" type="Label3D" parent="."]
+[node name="airship" parent="." instance=ExtResource("2_1e350")]
+transform = Transform3D(-3.93403e-08, 0, -0.9, 0, 0.9, 0, 0.9, 0, -3.93403e-08, 0.305345, 0, 0)
+
+[node name="RotationInvariant" type="Node3D" parent="."]
+
+[node name="Label" type="Label3D" parent="RotationInvariant"]
 transform = Transform3D(-1, -1.50996e-07, -6.60024e-15, 0, -4.37114e-08, 1, -1.50996e-07, 1, 4.37114e-08, 0.0937617, 1.56306, 0)
 text = "Testing "
 font_size = 200
 outline_size = 50
 uppercase = true
-
-[node name="airship" parent="." instance=ExtResource("2_1e350")]
-transform = Transform3D(-3.93403e-08, 0, -0.9, 0, 0.9, 0, 0.9, 0, -3.93403e-08, 0.305345, 0, 0)

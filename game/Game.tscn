@@ -1,11 +1,9 @@
-[gd_scene load_steps=37 format=3 uid="uid://dgp4l24s2rulk"]
+[gd_scene load_steps=35 format=3 uid="uid://dgp4l24s2rulk"]
 
 [ext_resource type="Script" path="res://Game.gd" id="1_s53r2"]
 [ext_resource type="Script" path="res://CameraPivot.gd" id="2_t2ckv"]
 [ext_resource type="PackedScene" uid="uid://n0lobms04k46" path="res://Timeline.tscn" id="3_jhu7k"]
 [ext_resource type="StyleBox" uid="uid://coornuougjr7i" path="res://resources/themes/MenuButton/ButtonNormal.tres" id="4_fdg00"]
-[ext_resource type="StyleBox" uid="uid://d2ba8dokdt8od" path="res://resources/themes/VSlider/SliderBackground.tres" id="4_vrtfm"]
-[ext_resource type="StyleBox" uid="uid://eumwqqqm3xf5" path="res://resources/themes/VSlider/SliderGrabber.tres" id="5_6xaao"]
 [ext_resource type="StyleBox" uid="uid://bbcqsraqxn7j" path="res://resources/themes/MenuButton/ButtonHover.tres" id="5_j8x77"]
 [ext_resource type="StyleBox" uid="uid://ydy2ph7i0d33" path="res://resources/themes/MenuButton/LeftButtonNormal.tres" id="6_4mo1t"]
 [ext_resource type="StyleBox" uid="uid://btgfmsxfwcri7" path="res://resources/themes/MenuButton/ButtonPress.tres" id="6_h0r5t"]
@@ -14,9 +12,11 @@
 [ext_resource type="StyleBox" uid="uid://c3v6hkt8fdffw" path="res://resources/themes/MenuButton/LeftButtonPress.tres" id="8_csbqx"]
 [ext_resource type="Material" uid="uid://li2d1mgnl1tk" path="res://resources/metal.tres" id="9_j8866"]
 [ext_resource type="Texture2D" uid="uid://brxrlxoa5qwsv" path="res://resources/snow.tres" id="9_kcgrj"]
+[ext_resource type="Theme" uid="uid://bfwpaonloeco5" path="res://resources/theme.tres" id="9_ttxpu"]
 [ext_resource type="Shader" path="res://Refraction.gdshader" id="9_xlyo3"]
 [ext_resource type="Texture2D" uid="uid://dg1n1bsa3ya68" path="res://resources/ocean.tres" id="10_i4d0l"]
 [ext_resource type="Script" path="res://VirtualCamera3D.gd" id="10_jokxl"]
+[ext_resource type="Script" path="res://Hire.gd" id="11_xja14"]
 [ext_resource type="StyleBox" uid="uid://ctqramsfdasmb" path="res://resources/themes/MenuButton/RightButtonNormal.tres" id="12_l14op"]
 [ext_resource type="StyleBox" uid="uid://bxu6bftnvpiuu" path="res://resources/themes/MenuButton/RightButtonHover.tres" id="13_r880k"]
 [ext_resource type="StyleBox" uid="uid://6pudnvggv2g8" path="res://resources/themes/MenuButton/RightButtonPress.tres" id="14_d47sy"]
@@ -56,12 +56,13 @@ size = Vector2(100, 260)
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_evgjh"]
 frequency = 0.005
-fractal_type = 2
+fractal_type = 3
 domain_warp_enabled = true
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_otoxq"]
 width = 800
 height = 2080
+invert = true
 seamless = true
 noise = SubResource("FastNoiseLite_evgjh")
 
@@ -84,7 +85,7 @@ viewport_path = NodePath("Viewport/Viewport3D/CameraPivot/SubViewport")
 resource_local_to_scene = true
 render_priority = 0
 shader = ExtResource("9_xlyo3")
-shader_parameter/speed = 0.01
+shader_parameter/speed = 0.005
 shader_parameter/cameraSize = 100.0
 shader_parameter/screen_texture = SubResource("ViewportTexture_qytxr")
 shader_parameter/noise = SubResource("NoiseTexture2D_otoxq")
@@ -93,38 +94,42 @@ shader_parameter/noise2 = SubResource("NoiseTexture2D_mpw5d")
 [sub_resource type="BoxMesh" id="BoxMesh_j234n"]
 size = Vector3(10, 30, 10)
 
-[sub_resource type="ImageTexture" id="ImageTexture_rv1si"]
-
-[sub_resource type="ImageTexture" id="ImageTexture_0go2v"]
-
 [node name="Game" type="Control"]
 layout_mode = 3
-anchors_preset = 0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 size_flags_horizontal = 3
 mouse_filter = 1
 script = ExtResource("1_s53r2")
 
 [node name="Viewport" type="Control" parent="."]
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 1
 
 [node name="Viewport3D" type="Node3D" parent="Viewport"]
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="Viewport/Viewport3D"]
 transform = Transform3D(-0.0533566, 0.722889, -0.6889, 0.687064, 0.527203, 0.5, 0.724635, -0.44664, -0.524801, 0, 0, 0)
+layers = 2
 light_energy = 2.0
 light_bake_mode = 1
 shadow_enabled = true
 shadow_bias = 0.01
 shadow_normal_bias = 3.0
-shadow_reverse_cull_face = true
 shadow_opacity = 0.85
 shadow_blur = 4.0
 directional_shadow_mode = 0
 directional_shadow_max_distance = 200.0
 directional_shadow_pancake_size = 0.0
+sky_mode = 1
 
 [node name="CameraPivot" type="Marker3D" parent="Viewport/Viewport3D"]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 100, -100)
@@ -147,12 +152,13 @@ transparent_bg = true
 size = Vector2i(1000, 2600)
 
 [node name="Sprite3D" type="Sprite3D" parent="Viewport/Viewport3D/CameraPivot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -99.9, -100)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -99, -100)
 flip_h = true
 flip_v = true
 pixel_size = 0.1
 axis = 1
 double_sided = false
+render_priority = 1
 texture = SubResource("ViewportTexture_2wh2d")
 
 [node name="Floor" type="Node3D" parent="Viewport/Viewport3D/CameraPivot"]
@@ -179,7 +185,8 @@ skeleton = NodePath("../..")
 surface_material_override/0 = SubResource("ShaderMaterial_ps11k")
 
 [node name="Reflection" type="MeshInstance3D" parent="Viewport/Viewport3D/CameraPivot"]
-transform = Transform3D(1, -1.50996e-07, -8.74228e-08, 1.50996e-07, 1, 7.6233e-21, -8.74228e-08, 1.32005e-14, -1, 0, -100.1, -100)
+transform = Transform3D(1, -1.50996e-07, -8.74228e-08, 1.50996e-07, 1, 7.6233e-21, -8.74228e-08, 1.32005e-14, -1, 0, -100, -100)
+sorting_offset = -1.0
 cast_shadow = 0
 mesh = SubResource("PlaneMesh_pn67n")
 surface_material_override/0 = SubResource("ShaderMaterial_1fvqb")
@@ -191,7 +198,7 @@ size = Vector2i(1000, 1838)
 [node name="VirtualCamera3D" type="Camera3D" parent="Viewport/Viewport3D/CameraPivot/SubViewport"]
 transform = Transform3D(-1, 6.18173e-08, 6.18173e-08, 0, 0.707107, -0.707107, -8.74228e-08, -0.707107, -0.707107, 0, -100, -100)
 keep_aspect = 0
-cull_mask = 1
+cull_mask = 5
 environment = SubResource("Environment_2wnku")
 projection = 1
 current = true
@@ -201,17 +208,18 @@ far = 300.0
 script = ExtResource("10_jokxl")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Viewport/Viewport3D"]
-transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 0, 15.8278, 0)
+transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 0, 15, 0)
 visible = false
 mesh = SubResource("BoxMesh_j234n")
 surface_material_override/0 = ExtResource("9_j8866")
 
 [node name="VSplitContainer" type="VSplitContainer" parent="Viewport"]
 layout_mode = 1
-anchors_preset = -1
-anchor_right = 27.023
-anchor_bottom = 47.989
-offset_right = -0.920044
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_constants/separation = 0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Viewport/VSplitContainer"]
@@ -240,14 +248,11 @@ custom_minimum_size = Vector2(30, 0)
 layout_mode = 2
 size_flags_vertical = 3
 size_flags_stretch_ratio = 3.0
-theme_override_icons/grabber = SubResource("ImageTexture_rv1si")
-theme_override_icons/grabber_highlight = SubResource("ImageTexture_0go2v")
-theme_override_styles/slider = ExtResource("4_vrtfm")
-theme_override_styles/grabber_area = ExtResource("5_6xaao")
-theme_override_styles/grabber_area_highlight = ExtResource("5_6xaao")
+theme = ExtResource("9_ttxpu")
 max_value = 1.0
 step = 0.01
 value = 1.0
+tick_count = 5
 
 [node name="BottomSpacer" type="Control" parent="Viewport/VSplitContainer/VBoxContainer"]
 layout_mode = 2
@@ -266,11 +271,64 @@ size_flags_vertical = 3
 size_flags_stretch_ratio = 0.1
 mouse_filter = 1
 
-[node name="Chat" type="MarginContainer" parent="."]
+[node name="Chat" type="ScrollContainer" parent="."]
 visible = false
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+horizontal_scroll_mode = 0
+
+[node name="Conversations" type="VBoxContainer" parent="Chat"]
+layout_mode = 2
+
+[node name="Hire" type="ScrollContainer" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+horizontal_scroll_mode = 0
+script = ExtResource("11_xja14")
+
+[node name="SpecialistOptions" type="VBoxContainer" parent="Hire"]
+layout_mode = 2
+
+[node name="Status" type="ScrollContainer" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+horizontal_scroll_mode = 0
+
+[node name="VSplitContainer" type="VSplitContainer" parent="Status"]
+layout_mode = 2
+
+[node name="Buttons" type="HBoxContainer" parent="Status/VSplitContainer"]
+layout_mode = 2
+
+[node name="PlayerList" type="VBoxContainer" parent="Status/VSplitContainer"]
+layout_mode = 2
+
+[node name="Logs" type="ScrollContainer" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+horizontal_scroll_mode = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Logs"]
+layout_mode = 2
 
 [node name="TabView" type="Control" parent="."]
 top_level = true
@@ -320,7 +378,7 @@ theme_override_styles/hover = ExtResource("5_j8x77")
 theme_override_styles/pressed = ExtResource("6_h0r5t")
 text = "Chat"
 
-[node name="Production" type="Button" parent="TabView/VSplitContainer/HBoxContainer"]
+[node name="Hire" type="Button" parent="TabView/VSplitContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(1, 1, 1, 1)
@@ -329,7 +387,18 @@ theme_override_font_sizes/font_size = 20
 theme_override_styles/normal = ExtResource("4_fdg00")
 theme_override_styles/hover = ExtResource("5_j8x77")
 theme_override_styles/pressed = ExtResource("6_h0r5t")
-text = "Production"
+text = "Hire"
+
+[node name="Status" type="Button" parent="TabView/VSplitContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = ExtResource("4_fdg00")
+theme_override_styles/hover = ExtResource("5_j8x77")
+theme_override_styles/pressed = ExtResource("6_h0r5t")
+text = "Status"
 
 [node name="Logs" type="Button" parent="TabView/VSplitContainer/HBoxContainer"]
 layout_mode = 2
@@ -345,5 +414,6 @@ text = "Logs"
 [connection signal="value_changed" from="Viewport/VSplitContainer/VBoxContainer/HBoxContainer/PercentBar" to="." method="_on_percent_bar_value_changed"]
 [connection signal="pressed" from="TabView/VSplitContainer/HBoxContainer/Game" to="." method="_on_game_pressed"]
 [connection signal="pressed" from="TabView/VSplitContainer/HBoxContainer/Chat" to="." method="_on_chat_pressed"]
-[connection signal="pressed" from="TabView/VSplitContainer/HBoxContainer/Production" to="." method="_on_production_pressed"]
+[connection signal="pressed" from="TabView/VSplitContainer/HBoxContainer/Hire" to="." method="_on_hire_pressed"]
+[connection signal="pressed" from="TabView/VSplitContainer/HBoxContainer/Status" to="." method="_on_status_pressed"]
 [connection signal="pressed" from="TabView/VSplitContainer/HBoxContainer/Logs" to="." method="_on_logs_pressed"]

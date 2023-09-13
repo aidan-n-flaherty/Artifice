@@ -56,11 +56,6 @@ void PositionalNode::_process(double delta) {
 	if(obj == nullptr) return;
 
 	timePassed += delta;
-	
-	for(int i = -1; i <= 1; i++) for(int j = -1; j <= 1; j++) {
-		Label3D* label = cast_to<Label3D>(get_node_or_null(NodePath(("Mesh" + std::to_string(i) + std::to_string(j) + "/Label").c_str())));		
-		if(label != nullptr) label->set_text(std::to_string(obj->getUnitsAt(getDiff())).c_str());
-	}
 
 	set_visible(true);
 }
@@ -98,7 +93,7 @@ void PositionalNode::setReference(PositionalObject* obj) {
 	//}
 
 	for(int i = 0; i < get_child_count(); i++) {
-		Node* n = get_child(i);
+		Node* n = get_child(i)->get_node_or_null("RotationInvariant");
 	
 		std::list<int> specialistAddition;
 
@@ -135,12 +130,14 @@ void PositionalNode::setReference(PositionalObject* obj) {
 
 		for(Specialist* sp : specialists) {
 			bool contains = false;
+			Node* specialist;
 
 			for(int j = 0; j < n->get_child_count(); j++) {
 				Node* child = n->get_child(j);
 
 				if(child->get_name() == StringName(("Specialist" + std::to_string(sp->getID())).c_str())) {
 					contains = true;
+					specialist = child;
 					currentSpecialists.push_back(cast_to<Node3D>(child));
 
 					break;
@@ -156,32 +153,34 @@ void PositionalNode::setReference(PositionalObject* obj) {
 				Ref<Texture2D> img = ResourceLoader::get_singleton()->load((std::string("res://resources/specialistIcons/") + sp->typeAsString() + ".png").c_str());
 				TextureRect* texture = cast_to<TextureRect>(s->get_node_or_null(NodePath("SubViewport/Control/Texture")));	
 				texture->set_texture(img);
-				
-				CanvasItem* item = cast_to<CanvasItem>(s->get_node_or_null(NodePath("SubViewport/Control")));
-				ShaderMaterial* mat1 = cast_to<ShaderMaterial>(item->get_material().ptr());
 
-				MeshInstance3D* mesh = cast_to<MeshInstance3D>(s->get_node_or_null(NodePath("Cylinder")));
-				ShaderMaterial* mat2 = cast_to<ShaderMaterial>(mesh->get_surface_override_material(0).ptr());
-
-				if(selectedSpecialists.find(sp->getID()) != selectedSpecialists.end()) {
-					mat1->set_shader_parameter("inverted", true);
-					mat2->set_shader_parameter("inverted", true);
-				} else {
-					mat1->set_shader_parameter("inverted", false);
-					mat2->set_shader_parameter("inverted", false);
-				}
-
-				if(sp->getContainer()->getOwnerID() != sp->getOwnerID()) {
-					mat1->set_shader_parameter("translucent", true);
-					mat2->set_shader_parameter("translucent", true);
-				} else {
-					mat1->set_shader_parameter("translucent", false);
-					mat2->set_shader_parameter("translucent", false);
-				}
+				specialist = s;
 
 				n->add_child(s);
 
 				currentSpecialists.push_back(s);
+			}
+
+			CanvasItem* item = cast_to<CanvasItem>(specialist->get_node_or_null(NodePath("SubViewport/Control")));
+			ShaderMaterial* mat1 = cast_to<ShaderMaterial>(item->get_material().ptr());
+
+			MeshInstance3D* mesh = cast_to<MeshInstance3D>(specialist->get_node_or_null(NodePath("Cylinder")));
+			ShaderMaterial* mat2 = cast_to<ShaderMaterial>(mesh->get_surface_override_material(0).ptr());
+
+			if(selectedSpecialists.find(sp->getID()) != selectedSpecialists.end()) {
+				mat1->set_shader_parameter("inverted", true);
+				mat2->set_shader_parameter("inverted", true);
+			} else {
+				mat1->set_shader_parameter("inverted", false);
+				mat2->set_shader_parameter("inverted", false);
+			}
+
+			if(sp->getContainer()->getOwnerID() != sp->getOwnerID()) {
+				mat1->set_shader_parameter("translucent", true);
+				mat2->set_shader_parameter("translucent", true);
+			} else {
+				mat1->set_shader_parameter("translucent", false);
+				mat2->set_shader_parameter("translucent", false);
 			}
 		}
 
@@ -200,7 +199,7 @@ void PositionalNode::setSpecialistSelected(int specialistID, bool selected) {
 	else selectedSpecialists.erase(specialistID);
 
 	for(int i = 0; i < get_child_count(); i++) {
-		Node* n = get_child(i);
+		Node* n = get_child(i)->get_node_or_null("RotationInvariant");
 
 		for(int j = 0; j < n->get_child_count(); j++) {
 			Node* child = n->get_child(j);

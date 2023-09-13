@@ -44,12 +44,15 @@ func _on_game_pressed():
 
 func _on_chat_pressed():
 	setView($Chat)
+	
+func _on_hire_pressed():
+	setView($Hire)
 
-func _on_production_pressed():
-	setView($Viewport)
+func _on_status_pressed():
+	setView($Status)
 
 func _on_logs_pressed():
-	setView($Viewport)
+	setView($Logs)
 	
 func addOrder(type, referenceID, timestamp, arguments):
 	print(timestamp + 2 - int(Time.get_unix_time_from_system()))

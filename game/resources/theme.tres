@@ -1,0 +1,33 @@
+[gd_resource type="Theme" load_steps=12 format=3 uid="uid://bfwpaonloeco5"]
+
+[ext_resource type="StyleBox" uid="uid://eumwqqqm3xf5" path="res://resources/themes/VSlider/SliderGrabber.tres" id="1_5y2jy"]
+[ext_resource type="StyleBox" uid="uid://c7dthdfqb540q" path="res://resources/themes/HSlider/SliderGrabber.tres" id="1_rcjo0"]
+[ext_resource type="StyleBox" uid="uid://d2ba8dokdt8od" path="res://resources/themes/VSlider/SliderBackground.tres" id="2_fmtt5"]
+[ext_resource type="StyleBox" uid="uid://bqenjova5mxm8" path="res://resources/themes/HSlider/SliderGrabberHighlight.tres" id="2_jyi0i"]
+[ext_resource type="StyleBox" uid="uid://djp7uu7yqrg50" path="res://resources/themes/HSlider/SliderBackground.tres" id="3_3eak2"]
+
+[sub_resource type="ImageTexture" id="ImageTexture_o73ma"]
+
+[sub_resource type="ImageTexture" id="ImageTexture_wgccs"]
+
+[sub_resource type="ImageTexture" id="ImageTexture_r4qux"]
+
+[sub_resource type="ImageTexture" id="ImageTexture_8nsvy"]
+
+[sub_resource type="ImageTexture" id="ImageTexture_d13s6"]
+
+[sub_resource type="ImageTexture" id="ImageTexture_v25u4"]
+
+[resource]
+HSlider/icons/grabber = SubResource("ImageTexture_o73ma")
+HSlider/icons/grabber_disabled = SubResource("ImageTexture_wgccs")
+HSlider/icons/grabber_highlight = SubResource("ImageTexture_r4qux")
+HSlider/styles/grabber_area = ExtResource("1_rcjo0")
+HSlider/styles/grabber_area_highlight = ExtResource("2_jyi0i")
+HSlider/styles/slider = ExtResource("3_3eak2")
+VSlider/icons/grabber = SubResource("ImageTexture_8nsvy")
+VSlider/icons/grabber_disabled = SubResource("ImageTexture_d13s6")
+VSlider/icons/grabber_highlight = SubResource("ImageTexture_v25u4")
+VSlider/styles/grabber_area = ExtResource("1_5y2jy")
+VSlider/styles/grabber_area_highlight = ExtResource("1_5y2jy")
+VSlider/styles/slider = ExtResource("2_fmtt5")

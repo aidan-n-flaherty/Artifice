@@ -2,12 +2,11 @@ package main
 
 import (
 	"database/sql"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"strconv"
-	"strings"
 	"time"
-
 	"github.com/gorilla/websocket"
 )
 
@@ -20,7 +19,7 @@ func getGames(db *sql.DB, token string) ([]GameDetails, error) {
 		return response, err
 	}
 
-	query := "SELECT id, hostID, lobbyName, password, playerCount, playerCap, ratingConstraints, activeTimes, createdAt, startTime, simulationSpeed, version FROM games WHERE startTime < NOW() AND playerCount < playerCap;"
+	query := "SELECT id, hostID, playerCount, UNIX_TIMESTAMP(createdAt), UNIX_TIMESTAMP(startTime), version, settings, lobbyName, password, playerCap FROM games WHERE NOW() < startTime AND playerCount < playerCap;"
 
 	results, err := db.Query(query)
 	if err != nil {
@@ -32,11 +31,7 @@ func getGames(db *sql.DB, token string) ([]GameDetails, error) {
 	for results.Next() {
 		var game GameDetails
 
-		err = results.Scan(&game.Data.HostID, &game.Settings.LobbyName, &game.Settings.Password,
-			&game.Data.PlayerCount, &game.Settings.PlayerCap, &game.Settings.RatingConstraints,
-			&game.Settings.ActiveTimes, &game.Data.CreatedAt, &game.Settings.StartTime,
-			&game.Settings.SimulationSpeed, &game.Data.Version)
-		if err != nil {
+		err = results.Scan(&game.Data.HostID, &game.Data.PlayerCount, &game.Data.CreatedAt, &game.Data.StartTime, &game.Data.Version, &game.Settings.SettingOverrides, &game.Settings.LobbyName, &game.Settings.Password, &game.Settings.PlayerCap); if err != nil {
 			continue
 		}
 
@@ -44,6 +39,7 @@ func getGames(db *sql.DB, token string) ([]GameDetails, error) {
 			game.Data.HasPassword = true
 		}
 
+		// obscure password from non owners
 		if game.Data.HostID != userID && game.Data.HasPassword {
 			game.Settings.Password = ""
 		}
@@ -63,7 +59,7 @@ func getGame(db *sql.DB, token string, gameID uint32) (GameDetails, error) {
 		return game, err
 	}
 
-	query := "SELECT id, hostID, lobbyName, password, playerCount, playerCap, ratingConstraints, activeTimes, weekdays, createdAt, startTime, simulationSpeed, version FROM games WHERE id = ?;"
+	query := "SELECT id, hostID, playerCount, UNIX_TIMESTAMP(createdAt), UNIX_TIMESTAMP(startTime), version, settings, lobbyName, password, playerCap FROM games WHERE id = ?;"
 
 	results, err := db.Query(query, gameID)
 	if err != nil {
@@ -76,17 +72,7 @@ func getGame(db *sql.DB, token string, gameID uint32) (GameDetails, error) {
 		return game, errors.New("No game found.")
 	}
 
-	var ratingConstraints string
-	var activeTimes string
-	var weekdays string
-	err = results.Scan(&game.Data.ID, &game.Data.HostID, &game.Settings.LobbyName, &game.Settings.Password,
-		&game.Data.PlayerCount, &game.Settings.PlayerCap, &ratingConstraints,
-		&activeTimes, &weekdays, &game.Data.CreatedAt, &game.Settings.StartTime,
-		&game.Settings.SimulationSpeed, &game.Data.Version)
-
-	game.Settings.RatingConstraints = deserialize(ratingConstraints)
-	game.Settings.ActiveTimes = strings.Split(activeTimes, ",")
-	game.Settings.Weekdays = strings.Split(weekdays, ",")
+	err = results.Scan(&game.Data.ID, &game.Data.HostID, &game.Data.PlayerCount, &game.Data.CreatedAt, &game.Data.StartTime, &game.Data.Version, &game.Settings.SettingOverrides, &game.Settings.LobbyName, &game.Settings.Password, &game.Settings.PlayerCap)
 
 	if err != nil {
 		return game, err
@@ -113,9 +99,9 @@ func userGames(db *sql.DB, token string, history bool) ([]GameDetails, error) {
 		return response, err
 	}
 
-	query := "SELECT id, hostID, lobbyName, password, playerCount, playerCap, ratingConstraints, activeTimes, weekdays, UNIX_TIMESTAMP(createdAt), UNIX_TIMESTAMP(startTime), simulationSpeed, version FROM games INNER JOIN participants ON participantID = ? AND gameID = id;"
+	query := "SELECT id, hostID, playerCount, UNIX_TIMESTAMP(createdAt), UNIX_TIMESTAMP(startTime), version, settings, lobbyName, password, playerCap FROM games INNER JOIN participants ON participantID = ? AND gameID = id WHERE finished = ?;"
 
-	results, err := db.Query(query, userID)
+	results, err := db.Query(query, userID, history)
 	if err != nil {
 		return response, err
 	}
@@ -125,25 +111,15 @@ func userGames(db *sql.DB, token string, history bool) ([]GameDetails, error) {
 	for results.Next() {
 		var game GameDetails
 
-		var ratingConstraints string
-		var activeTimes string
-		var weekdays string
-		err = results.Scan(&game.Data.ID, &game.Data.HostID, &game.Settings.LobbyName,
-			&game.Settings.Password, &game.Data.PlayerCount, &game.Settings.PlayerCap,
-			&ratingConstraints, &activeTimes, &weekdays, &game.Data.CreatedAt,
-			&game.Settings.StartTime, &game.Settings.SimulationSpeed, &game.Data.Version)
+		err = results.Scan(&game.Data.ID, &game.Data.HostID, &game.Data.PlayerCount, &game.Data.CreatedAt, &game.Data.StartTime, &game.Data.Version, &game.Settings.SettingOverrides, &game.Settings.LobbyName, &game.Settings.Password, &game.Settings.PlayerCap)
 		if err != nil {
 			continue
 		}
 
-		game.Settings.RatingConstraints = deserialize(ratingConstraints)
-		game.Settings.ActiveTimes = strings.Split(activeTimes, ",")
-		game.Settings.Weekdays = strings.Split(weekdays, ",")
-
 		if game.Settings.Password != "" {
 			game.Data.HasPassword = true
 		}
-
+	
 		if game.Data.HostID != userID && game.Data.HasPassword {
 			game.Settings.Password = ""
 		}
@@ -217,11 +193,13 @@ func createGame(db *sql.DB, token string, settings GameSettings) (GameDetails, e
 		return game, err
 	}
 
-	query := "INSERT INTO games (hostID, lobbyName, password, playerCap, ratingConstraints, weekdays, activeTimes, simulationSpeed, version) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);"
+	overrides, err := json.Marshal(settings.SettingOverrides); if err != nil {
+		return game, err
+	}
 
-	result, err := db.Exec(query, hostID, settings.LobbyName, settings.Password, settings.PlayerCap,
-		serialize(settings.RatingConstraints), strings.Join(settings.Weekdays, ","),
-		strings.Join(settings.ActiveTimes, ","), settings.SimulationSpeed, latestVersion)
+	query := "INSERT INTO games (hostID, lobbyName, password, startTimeDisplacement, playerCap, settingsJSON, version) VALUES (?, ?, ?);"
+
+	result, err := db.Exec(query, hostID, settings.LobbyName, settings.Password, settings.StartTimeDisplacement, settings.PlayerCap, overrides, latestVersion)
 	if err != nil {
 		return game, err
 	}
@@ -244,11 +222,14 @@ func editGame(db *sql.DB, token string, game GameDetails) error {
 		return err
 	}
 
-	query := "UPDATE games SET lobbyName = ?, password = ?, playerCap = ?, ratingConstraints = ?, weekdays = ?, activeTimes = ?, simulationSpeed = ? WHERE id = ? AND hostID = ? AND startTime > NOW();"
+	overrides, err := json.Marshal(game.Settings.SettingOverrides); if err != nil {
+		return err
+	}
 
-	_, err = db.Exec(query, game.Settings.LobbyName, game.Settings.Password, game.Settings.PlayerCap,
-		serialize(game.Settings.RatingConstraints), strings.Join(game.Settings.Weekdays, ","),
-		strings.Join(game.Settings.ActiveTimes, ","), game.Settings.SimulationSpeed, game.Data.ID, hostID)
+	query := "UPDATE games SET lobbyName = ?, password = ?, playerCap = ?, startTimeDisplacement = ?, settings = ? WHERE id = ? AND hostID = ? AND startTime > NOW();"
+
+	_, err = db.Exec(query, game.Settings.LobbyName, game.Settings.Password, game.Settings.PlayerCap, game.Settings.StartTimeDisplacement,
+		overrides, game.Data.ID, hostID)
 	if err != nil {
 		return err
 	}
@@ -301,6 +282,7 @@ func joinGame(db *sql.DB, token string, gameID uint32, passwordAttempt string) b
 		return false
 	}
 
+	// find existing player assigned game IDs, pick lowest available one
 	query = "SELECT participantNumber FROM participants WHERE gameID = ?;"
 
 	results, err = db.Query(query, gameID)
@@ -339,12 +321,17 @@ func joinGame(db *sql.DB, token string, gameID uint32, passwordAttempt string) b
 		return false
 	}
 
-	_, err = db.Exec("UPDATE games SET playerCount = (SELECT COUNT(participantID) FROM participants WHERE gameID = ?) WHERE gameID = ?;", gameID, gameID)
+	_, err = db.Exec("UPDATE games SET playerCount = playerCount + 1 WHERE gameID = ?;", gameID)
 	if err != nil {
 		return false
 	}
 
-	return true
+	// when lobby is full, start the game after a certain delay
+	if playerCount + 1 == playerCap {
+		_, err = db.Exec("UPDATE games SET startTime = NOW() + startTimeDisplacement WHERE gameID = ?", gameID)
+	}
+
+	return err == nil
 }
 
 // returns a boolean representing whether the user could leave the game
@@ -359,7 +346,7 @@ func leaveGame(db *sql.DB, token string, gameID uint32) bool {
 		return false
 	}
 
-	_, err = db.Exec("UPDATE games SET playerCount = (SELECT COUNT(participantID) FROM participants WHERE gameID = ?) WHERE gameID = ?;", gameID, gameID)
+	_, err = db.Exec("UPDATE games SET playerCount = playerCount - 1, startTime = NOW() + (interval 10 year) WHERE gameID = ?;", gameID)
 	if err != nil {
 		return false
 	}
@@ -406,7 +393,12 @@ func leaveGame(db *sql.DB, token string, gameID uint32) bool {
 
 // uploads a new or existing order to the game
 func uploadOrder(db *sql.DB, token string, gameID uint32, order Order) (Order, error) {
-	if order.Timestamp < uint64(time.Now().UTC().Unix()) {
+	current := uint64(time.Now().UTC().Unix())
+
+	// if an order reaches the server 5 seconds late, change the order timestamp to now
+	if order.Timestamp > current - 5 && order.Timestamp < current {
+		order.Timestamp = current
+	} else if order.Timestamp < current {
 		return order, errors.New("Cannot send or update an order in the past")
 	}
 

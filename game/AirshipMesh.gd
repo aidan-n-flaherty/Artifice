@@ -14,4 +14,5 @@ func _process(delta):
 	#mirror.position = Vector3(0.305, -2.0 * global_position.y, 0)
 	#mirror.rotation.y = deg_to_rad(-90)
 	#mirror.scale = Vector3(0.9, -0.9, 0.9)
-	$Label.rotation = Vector3(deg_to_rad(-90), deg_to_rad(180) - get_rotation().y, 0)
+	$RotationInvariant.rotation = Vector3(0, -get_rotation().y, 0)
+	$RotationInvariant/Label.text = str(get_parent().getUnits())

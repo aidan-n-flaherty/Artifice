@@ -39,16 +39,21 @@ shape = SubResource("CylinderShape3D_ddm8n")
 
 [node name="Cylinder" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 0, 0)
+visible = false
 layers = 2
 cast_shadow = 0
 mesh = SubResource("CylinderMesh_vmxwe")
 surface_material_override/0 = SubResource("ShaderMaterial_fxjoc")
 
 [node name="Sprite3D" type="Sprite3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.707107, -0.707107, 0, 0.707107, 0.707107, 0, 0.1, -0.1)
+transform = Transform3D(-1, 6.18173e-08, -6.18173e-08, 0, 0.707107, 0.707107, 8.74228e-08, 0.707107, -0.707107, 0, 0.1, -0.1)
 layers = 2
 cast_shadow = 0
+ignore_occlusion_culling = true
 pixel_size = 0.04
+double_sided = false
+no_depth_test = true
+render_priority = 2
 texture = SubResource("ViewportTexture_xim3k")
 
 [node name="SubViewport" type="SubViewport" parent="."]

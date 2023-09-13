@@ -25,8 +25,8 @@ func _ready():
 	noise2.seed = get_parent().getID()
 	noise2.noise_type = 0
 	
-	for x in range(-15, 16):
-		for y in range(-15, 16):
+	for x in range(-10, 11):
+		for y in range(-10, 11):
 			var mag = sqrt(x * x + y * y)
 			if(mag <= 3): continue
 			var height = min(1 - mag/10.0, -noise2.get_noise_2d(x, y))# + (1 - mag/10.0) * 10.0 * (0.5 + 0.5 * noise.get_noise_2d(x, y))
@@ -58,4 +58,4 @@ func addOutpost(angle, dist, height):
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	pass
+	$Label.text = str(get_parent().getUnits())

@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://b0lbit2kouhl7"]
+[gd_scene load_steps=3 format=3 uid="uid://b0lbit2kouhl7"]
 
 [ext_resource type="Script" path="res://GameCreator.gd" id="1_5sudp"]
+[ext_resource type="Theme" uid="uid://bfwpaonloeco5" path="res://resources/theme.tres" id="2_dbg4x"]
 
 [node name="GameCreator" type="Control"]
 layout_mode = 3
@@ -26,9 +27,11 @@ theme_override_constants/margin_bottom = 50
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
+theme_override_constants/separation = 10
 
 [node name="LobbyName" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
+theme_override_constants/separation = 20
 
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer/LobbyName"]
 layout_mode = 2
@@ -40,6 +43,7 @@ size_flags_horizontal = 3
 
 [node name="Password" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
+theme_override_constants/separation = 20
 
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Password"]
 layout_mode = 2
@@ -52,6 +56,7 @@ placeholder_text = "Leave blank for no password"
 
 [node name="NumPlayers" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
+theme_override_constants/separation = 20
 
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer/NumPlayers"]
 layout_mode = 2
@@ -60,13 +65,46 @@ text = "Number of Players"
 [node name="HSlider" type="HSlider" parent="MarginContainer/VBoxContainer/NumPlayers"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme = ExtResource("2_dbg4x")
 min_value = 2.0
 max_value = 10.0
 value = 2.0
 rounded = true
+tick_count = 9
+
+[node name="SimulationTimescale" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/SimulationTimescale"]
+layout_mode = 2
+text = "Simulation Timescale"
+
+[node name="Buttons" type="HBoxContainer" parent="MarginContainer/VBoxContainer/SimulationTimescale"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Days" type="Button" parent="MarginContainer/VBoxContainer/SimulationTimescale/Buttons"]
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+text = "Days"
+
+[node name="Hours" type="Button" parent="MarginContainer/VBoxContainer/SimulationTimescale/Buttons"]
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+text = "Hours"
+
+[node name="Minutes" type="Button" parent="MarginContainer/VBoxContainer/SimulationTimescale/Buttons"]
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+text = "Minutes"
 
 [node name="SimulationSpeed" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
+theme_override_constants/separation = 20
 
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer/SimulationSpeed"]
 layout_mode = 2
@@ -75,6 +113,7 @@ text = "Simulation Speed"
 [node name="HSlider" type="HSlider" parent="MarginContainer/VBoxContainer/SimulationSpeed"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme = ExtResource("2_dbg4x")
 min_value = 1.0
 max_value = 1000.0
 value = 1.0
@@ -82,6 +121,7 @@ exp_edit = true
 
 [node name="RatingConstraints" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
+theme_override_constants/separation = 20
 
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer/RatingConstraints"]
 layout_mode = 2
@@ -90,65 +130,91 @@ text = "Minimum Rating"
 [node name="HSlider" type="HSlider" parent="MarginContainer/VBoxContainer/RatingConstraints"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme = ExtResource("2_dbg4x")
 max_value = 3000.0
 step = 100.0
 
-[node name="Time" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+[node name="StartTime" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
+theme_override_constants/separation = 20
 
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Time"]
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/StartTime"]
 layout_mode = 2
-text = "Time"
+text = "Daily Start Time"
 
-[node name="HSlider" type="HSlider" parent="MarginContainer/VBoxContainer/Time"]
+[node name="HSlider" type="HSlider" parent="MarginContainer/VBoxContainer/StartTime"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme = ExtResource("2_dbg4x")
+max_value = 23.0
+tick_count = 24
+
+[node name="Duration" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Duration"]
+layout_mode = 2
+text = "Duration"
+
+[node name="HSlider" type="HSlider" parent="MarginContainer/VBoxContainer/Duration"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("2_dbg4x")
+min_value = 1.0
 max_value = 24.0
+value = 1.0
+tick_count = 24
 
 [node name="Days" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
+theme_override_constants/separation = 20
 
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Days"]
 layout_mode = 2
 text = "Days"
 
-[node name="Sunday" type="Button" parent="MarginContainer/VBoxContainer/Days"]
+[node name="Buttons" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Days"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Sunday" type="Button" parent="MarginContainer/VBoxContainer/Days/Buttons"]
 layout_mode = 2
 size_flags_horizontal = 3
 toggle_mode = true
 text = "Sunday"
 
-[node name="Monday" type="Button" parent="MarginContainer/VBoxContainer/Days"]
+[node name="Monday" type="Button" parent="MarginContainer/VBoxContainer/Days/Buttons"]
 layout_mode = 2
 size_flags_horizontal = 3
 toggle_mode = true
 text = "Monday"
 
-[node name="Tuesday" type="Button" parent="MarginContainer/VBoxContainer/Days"]
+[node name="Tuesday" type="Button" parent="MarginContainer/VBoxContainer/Days/Buttons"]
 layout_mode = 2
 size_flags_horizontal = 3
 toggle_mode = true
 text = "Tuesday"
 
-[node name="Wednesday" type="Button" parent="MarginContainer/VBoxContainer/Days"]
+[node name="Wednesday" type="Button" parent="MarginContainer/VBoxContainer/Days/Buttons"]
 layout_mode = 2
 size_flags_horizontal = 3
 toggle_mode = true
 text = "Wednesday"
 
-[node name="Thursday" type="Button" parent="MarginContainer/VBoxContainer/Days"]
+[node name="Thursday" type="Button" parent="MarginContainer/VBoxContainer/Days/Buttons"]
 layout_mode = 2
 size_flags_horizontal = 3
 toggle_mode = true
 text = "Thursday"
 
-[node name="Friday" type="Button" parent="MarginContainer/VBoxContainer/Days"]
+[node name="Friday" type="Button" parent="MarginContainer/VBoxContainer/Days/Buttons"]
 layout_mode = 2
 size_flags_horizontal = 3
 toggle_mode = true
 text = "Friday"
 
-[node name="Saturday" type="Button" parent="MarginContainer/VBoxContainer/Days"]
+[node name="Saturday" type="Button" parent="MarginContainer/VBoxContainer/Days/Buttons"]
 layout_mode = 2
 size_flags_horizontal = 3
 toggle_mode = true
@@ -158,11 +224,14 @@ text = "Saturday"
 layout_mode = 2
 text = "Create"
 
-[connection signal="toggled" from="MarginContainer/VBoxContainer/Days/Sunday" to="." method="_on_sunday_toggled"]
-[connection signal="toggled" from="MarginContainer/VBoxContainer/Days/Monday" to="." method="_on_monday_toggled"]
-[connection signal="toggled" from="MarginContainer/VBoxContainer/Days/Tuesday" to="." method="_on_tuesday_toggled"]
-[connection signal="toggled" from="MarginContainer/VBoxContainer/Days/Wednesday" to="." method="_on_wednesday_toggled"]
-[connection signal="toggled" from="MarginContainer/VBoxContainer/Days/Thursday" to="." method="_on_thursday_toggled"]
-[connection signal="toggled" from="MarginContainer/VBoxContainer/Days/Friday" to="." method="_on_friday_toggled"]
-[connection signal="toggled" from="MarginContainer/VBoxContainer/Days/Saturday" to="." method="_on_saturday_toggled"]
+[connection signal="toggled" from="MarginContainer/VBoxContainer/SimulationTimescale/Buttons/Days" to="." method="_on_days_toggled"]
+[connection signal="toggled" from="MarginContainer/VBoxContainer/SimulationTimescale/Buttons/Hours" to="." method="_on_hours_toggled"]
+[connection signal="toggled" from="MarginContainer/VBoxContainer/SimulationTimescale/Buttons/Minutes" to="." method="_on_minutes_toggled"]
+[connection signal="toggled" from="MarginContainer/VBoxContainer/Days/Buttons/Sunday" to="." method="_on_sunday_toggled"]
+[connection signal="toggled" from="MarginContainer/VBoxContainer/Days/Buttons/Monday" to="." method="_on_monday_toggled"]
+[connection signal="toggled" from="MarginContainer/VBoxContainer/Days/Buttons/Tuesday" to="." method="_on_tuesday_toggled"]
+[connection signal="toggled" from="MarginContainer/VBoxContainer/Days/Buttons/Wednesday" to="." method="_on_wednesday_toggled"]
+[connection signal="toggled" from="MarginContainer/VBoxContainer/Days/Buttons/Thursday" to="." method="_on_thursday_toggled"]
+[connection signal="toggled" from="MarginContainer/VBoxContainer/Days/Buttons/Friday" to="." method="_on_friday_toggled"]
+[connection signal="toggled" from="MarginContainer/VBoxContainer/Days/Buttons/Saturday" to="." method="_on_saturday_toggled"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/Create" to="." method="_on_create_pressed"]
