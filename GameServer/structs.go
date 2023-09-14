@@ -1,5 +1,7 @@
 package main
 
+type jsonObj map[string]interface{}
+
 type User struct {
 	ID          uint32    `json:"id"`
 	Username    string    `json:"username"`
@@ -31,7 +33,7 @@ type GameSettings struct {
 	Password              string                 `json:"password"`
 	PlayerCap             uint                   `json:"playerCap"`
 	StartTimeDisplacement uint64                 `json:"startTime"`
-	SettingOverrides      map[string]interface{} `json:"settingOverrides"`
+    SettingOverrides      jsonObj                `json:"settingOverrides"`
 }
 
 type GameDetails struct {

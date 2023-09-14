@@ -10,6 +10,11 @@ import (
 	"github.com/gorilla/websocket"
 )
 
+func (m jsonObj) Scan(src interface{}) error {
+    val := src.([]uint8)
+    return json.Unmarshal(val, &m)
+}
+
 // Get the details of all games that currently are accepting players
 func getGames(db *sql.DB, token string) ([]GameDetails, error) {
 	var response = make([]GameDetails, 0)
@@ -113,6 +118,7 @@ func userGames(db *sql.DB, token string, history bool) ([]GameDetails, error) {
 
 		err = results.Scan(&game.Data.ID, &game.Data.HostID, &game.Data.PlayerCount, &game.Data.CreatedAt, &game.Data.StartTime, &game.Data.Version, &game.Settings.SettingOverrides, &game.Settings.LobbyName, &game.Settings.Password, &game.Settings.PlayerCap)
 		if err != nil {
+            fmt.Println(err);
 			continue
 		}
 
