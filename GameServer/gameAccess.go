@@ -203,7 +203,7 @@ func createGame(db *sql.DB, token string, settings GameSettings) (GameDetails, e
 		return game, err
 	}
 
-	query := "INSERT INTO games (hostID, lobbyName, password, startTimeDisplacement, playerCap, settingsJSON, version) VALUES (?, ?, ?);"
+	query := "INSERT INTO games (hostID, lobbyName, password, startTimeDisplacement, playerCap, settings, version) VALUES (?, ?, ?);"
 
 	result, err := db.Exec(query, hostID, settings.LobbyName, settings.Password, settings.StartTimeDisplacement, settings.PlayerCap, overrides, latestVersion)
 	if err != nil {
