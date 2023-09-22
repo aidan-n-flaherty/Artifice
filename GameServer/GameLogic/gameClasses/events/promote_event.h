@@ -11,20 +11,18 @@
 class PromoteEvent : public Event
 {
 private:
-    Player* owner;
     Specialist* specialist;
 
     SpecialistType promotion;
 
 public:
     PromoteEvent(){};
-    PromoteEvent(double timestamp, Player* owner, Specialist* specialist, SpecialistType promotion) : Event(timestamp), owner(owner), specialist(specialist), promotion(promotion) {}
+    PromoteEvent(double timestamp, Specialist* specialist, SpecialistType promotion) : Event(timestamp), specialist(specialist), promotion(promotion) {}
     
     Event* copy() override { return new PromoteEvent(*this); }
 
     void updatePointers(Game *game) override {
         Event::updatePointers(game);
-        owner = game->getPlayer(owner->getID());
         specialist = game->getSpecialist(specialist->getID());
     }
 

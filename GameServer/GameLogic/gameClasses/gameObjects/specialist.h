@@ -37,7 +37,8 @@ enum SpecialistType {
     MINISTER_OF_ENERGY,
     SECURITY_CHIEF,
     TYCOON,
-    WAR_HERO
+    WAR_HERO,
+    NONE
 };
 
 class Game;
@@ -69,7 +70,50 @@ public:
 
     void setContainer(PositionalObject* o) { container = o; }
 
-    std::string typeAsString() {
+    static std::list<SpecialistType> baseHires() {
+        return {
+            PRINCESS,
+            PIRATE,
+            NAVIGATOR,
+            ASSASSIN,
+            INFILTRATOR,
+            LIEUTENANT,
+            THIEF,
+            DOUBLE_AGENT,
+            INSPECTOR,
+            MARTYR,
+            REVERED_ELDER,
+            SABOTEUR,
+            SENTRY,
+            SMUGGLER,
+            DIPLOMAT,
+            FOREMAN,
+            HELMSMAN,
+            HYPNOTIST,
+            INTELLIGENCE_OFFICER,
+            TINKERER
+        };
+    }
+
+    std::list<SpecialistType> promotionOptions() {
+        switch(type){
+            case NAVIGATOR: return { ADMIRAL };
+            case FOREMAN: return { ENGINEER };
+            case LIEUTENANT: return { GENERAL };
+            case HYPNOTIST: return { KING };
+            case TINKERER: return { MINISTER_OF_ENERGY };
+            case INSPECTOR: return { SECURITY_CHIEF };
+            case SMUGGLER: return { TYCOON };
+            case SENTRY: return { WAR_HERO };
+            default: return { NONE };
+        }
+    }
+
+    std::string typeAsString(){
+        return Specialist::typeAsString(type);
+    }
+
+    static std::string typeAsString(SpecialistType t) {
         return (const std::string[]) {
             "Queen",
             "Princess",
@@ -80,10 +124,10 @@ public:
             "Infiltrator",
             "Lieutenant",
             "Thief",
-            "DoubleAgent",
+            "Double_Agent",
             "Inspector",
             "Martyr",
-            "ReveredElder",
+            "Revered_Elder",
             "Saboteur",
             "Sentry",
             "Smuggler",
@@ -91,16 +135,17 @@ public:
             "Foreman",
             "Helmsman",
             "Hypnotist",
-            "IntelligenceOfficer",
+            "Intelligence_Officer",
             "Tinkerer",
             "Engineer",
             "General",
             "King",
-            "MinisterOfEnergy",
-            "SecurityChief",
+            "Minister_Of_Energy",
+            "Security_Chief",
             "Tycoon",
-            "WarHero"
-        }[type];
+            "War_Hero",
+            "NONE"
+        }[t];
     }
 };
 

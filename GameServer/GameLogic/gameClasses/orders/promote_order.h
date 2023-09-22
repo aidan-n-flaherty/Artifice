@@ -42,7 +42,16 @@ public:
             return nullptr;
         }
 
-        return new PromoteEvent(getTimestamp(), player, specialist, t);
+        bool canPromote = false;
+        for(SpecialistType option : specialist->promotionOptions()) {
+            if(option == t) {
+                canPromote = true;
+                break;
+            }
+        }
+        if(!canPromote) return nullptr;
+
+        return new PromoteEvent(getTimestamp(), specialist, t);
     }
 };
 

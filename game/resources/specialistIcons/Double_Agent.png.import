@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dyod1uxxk4hh"
-path="res://.godot/imported/SecurityChief.png-11d1a3a6976780fa3f46513e90f3a6a7.ctex"
+uid="uid://lajxysqkogaj"
+path="res://.godot/imported/Double_Agent.png-38b12680103ca212ae46a6da48ad57b6.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/specialistIcons/SecurityChief.png"
-dest_files=["res://.godot/imported/SecurityChief.png-11d1a3a6976780fa3f46513e90f3a6a7.ctex"]
+source_file="res://resources/specialistIcons/Double_Agent.png"
+dest_files=["res://.godot/imported/Double_Agent.png-38b12680103ca212ae46a6da48ad57b6.ctex"]
 
 [params]
 

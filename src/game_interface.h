@@ -7,6 +7,8 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <godot_cpp/variant/packed_vector2_array.hpp>
+#include <godot_cpp/variant/packed_string_array.hpp>
+#include <godot_cpp/variant/packed_int32_array.hpp>
 #include "../GameServer/GameLogic/gameClasses/game.h"
 #include "../GameServer/GameLogic/gameClasses/gameObjects/vessel.h"
 #include "../GameServer/GameLogic/gameClasses/gameObjects/outpost.h"
@@ -66,6 +68,11 @@ public:
 	std::shared_ptr<Game> getGame() { return game; }
 
 	int getUserGameID() { return userGameID; }
+
+	int getHires() {
+		double timeDiff = current - game->getTime();
+		return game ? game->getPlayer(userGameID)->getHiresAt(timeDiff) : -1;
+	}
 	
 	bool willSendWith(SpecialistType type);
 	void setSelectedSpecialist(int id);
@@ -82,6 +89,12 @@ public:
 	double getPercent() { return percent; }
 
 	PackedVector2Array getOutpostPositions();
+	PackedInt32Array getShopOptions();
+
+	String getSpecialistName(int specialistNum);
+	String getSpecialistDescription(int specialistNum);
+
+	int getReferenceID() { return game->getReferenceID(); }
 
 	int getWidth() { return GameSettings::width; }
 	int getHeight() { return GameSettings::height; }

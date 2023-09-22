@@ -13,6 +13,7 @@
 #include "orders/hire_order.h"
 #include "orders/reroute_order.h"
 #include "orders/promote_order.h"
+#include "orders/mine_order.h"
 #include "helpers/point.h"
 #include "events/send_event.h"
 #include "events/reroute_event.h"
@@ -28,7 +29,7 @@ Game::Game(int simulatorID, double startTime, double endTime, const std::map<int
     std::srand(seed);
 
     // necessary since godot likes to instantiate unnecessary game objects for fun
-    GameObject::resetCounter();
+    GameObject::resetCounter(0);
     int offset = GameObject::getIDCounter();
 
     for(auto pair : playerInfo) {
@@ -86,7 +87,7 @@ Game::Game(int simulatorID, double startTime, double endTime, const std::map<int
     addEvent(new OutpostRangeEvent(getTime()));
 }
 
-Game::Game(const Game& game) : stateTime(game.stateTime), cacheEnabled(game.cacheEnabled), endTime(game.endTime), referenceID(game.referenceID), simulatorID(game.simulatorID) {
+Game::Game(const Game& game) : stateTime(game.stateTime), cacheEnabled(game.cacheEnabled), endTime(game.endTime), referenceID(game.referenceID), simulatorID(game.simulatorID), lastExecutedOrder(game.lastExecutedOrder), gameObjCounter(game.gameObjCounter) {
     for(Event* event : game.events) events.insert(event->copy());
     for(Event* event : game.simulatedEvents) simulatedEvents.push_back(event->copy());
     for(const auto& pair : game.vessels) vessels[pair.first] = new Vessel(*pair.second);
@@ -204,6 +205,8 @@ void Game::updateState(double timestamp) {
 }
 
 void Game::cacheState() {
+    gameObjCounter = GameObject::getIDCounter();
+
     if(cacheEnabled) cache.insert(std::shared_ptr<Game>(new Game(*this)));
 }
 
@@ -220,6 +223,7 @@ std::list<std::pair<int, int>> Game::run() {
     while(!events.empty() || !orders.empty()) {
         std::multiset<Event*>::iterator event = events.begin();
 
+        GameObject::resetCounter(gameObjCounter);
         /*for(auto it = events.begin(); it != events.end(); it++) {
             std::cout << (*it)->getTimestamp() << ", ";
         }
@@ -237,6 +241,7 @@ std::list<std::pair<int, int>> Game::run() {
             orders.erase(orderIt);
 
             if(order->getID() > referenceID && order->getSenderID() != simulatorID) referenceID = order->getID();
+            lastExecutedOrder = order->getID();
 
             if(!converted) {
                 invalidOrders.push_back(order);
@@ -416,6 +421,24 @@ const BattleEvent* Game::simulatedBattle(int eventID) {
     return nullptr;
 }
 
+std::shared_ptr<Game> Game::removeOrder(int ID) {
+    std::shared_ptr<Game> returnVal = shared_from_this();
+
+    for(auto it = cache.begin(); it != cache.end(); it++) {
+        if((*it)->getLastExecutedOrder() == ID) break;
+        else returnVal = *it;
+    }
+
+    for(Order* o : returnVal->getOrders()) {
+        if(o->getID() == ID) {
+            returnVal->removeOrder(o);
+            break;
+        }
+    }
+
+    return returnVal;
+}
+
 std::shared_ptr<Game> Game::processOrder(const std::string &type, int ID, int referenceID, long timestamp, int senderID, int arguments[], int argCount) {
     double time = timestamp;
 
@@ -450,7 +473,11 @@ std::shared_ptr<Game> Game::processOrder(const std::string &type, int ID, int re
         int targetID = argumentIDs.front();
         argumentIDs.pop_front();
         game->addOrder(new RerouteOrder(ID, time, senderID, vesselID, targetID, referenceID));
-    } else {
+    } else if(type == "MINE" && argumentIDs.size() >= 1) {
+        int outpostID = argumentIDs.front();
+        argumentIDs.pop_front();
+        game->addOrder(new MineOrder(ID, time, senderID, outpostID, referenceID));
+    }  else {
         std::cout << "Unknown order type" << std::endl;
     }
 
@@ -492,6 +519,11 @@ void Game::removeSpecialist(Specialist* s) {
     if(s->getContainer() != nullptr) s->getContainer()->removeSpecialist(s);
     s->remove();
 }
+
+void Game::removeOrder(Order* o) {
+    orders.erase(o);
+}
+
 
 bool GameOrder::operator()(const std::shared_ptr<Game> &lhs, const std::shared_ptr<Game> &rhs) const {
     double diff = lhs->getTime() - rhs->getTime();

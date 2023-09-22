@@ -36,6 +36,15 @@ public:
             return nullptr;
         }
 
+        bool canHire = false;
+        for(SpecialistType option : Specialist::baseHires()) {
+            if(option == t) {
+                canHire = true;
+                break;
+            }
+        }
+        if(!canHire) return nullptr;
+
         updateOrders(game->getOrders());
 
         return new HireEvent(getTimestamp(), player, new Specialist(t));

@@ -107,7 +107,7 @@ func loadGames():
 		gameDetails[game.gameData.id] = game
 
 func addGame(game):
-	ongoingGameIDs.push_back(game.gameData.id)
+	ongoingGameIDs[game.gameData.id] = true
 	gameDetails[game.gameData.id] = game
 	
 func loadGame(id):

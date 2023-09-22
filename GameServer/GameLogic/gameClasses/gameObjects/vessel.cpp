@@ -80,6 +80,7 @@ double Vessel::getSpeed() const {
     if(controlsSpecialist(SpecialistType::GENERAL) || controlsSpecialist(SpecialistType::LIEUTENANT)) speed = fmax(speed, 1.5);
     if(getSpecialists().empty() && ownerControlsSpecialist(SpecialistType::ADMIRAL)) speed = fmax(speed, 1.5);
     if(controlsSpecialist(SpecialistType::ADMIRAL)) speed = fmax(speed, 2);
+    if(controlsSpecialist(SpecialistType::HELMSMAN)) speed = fmax(speed, 2);
     if(dynamic_cast<Vessel*>(getTarget()) && controlsSpecialist(SpecialistType::PIRATE)) speed = fmax(speed, 2);
     if(controlsSpecialist(SpecialistType::SMUGGLER) && getTarget()->getOwnerID() == getOwnerID()) speed = fmax(speed, 3);
 

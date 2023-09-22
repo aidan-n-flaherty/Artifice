@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cl5qxi8isfdrr"
-path="res://.godot/imported/IntelligenceOfficer.png-a3fffe0be9eb8a5d7fc5658fb0a9512a.ctex"
+uid="uid://dmqf441kojmog"
+path="res://.godot/imported/Revered_Elder.png-47d1c3e30cd3dddc4a9b87eca1dff6f9.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/specialistIcons/IntelligenceOfficer.png"
-dest_files=["res://.godot/imported/IntelligenceOfficer.png-a3fffe0be9eb8a5d7fc5658fb0a9512a.ctex"]
+source_file="res://resources/specialistIcons/Revered_Elder.png"
+dest_files=["res://.godot/imported/Revered_Elder.png-47d1c3e30cd3dddc4a9b87eca1dff6f9.ctex"]
 
 [params]
 

@@ -3,9 +3,9 @@ extends Control
 var gameID
 var game
 
-var viewing
-
 var startTime
+
+var menuDisplay
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -15,44 +15,15 @@ func _ready():
 	startTime = int(Time.get_unix_time_from_system())
 	
 	$Viewport/Viewport3D.add_child(game)
-	$Viewport/VSplitContainer/VBoxContainer/Timeline.game = game
+	$Viewport/GameOverlay/Overlay/VBoxContainer/Timeline.game = game
 	$Viewport/Viewport3D/CameraPivot.game = game
 	$Viewport/Viewport3D/CameraPivot/FloorDisplay.add_child(game.getFloorDisplay())
-
-	viewing = $Viewport
-	viewing.show()
-	for child in viewing.get_children():
-		child.show()
+	
+	$Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel/Shop.init(gameID)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	pass
-
-func setView(node):
-	viewing.hide()
-	for child in viewing.get_children():
-		child.hide()
-		
-	viewing = node
-	
-	viewing.show()
-	for child in viewing.get_children():
-		child.show()
-
-func _on_game_pressed():
-	setView($Viewport)
-
-func _on_chat_pressed():
-	setView($Chat)
-	
-func _on_hire_pressed():
-	setView($Hire)
-
-func _on_status_pressed():
-	setView($Status)
-
-func _on_logs_pressed():
-	setView($Logs)
 	
 func addOrder(type, referenceID, timestamp, arguments):
 	print(timestamp + 2 - int(Time.get_unix_time_from_system()))
@@ -76,3 +47,34 @@ func addOrder(type, referenceID, timestamp, arguments):
 
 func _on_percent_bar_value_changed(value):
 	game.setPercent(value);
+
+func setMenuDisplay(scene, select):
+	if menuDisplay != null:
+		menuDisplay.hide()
+		menuDisplay = null
+	
+	if select:
+		menuDisplay = scene
+		menuDisplay.show()
+		$Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel.show()
+	else:
+		$Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel.hide()
+
+func _on_status_button_toggled(button_pressed):
+	setMenuDisplay($Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel/Status,
+		button_pressed)
+
+
+func _on_chat_button_toggled(button_pressed):
+	setMenuDisplay($Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel/Chat,
+		button_pressed)
+
+
+func _on_shop_button_toggled(button_pressed):
+	setMenuDisplay($Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel/Shop,
+		button_pressed)
+
+
+func _on_logs_button_toggled(button_pressed):
+	setMenuDisplay($Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel/Logs,
+		button_pressed)

@@ -5,6 +5,7 @@
 #include "../GameServer/GameLogic/gameClasses/gameObjects/outpost.h"
 #include "../GameServer/GameLogic/gameClasses/gameObjects/specialist.h"
 #include "../GameServer/GameLogic/gameClasses/orders/send_order.h"
+#include "../GameServer/GameLogic/gameClasses/game_settings.h"
 #include "vessel_node.h"
 #include "outpost_node.h"
 #include <godot_cpp/core/class_db.hpp>
@@ -12,6 +13,9 @@
 #include <godot_cpp/variant/utility_functions.hpp>
 #include <godot_cpp/variant/callable.hpp>
 #include <godot_cpp/variant/packed_vector2_array.hpp>
+#include <godot_cpp/variant/packed_string_array.hpp>
+#include <godot_cpp/variant/packed_int32_array.hpp>
+#include <godot_cpp/variant/string.hpp>
 #include <cstdlib>
 #include <ctime>
 #include <chrono>
@@ -39,7 +43,12 @@ void GameInterface::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("getPercent"), &GameInterface::getPercent);
 	ClassDB::bind_method(D_METHOD("getWidth"), &GameInterface::getWidth);
 	ClassDB::bind_method(D_METHOD("getHeight"), &GameInterface::getHeight);
+	ClassDB::bind_method(D_METHOD("getHires"), &GameInterface::getHires);
+	ClassDB::bind_method(D_METHOD("getReferenceID"), &GameInterface::getReferenceID);
 	ClassDB::bind_method(D_METHOD("getOutpostPositions"), &GameInterface::getOutpostPositions);
+	ClassDB::bind_method(D_METHOD("getShopOptions"), &GameInterface::getShopOptions);
+	ClassDB::bind_method(D_METHOD("getSpecialistName"), &GameInterface::getSpecialistName);
+	ClassDB::bind_method(D_METHOD("getSpecialistDescription"), &GameInterface::getSpecialistDescription);
 	ClassDB::bind_method(D_METHOD("getFloorDisplay"), &GameInterface::getFloorDisplay);
 	ClassDB::bind_method(D_METHOD("addOrder", "type", "ID", "referenceID", "timestamp", "senderID", "arguments", "argCount"), &GameInterface::addOrder);
 	ADD_SIGNAL(MethodInfo("addOrder", PropertyInfo(Variant::STRING, "type"), PropertyInfo(Variant::INT, "referenceID"), PropertyInfo(Variant::INT, "timestamp"), PropertyInfo(Variant::PACKED_INT32_ARRAY, "arguments")));
@@ -309,15 +318,8 @@ void GameInterface::setSelectedSpecialist(int id) {
 void GameInterface::bulkAddOrder(const String &type, uint32_t ID, int32_t referenceID, uint32_t timestamp, uint32_t senderID, PackedInt32Array arguments, uint32_t argCount) {
 	int arr[argCount];
 	for(int i = 0; i < argCount; i++) arr[i] = arguments[i];
-	std::string t;
-	
-	if(type == "SEND") t = "SEND";
-	else if(type == "HIRE") t = "HIRE";
-	else if(type == "GIFT") t = "GIFT";
-	else if(type == "PROMOTE") t = "PROMOTE";
-	else if(type == "REROUTE") t = "REROUTE";
 
-	completeGame = completeGame->processOrder(t, ID, referenceID, timestamp, senderID, arr, argCount);
+	completeGame = completeGame->processOrder(std::string(type.utf8().get_data()), ID, referenceID, timestamp, senderID, arr, argCount);
 }
 
 void GameInterface::endBulkAdd() {
@@ -330,15 +332,9 @@ void GameInterface::endBulkAdd() {
 void GameInterface::addOrder(const String &type, uint32_t ID, int32_t referenceID, uint32_t timestamp, uint32_t senderID, PackedInt32Array arguments, uint32_t argCount) {
 	int arr[argCount];
 	for(int i = 0; i < argCount; i++) arr[i] = arguments[i];
-	std::string t;
-	
-	if(type == "SEND") t = "SEND";
-	else if(type == "HIRE") t = "HIRE";
-	else if(type == "GIFT") t = "GIFT";
-	else if(type == "PROMOTE") t = "PROMOTE";
-	else if(type == "REROUTE") t = "REROUTE";
+	std::string t(type.utf8().get_data());
 
-	completeGame = completeGame->processOrder(t, ID, referenceID, timestamp, senderID, arr, argCount);
+	completeGame = completeGame->processOrder(std::string(type.utf8().get_data()), ID, referenceID, timestamp, senderID, arr, argCount);
 	completeGame->run();
 	game = nullptr;
 	
@@ -353,4 +349,22 @@ PackedVector2Array GameInterface::getOutpostPositions() {
 	}
 
 	return arr;
+}
+
+PackedInt32Array GameInterface::getShopOptions() {
+	PackedInt32Array arr;
+
+	for(SpecialistType t : Specialist::baseHires()) {
+		arr.push_back(uint32_t(t));
+	}
+
+	return arr;
+}
+
+String GameInterface::getSpecialistName(int specialistNum) {
+	return String(Specialist::typeAsString(SpecialistType(specialistNum)).c_str());
+}
+
+String GameInterface::getSpecialistDescription(int specialistNum) {
+	return String(GameSettings::specialistDescriptions[SpecialistType(specialistNum)].c_str());
 }

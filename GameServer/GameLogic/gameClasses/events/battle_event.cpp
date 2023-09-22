@@ -159,7 +159,7 @@ void BattleEvent::postCombatSpecialistPhase(Game* game) {
     if(a->controlsSpecialist(SpecialistType::REVERED_ELDER) != b->controlsSpecialist(SpecialistType::REVERED_ELDER)) return;
 
     if(a->controlsSpecialist(SpecialistType::MARTYR)) {
-        int range = GameSettings::defaultSonar/4;
+        int range = GameSettings::defaultSonar/5;
 
         for(const auto &v : game->getVessels()) {
             if(a->distance(v.second->getPosition()) <= range) game->removeVessel(v.second);
@@ -178,7 +178,7 @@ void BattleEvent::postCombatSpecialistPhase(Game* game) {
     }
 
     if(b->controlsSpecialist(SpecialistType::MARTYR)) {
-        int range = GameSettings::defaultSonar/4;
+        int range = GameSettings::defaultSonar/5;
 
         for(const auto &v : game->getVessels()) {
             if(b->distance(v.second->getPosition()) <= range) game->removeVessel(v.second);

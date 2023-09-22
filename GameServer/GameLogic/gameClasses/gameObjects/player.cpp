@@ -73,6 +73,16 @@ void Player::setDefeated(Game* game) {
     if(game->hasEnded()) game->endGame();
 }
 
+PositionalObject* Player::getSpawnLocation() {
+    for(Specialist* s : specialists) {
+        if(s->getType() == QUEEN) {
+            return s->getContainer();
+        }
+    }
+
+    return nullptr;
+}
+
 std::list<Outpost*> Player::sortedOutposts(const PositionalObject* obj) {
     std::list<Outpost*> outposts;
 

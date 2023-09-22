@@ -1,0 +1,90 @@
+[gd_scene load_steps=6 format=3 uid="uid://cosy5s2xq3c2w"]
+
+[ext_resource type="Script" path="res://SpecialistOffer.gd" id="1_r0moy"]
+[ext_resource type="Material" uid="uid://ceshq08mjed03" path="res://resources/materials/SpecialistMesh.tres" id="2_jypff"]
+[ext_resource type="Texture2D" uid="uid://b4p1418oo26f6" path="res://resources/specialistIcons/Helmsman.png" id="3_exqho"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5mrol"]
+bg_color = Color(0.117647, 0.117647, 0.117647, 1)
+corner_radius_top_left = 30
+corner_radius_top_right = 30
+corner_radius_bottom_right = 30
+corner_radius_bottom_left = 30
+corner_detail = 16
+
+[sub_resource type="LabelSettings" id="LabelSettings_bcf4o"]
+font_size = 30
+
+[node name="SpecialistOffer" type="MarginContainer"]
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 296.0
+grow_horizontal = 2
+size_flags_horizontal = 3
+script = ExtResource("1_r0moy")
+
+[node name="Background" type="Panel" parent="."]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_5mrol")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 50
+
+[node name="HBoxContainer" type="HSplitContainer" parent="MarginContainer"]
+layout_mode = 2
+dragger_visibility = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="MarginContainer/HBoxContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+text = "Testing"
+label_settings = SubResource("LabelSettings_bcf4o")
+vertical_alignment = 2
+clip_text = true
+
+[node name="Description" type="RichTextLabel" parent="MarginContainer/HBoxContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+fit_content = true
+scroll_active = false
+
+[node name="Spacer" type="Control" parent="MarginContainer/HBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.25
+
+[node name="Image" type="TextureRect" parent="MarginContainer/HBoxContainer/MarginContainer"]
+modulate = Color(0, 0, 0, 1)
+material = ExtResource("2_jypff")
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = ExtResource("3_exqho")
+expand_mode = 4
+stretch_mode = 5
+
+[node name="Button" type="Button" parent="MarginContainer/HBoxContainer/MarginContainer"]
+custom_minimum_size = Vector2(150, 50)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 8
+text = "Hire now"
+
+[connection signal="pressed" from="MarginContainer/HBoxContainer/MarginContainer/Button" to="." method="_on_button_pressed"]

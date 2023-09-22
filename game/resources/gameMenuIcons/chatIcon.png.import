@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bgw12n032pb2i"
-path="res://.godot/imported/MinisterOfEnergy.png-4e06b3ffb9e25772dc29fe1c52c56ba8.ctex"
+uid="uid://ddtmrm6d6rl0c"
+path="res://.godot/imported/chatIcon.png-916b75f5f53031cb5b59155fafb974f1.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/specialistIcons/MinisterOfEnergy.png"
-dest_files=["res://.godot/imported/MinisterOfEnergy.png-4e06b3ffb9e25772dc29fe1c52c56ba8.ctex"]
+source_file="res://resources/gameMenuIcons/chatIcon.png"
+dest_files=["res://.godot/imported/chatIcon.png-916b75f5f53031cb5b59155fafb974f1.ctex"]
 
 [params]
 

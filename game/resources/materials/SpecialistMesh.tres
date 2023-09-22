@@ -1,0 +1,9 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://ceshq08mjed03"]
+
+[ext_resource type="Shader" path="res://SpecialistMesh.gdshader" id="1_8dx4x"]
+
+[resource]
+resource_local_to_scene = true
+shader = ExtResource("1_8dx4x")
+shader_parameter/inverted = true
+shader_parameter/translucent = false

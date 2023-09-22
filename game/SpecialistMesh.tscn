@@ -1,9 +1,9 @@
-[gd_scene load_steps=11 format=3 uid="uid://820462udup0w"]
+[gd_scene load_steps=10 format=3 uid="uid://820462udup0w"]
 
 [ext_resource type="Script" path="res://SpecialistMesh.gd" id="1_ka51b"]
-[ext_resource type="Shader" path="res://SpecialistMesh.gdshader" id="2_lp0fv"]
 [ext_resource type="Texture2D" uid="uid://c1f04o6gimvxl" path="res://resources/images/whiteCircle.png" id="2_puof1"]
 [ext_resource type="Shader" path="res://SpecialistMesh3D.gdshader" id="2_vhvoe"]
+[ext_resource type="Material" uid="uid://ceshq08mjed03" path="res://resources/materials/SpecialistMesh.tres" id="3_74y6v"]
 [ext_resource type="Texture2D" uid="uid://b01ch1xp0y68k" path="res://resources/specialistIcons/Smuggler.png" id="3_wml8q"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_ddm8n"]
@@ -23,12 +23,6 @@ shader_parameter/translucent = false
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_xim3k"]
 viewport_path = NodePath("SubViewport")
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_fh2lx"]
-resource_local_to_scene = true
-shader = ExtResource("2_lp0fv")
-shader_parameter/inverted = false
-shader_parameter/translucent = false
 
 [node name="SpecialistMesh" type="Area3D"]
 script = ExtResource("1_ka51b")
@@ -61,7 +55,7 @@ transparent_bg = true
 size = Vector2i(100, 100)
 
 [node name="Control" type="Control" parent="SubViewport"]
-material = SubResource("ShaderMaterial_fh2lx")
+material = ExtResource("3_74y6v")
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0

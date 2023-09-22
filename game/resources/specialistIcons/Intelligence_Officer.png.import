@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cbma7fssbqrt7"
-path="res://.godot/imported/WarHero.png-eb4a46e50446aa718e8be03424cab0ac.ctex"
+uid="uid://cl5qxi8isfdrr"
+path="res://.godot/imported/Intelligence_Officer.png-149e0109579ff7f128d8e7e369598af7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/specialistIcons/WarHero.png"
-dest_files=["res://.godot/imported/WarHero.png-eb4a46e50446aa718e8be03424cab0ac.ctex"]
+source_file="res://resources/specialistIcons/Intelligence_Officer.png"
+dest_files=["res://.godot/imported/Intelligence_Officer.png-149e0109579ff7f128d8e7e369598af7.ctex"]
 
 [params]
 

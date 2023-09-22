@@ -27,14 +27,14 @@ func postReq(path, data, includeToken=true):
 	var response_code = response[1]
 	var response_headers = response[2]
 
-	var body = JSON.parse_string(response[3].get_string_from_utf8())
-	
 	remove_child(reqNode)
 	
 	if(response_code < 200 || response_code > 299):
 		print("Bad response code")
 		print(response[3].get_string_from_utf8())
-		
+	
+	var body = JSON.parse_string(response[3].get_string_from_utf8())
+	
 	if(body == null):
 		print("Bad JSON")
 	
@@ -66,13 +66,14 @@ func putReq(path, data, params, includeToken=true):
 	var result = response[0]
 	var response_code = response[1]
 	var response_headers = response[2]
-	var body = JSON.parse_string(response[3].get_string_from_utf8())
 	
 	remove_child(reqNode)
 	
 	if(response_code < 200 || response_code > 299):
 		print("Bad response code")
 		print(response[3].get_string_from_utf8())
+	
+	var body = JSON.parse_string(response[3].get_string_from_utf8())
 		
 	if(body == null):
 		print("Bad JSON")

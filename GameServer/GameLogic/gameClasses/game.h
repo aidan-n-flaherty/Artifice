@@ -54,6 +54,9 @@ private:
     int referenceID = -1;
     int simulatorID = -1;
 
+    int lastExecutedOrder = -1;
+    int gameObjCounter;
+
     std::unordered_map<int, Player*> players;
     std::unordered_map<int, Vessel*> vessels;
     std::unordered_map<int, Outpost*> outposts;
@@ -111,10 +114,12 @@ public:
     void addOrder(Order* o);
     void addEvent(Event* e);
 
+    std::shared_ptr<Game> removeOrder(int ID);
     std::shared_ptr<Game> processOrder(const std::string &type, int ID, int referenceID, long timestamp, int senderID, int argumentIDs[], int argCount);
     
     void removeVessel(Vessel* v);
     void removeSpecialist(Specialist* s);
+    void removeOrder(Order* o);
     
     double getTime() const { return stateTime; }
     double getEndTime() const { return endTime; }
@@ -127,8 +132,10 @@ public:
     std::list<BattleEvent*> nextBattles(int id);
     const BattleEvent* simulatedBattle(int eventID);
 
-    int getReferenceID() { return referenceID; };
-    int getSimulatorID() { return simulatorID; };
+    int getReferenceID() { return referenceID; }
+    int getSimulatorID() { return simulatorID; }
+
+    int getLastExecutedOrder() { return lastExecutedOrder; }
 };
 
 #endif

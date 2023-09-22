@@ -161,10 +161,10 @@ void PositionalNode::setReference(PositionalObject* obj) {
 				currentSpecialists.push_back(s);
 			}
 
-			CanvasItem* item = cast_to<CanvasItem>(specialist->get_node_or_null(NodePath("SubViewport/Control")));
+			CanvasItem* item = cast_to<CanvasItem>(specialist->get_node_or_null("SubViewport/Control"));
 			ShaderMaterial* mat1 = cast_to<ShaderMaterial>(item->get_material().ptr());
 
-			MeshInstance3D* mesh = cast_to<MeshInstance3D>(specialist->get_node_or_null(NodePath("Cylinder")));
+			MeshInstance3D* mesh = cast_to<MeshInstance3D>(specialist->get_node_or_null("Cylinder"));
 			ShaderMaterial* mat2 = cast_to<ShaderMaterial>(mesh->get_surface_override_material(0).ptr());
 
 			if(selectedSpecialists.find(sp->getID()) != selectedSpecialists.end()) {

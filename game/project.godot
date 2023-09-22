@@ -32,6 +32,7 @@ window/size/viewport_width=1080
 window/size/viewport_height=1920
 window/stretch/mode="viewport"
 window/stretch/aspect="keep_height"
+window/handheld/orientation=1
 
 [input]
 

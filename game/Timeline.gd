@@ -37,9 +37,6 @@ func _input(event):
 			target = 0
 	elif event is InputEventMouseMotion and dragging:
 		target = (event.position.x - mouse_start_pos.x)
-		print(-target)
-		
-	
 	
 	if dragging:
 		accept_event()

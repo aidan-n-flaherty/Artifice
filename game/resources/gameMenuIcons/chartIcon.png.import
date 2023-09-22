@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dmqf441kojmog"
-path="res://.godot/imported/ReveredElder.png-2f888980469dc33efb450554a6c44fed.ctex"
+uid="uid://5rc0hts7wgcj"
+path="res://.godot/imported/chartIcon.png-33200bd21073dd109edf37a8ef76b43a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/specialistIcons/ReveredElder.png"
-dest_files=["res://.godot/imported/ReveredElder.png-2f888980469dc33efb450554a6c44fed.ctex"]
+source_file="res://resources/gameMenuIcons/chartIcon.png"
+dest_files=["res://.godot/imported/chartIcon.png-33200bd21073dd109edf37a8ef76b43a.ctex"]
 
 [params]
 

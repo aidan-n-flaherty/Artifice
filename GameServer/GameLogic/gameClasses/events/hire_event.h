@@ -27,8 +27,12 @@ public:
     }
 
     void run(Game* game) override {
+        game->addSpecialist(specialist);
         owner->addSpecialist(specialist);
         owner->removeHire();
+
+        PositionalObject* spawn = owner->getSpawnLocation();
+        if(spawn) spawn->addSpecialist(specialist);       
     }
 };
 

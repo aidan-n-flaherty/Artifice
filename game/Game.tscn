@@ -1,25 +1,25 @@
-[gd_scene load_steps=35 format=3 uid="uid://dgp4l24s2rulk"]
+[gd_scene load_steps=36 format=3 uid="uid://dgp4l24s2rulk"]
 
 [ext_resource type="Script" path="res://Game.gd" id="1_s53r2"]
 [ext_resource type="Script" path="res://CameraPivot.gd" id="2_t2ckv"]
 [ext_resource type="PackedScene" uid="uid://n0lobms04k46" path="res://Timeline.tscn" id="3_jhu7k"]
-[ext_resource type="StyleBox" uid="uid://coornuougjr7i" path="res://resources/themes/MenuButton/ButtonNormal.tres" id="4_fdg00"]
-[ext_resource type="StyleBox" uid="uid://bbcqsraqxn7j" path="res://resources/themes/MenuButton/ButtonHover.tres" id="5_j8x77"]
-[ext_resource type="StyleBox" uid="uid://ydy2ph7i0d33" path="res://resources/themes/MenuButton/LeftButtonNormal.tres" id="6_4mo1t"]
-[ext_resource type="StyleBox" uid="uid://btgfmsxfwcri7" path="res://resources/themes/MenuButton/ButtonPress.tres" id="6_h0r5t"]
-[ext_resource type="StyleBox" uid="uid://b31q0joubx7la" path="res://resources/themes/MenuButton/LeftButtonHover.tres" id="7_84ov1"]
 [ext_resource type="Shader" path="res://SnowPerlin.gdshader" id="8_4e3wm"]
-[ext_resource type="StyleBox" uid="uid://c3v6hkt8fdffw" path="res://resources/themes/MenuButton/LeftButtonPress.tres" id="8_csbqx"]
 [ext_resource type="Material" uid="uid://li2d1mgnl1tk" path="res://resources/metal.tres" id="9_j8866"]
 [ext_resource type="Texture2D" uid="uid://brxrlxoa5qwsv" path="res://resources/snow.tres" id="9_kcgrj"]
 [ext_resource type="Theme" uid="uid://bfwpaonloeco5" path="res://resources/theme.tres" id="9_ttxpu"]
 [ext_resource type="Shader" path="res://Refraction.gdshader" id="9_xlyo3"]
 [ext_resource type="Texture2D" uid="uid://dg1n1bsa3ya68" path="res://resources/ocean.tres" id="10_i4d0l"]
 [ext_resource type="Script" path="res://VirtualCamera3D.gd" id="10_jokxl"]
-[ext_resource type="Script" path="res://Hire.gd" id="11_xja14"]
-[ext_resource type="StyleBox" uid="uid://ctqramsfdasmb" path="res://resources/themes/MenuButton/RightButtonNormal.tres" id="12_l14op"]
-[ext_resource type="StyleBox" uid="uid://bxu6bftnvpiuu" path="res://resources/themes/MenuButton/RightButtonHover.tres" id="13_r880k"]
-[ext_resource type="StyleBox" uid="uid://6pudnvggv2g8" path="res://resources/themes/MenuButton/RightButtonPress.tres" id="14_d47sy"]
+[ext_resource type="StyleBox" uid="uid://dgq41l16rxlq" path="res://resources/styles/roundRectBlack.tres" id="11_uh1qc"]
+[ext_resource type="PackedScene" uid="uid://cfc57qmlyevna" path="res://VesselDetails.tscn" id="12_1uj1h"]
+[ext_resource type="Texture2D" uid="uid://c0beg3px50da4" path="res://resources/gameMenuIcons/logsIcon.png" id="12_fsvp4"]
+[ext_resource type="PackedScene" uid="uid://cqdpj2uw0cloc" path="res://Shop.tscn" id="12_sa8gc"]
+[ext_resource type="PackedScene" uid="uid://symsrj5sm6dt" path="res://Status.tscn" id="13_20fpi"]
+[ext_resource type="Texture2D" uid="uid://cp6kr6lqkxiho" path="res://resources/gameMenuIcons/hireIcon.png" id="13_xkygy"]
+[ext_resource type="Texture2D" uid="uid://5rc0hts7wgcj" path="res://resources/gameMenuIcons/chartIcon.png" id="14_cfqet"]
+[ext_resource type="PackedScene" uid="uid://c7rmgavx0p0po" path="res://Chat.tscn" id="14_xpy25"]
+[ext_resource type="Texture2D" uid="uid://ddtmrm6d6rl0c" path="res://resources/gameMenuIcons/chatIcon.png" id="15_lpw6h"]
+[ext_resource type="PackedScene" uid="uid://8bjal0hti5cr" path="res://Logs.tscn" id="15_yfjeb"]
 
 [sub_resource type="PhysicalSkyMaterial" id="PhysicalSkyMaterial_ikjik"]
 ground_color = Color(0, 0, 0, 1)
@@ -93,6 +93,9 @@ shader_parameter/noise2 = SubResource("NoiseTexture2D_mpw5d")
 
 [sub_resource type="BoxMesh" id="BoxMesh_j234n"]
 size = Vector3(10, 30, 10)
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_ocfcu"]
+allow_unpress = true
 
 [node name="Game" type="Control"]
 layout_mode = 3
@@ -213,7 +216,7 @@ visible = false
 mesh = SubResource("BoxMesh_j234n")
 surface_material_override/0 = ExtResource("9_j8866")
 
-[node name="VSplitContainer" type="VSplitContainer" parent="Viewport"]
+[node name="GameOverlay" type="VSplitContainer" parent="Viewport"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -221,29 +224,40 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 0
+dragger_visibility = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Viewport/VSplitContainer"]
+[node name="Overlay" type="Control" parent="Viewport/GameOverlay"]
 layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Viewport/GameOverlay/Overlay"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 size_flags_vertical = 3
 theme_override_constants/separation = 0
 
-[node name="TopSpacer" type="Control" parent="Viewport/VSplitContainer/VBoxContainer"]
+[node name="TopSpacer" type="Control" parent="Viewport/GameOverlay/Overlay/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 size_flags_stretch_ratio = 0.5
 mouse_filter = 1
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Viewport/VSplitContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Viewport/GameOverlay/Overlay/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 size_flags_stretch_ratio = 3.0
 
-[node name="Spacer" type="Control" parent="Viewport/VSplitContainer/VBoxContainer/HBoxContainer"]
+[node name="Spacer" type="Control" parent="Viewport/GameOverlay/Overlay/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(30, 0)
 layout_mode = 2
 mouse_filter = 2
 
-[node name="PercentBar" type="VSlider" parent="Viewport/VSplitContainer/VBoxContainer/HBoxContainer"]
+[node name="PercentBar" type="VSlider" parent="Viewport/GameOverlay/Overlay/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(30, 0)
 layout_mode = 2
 size_flags_vertical = 3
@@ -254,166 +268,250 @@ step = 0.01
 value = 1.0
 tick_count = 5
 
-[node name="BottomSpacer" type="Control" parent="Viewport/VSplitContainer/VBoxContainer"]
+[node name="BottomSpacer" type="Control" parent="Viewport/GameOverlay/Overlay/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 size_flags_stretch_ratio = 0.5
+mouse_filter = 1
 
-[node name="Timeline" parent="Viewport/VSplitContainer/VBoxContainer" instance=ExtResource("3_jhu7k")]
+[node name="Timeline" parent="Viewport/GameOverlay/Overlay/VBoxContainer" instance=ExtResource("3_jhu7k")]
 custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
 size_flags_vertical = 3
 size_flags_stretch_ratio = 0.05
 
-[node name="Spacer" type="Control" parent="Viewport/VSplitContainer"]
+[node name="UIOverlay" type="MarginContainer" parent="Viewport/GameOverlay/Overlay"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 150
+theme_override_constants/margin_top = 150
+theme_override_constants/margin_right = 150
+theme_override_constants/margin_bottom = 150
+
+[node name="Separator" type="VSplitContainer" parent="Viewport/GameOverlay/Overlay/UIOverlay"]
+layout_mode = 2
+dragger_visibility = 2
+
+[node name="ElementDisplay" type="Control" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.3
+mouse_filter = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/ElementDisplay"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="Control" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/ElementDisplay/VBoxContainer"]
+visible = false
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Background" type="Panel" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/ElementDisplay/VBoxContainer/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = ExtResource("11_uh1qc")
+
+[node name="MarginContainer" type="MarginContainer" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/ElementDisplay/VBoxContainer/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 40
+
+[node name="VesselDetails" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/ElementDisplay/VBoxContainer/Panel/MarginContainer" instance=ExtResource("12_1uj1h")]
+layout_mode = 2
+
+[node name="Gap" type="Control" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/ElementDisplay/VBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+mouse_filter = 1
+
+[node name="TabDisplay" type="Control" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 1
+
+[node name="Panel" type="Control" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Background" type="Panel" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = ExtResource("11_uh1qc")
+
+[node name="Shop" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel" instance=ExtResource("12_sa8gc")]
+visible = false
+layout_mode = 1
+
+[node name="Status" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel" instance=ExtResource("13_20fpi")]
+visible = false
+layout_mode = 1
+
+[node name="Chat" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel" instance=ExtResource("14_xpy25")]
+visible = false
+layout_mode = 1
+
+[node name="Logs" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel" instance=ExtResource("15_yfjeb")]
+visible = false
+layout_mode = 1
+
+[node name="Spacer" type="Control" parent="Viewport/GameOverlay"]
 layout_mode = 2
 size_flags_vertical = 3
 size_flags_stretch_ratio = 0.1
 mouse_filter = 1
 
-[node name="Chat" type="ScrollContainer" parent="."]
-visible = false
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-horizontal_scroll_mode = 0
-
-[node name="Conversations" type="VBoxContainer" parent="Chat"]
-layout_mode = 2
-
-[node name="Hire" type="ScrollContainer" parent="."]
-visible = false
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-horizontal_scroll_mode = 0
-script = ExtResource("11_xja14")
-
-[node name="SpecialistOptions" type="VBoxContainer" parent="Hire"]
-layout_mode = 2
-
-[node name="Status" type="ScrollContainer" parent="."]
-visible = false
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-horizontal_scroll_mode = 0
-
-[node name="VSplitContainer" type="VSplitContainer" parent="Status"]
-layout_mode = 2
-
-[node name="Buttons" type="HBoxContainer" parent="Status/VSplitContainer"]
-layout_mode = 2
-
-[node name="PlayerList" type="VBoxContainer" parent="Status/VSplitContainer"]
-layout_mode = 2
-
-[node name="Logs" type="ScrollContainer" parent="."]
-visible = false
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-horizontal_scroll_mode = 0
-
-[node name="VBoxContainer" type="VBoxContainer" parent="Logs"]
-layout_mode = 2
-
-[node name="TabView" type="Control" parent="."]
+[node name="MenuBar" type="Control" parent="."]
 top_level = true
 anchors_preset = 0
 offset_right = 1080.0
 offset_bottom = 1920.0
 mouse_filter = 2
 
-[node name="VSplitContainer" type="VSplitContainer" parent="TabView"]
+[node name="VSplitContainer" type="VSplitContainer" parent="MenuBar"]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 theme_override_constants/separation = 0
+dragger_visibility = 2
 
-[node name="Spacer" type="Control" parent="TabView/VSplitContainer"]
+[node name="Spacer" type="Control" parent="MenuBar/VSplitContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 mouse_filter = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="TabView/VSplitContainer"]
+[node name="Tabs" type="Control" parent="MenuBar/VSplitContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 size_flags_stretch_ratio = 0.1
-mouse_filter = 2
 
-[node name="Game" type="Button" parent="TabView/VSplitContainer/HBoxContainer"]
+[node name="Background" type="ColorRect" parent="MenuBar/VSplitContainer/Tabs"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.1
+color = Color(0, 0, 0, 1)
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MenuBar/VSplitContainer/Tabs"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.1
+mouse_filter = 0
+
+[node name="LSpacer" type="Control" parent="MenuBar/VSplitContainer/Tabs/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
-theme_override_font_sizes/font_size = 20
-theme_override_styles/normal = ExtResource("6_4mo1t")
-theme_override_styles/hover = ExtResource("7_84ov1")
-theme_override_styles/pressed = ExtResource("8_csbqx")
-text = "Game"
 
-[node name="Chat" type="Button" parent="TabView/VSplitContainer/HBoxContainer"]
+[node name="LogContainer" type="MarginContainer" parent="MenuBar/VSplitContainer/Tabs/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
-theme_override_font_sizes/font_size = 20
-theme_override_styles/normal = ExtResource("4_fdg00")
-theme_override_styles/hover = ExtResource("5_j8x77")
-theme_override_styles/pressed = ExtResource("6_h0r5t")
-text = "Chat"
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 30
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 30
 
-[node name="Hire" type="Button" parent="TabView/VSplitContainer/HBoxContainer"]
+[node name="LogsButton" type="TextureButton" parent="MenuBar/VSplitContainer/Tabs/HBoxContainer/LogContainer"]
+layout_mode = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_ocfcu")
+texture_normal = ExtResource("12_fsvp4")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="ShopContainer" type="MarginContainer" parent="MenuBar/VSplitContainer/Tabs/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
-theme_override_font_sizes/font_size = 20
-theme_override_styles/normal = ExtResource("4_fdg00")
-theme_override_styles/hover = ExtResource("5_j8x77")
-theme_override_styles/pressed = ExtResource("6_h0r5t")
-text = "Hire"
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 30
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 30
 
-[node name="Status" type="Button" parent="TabView/VSplitContainer/HBoxContainer"]
+[node name="ShopButton" type="TextureButton" parent="MenuBar/VSplitContainer/Tabs/HBoxContainer/ShopContainer"]
+layout_mode = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_ocfcu")
+texture_normal = ExtResource("13_xkygy")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="StatusContainer" type="MarginContainer" parent="MenuBar/VSplitContainer/Tabs/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
-theme_override_font_sizes/font_size = 20
-theme_override_styles/normal = ExtResource("4_fdg00")
-theme_override_styles/hover = ExtResource("5_j8x77")
-theme_override_styles/pressed = ExtResource("6_h0r5t")
-text = "Status"
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 30
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 30
 
-[node name="Logs" type="Button" parent="TabView/VSplitContainer/HBoxContainer"]
+[node name="StatusButton" type="TextureButton" parent="MenuBar/VSplitContainer/Tabs/HBoxContainer/StatusContainer"]
+layout_mode = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_ocfcu")
+texture_normal = ExtResource("14_cfqet")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="ChatContainer" type="MarginContainer" parent="MenuBar/VSplitContainer/Tabs/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
-theme_override_font_sizes/font_size = 20
-theme_override_styles/normal = ExtResource("12_l14op")
-theme_override_styles/hover = ExtResource("13_r880k")
-theme_override_styles/pressed = ExtResource("14_d47sy")
-text = "Logs"
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 30
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 30
 
-[connection signal="value_changed" from="Viewport/VSplitContainer/VBoxContainer/HBoxContainer/PercentBar" to="." method="_on_percent_bar_value_changed"]
-[connection signal="pressed" from="TabView/VSplitContainer/HBoxContainer/Game" to="." method="_on_game_pressed"]
-[connection signal="pressed" from="TabView/VSplitContainer/HBoxContainer/Chat" to="." method="_on_chat_pressed"]
-[connection signal="pressed" from="TabView/VSplitContainer/HBoxContainer/Hire" to="." method="_on_hire_pressed"]
-[connection signal="pressed" from="TabView/VSplitContainer/HBoxContainer/Status" to="." method="_on_status_pressed"]
-[connection signal="pressed" from="TabView/VSplitContainer/HBoxContainer/Logs" to="." method="_on_logs_pressed"]
+[node name="ChatButton" type="TextureButton" parent="MenuBar/VSplitContainer/Tabs/HBoxContainer/ChatContainer"]
+layout_mode = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_ocfcu")
+texture_normal = ExtResource("15_lpw6h")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="RSpacer" type="Control" parent="MenuBar/VSplitContainer/Tabs/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[connection signal="value_changed" from="Viewport/GameOverlay/Overlay/VBoxContainer/HBoxContainer/PercentBar" to="." method="_on_percent_bar_value_changed"]
+[connection signal="toggled" from="MenuBar/VSplitContainer/Tabs/HBoxContainer/LogContainer/LogsButton" to="." method="_on_logs_button_toggled"]
+[connection signal="toggled" from="MenuBar/VSplitContainer/Tabs/HBoxContainer/ShopContainer/ShopButton" to="." method="_on_shop_button_toggled"]
+[connection signal="toggled" from="MenuBar/VSplitContainer/Tabs/HBoxContainer/StatusContainer/StatusButton" to="." method="_on_status_button_toggled"]
+[connection signal="toggled" from="MenuBar/VSplitContainer/Tabs/HBoxContainer/ChatContainer/ChatButton" to="." method="_on_chat_button_toggled"]

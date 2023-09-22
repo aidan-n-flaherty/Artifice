@@ -40,12 +40,14 @@ private:
     int resources;
     double fractionalProduction;
 
-    int hires;
+    int hires = 10; // should be 1 in the future
     double fractionalHires;
+
+    int minesDrilled;
 
 public:
     Player() {}
-    Player(std::string name, int userID, int rating) : userID(userID), name(name), rating(rating), defeated(false), resources(0), fractionalProduction(0) {}
+    Player(std::string name, int userID, int rating) : userID(userID), name(name), rating(rating), defeated(false) {}
     
     void updatePointers(Game* game);
 
@@ -71,6 +73,8 @@ public:
     bool controlsSpecialist(SpecialistType t) const;
     bool controlsSpecialists(std::list<int> specialists) const;
 
+    PositionalObject* getSpawnLocation();
+
     std::list<Specialist*> getSpecialists() const { return specialists; }
     void addSpecialist(Specialist* specialist);
     void addSpecialists(std::list<Specialist*> specialist);
@@ -86,6 +90,7 @@ public:
     void removeVessel(Vessel* vessel);
 
     void removeHire() { hires -= 1; }
+    void drillMine() { minesDrilled++; }
 
     int getUserID() const { return userID; }
     const std::string& getName() const { return name; }
@@ -99,6 +104,7 @@ public:
     int getHires() const { return hires; }
     int getCapacity() const;
     int getUnits() const;
+    int getMinesDrilled() const { return minesDrilled; }
 
     void addResources(int amount) { resources += amount; }
     void removeResources(int amount) { resources -= amount; }

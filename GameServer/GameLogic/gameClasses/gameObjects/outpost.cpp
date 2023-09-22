@@ -16,6 +16,10 @@ int Outpost::getShieldAt(double timeDiff) const {
     return getShieldAt(fractionalShield, timeDiff);
 }
 
+double Outpost::nextProductionEvent() const {
+    return (1.0 - (fractionalProduction/6.0 - int(fractionalProduction / 6.0))) / (getOwner()->globalProductionSpeed() / (8.0 * 60 * 60));
+}
+
 /* The following two functions do not modify this instance unless you pass in
 ** references to the actual member variables, allowing them to be used for interpolation
 ** or updating the game state.
@@ -85,7 +89,7 @@ int Outpost::getMaxShield() const {
 }
 
 int Outpost::getFireRange() const {
-    return GameSettings::defaultSonar/2;
+    return getSonarRange()/2;
 }
 
 int Outpost::getSonarRange() const {

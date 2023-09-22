@@ -51,6 +51,9 @@ public:
     int getUnitsAt(double& fractionalProduction, double timeDiff) const;
     int getShieldAt(double& fractionalShield, double timeDiff) const;
 
+    // returns seconds until another set of units are produced
+    double nextProductionEvent() const;
+
     void update(double timeDiff);
 };
 
