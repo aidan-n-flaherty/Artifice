@@ -114,7 +114,7 @@ public:
     }
 
     static std::string typeAsString(SpecialistType t) {
-        return (const std::string[]) {
+        const std::string list[]{
             "Queen",
             "Princess",
             "Pirate",
@@ -145,7 +145,9 @@ public:
             "Tycoon",
             "War_Hero",
             "NONE"
-        }[t];
+        };
+
+        return list[t];
     }
 };
 
