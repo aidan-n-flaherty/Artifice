@@ -20,8 +20,8 @@ private:
 
 public:
     SendEvent(){};
-    SendEvent(double timestamp, int numUnits, const std::list<Specialist*> &specialists, Outpost* outpost, PositionalObject* target) :
-        Event(timestamp), numUnits(numUnits), specialists(specialists), outpost(outpost), target(target) {}
+    SendEvent(Order* o, double timestamp, int numUnits, const std::list<Specialist*> &specialists, Outpost* outpost, PositionalObject* target) :
+        Event(o, timestamp), numUnits(numUnits), specialists(specialists), outpost(outpost), target(target) {}
 
     Event* copy() override { return new SendEvent(*this); }
 
@@ -36,6 +36,7 @@ public:
 
     void run(Game* game) override {
         Vessel* vessel = new Vessel(outpost->getOwner(), outpost->getPosition(), outpost, target, outpost->removeUnits(numUnits), outpost->removeSpecialists(specialists));
+        vessel->setOriginatingOrder(getOriginatingOrder());
 
         game->addVessel(vessel);
     }

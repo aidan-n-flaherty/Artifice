@@ -10,8 +10,7 @@
 #include "specialist.h"
 #include "../event.h"
 #include "../possessable.h"
-
-class Player;
+#include "../gameObjects/player.h"
 
 class Game;
 
@@ -32,7 +31,7 @@ public:
         PositionalObject* target, int numUnits,
         const std::list<Specialist*> &specialists) :
         PositionalObject(position, numUnits, specialists),
-        returnOutpost(origin), origin(origin), target(target), gift(false) { setOwner(owner); }
+        returnOutpost(origin), origin(origin), target(target), gift(false) { owner->addVessel(this); }
     void updatePointers(Game* game) override;
 
     void collision(Vessel* vessel, Vessel* other, double timestamp, std::multiset<Event*, EventOrder> &events);

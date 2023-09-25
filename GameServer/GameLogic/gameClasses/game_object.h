@@ -2,12 +2,15 @@
 #define _GAME_OBJECT_H_
 
 #include <cstdlib>
+#include "order.h"
 
 class Game;
 
 class GameObject
 {
 private:
+    Order* originatingOrder;
+    
     static unsigned int counter;
 
     const unsigned int ID;
@@ -29,6 +32,9 @@ public:
 
     static int getIDCounter() { return counter; }
     static void resetCounter(int num) { counter = num; }
+    
+    void setOriginatingOrder(Order* o) { originatingOrder = o; }
+    Order* getOriginatingOrder() { return originatingOrder; }
 };
 
 #endif

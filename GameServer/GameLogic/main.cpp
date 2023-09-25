@@ -26,7 +26,7 @@ void run() {
 	players[987654] = "Steve";
 
 	double start = getTime();
-	std::shared_ptr<Game> game = std::shared_ptr<Game>(new Game(123456, start, start + 48 * 60 * 60, players, 42083, true));
+	std::shared_ptr<Game> game = std::shared_ptr<Game>(new Game(123456, start, start + 60, players, 42083, true));
 	std::list<int> specialists;
 	specialists.push_back(4);
 	game->addOrder(new SendOrder(start, 0, 10, specialists, 3, 7, -1));

@@ -35,6 +35,8 @@ private:
 	int userID, userGameID;
 
 	double nextState;
+
+	double nextEndState;
 	
 	PositionalNode* selectedNode;
 	
@@ -43,6 +45,8 @@ private:
 	double current;
 	
 	bool future = true;
+
+	double simulationBuffer = 60;
 
 	double percent = 1.0;
 
@@ -81,7 +85,8 @@ public:
 	void unselect();
 	PositionalNode* getSelected() { return selectedNode; }
 	PositionalNode* getObj(int id);
-		
+	
+	void shiftToTime(double t);
 	void setTime(double t);
 	double getTime() { return current; }
 
@@ -94,6 +99,9 @@ public:
 	String getSpecialistName(int specialistNum);
 	String getSpecialistDescription(int specialistNum);
 
+	double getNextArrivalEvent(int vesselID);
+	double getNextBattleEvent(int vesselID);
+
 	int getReferenceID() { return game->getReferenceID(); }
 
 	int getWidth() { return GameSettings::width; }
@@ -103,6 +111,8 @@ public:
 	void endBulkAdd();
 		
 	void addOrder(const String &type, uint32_t ID, int32_t referenceID, uint32_t timestamp, uint32_t senderID, PackedInt32Array arguments, uint32_t argCount);
+
+	void cancelOrder(uint32_t ID);
 };
 
 }

@@ -20,6 +20,8 @@ class Game;
 
 class BattleEvent;
 
+class VesselOutpostEvent;
+
 struct GameOrder {
     bool operator()(const std::shared_ptr<Game> &lhs, const std::shared_ptr<Game> &rhs) const;
 };
@@ -48,6 +50,7 @@ private:
     bool cacheEnabled;
     double stateTime;
     double endTime;
+    double nextEndState;
 
     // client side variables to determine the most recent order sent by another player to use as a reference for IDs,
     // as well as the ID of the current player
@@ -120,6 +123,8 @@ public:
     void removeVessel(Vessel* v);
     void removeSpecialist(Specialist* s);
     void removeOrder(Order* o);
+
+    void setEndTime(double t) { endTime = t; }
     
     double getTime() const { return stateTime; }
     double getEndTime() const { return endTime; }
@@ -127,8 +132,10 @@ public:
     // These functions are strictly for client side rendering
     std::shared_ptr<Game> lastState(double timestamp);
     double nextState(double timestamp);
+    double getNextEndState() const { return nextEndState; }
     Event* nextAssociatedEvent(double timestamp, int id);
     const BattleEvent* nextBattle(int id, double timestamp);
+    const VesselOutpostEvent* nextArrival(int id, double timestamp);
     std::list<BattleEvent*> nextBattles(int id);
     const BattleEvent* simulatedBattle(int eventID);
 

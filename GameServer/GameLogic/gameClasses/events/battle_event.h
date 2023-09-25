@@ -19,6 +19,9 @@ private:
     PositionalObject* a;
     PositionalObject* b;
 
+    int aID;
+    int bID;
+
     int startingUnitsA;
     int startingUnitsB;
 
@@ -28,7 +31,7 @@ private:
 
 public:
     BattleEvent(){}
-    BattleEvent(double timestamp, PositionalObject* a, PositionalObject* b) : Event(timestamp), a(a), b(b) {}
+    BattleEvent(double timestamp, PositionalObject* a, PositionalObject* b) : Event(nullptr, timestamp), a(a), b(b), aID(a->getID()), bID(b->getID()) {}
     
     Event* copy() override { return new BattleEvent(*this); }
 

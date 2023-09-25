@@ -5,6 +5,7 @@
 #include <map>
 #include <vector>
 #include <limits>
+#include <algorithm>
 #include "game.h"
 #include "gameObjects/vessel.h"
 #include "order.h"
@@ -19,6 +20,7 @@
 #include "events/reroute_event.h"
 #include "events/outpost_range_event.h"
 #include "events/battle_event.h"
+#include "events/vessel_outpost_event.h"
 #include "game_settings.h"
 
 /* The game constructor should create the entire starting state deterministically based on
@@ -71,10 +73,10 @@ Game::Game(int simulatorID, double startTime, double endTime, const std::map<int
             getPlayer(offset + t)->getOutposts().front()->addSpecialist(getSpecialist(s->getID()));
             getPlayer(offset + t)->addSpecialist(getSpecialist(s->getID()));
 
-            s = new Specialist(SpecialistType::SENTRY);
+            /*s = new Specialist(SpecialistType::SENTRY);
             addSpecialist(s);
             getPlayer(offset + t)->getOutposts().front()->addSpecialist(getSpecialist(s->getID()));
-            getPlayer(offset + t)->addSpecialist(getSpecialist(s->getID()));
+            getPlayer(offset + t)->addSpecialist(getSpecialist(s->getID()));*/
 
             s = new Specialist(SpecialistType::TYCOON);
             addSpecialist(s);
@@ -87,7 +89,7 @@ Game::Game(int simulatorID, double startTime, double endTime, const std::map<int
     addEvent(new OutpostRangeEvent(getTime()));
 }
 
-Game::Game(const Game& game) : stateTime(game.stateTime), cacheEnabled(game.cacheEnabled), endTime(game.endTime), referenceID(game.referenceID), simulatorID(game.simulatorID), lastExecutedOrder(game.lastExecutedOrder), gameObjCounter(game.gameObjCounter) {
+Game::Game(const Game& game) : stateTime(game.stateTime), cacheEnabled(game.cacheEnabled), endTime(game.endTime), referenceID(game.referenceID), simulatorID(game.simulatorID), lastExecutedOrder(game.lastExecutedOrder), nextEndState(game.nextEndState), gameObjCounter(game.gameObjCounter) {
     for(Event* event : game.events) events.insert(event->copy());
     for(Event* event : game.simulatedEvents) simulatedEvents.push_back(event->copy());
     for(const auto& pair : game.vessels) vessels[pair.first] = new Vessel(*pair.second);
@@ -200,7 +202,8 @@ void Game::updateState(double timestamp) {
 
     for(auto& pair : vessels) pair.second->update(secondsElapsed);
     for(auto& pair : outposts) pair.second->update(secondsElapsed);
-    
+    for(auto& pair : players) pair.second->update(secondsElapsed);
+
     stateTime = timestamp;
 }
 
@@ -255,10 +258,14 @@ std::list<std::pair<int, int>> Game::run() {
         if(events.empty()) break;
         
         Event* e = *event;
-        events.erase(event);
 
         // only simulate the game until a certain time so that infinite future simulation does not happen
-        if(e->getTimestamp() > endTime) break;
+        if(e->getTimestamp() > endTime) {
+            nextEndState = e->getTimestamp();
+            break;
+        }
+
+        events.erase(event);
 
         updateState(e->getTimestamp());
 
@@ -388,6 +395,17 @@ const BattleEvent* Game::nextBattle(int id, double timestamp) {
     for(Event* event : simulatedEvents) {
         if(event->getTimestamp() > timestamp && event->referencesObject(id)) {
             BattleEvent* b = dynamic_cast<BattleEvent*>(event);
+            if(b) return b;
+        }
+    }
+
+    return nullptr;
+}
+
+const VesselOutpostEvent* Game::nextArrival(int id, double timestamp) {
+    for(Event* event : simulatedEvents) {
+        if(event->getTimestamp() > timestamp && event->referencesObject(id)) {
+            VesselOutpostEvent* b = dynamic_cast<VesselOutpostEvent*>(event);
             if(b) return b;
         }
     }

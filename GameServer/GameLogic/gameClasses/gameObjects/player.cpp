@@ -28,6 +28,8 @@ int Player::getHiresAt(double timeDiff) const {
 ** or updating the game state.
 */
 int Player::getResourcesAt(double& fractionalProduction, double timeDiff) const {
+    timeDiff *= GameSettings::simulationSpeed;
+
     int resources = this->resources;
 
     // while loops necessary in case a tick doesn't happen for several hours
@@ -41,6 +43,8 @@ int Player::getResourcesAt(double& fractionalProduction, double timeDiff) const 
 }
 
 int Player::getHiresAt(double& fractionalHires, double timeDiff) const {
+    timeDiff *= GameSettings::simulationSpeed;
+
     int hires = this->hires;
 
     fractionalHires += timeDiff * (1.0 / (24 * 60 * 60));
@@ -192,7 +196,8 @@ bool Player::controlsSpecialists(std::list<int> specialists) const {
 
 void Player::addSpecialist(Specialist* specialist) {
     if(specialist->hasOwner()) specialist->getOwner()->removeSpecialist(specialist);
-
+    if(controlsSpecialist(SpecialistType::QUEEN) && specialist->getType() == SpecialistType::QUEEN) specialist->setType(SpecialistType::PRINCESS);
+    
     specialist->setOwner(this);
     specialists.push_back(specialist);
     for(Vessel* v : getVessels()) v->setRefresh(true);

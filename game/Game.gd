@@ -7,15 +7,19 @@ var startTime
 
 var menuDisplay
 
+var detailDisplay
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	game = GameData.getGame(gameID)
 	game.connect("addOrder", addOrder)
+	game.connect("selectVessel", selectVessel)
+	game.connect("deselect", deselect)
 
 	startTime = int(Time.get_unix_time_from_system())
 	
 	$Viewport/Viewport3D.add_child(game)
-	$Viewport/GameOverlay/Overlay/VBoxContainer/Timeline.game = game
+	$Viewport/GameOverlay/Overlay/VBoxContainer/Timeline.init(gameID)
 	$Viewport/Viewport3D/CameraPivot.game = game
 	$Viewport/Viewport3D/CameraPivot/FloorDisplay.add_child(game.getFloorDisplay())
 	
@@ -26,11 +30,10 @@ func _process(delta):
 	pass
 	
 func addOrder(type, referenceID, timestamp, arguments):
-	print(timestamp + 2 - int(Time.get_unix_time_from_system()))
 	var order = await HTTPManager.putReq("/updateOrder", {
 		"type": type,
 		"referenceID": referenceID,
-		"timestamp": timestamp + 2,
+		"timestamp": timestamp,
 		"argumentIDs": arguments
 	}, {
 		"gameID": gameID
@@ -44,6 +47,18 @@ func addOrder(type, referenceID, timestamp, arguments):
 	
 	print("Order registered")
 
+func selectVessel(vessel):
+	if detailDisplay != null:
+		$Viewport/GameOverlay/Overlay/UIOverlay/Separator/ElementDisplay/VBoxContainer/Panel/MarginContainer.remove_child(detailDisplay)
+	detailDisplay = preload("res://VesselDetails.tscn").instantiate()
+	detailDisplay.init(vessel, gameID)
+
+	$Viewport/GameOverlay/Overlay/UIOverlay/Separator/ElementDisplay/VBoxContainer/Panel/MarginContainer.add_child(detailDisplay)
+	$Viewport/GameOverlay/Overlay/UIOverlay/Separator/ElementDisplay/VBoxContainer/Panel.show()
+
+func deselect():
+	$Viewport/GameOverlay/Overlay/UIOverlay/Separator/ElementDisplay/VBoxContainer/Panel/MarginContainer.remove_child(detailDisplay)
+	$Viewport/GameOverlay/Overlay/UIOverlay/Separator/ElementDisplay/VBoxContainer/Panel.hide()
 
 func _on_percent_bar_value_changed(value):
 	game.setPercent(value);

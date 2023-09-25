@@ -16,7 +16,7 @@ private:
 
 public:
     HireEvent(){};
-    HireEvent(double timestamp, Player* owner, Specialist* specialist) : Event(timestamp), owner(owner), specialist(specialist) {}
+    HireEvent(Order* o, double timestamp, Player* owner, Specialist* specialist) : Event(o, timestamp), owner(owner), specialist(specialist) {}
     
     Event* copy() override { return new HireEvent(*this); }
 
@@ -27,6 +27,7 @@ public:
     }
 
     void run(Game* game) override {
+        specialist->setOriginatingOrder(getOriginatingOrder());
         game->addSpecialist(specialist);
         owner->addSpecialist(specialist);
         owner->removeHire();

@@ -17,7 +17,7 @@ private:
 
 public:
     PromoteEvent(){};
-    PromoteEvent(double timestamp, Specialist* specialist, SpecialistType promotion) : Event(timestamp), specialist(specialist), promotion(promotion) {}
+    PromoteEvent(Order* o, double timestamp, Specialist* specialist, SpecialistType promotion) : Event(o, timestamp), specialist(specialist), promotion(promotion) {}
     
     Event* copy() override { return new PromoteEvent(*this); }
 
@@ -27,6 +27,7 @@ public:
     }
 
     void run(Game* game) override {
+        specialist->setOriginatingOrder(getOriginatingOrder());
         specialist->setType(promotion);
     }
 };

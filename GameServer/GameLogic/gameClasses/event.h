@@ -6,6 +6,7 @@
 #include <time.h>
 #include <memory>
 #include "gameObjects/positional_object.h"
+#include "order.h"
 
 class Game;
 
@@ -19,11 +20,13 @@ private:
 
     const int ID;
     
+    Order* originatingOrder;
+
     double timestamp;
 
 public:
     Event() : ID(counter++) {}
-    Event(double timestamp) : timestamp(timestamp), ID(counter++) {}
+    Event(Order* o, double timestamp) : originatingOrder(o), timestamp(timestamp), ID(counter++) {}
 
     virtual void updatePointers(Game *game) {}
 
@@ -47,6 +50,8 @@ public:
         double diff = lhs->getTimestamp() - rhs->getTimestamp();
         return diff == 0 ? lhs->getID() < rhs->getID() : diff < 0;
     }
+
+    Order* getOriginatingOrder() { return originatingOrder; }
 };
 
 struct EventOrder

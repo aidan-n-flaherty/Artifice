@@ -23,7 +23,7 @@ public:
     void _process(double delta) override;
 		
 	void setReference(Vessel* vessel) {
-		PositionalNode::setReference(vessel);
+		PositionalNode::setReference(vessel, 1);
 		this->vessel = vessel;
 
 		double angle = atan2(vessel->getTargetPos().getY() - vessel->getPosition().getY(), vessel->getTargetPos().getX() - vessel->getPosition().getX());

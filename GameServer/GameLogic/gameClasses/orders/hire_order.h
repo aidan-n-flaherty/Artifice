@@ -47,7 +47,7 @@ public:
 
         updateOrders(game->getOrders());
 
-        return new HireEvent(getTimestamp(), player, new Specialist(t));
+        return new HireEvent(this, getTimestamp(), player, new Specialist(t));
     }
 };
 

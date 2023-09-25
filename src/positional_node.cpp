@@ -23,6 +23,7 @@
 #include <ctime>
 #include <chrono>
 #include <cstdlib>
+#include <tuple>
 
 using namespace godot;
 
@@ -30,7 +31,10 @@ void PositionalNode::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("getID"), &PositionalNode::getID);
 	ClassDB::bind_method(D_METHOD("getUnits"), &PositionalNode::getUnits);
 	ClassDB::bind_method(D_METHOD("select"), &PositionalNode::select);
+	ClassDB::bind_method(D_METHOD("isSelected"), &PositionalNode::isSelected);
+	ClassDB::bind_method(D_METHOD("getColor"), &PositionalNode::getColor);
 	ClassDB::bind_method(D_METHOD("selectSpecialist"), &PositionalNode::selectSpecialist);
+	ClassDB::bind_method(D_METHOD("getOriginatingOrder"), &PositionalNode::getOriginatingOrder);
 	ADD_SIGNAL(MethodInfo("selected", PropertyInfo(Variant::INT, "id")));
 }
 
@@ -44,8 +48,6 @@ PositionalNode::PositionalNode(const StringName &file, PositionalObject* obj) {
 		n->set_position(Vector3(GameSettings::width * i, 0, GameSettings::height * j));
   		add_child(n);
 	}
-	
-	setReference(obj);
 
 	set_visible(false);
 }
@@ -76,7 +78,7 @@ void PositionalNode::selectSpecialist(Camera3D *camera, const Ref<InputEvent> &e
 	}
 }
 
-void PositionalNode::setReference(PositionalObject* obj) {
+void PositionalNode::setReference(PositionalObject* obj, int specialistDisplacement) {
 	//PositionalObject* tmp = this->obj;
 
 	this->obj = obj;
@@ -184,10 +186,10 @@ void PositionalNode::setReference(PositionalObject* obj) {
 			}
 		}
 
-		int offset = 0;
+		int offset = specialistDisplacement;
 
 		for(Node3D* child : currentSpecialists) {
-			int diagonalDisplacement = 4.0 * (offset / 3) + 2.0 * abs((offset + 1) % 3 - 1);
+			int diagonalDisplacement = 4.1 * (offset / 3) + sqrt(4.5) * abs((offset + 1) % 3 - 1);
 			child->set_position(Vector3(3.0 * ((offset + 1) % 3 - 1), 40 + diagonalDisplacement, -40 + diagonalDisplacement));
 			offset++;
 		}
@@ -228,7 +230,7 @@ void PositionalNode::setSelected(bool selected) {
 
 	this->selected = selected;
 
-	if(selected) {
+	/*if(selected) {
 		for(int i = 0; i < get_child_count(); i++) {
 			Node* n = get_child(i);
 
@@ -252,5 +254,11 @@ void PositionalNode::setSelected(bool selected) {
 				}
 			}
 		}
-	}
+	}*/
+}
+
+Vector3 PositionalNode::getColor() {
+	std::tuple<double, double, double> color = obj->hasOwner() ? GameSettings::playerColors[obj->getOwnerID() % GameSettings::playerColors.size()] : std::make_tuple(0.5, 0.5, 0.5);
+
+	return Vector3(std::get<0>(color), std::get<1>(color), std::get<2>(color));
 }

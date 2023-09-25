@@ -14,8 +14,8 @@ private:
     PositionalObject* target;
 public:
     RerouteEvent(){};
-    RerouteEvent(double timestamp, Vessel* vessel, PositionalObject* target) :
-        Event(timestamp), vessel(vessel), target(target) {}
+    RerouteEvent(Order* o, double timestamp, Vessel* vessel, PositionalObject* target) :
+        Event(o, timestamp), vessel(vessel), target(target) {}
     
     Event* copy() override { return new RerouteEvent(*this); }
 
@@ -29,8 +29,10 @@ public:
 
     void run(Game* game) override {
         std::cout << "Rerouted" << std::endl;
+        vessel->setOriginatingOrder(getOriginatingOrder());
         vessel->setTarget(target);
         vessel->setOrigin(nullptr);
+        vessel->setSpeedModifier(1.0);
     }
 };
 

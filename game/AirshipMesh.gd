@@ -15,4 +15,6 @@ func _process(delta):
 	#mirror.rotation.y = deg_to_rad(-90)
 	#mirror.scale = Vector3(0.9, -0.9, 0.9)
 	$RotationInvariant.rotation = Vector3(0, -get_rotation().y, 0)
-	$RotationInvariant/Label.text = str(get_parent().getUnits())
+	$RotationInvariant/Units.setValue(str(get_parent().getUnits()))
+	$RotationInvariant/Units.setSelection(get_parent().isSelected())
+	$RotationInvariant/Units.setColor(get_parent().getColor())

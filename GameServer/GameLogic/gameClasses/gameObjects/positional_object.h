@@ -5,6 +5,7 @@
 #include "../game_object.h"
 #include "../helpers/point.h"
 #include "specialist.h"
+#include "../order.h"
 
 class Game;
 

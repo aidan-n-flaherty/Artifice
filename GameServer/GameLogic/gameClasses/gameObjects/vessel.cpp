@@ -2,6 +2,7 @@
 #include "specialist.h"
 #include "../events/intervessel_event.h"
 #include "../events/vessel_outpost_event.h"
+#include "../game_settings.h"
 #include <set>
 #include <iostream>
 #include <cmath>
@@ -84,7 +85,7 @@ double Vessel::getSpeed() const {
     if(dynamic_cast<Vessel*>(getTarget()) && controlsSpecialist(SpecialistType::PIRATE)) speed = fmax(speed, 2);
     if(controlsSpecialist(SpecialistType::SMUGGLER) && getTarget()->getOwnerID() == getOwnerID()) speed = fmax(speed, 3);
 
-    return speed;
+    return speed * (GameSettings::simulationSpeed * 2.0 / (60 * 60));
 }
 
 // generate collision events for other vessels

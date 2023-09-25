@@ -1,8 +1,10 @@
 
 #include "helpers/point.h"
-#include "list"
-#include "string"
-#include "unordered_map"
+#include <list>
+#include <string>
+#include <unordered_map>
+#include <vector>
+#include <tuple>
 #include "gameObjects/specialist.h"
 
 #ifndef _GAME_SETTINGS_H_
@@ -27,6 +29,7 @@ public:
     static int width;
     static int height;
     static std::unordered_map<SpecialistType, std::string> specialistDescriptions;
+    static std::vector<std::tuple<double, double, double>> playerColors;
 };
 
 #endif

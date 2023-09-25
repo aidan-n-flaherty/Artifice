@@ -51,7 +51,7 @@ public:
         }
         if(!canPromote) return nullptr;
 
-        return new PromoteEvent(getTimestamp(), specialist, t);
+        return new PromoteEvent(this, getTimestamp(), specialist, t);
     }
 };
 

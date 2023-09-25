@@ -25,18 +25,20 @@ double Outpost::nextProductionEvent() const {
 ** or updating the game state.
 */
 int Outpost::getUnitsAt(double& fractionalProduction, double timeDiff) const {
+    timeDiff *= GameSettings::simulationSpeed;
+
     int units = getUnits();
 
     if(getOwnerID() == -1) return units;
 
     // while loops necessary in case a tick doesn't happen for several hours
-    fractionalProduction += timeDiff * getOwner()->globalProductionSpeed() * (6.0 / (8.0 * 60 * 60));
-    while(fractionalProduction >= 6) {
-        fractionalProduction -= 6;
+    fractionalProduction += timeDiff * getOwner()->globalProductionSpeed() * (1.0 / (8.0 * 60 * 60));
+    while(fractionalProduction >= 1) {
+        fractionalProduction -= 1;
 
         int productionAmount = getOwner()->globalProductionAmount();
-        if(controlsSpecialist(SpecialistType::FOREMAN)) productionAmount += 6;
-        if(controlsSpecialist(SpecialistType::TYCOON)) productionAmount += 3;
+        productionAmount += 6 * specialistCount(SpecialistType::FOREMAN);
+        productionAmount += 3 * specialistCount(SpecialistType::TYCOON);
 
         units += std::fmin(std::fmax(0, getOwner()->getCapacity() - getOwner()->getUnits()), productionAmount);
     }
@@ -45,16 +47,24 @@ int Outpost::getUnitsAt(double& fractionalProduction, double timeDiff) const {
 }
 
 int Outpost::getShieldAt(double& fractionalShield, double timeDiff) const {
+    timeDiff *= GameSettings::simulationSpeed;
+
     double shieldCharge = this->shieldCharge;
 
     if(getOwnerID() == -1) return shieldCharge;
 
-    fractionalShield += timeDiff * (1.0 / (60 * 60));
+    fractionalShield += timeDiff * (getMaxShield() / (48.0 * 60 * 60));
+    if(controlsSpecialist(SpecialistType::TINKERER)) fractionalShield -= timeDiff * (3.0 / (60 * 60));
     while(fractionalShield >= 1) {
         fractionalShield -= 1;
         
-        if(controlsSpecialist(SpecialistType::TINKERER)) shieldCharge -= 3;
-        else shieldCharge++;
+        shieldCharge++;
+    }
+
+    while(fractionalShield <= -1) {
+        fractionalShield += 1;
+        
+        shieldCharge--;
     }
 
     shieldCharge = std::fmax(0, std::fmin(shieldCharge, getMaxShield()));

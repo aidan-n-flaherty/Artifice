@@ -33,7 +33,7 @@ public:
 
         if(outpost->getUnits() < GameSettings::costPerMine * (player->getMinesDrilled() + 1) || outpost->getType() == OutpostType::MINE || outpost->getType() == OutpostType::BROKEN || outpost->getOwnerID() != getSenderID()) return nullptr;
 
-        return new MineEvent(getTimestamp(), outpost);
+        return new MineEvent(this, getTimestamp(), outpost);
     }
 };
 

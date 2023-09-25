@@ -6,6 +6,8 @@
 #include "../GameServer/GameLogic/gameClasses/gameObjects/specialist.h"
 #include "../GameServer/GameLogic/gameClasses/orders/send_order.h"
 #include "../GameServer/GameLogic/gameClasses/game_settings.h"
+#include "../GameServer/GameLogic/gameClasses/events/battle_event.h"
+#include "../GameServer/GameLogic/gameClasses/events/vessel_outpost_event.h"
 #include "vessel_node.h"
 #include "outpost_node.h"
 #include <godot_cpp/core/class_db.hpp>
@@ -45,13 +47,20 @@ void GameInterface::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("getHeight"), &GameInterface::getHeight);
 	ClassDB::bind_method(D_METHOD("getHires"), &GameInterface::getHires);
 	ClassDB::bind_method(D_METHOD("getReferenceID"), &GameInterface::getReferenceID);
+	ClassDB::bind_method(D_METHOD("getNextArrivalEvent"), &GameInterface::getNextArrivalEvent);
+	ClassDB::bind_method(D_METHOD("getNextBattleEvent"), &GameInterface::getNextBattleEvent);
 	ClassDB::bind_method(D_METHOD("getOutpostPositions"), &GameInterface::getOutpostPositions);
 	ClassDB::bind_method(D_METHOD("getShopOptions"), &GameInterface::getShopOptions);
 	ClassDB::bind_method(D_METHOD("getSpecialistName"), &GameInterface::getSpecialistName);
 	ClassDB::bind_method(D_METHOD("getSpecialistDescription"), &GameInterface::getSpecialistDescription);
 	ClassDB::bind_method(D_METHOD("getFloorDisplay"), &GameInterface::getFloorDisplay);
+	ClassDB::bind_method(D_METHOD("shiftToTime", "t"), &GameInterface::shiftToTime);
 	ClassDB::bind_method(D_METHOD("addOrder", "type", "ID", "referenceID", "timestamp", "senderID", "arguments", "argCount"), &GameInterface::addOrder);
+	ClassDB::bind_method(D_METHOD("cancelOrder", "ID"), &GameInterface::cancelOrder);
 	ADD_SIGNAL(MethodInfo("addOrder", PropertyInfo(Variant::STRING, "type"), PropertyInfo(Variant::INT, "referenceID"), PropertyInfo(Variant::INT, "timestamp"), PropertyInfo(Variant::PACKED_INT32_ARRAY, "arguments")));
+	ADD_SIGNAL(MethodInfo("selectVessel", PropertyInfo(Variant::OBJECT, "vessel")));
+	ADD_SIGNAL(MethodInfo("deselect"));
+	ADD_SIGNAL(MethodInfo("moveTo", PropertyInfo(Variant::FLOAT, "t")));
 }
 
 void GameInterface::init(int userID) {
@@ -64,7 +73,7 @@ void GameInterface::init(int userID) {
 	players[654321] = "Joe";
 	players[987654] = "Steve";
 	
-	completeGame = std::shared_ptr<Game>(new Game(userID, current, current + 48 * 60 * 60, players, 42083, true));
+	completeGame = std::shared_ptr<Game>(new Game(userID, current, current + 96 * 60 * 60 / GameSettings::simulationSpeed, players, 42083, true));
 	/*std::list<int> specialists;
 	specialists.push_back(4);
 	completeGame->addOrder(new SendOrder(current, 0, 20, specialists, 3, 7, completeGame->getReferenceID()));
@@ -83,6 +92,7 @@ void GameInterface::init(int userID) {
 		completeGame->addOrder(new SendOrder(current + 10 + i * 20, 2, 1, specialists, 7, 3, completeGame->getReferenceID()));
 	}
 	completeGame->run();
+	nextEndState = completeGame->getNextEndState();
 
 	userGameID = completeGame->getSimulatorID();
 }
@@ -98,13 +108,17 @@ void GameInterface::_process(double delta) {
 	if(game != nullptr) {
 		double timeDiff = current - game->getTime();
 		
-		for(const auto& pair : vessels) pair.second->setDiff(timeDiff);
+		for(const auto& pair : vessels) pair.second->setDiff(time, timeDiff);
 		
-		for(const auto& pair : outposts) pair.second->setDiff(timeDiff);
+		for(const auto& pair : outposts) pair.second->setDiff(time, timeDiff);
 
 		floorDisplay->setDiff(timeDiff);
 		floorDisplay->queue_redraw();
 	}
+}
+
+void GameInterface::shiftToTime(double t) {
+	emit_signal("moveTo", t);
 }
 
 void GameInterface::setTime(double t) {
@@ -115,9 +129,19 @@ void GameInterface::setTime(double t) {
 }
 
 void GameInterface::update() {
+	if(game == nullptr || current + simulationBuffer > nextEndState) {
+		if(current > nextEndState) game = nullptr;
+
+		completeGame = completeGame->lastState(nextEndState);
+		completeGame->setEndTime(nextEndState);
+		completeGame->run();
+		nextEndState = completeGame->getNextEndState();
+	}
+
 	if(game == nullptr || current < game->getTime() || current >= nextState) {
 		game = completeGame->lastState(current);
 		nextState = completeGame->nextState(current);
+		nextEndState = completeGame->getNextEndState();
 		
 		for(auto it = vessels.begin(); it != vessels.end();) {
 			if(!game->hasVessel(it->first)) {
@@ -157,6 +181,7 @@ void GameInterface::update() {
 				vessels[pair.first]->setReference(pair.second);
 			} else {
 				VesselNode* newVessel = memnew(VesselNode(pair.second));
+				newVessel->setReference(pair.second);
 				vessels[pair.first] = newVessel;
 				newVessel->connect("selected", Callable(this, "select"), Object::CONNECT_DEFERRED);
 				add_child(newVessel);
@@ -168,6 +193,7 @@ void GameInterface::update() {
 				outposts[pair.first]->setReference(pair.second);
 			} else {
 				OutpostNode* newOutpost = memnew(OutpostNode(pair.second));
+				newOutpost->setReference(pair.second);
 				outposts[pair.first] = newOutpost;
 				newOutpost->connect("selected", Callable(this, "select"), Object::CONNECT_DEFERRED);
 				add_child(newOutpost);
@@ -272,6 +298,8 @@ void GameInterface::select(int id) {
 void GameInterface::unselect() {
 	setSelected(-1);
 
+	emit_signal("deselect");
+
 	while(!selectedSpecialists.empty()) setSelectedSpecialist(*selectedSpecialists.begin());
 }
 
@@ -281,6 +309,9 @@ void GameInterface::setSelected(int id) {
 	PositionalNode* obj = getObj(id);
 
 	if(obj) obj->setSelected(true);
+
+	VesselNode* node = dynamic_cast<VesselNode*>(obj);
+	if(node) emit_signal("selectVessel", node);
 
 	selectedNode = obj;
 }
@@ -341,6 +372,14 @@ void GameInterface::addOrder(const String &type, uint32_t ID, int32_t referenceI
 	update();
 }
 
+void GameInterface::cancelOrder(uint32_t ID) {
+	completeGame = completeGame->removeOrder(ID);
+	completeGame->run();
+	game = nullptr;
+	
+	update();
+}
+
 PackedVector2Array GameInterface::getOutpostPositions() {
 	PackedVector2Array arr;
 
@@ -367,4 +406,16 @@ String GameInterface::getSpecialistName(int specialistNum) {
 
 String GameInterface::getSpecialistDescription(int specialistNum) {
 	return String(GameSettings::specialistDescriptions[SpecialistType(specialistNum)].c_str());
+}
+
+double GameInterface::getNextArrivalEvent(int vesselID) {
+	const VesselOutpostEvent* e = completeGame->nextArrival(vesselID, current);
+
+	return e ? e->getTimestamp() : -1;
+}
+
+double GameInterface::getNextBattleEvent(int vesselID) {
+	const BattleEvent* e = completeGame->nextBattle(vesselID, current);
+
+	return e ? e->getTimestamp() : -1;
 }

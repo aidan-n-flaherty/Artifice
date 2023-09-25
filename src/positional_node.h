@@ -6,6 +6,7 @@
 #include <godot_cpp/classes/camera2d.hpp>
 #include <godot_cpp/classes/input_event.hpp>
 #include <godot_cpp/classes/texture_rect.hpp>
+#include <godot_cpp/variant/vector3.hpp>
 #include "../GameServer/GameLogic/gameClasses/gameObjects/positional_object.h"
 #include <unordered_set>
 
@@ -17,6 +18,8 @@ class PositionalNode : public Node3D {
 private:
 	PositionalObject* obj;
 	
+	double currentTime;
+
 	double timeDiff;
 
 	std::unordered_set<int> selectedSpecialists;
@@ -37,17 +40,20 @@ public:
 
 	double getTimePassed() { return timePassed; }
 		
-	void setDiff(double diff) { timeDiff = diff; }
+	void setDiff(double time, double diff) { 
+		currentTime = time;
+		timeDiff = diff;
+	}
 	
 	double getDiff() { return timeDiff; }
 	
-	virtual void setReference(PositionalObject* obj);
+	void setReference(PositionalObject* obj, int specialistDisplacement);
 	
 	int getID() { return obj->getID(); }
 	
 	int getOwnerID() { return obj->getOwnerID(); }
 
-	int getUnits() { return obj != nullptr ? obj->getUnitsAt(timeDiff) : 0; }
+	int getUnits() { return obj != nullptr ? obj->getUnitsAt(timeDiff) : -1; }
 	
 	void select(Camera3D *camera, const Ref<InputEvent> &event, const Vector3 &position, const Vector3 &normal, int32_t shape_idx);
 	
@@ -66,6 +72,12 @@ public:
 	void setSelected(bool selected);
 
 	bool isSelected() { return selected; }
+
+	Vector3 getColor();
+
+	int getOriginatingOrder() {
+		return obj && obj->getOriginatingOrder() && obj->getOriginatingOrder()->getTimestamp() > currentTime ? obj->getOriginatingOrder()->getID() : -1;
+	}
 };
 
 }

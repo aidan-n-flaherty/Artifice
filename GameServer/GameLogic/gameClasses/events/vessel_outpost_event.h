@@ -15,10 +15,11 @@ class VesselOutpostEvent : public BattleEvent
 private:
     Vessel* vessel;
     Outpost* outpost;
+    int vID;
 
 public:
     VesselOutpostEvent(){};
-    VesselOutpostEvent(double timestamp, Vessel* vessel, Outpost* outpost) : BattleEvent(timestamp, vessel, outpost), vessel(vessel), outpost(outpost) {}
+    VesselOutpostEvent(double timestamp, Vessel* vessel, Outpost* outpost) : BattleEvent(timestamp, vessel, outpost), vessel(vessel), outpost(outpost), vID(vessel->getID()) { }
 
     Event* copy() override { return new VesselOutpostEvent(*this); }
 
@@ -28,7 +29,7 @@ public:
         outpost = game->getOutpost(outpost->getID());
     }
 
-    bool referencesObject(int id) const override { return vessel->getID() == id; }
+    bool referencesObject(int id) const override { return vID == id; }
 
     void run(Game* game) override {
         BattleEvent::run(game);
@@ -79,7 +80,7 @@ public:
 
         if(outpost->controlsSpecialist(SpecialistType::HYPNOTIST)) {
             for(Specialist* s : outpost->getSpecialists()) {
-                s->setOwner(outpost->getOwner());
+                outpost->getOwner()->addSpecialist(s);
             }
         }
 

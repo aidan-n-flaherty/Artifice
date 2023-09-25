@@ -34,7 +34,7 @@ public:
 
         if(vessel->getOwnerID() != getSenderID()) return nullptr;
 
-        return new GiftEvent(getTimestamp(), vessel);
+        return new GiftEvent(this, getTimestamp(), vessel);
     }
 };
 

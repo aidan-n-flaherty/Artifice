@@ -40,14 +40,6 @@ void BattleEvent::specialistPhase(Game* game) {
         addMessage(b->getOwnerID(), b->getOwner()->getName() + "'s Lieutenant kills " + std::to_string(a->removeUnits(5)) + " units");
     }
 
-    for(int i = 0; i < a->specialistCount(SpecialistType::LIEUTENANT); i++) {
-        addMessage(b->getOwnerID(), b->getOwner()->getName() + "'s Lieutenant kills " + std::to_string(a->removeUnits(5)) + " units");
-    }
-
-    for(int i = 0; i < b->specialistCount(SpecialistType::LIEUTENANT); i++) {
-        addMessage(a->getOwnerID(), a->getOwner()->getName() + "'s Lieutenant kills " + std::to_string(b->removeUnits(5)) + " units");
-    }
-
     if(!a->getSpecialists().empty()) {
         for(int i = 0; i < a->ownerSpecialistCount(SpecialistType::GENERAL); i++) {
             addMessage(a->getOwnerID(), a->getOwner()->getName() + "'s General kills " + std::to_string(b->removeUnits(10)) + " units");
@@ -60,11 +52,11 @@ void BattleEvent::specialistPhase(Game* game) {
         }
     }
 
-    for(int i = 0; i < a->specialistCount(SpecialistType::LIEUTENANT); i++) {
+    for(int i = 0; i < a->specialistCount(SpecialistType::WAR_HERO); i++) {
         addMessage(a->getOwnerID(), a->getOwner()->getName() + "'s War Hero kills " + std::to_string(b->removeUnits(20)) + " units");
     }
 
-    for(int i = 0; i < b->specialistCount(SpecialistType::LIEUTENANT); i++) {
+    for(int i = 0; i < b->specialistCount(SpecialistType::WAR_HERO); i++) {
         addMessage(b->getOwnerID(), b->getOwner()->getName() + "'s War Hero kills " + std::to_string(a->removeUnits(20)) + " units");
     }
 

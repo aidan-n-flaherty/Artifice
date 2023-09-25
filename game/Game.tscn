@@ -1,4 +1,4 @@
-[gd_scene load_steps=36 format=3 uid="uid://dgp4l24s2rulk"]
+[gd_scene load_steps=41 format=3 uid="uid://dgp4l24s2rulk"]
 
 [ext_resource type="Script" path="res://Game.gd" id="1_s53r2"]
 [ext_resource type="Script" path="res://CameraPivot.gd" id="2_t2ckv"]
@@ -11,7 +11,6 @@
 [ext_resource type="Texture2D" uid="uid://dg1n1bsa3ya68" path="res://resources/ocean.tres" id="10_i4d0l"]
 [ext_resource type="Script" path="res://VirtualCamera3D.gd" id="10_jokxl"]
 [ext_resource type="StyleBox" uid="uid://dgq41l16rxlq" path="res://resources/styles/roundRectBlack.tres" id="11_uh1qc"]
-[ext_resource type="PackedScene" uid="uid://cfc57qmlyevna" path="res://VesselDetails.tscn" id="12_1uj1h"]
 [ext_resource type="Texture2D" uid="uid://c0beg3px50da4" path="res://resources/gameMenuIcons/logsIcon.png" id="12_fsvp4"]
 [ext_resource type="PackedScene" uid="uid://cqdpj2uw0cloc" path="res://Shop.tscn" id="12_sa8gc"]
 [ext_resource type="PackedScene" uid="uid://symsrj5sm6dt" path="res://Status.tscn" id="13_20fpi"]
@@ -21,26 +20,48 @@
 [ext_resource type="Texture2D" uid="uid://ddtmrm6d6rl0c" path="res://resources/gameMenuIcons/chatIcon.png" id="15_lpw6h"]
 [ext_resource type="PackedScene" uid="uid://8bjal0hti5cr" path="res://Logs.tscn" id="15_yfjeb"]
 
-[sub_resource type="PhysicalSkyMaterial" id="PhysicalSkyMaterial_ikjik"]
-ground_color = Color(0, 0, 0, 1)
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_pf8ps"]
 
-[sub_resource type="Sky" id="Sky_02e0x"]
-sky_material = SubResource("PhysicalSkyMaterial_ikjik")
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_dexwf"]
+seamless = true
+noise = SubResource("FastNoiseLite_pf8ps")
+
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_np4rg"]
+panorama = SubResource("NoiseTexture2D_dexwf")
+
+[sub_resource type="Sky" id="Sky_34yv1"]
+sky_material = SubResource("PanoramaSkyMaterial_np4rg")
 
 [sub_resource type="Environment" id="Environment_2wnku"]
 background_energy_multiplier = 0.0
-sky = SubResource("Sky_02e0x")
+sky = SubResource("Sky_34yv1")
+sky_custom_fov = 90.0
 ambient_light_source = 1
-ambient_light_color = Color(1, 1, 1, 1)
+ambient_light_energy = 16.0
 sdfgi_enabled = true
 glow_enabled = true
 glow_normalized = true
+fog_density = 0.008
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_2wh2d"]
 viewport_path = NodePath("Viewport/Viewport3D/CameraPivot/FloorDisplay")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_8tg0o"]
 size = Vector2(100, 260)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_wqxmd"]
+noise_type = 2
+frequency = 0.1
+fractal_octaves = 1
+cellular_jitter = 0.7
+cellular_return_type = 4
+domain_warp_type = 2
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_hs7wk"]
+width = 400
+height = 1080
+seamless = true
+noise = SubResource("FastNoiseLite_wqxmd")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ps11k"]
 render_priority = 0
@@ -50,12 +71,14 @@ shader_parameter/epsilon = 0.01
 shader_parameter/cameraSize = 100.0
 shader_parameter/land = ExtResource("9_kcgrj")
 shader_parameter/ocean = ExtResource("10_i4d0l")
+shader_parameter/stones = SubResource("NoiseTexture2D_hs7wk")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_pn67n"]
 size = Vector2(100, 260)
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_evgjh"]
-frequency = 0.005
+noise_type = 3
+frequency = 0.02
 fractal_type = 3
 domain_warp_enabled = true
 
@@ -67,8 +90,7 @@ seamless = true
 noise = SubResource("FastNoiseLite_evgjh")
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_sil3n"]
-seed = 1
-frequency = 0.005
+frequency = 0.02
 fractal_type = 2
 domain_warp_enabled = true
 
@@ -78,6 +100,15 @@ height = 2080
 seamless = true
 noise = SubResource("FastNoiseLite_sil3n")
 
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_xq8uh"]
+frequency = 0.05
+domain_warp_enabled = true
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_mhia5"]
+width = 400
+height = 1080
+noise = SubResource("FastNoiseLite_xq8uh")
+
 [sub_resource type="ViewportTexture" id="ViewportTexture_qytxr"]
 viewport_path = NodePath("Viewport/Viewport3D/CameraPivot/SubViewport")
 
@@ -85,11 +116,12 @@ viewport_path = NodePath("Viewport/Viewport3D/CameraPivot/SubViewport")
 resource_local_to_scene = true
 render_priority = 0
 shader = ExtResource("9_xlyo3")
-shader_parameter/speed = 0.005
+shader_parameter/speed = 0.003
 shader_parameter/cameraSize = 100.0
 shader_parameter/screen_texture = SubResource("ViewportTexture_qytxr")
 shader_parameter/noise = SubResource("NoiseTexture2D_otoxq")
 shader_parameter/noise2 = SubResource("NoiseTexture2D_mpw5d")
+shader_parameter/noise3 = SubResource("NoiseTexture2D_mhia5")
 
 [sub_resource type="BoxMesh" id="BoxMesh_j234n"]
 size = Vector3(10, 30, 10)
@@ -336,9 +368,6 @@ theme_override_constants/margin_left = 40
 theme_override_constants/margin_top = 40
 theme_override_constants/margin_right = 40
 theme_override_constants/margin_bottom = 40
-
-[node name="VesselDetails" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/ElementDisplay/VBoxContainer/Panel/MarginContainer" instance=ExtResource("12_1uj1h")]
-layout_mode = 2
 
 [node name="Gap" type="Control" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/ElementDisplay/VBoxContainer"]
 custom_minimum_size = Vector2(0, 50)

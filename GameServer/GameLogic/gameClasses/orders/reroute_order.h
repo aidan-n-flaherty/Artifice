@@ -42,7 +42,7 @@ public:
         if(!vessel->controlsSpecialist(SpecialistType::NAVIGATOR)) return nullptr;
         if(game->hasVessel(targetID) && !vessel->controlsSpecialist(SpecialistType::PIRATE)) return nullptr;
 
-        return new RerouteEvent(getTimestamp(), vessel, target);
+        return new RerouteEvent(this, getTimestamp(), vessel, target);
     }
 };
 

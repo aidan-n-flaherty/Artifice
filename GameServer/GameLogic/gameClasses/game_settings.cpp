@@ -1,20 +1,22 @@
 #include "game_settings.h"
 #include "string"
 #include "unordered_map"
+#include <tuple>
+#include <vector>
 #include "gameObjects/specialist.h"
 
-double GameSettings::simulationSpeed = 1;
+double GameSettings::simulationSpeed = 60 * 60; // each hour is a second
 int GameSettings::resourcesToWin = 200;
 Mode GameSettings::gameMode = MINING;
 int GameSettings::eloKValue = 32;
 int GameSettings::defaultSonar = 100;
-int GameSettings::defaultMaxShield = 10;
+int GameSettings::defaultMaxShield = 20;
 int GameSettings::fireRate = 2 * 60 * 60;
 int GameSettings::costPerMine = 50;
-int GameSettings::width = 1000;
-int GameSettings::height = 1000;
+int GameSettings::width = 200;
+int GameSettings::height = 200;
 
-std::unordered_map<SpecialistType, std::string> GameSettings::specialistDescriptions = {
+std::unordered_map<SpecialistType, std::string> GameSettings::specialistDescriptions {
     { QUEEN, "Adds 20 to her outpost's maximum shield charge. If you acquire another Queen, she becomes a Princess. Queen may periodically hire specialists."},
     { PRINCESS, "Increases her outpost's sonar range by 50%. If you lose control of your Queen, the closest Princess becomes the new Queen. "},
     { PIRATE, "Sub carrying Pirate can target another sub. When targeting a sub, travels 2x faster than ordinary subs, then travels at 4x normal speed to nearest friendly outpost."},
@@ -44,4 +46,17 @@ std::unordered_map<SpecialistType, std::string> GameSettings::specialistDescript
     { SECURITY_CHIEF, "Adds 10 to max shield charge of all your outposts. Adds 10 to max shield charge of Security Chief's outpost." },
     { TYCOON, "Speeds up your driller production rate by 50%. Produces 3 additional drillers with each production cycle while at a factory." },
     { WAR_HERO, "Destroys 20 enemy drillers when participating in combat." }
+};
+
+std::vector<std::tuple<double, double, double>> GameSettings::playerColors {
+    { 230/255.0, 25/255.0, 75/255.0},
+    { 60/255.0, 180/255.0, 75/255.0},
+    { 255/255.0, 225/255.0, 25/255.0},
+    { 0/255.0, 130/255.0, 200/255.0},
+    { 245/255.0, 130/255.0, 48/255.0},
+    { 70/255.0, 240/255.0, 240/255.0},
+    { 240/255.0, 50/255.0, 230/255.0},
+    { 250/255.0, 190/255.0, 212/255.0},
+    { 0/255.0, 128/255.0, 128/255.0},
+    { 220/255.0, 190/255.0, 255/255.0}
 };

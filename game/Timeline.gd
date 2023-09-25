@@ -1,5 +1,6 @@
 extends Control
 
+var gameID
 var game
 var mouse_start_pos
 var time_start_pos
@@ -14,11 +15,17 @@ var target = 0
 func _ready():
 	pass
 
+func init(gameID):
+	self.gameID = gameID
+	game = GameData.getGame(gameID)
+	game.connect("moveTo", moveTo)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	if dragging:
-		change = 0.9 * change + 0.1 * target
+	if change != target:
+		if abs(change - target) < 0.01:
+			change = target
+		change = 0.8 * change + 0.2 * target
 		game.setTime(time_start_pos - change)
 	
 	var diff = Time.get_unix_time_from_system() - game.getTime()
@@ -33,8 +40,6 @@ func _input(event):
 			dragging = true
 		else:
 			dragging = false
-			change = 0
-			target = 0
 	elif event is InputEventMouseMotion and dragging:
 		target = (event.position.x - mouse_start_pos.x)
 	
@@ -45,6 +50,12 @@ func _input(event):
 func _on_mouse_exited():
 	mouseInComponent = false
 
-
 func _on_mouse_entered():
 	mouseInComponent = true
+	
+func moveTo(t):
+	time_start_pos = game.getTime()
+	self.target = time_start_pos - t
+	
+
+

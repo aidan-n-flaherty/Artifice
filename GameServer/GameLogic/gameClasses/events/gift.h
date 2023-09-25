@@ -15,7 +15,7 @@ private:
 
 public:
     GiftEvent(){};
-    GiftEvent(double timestamp, Vessel* vessel) : Event(timestamp), vessel(vessel) {}
+    GiftEvent(Order* o, double timestamp, Vessel* vessel) : Event(o, timestamp), vessel(vessel) {}
     
     Event* copy() override { return new GiftEvent(*this); }
 
@@ -26,6 +26,7 @@ public:
 
     void run(Game* game) override {
         vessel->setGift();
+        vessel->setOriginatingOrder(getOriginatingOrder());
     }
 };
 

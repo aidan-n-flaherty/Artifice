@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://c80qrqpvv8oji"]
+[gd_scene load_steps=5 format=3 uid="uid://c80qrqpvv8oji"]
 
 [ext_resource type="Script" path="res://AirshipMesh.gd" id="1_yg6xk"]
 [ext_resource type="PackedScene" uid="uid://ksos37w5hi7k" path="res://resources/airship/alternate_airship.blend" id="2_1e350"]
+[ext_resource type="PackedScene" uid="uid://c3ctitj3875oy" path="res://Counter.tscn" id="3_i6xow"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_s31l7"]
 radius = 1.0
@@ -21,9 +22,5 @@ transform = Transform3D(-3.93403e-08, 0, -0.9, 0, 0.9, 0, 0.9, 0, -3.93403e-08, 
 
 [node name="RotationInvariant" type="Node3D" parent="."]
 
-[node name="Label" type="Label3D" parent="RotationInvariant"]
-transform = Transform3D(-1, -1.50996e-07, -6.60024e-15, 0, -4.37114e-08, 1, -1.50996e-07, 1, 4.37114e-08, 0.0937617, 1.56306, 0)
-text = "Testing "
-font_size = 200
-outline_size = 50
-uppercase = true
+[node name="Units" parent="RotationInvariant" instance=ExtResource("3_i6xow")]
+transform = Transform3D(0.75, 0, 0, 0, 0.75, 0, 0, 0, 0.75, 0, 40, -40)

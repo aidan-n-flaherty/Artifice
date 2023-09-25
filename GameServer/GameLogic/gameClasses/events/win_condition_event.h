@@ -18,7 +18,7 @@ private:
 
 public:
     WinConditionEvent(){};
-    WinConditionEvent(double timestamp, Player* player) : Event(timestamp), player(player) {}
+    WinConditionEvent(double timestamp, Player* player) : Event(nullptr, timestamp), player(player) {}
     
     Event* copy() override { return new WinConditionEvent(*this); }
 

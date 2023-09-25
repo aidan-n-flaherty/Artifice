@@ -66,7 +66,7 @@ public:
 
         updateOrders(game->getOrders());
 
-        return new SendEvent(getTimestamp(), numUnits, specialists, outpost, target);
+        return new SendEvent(this, getTimestamp(), numUnits, specialists, outpost, target);
     }
 };
 

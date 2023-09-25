@@ -16,7 +16,7 @@ private:
 
 public:
     MineEvent(){};
-    MineEvent(double timestamp, Outpost* outpost) : Event(timestamp), outpost(outpost) {}
+    MineEvent(Order* o, double timestamp, Outpost* outpost) : Event(o, timestamp), outpost(outpost) {}
     
     Event* copy() override { return new MineEvent(*this); }
 
@@ -27,6 +27,7 @@ public:
 
     void run(Game* game) override {
         outpost->setType(OutpostType::MINE);
+        outpost->setOriginatingOrder(getOriginatingOrder());
     }
 };
 

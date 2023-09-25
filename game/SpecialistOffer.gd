@@ -29,7 +29,6 @@ func _process(delta):
 	pass
 
 func _on_button_pressed():
-	print(game.getTime())
 	var order = await HTTPManager.putReq("/updateOrder", {
 		"type": "HIRE",
 		"referenceID": int(game.getReferenceID()),

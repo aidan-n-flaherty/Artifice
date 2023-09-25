@@ -14,7 +14,7 @@ class OutpostRangeEvent : public Event
 {
 public:
     OutpostRangeEvent(){};
-    OutpostRangeEvent(double timestamp) : Event(timestamp) {}
+    OutpostRangeEvent(double timestamp) : Event(nullptr, timestamp) {}
 
     Event* copy() override { return new OutpostRangeEvent(*this); }
 
@@ -44,7 +44,7 @@ public:
         }
 
         // schedule the same event to occur in 2 hours
-        game->addEvent(new OutpostRangeEvent(getTimestamp() + GameSettings::fireRate));
+        game->addEvent(new OutpostRangeEvent(getTimestamp() + GameSettings::fireRate / GameSettings::simulationSpeed));
     }
 };
 

@@ -3,6 +3,7 @@ uniform vec3 albedo : source_color;
 uniform float epsilon;
 uniform sampler2D land;
 uniform sampler2D ocean;
+uniform sampler2D stones;
 
 uniform float cameraSize;
 
@@ -21,10 +22,19 @@ void fragment() {
 	float height = texture(land, pos).r;
 	float height2 = texture(ocean, pos).r;
 	
-	ALBEDO = albedo - vec3(0.75 * height);
+	float height3 = texture(stones, pos).r;
+	
+	ALBEDO = albedo - vec3(1.0 * height);
+	
 	if(height2 > 0.45) {
-		ALPHA = 1.0 - 10.0 * (height2 - 0.45);
-		
+		float delta = min(1.0, 30.0 * (height2 - 0.45));
+		ALBEDO = (1.0 - delta) * ALBEDO + delta * vec3(0.03 * min(1.0, -1.0 + 10.0 * height3));
+		ALPHA = (1.0 - delta) * ALPHA + delta * min(1.0, -1.0 + 10.0 * height3);
+	}
+	
+	if(height2 > 0.5) {
+		ALPHA = min(ALPHA, 1.0 - 20.0 * (height2 - 0.5));
+
 		if(height2 > 0.55) discard;
 	}
 	
