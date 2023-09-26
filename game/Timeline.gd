@@ -25,7 +25,7 @@ func _process(delta):
 	if change != target:
 		if abs(change - target) < 0.01:
 			change = target
-		change = 0.8 * change + 0.2 * target
+		change = 0.85 * change + 0.15 * target
 		game.setTime(time_start_pos - change)
 	
 	var diff = Time.get_unix_time_from_system() - game.getTime()
@@ -38,6 +38,8 @@ func _input(event):
 			mouse_start_pos = event.position
 			time_start_pos = game.getTime()
 			dragging = true
+			change = 0
+			target = 0
 		else:
 			dragging = false
 	elif event is InputEventMouseMotion and dragging:
@@ -55,6 +57,7 @@ func _on_mouse_entered():
 	
 func moveTo(t):
 	time_start_pos = game.getTime()
+	change = 0
 	self.target = time_start_pos - t
 	
 

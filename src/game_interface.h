@@ -47,7 +47,7 @@ private:
 	
 	bool future = true;
 
-	double simulationBuffer = 60;
+	double simulationBuffer = 96 * 60 * 60;
 
 	double percent = 1.0;
 

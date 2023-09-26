@@ -73,7 +73,7 @@ void GameInterface::init(int userID) {
 	players[654321] = "Joe";
 	players[987654] = "Steve";
 	
-	completeGame = std::shared_ptr<Game>(new Game(userID, current, current + 96 * 60 * 60 / GameSettings::simulationSpeed, players, 42083, true));
+	completeGame = std::shared_ptr<Game>(new Game(userID, current, current + simulationBuffer / GameSettings::simulationSpeed, players, 42083, true));
 	/*std::list<int> specialists;
 	specialists.push_back(4);
 	completeGame->addOrder(new SendOrder(current, 0, 20, specialists, 3, 7, completeGame->getReferenceID()));
@@ -129,7 +129,7 @@ void GameInterface::setTime(double t) {
 }
 
 void GameInterface::update() {
-	if(game == nullptr || current + simulationBuffer > nextEndState) {
+	if(game == nullptr || current + simulationBuffer / GameSettings::simulationSpeed > nextEndState) {
 		if(current > nextEndState) game = nullptr;
 
 		completeGame = completeGame->lastState(nextEndState);

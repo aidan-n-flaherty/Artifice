@@ -43,7 +43,7 @@ public:
         b = game->getPosObject(b->getID());
     }
 
-    bool referencesObject(int id) const override { return a->getID() == id || b->getID() == id; }
+    bool referencesObject(int id) const override { return aID == id || bID == id; }
 
     void run(Game* game) override {
         startingUnitsA = a->getUnits();
