@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <cmath>
 #include <iostream>
+#include <algorithm>
 #include "../event.h"
 #include "../gameObjects/vessel.h"
 #include "../event.h"

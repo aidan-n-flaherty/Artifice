@@ -11,7 +11,6 @@
 class MineEvent : public Event
 {
 private:
-    Player* owner;
     Outpost* outpost;
 
 public:
@@ -28,6 +27,7 @@ public:
     void run(Game* game) override {
         outpost->setType(OutpostType::MINE);
         outpost->setOriginatingOrder(getOriginatingOrder());
+        outpost->removeUnits(GameSettings::costPerMine * (outpost->getOwner()->getMinesDrilled() + 1));
     }
 };
 

@@ -2,8 +2,6 @@
 #define _REROUTE_EVENT_H_
 
 #include <cstdlib>
-#include <cmath>
-#include <iostream>
 #include "../event.h"
 #include "../game.h"
 
@@ -28,7 +26,6 @@ public:
     }
 
     void run(Game* game) override {
-        std::cout << "Rerouted" << std::endl;
         vessel->setOriginatingOrder(getOriginatingOrder());
         vessel->setTarget(target);
         vessel->setOrigin(nullptr);

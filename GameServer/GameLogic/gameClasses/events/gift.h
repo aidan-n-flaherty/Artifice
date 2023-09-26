@@ -2,7 +2,6 @@
 #define _GIFT_EVENT_H_
 
 #include <cstdlib>
-#include <cmath>
 #include "../event.h"
 #include "../gameObjects/player.h"
 #include "../gameObjects/specialist.h"

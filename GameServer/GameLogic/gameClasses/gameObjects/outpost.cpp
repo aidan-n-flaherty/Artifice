@@ -1,6 +1,7 @@
 #include "vessel.h"
 #include <list>
 #include <cmath>
+#include <algorithm>
 #include "player.h"
 #include "../game_settings.h"
 

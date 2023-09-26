@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <cmath>
 #include <set>
+#include <algorithm>
 #include "../helpers/point.h"
 #include "positional_object.h"
 #include "outpost.h"

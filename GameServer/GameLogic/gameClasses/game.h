@@ -8,6 +8,7 @@
 #include <ctime>
 #include <set>
 #include <map>
+#include <memory>
 #include "gameObjects/player.h"
 #include "gameObjects/vessel.h"
 #include "gameObjects/outpost.h"

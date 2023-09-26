@@ -3,6 +3,7 @@
 
 #include <cstdlib>
 #include <cmath>
+#include <algorithm>
 #include "../event.h"
 #include "../gameObjects/player.h"
 #include "../gameObjects/specialist.h"

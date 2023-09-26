@@ -2,8 +2,6 @@
 #define _SEND_EVENT_H_
 
 #include <cstdlib>
-#include <cmath>
-#include <iostream>
 #include "../gameObjects/vessel.h"
 #include "../gameObjects/outpost.h"
 #include "../gameObjects/positional_object.h"

@@ -414,8 +414,24 @@ double GameInterface::getNextArrivalEvent(int vesselID) {
 	return e ? e->getTimestamp() : -1;
 }
 
-double GameInterface::getNextBattleEvent(int vesselID) {
-	const BattleEvent* e = completeGame->nextBattle(vesselID, current);
+double GameInterface::getNextProductionEvent(int outpostID) {
+	std::shared_ptr<Game> curr = game;
+
+	double next = completeGame->nextState(curr->getTime());
+
+	double time;
+
+	while(curr->getTime() + curr->getOutpost(outpostID)->nextProductionEvent() >= next) {
+		time = curr->getTime();
+		curr = completeGame->lastState(next);
+		next = completeGame->nextState(curr->getTime());
+	}
+
+	return time + curr->getOutpost(outpostID)->nextProductionEvent();
+}
+
+double GameInterface::getNextBattleEvent(int objID) {
+	const BattleEvent* e = completeGame->nextBattle(objID, current);
 
 	return e ? e->getTimestamp() : -1;
 }

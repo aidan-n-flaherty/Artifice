@@ -5,6 +5,7 @@
 #include <cmath>
 #include <list>
 #include <tuple>
+#include <algorithm>
 #include "../event.h"
 #include "../gameObjects/player.h"
 #include "../gameObjects/specialist.h"

@@ -162,13 +162,13 @@ void Game::updateEvents() {
     }
 
     // All outposts flagged for update (e.g. changed specialists)
-    for(auto itA = outposts.begin(); itA != outposts.end(); itA++) {
+    /*for(auto itA = outposts.begin(); itA != outposts.end(); itA++) {
         Outpost* outpost = itA->second;
 
         if(!outpost->needsRefresh()) continue;
 
         removeRelevant(outpost->getID());
-    }
+    }*/
 
     // All vessels flagged for update (e.g. global speed change) may have different combat times.
     for(auto itA = vessels.begin(); itA != vessels.end(); itA++) {
@@ -361,6 +361,7 @@ std::list<std::pair<int, int>> Game::getScores() {
 std::shared_ptr<Game> Game::lastState(double timestamp) {
     std::shared_ptr<Game> returnVal = shared_from_this();
 
+    if(cache.begin() != cache.end()) returnVal = *cache.begin();
     for(auto it = cache.begin(); it != cache.end(); it++) {
         if((*it)->getTime() > timestamp) break;
         else returnVal = *it;

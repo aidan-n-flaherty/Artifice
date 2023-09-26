@@ -1,3 +1,4 @@
+#include <algorithm>
 #include "battle_event.h"
 #include ".././game_settings.h"
 

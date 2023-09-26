@@ -5,6 +5,7 @@
 #include <cmath>
 #include <list>
 #include <string>
+#include <algorithm>
 #include "../game_object.h"
 #include "../possessable.h"
 

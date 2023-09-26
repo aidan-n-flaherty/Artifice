@@ -4,6 +4,7 @@
 #include <godot_cpp/classes/node3d.hpp>
 #include <list>
 #include <tuple>
+#include <memory>
 #include <unordered_map>
 #include <unordered_set>
 #include <godot_cpp/variant/packed_vector2_array.hpp>
@@ -100,7 +101,8 @@ public:
 	String getSpecialistDescription(int specialistNum);
 
 	double getNextArrivalEvent(int vesselID);
-	double getNextBattleEvent(int vesselID);
+	double getNextProductionEvent(int outpostID);
+	double getNextBattleEvent(int objID);
 
 	int getReferenceID() { return game->getReferenceID(); }
 

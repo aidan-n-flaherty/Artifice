@@ -7,6 +7,7 @@
 #include <ctime>
 #include <chrono>
 #include <fstream>
+#include <memory>
 #include <set>
 #include "gameClasses/game.h"
 #include "gameClasses/orders/send_order.h"

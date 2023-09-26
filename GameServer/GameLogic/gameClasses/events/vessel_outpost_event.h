@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <cmath>
 #include <iostream>
+#include <algorithm>
 #include "../event.h"
 #include "../gameObjects/player.h"
 #include "../gameObjects/outpost.h"
@@ -29,7 +30,7 @@ public:
         outpost = game->getOutpost(outpost->getID());
     }
 
-    bool referencesObject(int id) const override { return vID == id; }
+    //bool referencesObject(int id) const override { return vID == id; }
 
     void run(Game* game) override {
         BattleEvent::run(game);

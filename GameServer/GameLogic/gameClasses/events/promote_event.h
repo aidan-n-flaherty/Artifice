@@ -2,7 +2,6 @@
 #define _PROMOTE_EVENT_H_
 
 #include <cstdlib>
-#include <cmath>
 #include "../event.h"
 #include "../gameObjects/player.h"
 #include "../gameObjects/specialist.h"
@@ -29,6 +28,7 @@ public:
     void run(Game* game) override {
         specialist->setOriginatingOrder(getOriginatingOrder());
         specialist->setType(promotion);
+        specialist->getOwner()->removeHire();
     }
 };
 

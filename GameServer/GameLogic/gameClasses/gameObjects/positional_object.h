@@ -2,6 +2,7 @@
 #define _POSITIONAL_OBJECT_H_
 
 #include <cstdlib>
+#include <algorithm>
 #include "../game_object.h"
 #include "../helpers/point.h"
 #include "specialist.h"

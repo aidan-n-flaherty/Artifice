@@ -6,6 +6,7 @@
 #include <string>
 #include <set>
 #include <list>
+#include <algorithm>
 #include "../game_object.h"
 #include "../event.h"
 
