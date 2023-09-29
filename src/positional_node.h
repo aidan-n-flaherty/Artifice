@@ -7,7 +7,9 @@
 #include <godot_cpp/classes/input_event.hpp>
 #include <godot_cpp/classes/texture_rect.hpp>
 #include <godot_cpp/variant/vector3.hpp>
-#include "../GameServer/GameLogic/gameClasses/gameObjects/positional_object.h"
+#include <godot_cpp/variant/string.hpp>
+#include "../GameLogic/gameClasses/gameObjects/positional_object.h"
+#include "../GameLogic/gameClasses/order.h"
 #include <unordered_set>
 
 namespace godot {
@@ -75,9 +77,11 @@ public:
 
 	Vector3 getColor();
 
-	int getOriginatingOrder() {
-		return obj && obj->getOriginatingOrder() && obj->getOriginatingOrder()->getTimestamp() > currentTime ? obj->getOriginatingOrder()->getID() : -1;
-	}
+	bool canUndo() { return obj && obj->getOriginatingOrder() && obj->getOriginatingOrder()->getTimestamp() > currentTime; }
+
+	int getOriginatingOrder() { return canUndo() ? obj->getOriginatingOrder()->getID() : -1; }
+
+	String getOriginatingOrderType() { return canUndo() ? String(obj->getOriginatingOrder()->getType().c_str()) : ""; }
 };
 
 }

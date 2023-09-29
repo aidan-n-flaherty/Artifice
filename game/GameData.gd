@@ -58,7 +58,7 @@ func _deferred_goto_node(node) -> void:
 	get_tree().get_root().add_child(current_scene)
 	get_tree().set_current_scene(current_scene)
 
-func viewGame(id):
+func viewGame(id: int):
 	if(!games.has(id)):
 		games[id] = GameInterface.new()
 		games[id].init(self.id)
@@ -69,7 +69,7 @@ func viewGame(id):
 	goto_node(node)
 	
 	
-func viewGameDetails(id):
+func viewGameDetails(id: int):
 	var node = GameDetail.instantiate()
 	node.gameID = id
 
@@ -85,8 +85,8 @@ func loadGames():
 	})
 	
 	for game in openGames:
-		openGameIDs[game.gameData.id] = true
-		gameDetails[game.gameData.id] = game
+		openGameIDs[int(game.gameData.id)] = true
+		gameDetails[int(game.gameData.id)] = game
 	
 	var ongoingGames = await HTTPManager.getReq("/fetchUserGames", {
 		"token": token,
@@ -94,8 +94,8 @@ func loadGames():
 	})
 	
 	for game in ongoingGames:
-		ongoingGameIDs[game.gameData.id] = true
-		gameDetails[game.gameData.id] = game
+		ongoingGameIDs[int(game.gameData.id)] = true
+		gameDetails[int(game.gameData.id)] = game
 	
 	var pastGames = await HTTPManager.getReq("/fetchUserGames", {
 		"token": token,
@@ -103,14 +103,14 @@ func loadGames():
 	})
 	
 	for game in pastGames:
-		pastGameIDs[game.gameData.id] = true
-		gameDetails[game.gameData.id] = game
+		pastGameIDs[int(game.gameData.id)] = true
+		gameDetails[int(game.gameData.id)] = game
 
 func addGame(game):
-	ongoingGameIDs[game.gameData.id] = true
-	gameDetails[game.gameData.id] = game
+	ongoingGameIDs[int(game.gameData.id)] = true
+	gameDetails[int(game.gameData.id)] = game
 	
-func loadGame(id):
+func loadGame(id: int):
 	var gameData = await HTTPManager.getReq("fetchGameState", {
 		"tokens": token,
 		"gameID": id
@@ -118,10 +118,10 @@ func loadGame(id):
 	
 	games[id] = GameInterface.new()
 	
-func getGameDetails(id):
+func getGameDetails(id: int):
 	return gameDetails[id]
 
-func getGame(id):
+func getGame(id: int):
 	return games[id]
 
 func getOpenGames():

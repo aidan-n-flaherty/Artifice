@@ -10,11 +10,11 @@
 #include <godot_cpp/variant/packed_vector2_array.hpp>
 #include <godot_cpp/variant/packed_string_array.hpp>
 #include <godot_cpp/variant/packed_int32_array.hpp>
-#include "../GameServer/GameLogic/gameClasses/game.h"
-#include "../GameServer/GameLogic/gameClasses/gameObjects/vessel.h"
-#include "../GameServer/GameLogic/gameClasses/gameObjects/outpost.h"
-#include "../GameServer/GameLogic/gameClasses/gameObjects/specialist.h"
-#include "../GameServer/GameLogic/gameClasses/game_settings.h"
+#include "../GameLogic/gameClasses/game.h"
+#include "../GameLogic/gameClasses/gameObjects/vessel.h"
+#include "../GameLogic/gameClasses/gameObjects/outpost.h"
+#include "../GameLogic/gameClasses/gameObjects/specialist.h"
+#include "../GameLogic/gameClasses/game_settings.h"
 #include "vessel_node.h"
 #include "outpost_node.h"
 #include "floor_display.h"
@@ -41,7 +41,7 @@ private:
 	
 	PositionalNode* selectedNode;
 	
-	std::unordered_set<int> selectedSpecialists;
+	std::set<int> selectedSpecialists;
 	
 	double current;
 	
@@ -50,6 +50,8 @@ private:
 	double simulationBuffer = 96 * 60 * 60;
 
 	double percent = 1.0;
+
+	double epsilon = 0.00001;
 
 protected:
 	static void _bind_methods();
@@ -96,6 +98,9 @@ public:
 
 	PackedVector2Array getOutpostPositions();
 	PackedInt32Array getShopOptions();
+	PackedInt32Array getPromotionOptions(int specialistID);
+
+	int getSpecialistType(int specialistID) { return game->getSpecialist(specialistID)->getType(); };
 
 	String getSpecialistName(int specialistNum);
 	String getSpecialistDescription(int specialistNum);
@@ -104,15 +109,17 @@ public:
 	double getNextProductionEvent(int outpostID);
 	double getNextBattleEvent(int objID);
 
+	bool canHire() { return game->getPlayer(userGameID)->getHiresAt(current) >= 0; }
+
 	int getReferenceID() { return game->getReferenceID(); }
 
 	int getWidth() { return GameSettings::width; }
 	int getHeight() { return GameSettings::height; }
 		
-	void bulkAddOrder(const String &type, uint32_t ID, int32_t referenceID, uint32_t timestamp, uint32_t senderID, PackedInt32Array arguments, uint32_t argCount);
+	void bulkAddOrder(const String &type, uint32_t ID, int32_t referenceID, double timestamp, uint32_t senderID, PackedInt32Array arguments, uint32_t argCount);
 	void endBulkAdd();
 		
-	void addOrder(const String &type, uint32_t ID, int32_t referenceID, uint32_t timestamp, uint32_t senderID, PackedInt32Array arguments, uint32_t argCount);
+	void addOrder(const String &type, uint32_t ID, int32_t referenceID, double timestamp, uint32_t senderID, PackedInt32Array arguments, uint32_t argCount);
 
 	void cancelOrder(uint32_t ID);
 };

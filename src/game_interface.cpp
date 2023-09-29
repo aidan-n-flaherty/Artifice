@@ -1,13 +1,13 @@
 #include "game_interface.h"
 #include "floor_display.h"
-#include "../GameServer/GameLogic/gameClasses/game.h"
-#include "../GameServer/GameLogic/gameClasses/gameObjects/vessel.h"
-#include "../GameServer/GameLogic/gameClasses/gameObjects/outpost.h"
-#include "../GameServer/GameLogic/gameClasses/gameObjects/specialist.h"
-#include "../GameServer/GameLogic/gameClasses/orders/send_order.h"
-#include "../GameServer/GameLogic/gameClasses/game_settings.h"
-#include "../GameServer/GameLogic/gameClasses/events/battle_event.h"
-#include "../GameServer/GameLogic/gameClasses/events/vessel_outpost_event.h"
+#include "../GameLogic/gameClasses/game.h"
+#include "../GameLogic/gameClasses/gameObjects/vessel.h"
+#include "../GameLogic/gameClasses/gameObjects/outpost.h"
+#include "../GameLogic/gameClasses/gameObjects/specialist.h"
+#include "../GameLogic/gameClasses/orders/send_order.h"
+#include "../GameLogic/gameClasses/game_settings.h"
+#include "../GameLogic/gameClasses/events/battle_event.h"
+#include "../GameLogic/gameClasses/events/vessel_outpost_event.h"
 #include "vessel_node.h"
 #include "outpost_node.h"
 #include <godot_cpp/core/class_db.hpp>
@@ -20,6 +20,7 @@
 #include <godot_cpp/variant/string.hpp>
 #include <cstdlib>
 #include <ctime>
+#include <cmath>
 #include <chrono>
 #include <map>
 #include <list>
@@ -46,20 +47,27 @@ void GameInterface::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("getWidth"), &GameInterface::getWidth);
 	ClassDB::bind_method(D_METHOD("getHeight"), &GameInterface::getHeight);
 	ClassDB::bind_method(D_METHOD("getHires"), &GameInterface::getHires);
+	ClassDB::bind_method(D_METHOD("canHire"), &GameInterface::canHire);
 	ClassDB::bind_method(D_METHOD("getReferenceID"), &GameInterface::getReferenceID);
 	ClassDB::bind_method(D_METHOD("getNextArrivalEvent"), &GameInterface::getNextArrivalEvent);
+	ClassDB::bind_method(D_METHOD("getNextProductionEvent"), &GameInterface::getNextProductionEvent);
 	ClassDB::bind_method(D_METHOD("getNextBattleEvent"), &GameInterface::getNextBattleEvent);
 	ClassDB::bind_method(D_METHOD("getOutpostPositions"), &GameInterface::getOutpostPositions);
 	ClassDB::bind_method(D_METHOD("getShopOptions"), &GameInterface::getShopOptions);
+	ClassDB::bind_method(D_METHOD("getPromotionOptions"), &GameInterface::getPromotionOptions);
 	ClassDB::bind_method(D_METHOD("getSpecialistName"), &GameInterface::getSpecialistName);
 	ClassDB::bind_method(D_METHOD("getSpecialistDescription"), &GameInterface::getSpecialistDescription);
+	ClassDB::bind_method(D_METHOD("getSpecialistType"), &GameInterface::getSpecialistType);
 	ClassDB::bind_method(D_METHOD("getFloorDisplay"), &GameInterface::getFloorDisplay);
 	ClassDB::bind_method(D_METHOD("shiftToTime", "t"), &GameInterface::shiftToTime);
 	ClassDB::bind_method(D_METHOD("addOrder", "type", "ID", "referenceID", "timestamp", "senderID", "arguments", "argCount"), &GameInterface::addOrder);
 	ClassDB::bind_method(D_METHOD("cancelOrder", "ID"), &GameInterface::cancelOrder);
 	ADD_SIGNAL(MethodInfo("addOrder", PropertyInfo(Variant::STRING, "type"), PropertyInfo(Variant::INT, "referenceID"), PropertyInfo(Variant::INT, "timestamp"), PropertyInfo(Variant::PACKED_INT32_ARRAY, "arguments")));
 	ADD_SIGNAL(MethodInfo("selectVessel", PropertyInfo(Variant::OBJECT, "vessel")));
+	ADD_SIGNAL(MethodInfo("selectOutpost", PropertyInfo(Variant::OBJECT, "outpost")));
+	ADD_SIGNAL(MethodInfo("selectSpecialist", PropertyInfo(Variant::INT, "specialist")));
 	ADD_SIGNAL(MethodInfo("deselect"));
+	ADD_SIGNAL(MethodInfo("deselectSpecialist", PropertyInfo(Variant::INT, "specialist")));
 	ADD_SIGNAL(MethodInfo("moveTo", PropertyInfo(Variant::FLOAT, "t")));
 }
 
@@ -159,9 +167,17 @@ void GameInterface::update() {
 			} else it++;
 		}
 
+		for(auto it = selectedSpecialists.begin(); it != selectedSpecialists.end();) {
+			if(!game->hasSpecialist(*it)) {
+				setSelectedSpecialist(*it);
+				it = selectedSpecialists.begin();
+			} else it++;
+		}
+
 		if(selectedNode && !game->hasPosObject(selectedNode->getID())) unselect();
 
-		for(auto it = selectedSpecialists.begin(); it != selectedSpecialists.end();) {
+		/*for(auto it = selectedSpecialists.begin(); it != selectedSpecialists.end();) {
+
 			if(game->hasSpecialist(*it) && game->getSpecialist(*it)->getContainer() && game->hasPosObject(game->getSpecialist(*it)->getContainer()->getID())) {
 				PositionalObject* container = game->getSpecialist(*it)->getContainer();
 				std::list<Specialist*> specialists = container->getSpecialists();
@@ -171,10 +187,14 @@ void GameInterface::update() {
 				})) {
 					getObj(container->getID())->setSpecialistSelected(*it, false);
 
+					emit_signal("deselectSpecialist", *it);
 					it = selectedSpecialists.erase(it);
 				} else it++;
-			} else it = selectedSpecialists.erase(it);
-		}
+			} else {
+				emit_signal("deselectSpecialist", *it);
+				it = selectedSpecialists.erase(it);
+			}
+		}*/
 		
 		for(const auto& pair : game->getVessels()) {
 			if(vessels.find(pair.first) != vessels.end()) {
@@ -269,7 +289,7 @@ void GameInterface::select(int id) {
 				selectedSpecialists.erase(selectedSpecialists.begin());
 			}
 
-			emit_signal("addOrder", "SEND", game->getReferenceID(), int(current), arguments);
+			emit_signal("addOrder", "SEND", game->getReferenceID(), current, arguments);
 
 			unselect();
 			
@@ -284,7 +304,7 @@ void GameInterface::select(int id) {
 
 			for(int i = 0; i < 2; i++) arguments.push_back(parameters[i]);
 
-			emit_signal("addOrder", "REROUTE", game->getReferenceID(), int(current), arguments);
+			emit_signal("addOrder", "REROUTE", game->getReferenceID(), current, arguments);
 
 			unselect();
 			
@@ -310,8 +330,10 @@ void GameInterface::setSelected(int id) {
 
 	if(obj) obj->setSelected(true);
 
-	VesselNode* node = dynamic_cast<VesselNode*>(obj);
-	if(node) emit_signal("selectVessel", node);
+	VesselNode* v = dynamic_cast<VesselNode*>(obj);
+	OutpostNode* o = dynamic_cast<OutpostNode*>(obj);
+	if(v) emit_signal("selectVessel", v);
+	if(o) emit_signal("selectOutpost", o);
 
 	selectedNode = obj;
 }
@@ -340,13 +362,19 @@ void GameInterface::setSelectedSpecialist(int id) {
 			else it++;
 		}
 	}
-	if(owned) setSelected(containerID);
 	
-	if(selected) selectedSpecialists.insert(id);
-	else selectedSpecialists.erase(id);
+	if(selected) {
+		if(owned) setSelected(containerID);
+		selectedSpecialists.insert(id);
+		emit_signal("selectSpecialist", id);
+	} else {
+		selectedSpecialists.erase(id);
+		emit_signal("deselectSpecialist", id);
+		if(owned) setSelected(containerID);
+	}
 }
 
-void GameInterface::bulkAddOrder(const String &type, uint32_t ID, int32_t referenceID, uint32_t timestamp, uint32_t senderID, PackedInt32Array arguments, uint32_t argCount) {
+void GameInterface::bulkAddOrder(const String &type, uint32_t ID, int32_t referenceID, double timestamp, uint32_t senderID, PackedInt32Array arguments, uint32_t argCount) {
 	int arr[argCount];
 	for(int i = 0; i < argCount; i++) arr[i] = arguments[i];
 
@@ -357,10 +385,12 @@ void GameInterface::endBulkAdd() {
 	completeGame->run();
 	game = nullptr;
 	
+	current += epsilon;
+	
 	update();
 }
 
-void GameInterface::addOrder(const String &type, uint32_t ID, int32_t referenceID, uint32_t timestamp, uint32_t senderID, PackedInt32Array arguments, uint32_t argCount) {
+void GameInterface::addOrder(const String &type, uint32_t ID, int32_t referenceID, double timestamp, uint32_t senderID, PackedInt32Array arguments, uint32_t argCount) {
 	int arr[argCount];
 	for(int i = 0; i < argCount; i++) arr[i] = arguments[i];
 	std::string t(type.utf8().get_data());
@@ -368,6 +398,8 @@ void GameInterface::addOrder(const String &type, uint32_t ID, int32_t referenceI
 	completeGame = completeGame->processOrder(std::string(type.utf8().get_data()), ID, referenceID, timestamp, senderID, arr, argCount);
 	completeGame->run();
 	game = nullptr;
+
+	current += epsilon;
 	
 	update();
 }
@@ -400,6 +432,16 @@ PackedInt32Array GameInterface::getShopOptions() {
 	return arr;
 }
 
+PackedInt32Array GameInterface::getPromotionOptions(int specialistID) {
+	PackedInt32Array arr;
+
+	for(SpecialistType t : game->getSpecialist(specialistID)->promotionOptions()) {
+		arr.push_back(uint32_t(t));
+	}
+
+	return arr;
+}
+
 String GameInterface::getSpecialistName(int specialistNum) {
 	return String(Specialist::typeAsString(SpecialistType(specialistNum)).c_str());
 }
@@ -419,15 +461,15 @@ double GameInterface::getNextProductionEvent(int outpostID) {
 
 	double next = completeGame->nextState(curr->getTime());
 
-	double time;
+	double time = curr->getTime();
 
-	while(curr->getTime() + curr->getOutpost(outpostID)->nextProductionEvent() >= next) {
-		time = curr->getTime();
+	while(curr->getTime() + curr->getOutpost(outpostID)->nextProductionEvent() > next || curr->getTime() + curr->getOutpost(outpostID)->nextProductionEvent() <= current) {
 		curr = completeGame->lastState(next);
 		next = completeGame->nextState(curr->getTime());
+		time = curr->getTime();
 	}
 
-	return time + curr->getOutpost(outpostID)->nextProductionEvent();
+	return time + curr->getOutpost(outpostID)->nextProductionEvent() + epsilon;
 }
 
 double GameInterface::getNextBattleEvent(int objID) {

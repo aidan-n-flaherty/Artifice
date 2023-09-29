@@ -5,7 +5,7 @@
 #include <godot_cpp/classes/node3d.hpp>
 #include <godot_cpp/classes/camera3d.hpp>
 #include <godot_cpp/classes/input_event.hpp>
-#include "../GameServer/GameLogic/gameClasses/gameObjects/vessel.h"
+#include "../GameLogic/gameClasses/gameObjects/vessel.h"
 
 namespace godot {
 

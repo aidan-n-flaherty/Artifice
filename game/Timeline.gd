@@ -10,6 +10,8 @@ var mouseInComponent = false
 
 var change = 0
 var target = 0
+var speed = 0.1
+var cap = -1
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -23,9 +25,14 @@ func init(gameID):
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	if change != target:
+		var newChange = (1 - speed) * change + speed * target
+		var diff = newChange - change
+		if(cap >= 0 && abs(diff) > cap):
+			diff *= cap / abs(diff) 
+		change += diff
+		
 		if abs(change - target) < 0.01:
 			change = target
-		change = 0.85 * change + 0.15 * target
 		game.setTime(time_start_pos - change)
 	
 	var diff = Time.get_unix_time_from_system() - game.getTime()
@@ -40,6 +47,8 @@ func _input(event):
 			dragging = true
 			change = 0
 			target = 0
+			speed = 0.1
+			cap = -1
 		else:
 			dragging = false
 	elif event is InputEventMouseMotion and dragging:
@@ -59,6 +68,8 @@ func moveTo(t):
 	time_start_pos = game.getTime()
 	change = 0
 	self.target = time_start_pos - t
+	speed = 0.5
+	cap = 1
 	
 
 

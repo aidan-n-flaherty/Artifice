@@ -1,6 +1,6 @@
 #include "vessel_node.h"
-#include "../GameServer/GameLogic/gameClasses/gameObjects/vessel.h"
-#include "../GameServer/GameLogic/gameClasses/game_settings.h"
+#include "../GameLogic/gameClasses/gameObjects/vessel.h"
+#include "../GameLogic/gameClasses/game_settings.h"
 #include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/classes/resource_loader.hpp>
 #include <godot_cpp/classes/packed_scene.hpp>
@@ -34,7 +34,9 @@ void PositionalNode::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("isSelected"), &PositionalNode::isSelected);
 	ClassDB::bind_method(D_METHOD("getColor"), &PositionalNode::getColor);
 	ClassDB::bind_method(D_METHOD("selectSpecialist"), &PositionalNode::selectSpecialist);
+	ClassDB::bind_method(D_METHOD("canUndo"), &PositionalNode::canUndo);
 	ClassDB::bind_method(D_METHOD("getOriginatingOrder"), &PositionalNode::getOriginatingOrder);
+	ClassDB::bind_method(D_METHOD("getOriginatingOrderType"), &PositionalNode::getOriginatingOrderType);
 	ADD_SIGNAL(MethodInfo("selected", PropertyInfo(Variant::INT, "id")));
 }
 
@@ -152,16 +154,16 @@ void PositionalNode::setReference(PositionalObject* obj, int specialistDisplacem
 				s->set_name(("Specialist" + std::to_string(sp->getID())).c_str());
 				s->connect("custom_input_event", Callable(this, "selectSpecialist"), Object::CONNECT_DEFERRED);
 
-				Ref<Texture2D> img = ResourceLoader::get_singleton()->load((std::string("res://resources/specialistIcons/") + sp->typeAsString() + ".png").c_str());
-				TextureRect* texture = cast_to<TextureRect>(s->get_node_or_null(NodePath("SubViewport/Control/Texture")));	
-				texture->set_texture(img);
-
 				specialist = s;
 
 				n->add_child(s);
 
 				currentSpecialists.push_back(s);
 			}
+
+			Ref<Texture2D> img = ResourceLoader::get_singleton()->load((std::string("res://resources/specialistIcons/") + sp->typeAsString() + ".png").c_str());
+			TextureRect* texture = cast_to<TextureRect>(specialist->get_node_or_null(NodePath("SubViewport/Control/Texture")));	
+			if(texture) texture->set_texture(img);
 
 			CanvasItem* item = cast_to<CanvasItem>(specialist->get_node_or_null("SubViewport/Control"));
 			ShaderMaterial* mat1 = cast_to<ShaderMaterial>(item->get_material().ptr());

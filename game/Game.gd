@@ -1,7 +1,8 @@
 extends Control
 
-var gameID
-var game
+var gameID: int
+
+var game: GameInterface
 
 var startTime
 
@@ -14,7 +15,10 @@ func _ready():
 	game = GameData.getGame(gameID)
 	game.connect("addOrder", addOrder)
 	game.connect("selectVessel", selectVessel)
+	game.connect("selectOutpost", selectOutpost)
+	game.connect("selectSpecialist", selectSpecialist)
 	game.connect("deselect", deselect)
+	game.connect("deselectSpecialist", deselectSpecialist)
 
 	startTime = int(Time.get_unix_time_from_system())
 	
@@ -30,6 +34,7 @@ func _process(delta):
 	pass
 	
 func addOrder(type, referenceID, timestamp, arguments):
+	print(game.getTime())
 	var order = await HTTPManager.putReq("/updateOrder", {
 		"type": type,
 		"referenceID": referenceID,
@@ -43,22 +48,41 @@ func addOrder(type, referenceID, timestamp, arguments):
 
 	if(!order): return;
 	
-	game.addOrder(order.type, int(order.id), int(order.referenceID), int(order.timestamp), int(order.senderID), PackedInt32Array(order.argumentIDs), int(order.argumentIDs.size()))
+	game.addOrder(order.type, int(order.id), int(order.referenceID), float(order.timestamp), int(order.senderID), PackedInt32Array(order.argumentIDs), int(order.argumentIDs.size()))
 	
 	print("Order registered")
 
-func selectVessel(vessel):
+func setDisplay(scene):
 	if detailDisplay != null:
 		$Viewport/GameOverlay/Overlay/UIOverlay/Separator/ElementDisplay/VBoxContainer/Panel/MarginContainer.remove_child(detailDisplay)
-	detailDisplay = preload("res://VesselDetails.tscn").instantiate()
-	detailDisplay.init(vessel, gameID)
+	detailDisplay = scene
 
 	$Viewport/GameOverlay/Overlay/UIOverlay/Separator/ElementDisplay/VBoxContainer/Panel/MarginContainer.add_child(detailDisplay)
 	$Viewport/GameOverlay/Overlay/UIOverlay/Separator/ElementDisplay/VBoxContainer/Panel.show()
 
+func selectVessel(vessel):
+	var scene = preload("res://VesselDetails.tscn").instantiate()
+	scene.init(vessel, gameID)
+	setDisplay(scene)
+
+func selectOutpost(outpost):
+	var scene = preload("res://OutpostDetails.tscn").instantiate()
+	scene.init(outpost, gameID)
+	setDisplay(scene)
+	
+func selectSpecialist(specialist):
+	var scene = preload("res://SpecialistDetails.tscn").instantiate()
+	scene.init(specialist, gameID)
+	setDisplay(scene)
+	
 func deselect():
 	$Viewport/GameOverlay/Overlay/UIOverlay/Separator/ElementDisplay/VBoxContainer/Panel/MarginContainer.remove_child(detailDisplay)
 	$Viewport/GameOverlay/Overlay/UIOverlay/Separator/ElementDisplay/VBoxContainer/Panel.hide()
+
+func deselectSpecialist(specialist):
+	if detailDisplay and "specialistID" in detailDisplay and detailDisplay.specialistID == specialist:
+		$Viewport/GameOverlay/Overlay/UIOverlay/Separator/ElementDisplay/VBoxContainer/Panel/MarginContainer.remove_child(detailDisplay)
+		$Viewport/GameOverlay/Overlay/UIOverlay/Separator/ElementDisplay/VBoxContainer/Panel.hide()
 
 func _on_percent_bar_value_changed(value):
 	game.setPercent(value);

@@ -3,8 +3,8 @@
 #include <godot_cpp/classes/node3d.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
 #include <cmath>
-#include "../GameServer/GameLogic/gameClasses/game.h"
-#include "../GameServer/GameLogic/gameClasses/events/battle_event.h"
+#include "../GameLogic/gameClasses/game.h"
+#include "../GameLogic/gameClasses/events/battle_event.h"
 
 using namespace godot;
 

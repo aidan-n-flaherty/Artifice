@@ -3,7 +3,8 @@
 
 #include "positional_node.h"
 #include <godot_cpp/classes/node3d.hpp>
-#include "../GameServer/GameLogic/gameClasses/gameObjects/outpost.h"
+#include "../GameLogic/gameClasses/gameObjects/outpost.h"
+#include "../GameLogic/gameClasses/gameObjects/player.h"
 #include <godot_cpp/variant/utility_functions.hpp>
 
 namespace godot {
@@ -32,6 +33,10 @@ public:
 	Outpost* getOutpost(){ return outpost; }
 
 	int getShield() { return outpost != nullptr ? outpost->getShieldAt(getDiff()) : -1; }
+
+	bool canProduce() { return outpost->getType() == OutpostType::FACTORY; }
+
+	bool canMine() { return outpost->getOwner() && outpost->getUnits() >= outpost->getOwner()->getMineCost() && outpost->getType() != OutpostType::MINE; }
 };
 
 }

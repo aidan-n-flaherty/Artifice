@@ -1,0 +1,57 @@
+[gd_scene load_steps=3 format=3 uid="uid://bod0r21lv0xfs"]
+
+[ext_resource type="Script" path="res://OutpostDetails.gd" id="1_n7jsx"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_hka7d"]
+font_size = 24
+
+[node name="OutpostDetails" type="MarginContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_n7jsx")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+text = "Testing"
+label_settings = SubResource("LabelSettings_hka7d")
+
+[node name="Spacer" type="Control" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="Jump" type="Button" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Next production event"
+
+[node name="Spacer1" type="Control" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Mine" type="Button" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Mine"
+
+[node name="Spacer2" type="Control" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Cancel" type="Button" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Cancel order"
+
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/Jump" to="." method="_on_jump_pressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/Mine" to="." method="_on_mine_pressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/Cancel" to="." method="_on_cancel_pressed"]

@@ -1,6 +1,6 @@
 #include "vessel_node.h"
 #include "positional_node.h"
-#include "../GameServer/GameLogic/gameClasses/gameObjects/vessel.h"
+#include "../GameLogic/gameClasses/gameObjects/vessel.h"
 #include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/classes/resource_loader.hpp>
 #include <godot_cpp/classes/packed_scene.hpp>
