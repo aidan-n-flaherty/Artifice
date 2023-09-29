@@ -22,7 +22,6 @@ func _ready():
 
 	startTime = int(Time.get_unix_time_from_system())
 	
-	print(game)
 	$Viewport/Viewport3D.add_child(game)
 	$Viewport/GameOverlay/Overlay/VBoxContainer/Timeline.init(gameID)
 	$Viewport/Viewport3D/CameraPivot.game = game

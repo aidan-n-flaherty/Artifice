@@ -104,6 +104,9 @@ void GameInterface::init(int userID) {
 	nextEndState = completeGame->getNextEndState();
 
 	userGameID = completeGame->getSimulatorID();
+
+	current = getTimeMillis();
+	update();
 }
 
 void GameInterface::_process(double delta) {
