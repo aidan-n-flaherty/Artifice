@@ -48,6 +48,7 @@ void GameInterface::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("getHeight"), &GameInterface::getHeight);
 	ClassDB::bind_method(D_METHOD("getHires"), &GameInterface::getHires);
 	ClassDB::bind_method(D_METHOD("canHire"), &GameInterface::canHire);
+	ClassDB::bind_method(D_METHOD("getUserGameID"), &GameInterface::getUserGameID);
 	ClassDB::bind_method(D_METHOD("getReferenceID"), &GameInterface::getReferenceID);
 	ClassDB::bind_method(D_METHOD("getNextArrivalEvent"), &GameInterface::getNextArrivalEvent);
 	ClassDB::bind_method(D_METHOD("getNextProductionEvent"), &GameInterface::getNextProductionEvent);
