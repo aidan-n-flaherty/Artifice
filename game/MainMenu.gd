@@ -12,7 +12,10 @@ var current
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	current = ResourceLoader.load(playScreen).instantiate()
+	if not GameData.currentTab:
+		GameData.currentTab = playScreen
+	
+	current = ResourceLoader.load(GameData.currentTab).instantiate()
 	
 	get_node("Content").add_child(current)
 
@@ -23,7 +26,8 @@ func _process(_delta):
 func switch_to(scene):
 	get_node("Content").remove_child(current)
 	
-	current = ResourceLoader.load(scene).instantiate()
+	GameData.currentTab = scene
+	current = ResourceLoader.load(GameData.currentTab).instantiate()
 	
 	get_node("Content").add_child(current)
 

@@ -18,6 +18,7 @@
 #include <godot_cpp/variant/packed_string_array.hpp>
 #include <godot_cpp/variant/packed_int32_array.hpp>
 #include <godot_cpp/variant/string.hpp>
+#include <godot_cpp/variant/dictionary.hpp>
 #include <cstdlib>
 #include <ctime>
 #include <cmath>
@@ -39,7 +40,7 @@ double getTimeMillis() {
 void GameInterface::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("select"), &GameInterface::select);
 	
-	ClassDB::bind_method(D_METHOD("init", "userID"), &GameInterface::init);
+	ClassDB::bind_method(D_METHOD("init", "gameID", "userID", "settingOverrides"), &GameInterface::init);
 	ClassDB::bind_method(D_METHOD("setTime", "t"), &GameInterface::setTime);
 	ClassDB::bind_method(D_METHOD("getTime"), &GameInterface::getTime);
 	ClassDB::bind_method(D_METHOD("setPercent", "percent"), &GameInterface::setPercent);
@@ -72,8 +73,13 @@ void GameInterface::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("moveTo", PropertyInfo(Variant::FLOAT, "t")));
 }
 
-void GameInterface::init(int userID) {
+void GameInterface::init(int gameID, int userID, Dictionary settingOverrides) {
+	this->gameID = gameID;
 	this->userID = userID;
+
+	this->settingOverrides = settingOverrides;
+
+	loadSettings();
 
 	current = getTimeMillis();
 	
@@ -83,23 +89,16 @@ void GameInterface::init(int userID) {
 	players[987654] = "Steve";
 	
 	completeGame = std::shared_ptr<Game>(new Game(userID, current, current + simulationBuffer / GameSettings::simulationSpeed, players, 42083, true));
-	/*std::list<int> specialists;
-	specialists.push_back(4);
-	completeGame->addOrder(new SendOrder(current, 0, 20, specialists, 3, 7, completeGame->getReferenceID()));
-	specialists = std::list<int>();
-	specialists.push_back(8);
-	completeGame->addOrder(new SendOrder(current, 2, 20, specialists, 7, 3, completeGame->getReferenceID()));
-	specialists = std::list<int>();
-	specialists.push_back(6);
-	completeGame->addOrder(new SendOrder(current + 1, 1, 10, specialists, 5, 12, 0));*/
-	for(int i = 0; i < 10; i++) {
+
+	for(int i = 0; i < 30; i++) {
 		std::list<int> specialists;
 		completeGame->addOrder(new SendOrder(current + i * 20, 2, 1, specialists, 7, 5, completeGame->getReferenceID()));
 	}
-	for(int i = 0; i < 10; i++) {
+	for(int i = 0; i < 30; i++) {
 		std::list<int> specialists;
 		completeGame->addOrder(new SendOrder(current + 10 + i * 20, 2, 1, specialists, 7, 3, completeGame->getReferenceID()));
 	}
+
 	completeGame->run();
 	nextEndState = completeGame->getNextEndState();
 
@@ -109,12 +108,20 @@ void GameInterface::init(int userID) {
 	update();
 }
 
+void GameInterface::loadSettings() {
+	if(GameSettings::reset(gameID)) {
+		if(settingOverrides.has("simulationSpeed") && Variant::can_convert(settingOverrides["simulationSpeed"].get_type(), Variant::FLOAT)) {
+			GameSettings::simulationSpeed = double(settingOverrides["simulationSpeed"]);
+		}
+	}
+}
+
 void GameInterface::_process(double delta) {
 	Node::_process(delta);
 	
 	double time = getTimeMillis();
 	if(future && current < time) current = time;
-	
+
 	update();
 	
 	if(game != nullptr) {
@@ -141,6 +148,8 @@ void GameInterface::setTime(double t) {
 }
 
 void GameInterface::update() {
+	loadSettings();
+
 	if(game == nullptr || current + simulationBuffer / GameSettings::simulationSpeed > nextEndState) {
 		if(current > nextEndState) game = nullptr;
 

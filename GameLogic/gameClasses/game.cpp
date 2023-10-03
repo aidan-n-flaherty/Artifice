@@ -181,6 +181,8 @@ void Game::updateEvents() {
         for(auto itB = vessels.begin(); itB != vessels.end(); itB++) {
             if(itA == itB) continue;
             Vessel* otherVessel = itB->second;
+
+            if(otherVessel->needsRefresh()) continue;
             
             vessel->collision(vessel, otherVessel, stateTime, events);
         }

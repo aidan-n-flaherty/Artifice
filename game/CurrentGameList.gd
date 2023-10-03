@@ -2,16 +2,18 @@ extends GameList
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	super()
+	
+func initList():
 	gameIDs = GameData.getOngoingGames()
 
-	super()
-
-func generateButton(id) -> Button:
+func generateButton(id):
+	var gameDetails = GameData.getGameDetails(id)
 	var button = preload("res://GameButton.tscn").instantiate()
-	button.text = str("Game: ", str(id))
-	button.connect("pressed", GameData.viewGame.bind(id))
+	button.init(id)
 	return button
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	pass
+

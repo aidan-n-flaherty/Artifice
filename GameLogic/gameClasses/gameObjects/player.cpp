@@ -160,7 +160,7 @@ int Player::specialistCount(SpecialistType t) const {
     int count = 0;
 
     for(auto it = specialists.begin(); it != specialists.end(); ++it){
-        if((*it)->getType() == t) count++;
+        if((*it)->getType() == t && (*it)->getContainer()->getOwnerID() == getID()) count++;
     }
 
     return count;

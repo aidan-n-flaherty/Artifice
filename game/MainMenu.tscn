@@ -1,15 +1,7 @@
-[gd_scene load_steps=12 format=3 uid="uid://byq6mjwxv3tt"]
+[gd_scene load_steps=4 format=3 uid="uid://byq6mjwxv3tt"]
 
 [ext_resource type="Script" path="res://MainMenu.gd" id="1_jslh6"]
-[ext_resource type="StyleBox" uid="uid://ydy2ph7i0d33" path="res://resources/themes/MenuButton/LeftButtonNormal.tres" id="2_l1mo7"]
-[ext_resource type="StyleBox" uid="uid://b31q0joubx7la" path="res://resources/themes/MenuButton/LeftButtonHover.tres" id="3_1s47x"]
-[ext_resource type="StyleBox" uid="uid://c3v6hkt8fdffw" path="res://resources/themes/MenuButton/LeftButtonPress.tres" id="4_3jaqi"]
-[ext_resource type="StyleBox" uid="uid://coornuougjr7i" path="res://resources/themes/MenuButton/ButtonNormal.tres" id="5_jvwg5"]
-[ext_resource type="StyleBox" uid="uid://bbcqsraqxn7j" path="res://resources/themes/MenuButton/ButtonHover.tres" id="6_vnmc3"]
-[ext_resource type="StyleBox" uid="uid://btgfmsxfwcri7" path="res://resources/themes/MenuButton/ButtonPress.tres" id="7_cj6iy"]
-[ext_resource type="StyleBox" uid="uid://ctqramsfdasmb" path="res://resources/themes/MenuButton/RightButtonNormal.tres" id="8_2dcx7"]
-[ext_resource type="StyleBox" uid="uid://bxu6bftnvpiuu" path="res://resources/themes/MenuButton/RightButtonHover.tres" id="9_14dfu"]
-[ext_resource type="StyleBox" uid="uid://6pudnvggv2g8" path="res://resources/themes/MenuButton/RightButtonPress.tres" id="10_yual4"]
+[ext_resource type="Theme" uid="uid://bfwpaonloeco5" path="res://resources/theme.tres" id="2_pk1f5"]
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_gxotn"]
 
@@ -55,11 +47,7 @@ size_flags_stretch_ratio = 0.1
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
-theme_override_styles/normal = ExtResource("2_l1mo7")
-theme_override_styles/hover = ExtResource("3_1s47x")
-theme_override_styles/pressed = ExtResource("4_3jaqi")
+theme = ExtResource("2_pk1f5")
 toggle_mode = true
 button_group = SubResource("ButtonGroup_gxotn")
 text = "Play"
@@ -67,11 +55,7 @@ text = "Play"
 [node name="Search" type="Button" parent="VSplitContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
-theme_override_styles/normal = ExtResource("5_jvwg5")
-theme_override_styles/hover = ExtResource("6_vnmc3")
-theme_override_styles/pressed = ExtResource("7_cj6iy")
+theme = ExtResource("2_pk1f5")
 toggle_mode = true
 button_group = SubResource("ButtonGroup_gxotn")
 text = "Search"
@@ -79,11 +63,7 @@ text = "Search"
 [node name="Create" type="Button" parent="VSplitContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
-theme_override_styles/normal = ExtResource("5_jvwg5")
-theme_override_styles/hover = ExtResource("6_vnmc3")
-theme_override_styles/pressed = ExtResource("7_cj6iy")
+theme = ExtResource("2_pk1f5")
 toggle_mode = true
 button_group = SubResource("ButtonGroup_gxotn")
 text = "Create"
@@ -92,11 +72,7 @@ text = "Create"
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
-theme_override_styles/normal = ExtResource("5_jvwg5")
-theme_override_styles/hover = ExtResource("6_vnmc3")
-theme_override_styles/pressed = ExtResource("7_cj6iy")
+theme = ExtResource("2_pk1f5")
 toggle_mode = true
 button_group = SubResource("ButtonGroup_gxotn")
 text = "History"
@@ -105,11 +81,8 @@ text = "History"
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme = ExtResource("2_pk1f5")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
-theme_override_styles/normal = ExtResource("8_2dcx7")
-theme_override_styles/hover = ExtResource("9_14dfu")
-theme_override_styles/pressed = ExtResource("10_yual4")
 toggle_mode = true
 button_group = SubResource("ButtonGroup_gxotn")
 text = "Settings"

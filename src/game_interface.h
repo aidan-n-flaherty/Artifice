@@ -10,6 +10,7 @@
 #include <godot_cpp/variant/packed_vector2_array.hpp>
 #include <godot_cpp/variant/packed_string_array.hpp>
 #include <godot_cpp/variant/packed_int32_array.hpp>
+#include <godot_cpp/variant/dictionary.hpp>
 #include "../GameLogic/gameClasses/game.h"
 #include "../GameLogic/gameClasses/gameObjects/vessel.h"
 #include "../GameLogic/gameClasses/gameObjects/outpost.h"
@@ -25,21 +26,25 @@ class GameInterface : public Node3D {
     GDCLASS(GameInterface, Node3D)
 
 private:
-	std::shared_ptr<Game> completeGame;
-	std::shared_ptr<Game> game;
+	std::shared_ptr<Game> completeGame = nullptr;
+	std::shared_ptr<Game> game = nullptr;
 	
 	std::unordered_map<int, VesselNode*> vessels;
 	std::unordered_map<int, OutpostNode*> outposts;
 
-	FloorDisplay* floorDisplay;
+	FloorDisplay* floorDisplay = nullptr;
+
+	Dictionary settingOverrides;
 	
+	int gameID; 
+
 	int userID, userGameID;
 
 	double nextState;
 
 	double nextEndState;
 	
-	PositionalNode* selectedNode;
+	PositionalNode* selectedNode = nullptr;
 	
 	std::set<int> selectedSpecialists;
 	
@@ -63,7 +68,9 @@ public:
 
     ~GameInterface() {}
 
-	void init(int userID);
+	void init(int gameID, int userID, Dictionary settingOverrides);
+
+	void loadSettings();
 		
     void _process(double delta) override;
 		
@@ -78,7 +85,7 @@ public:
 
 	int getHires() {
 		double timeDiff = current - game->getTime();
-		return game ? game->getPlayer(userGameID)->getHiresAt(timeDiff) : -1;
+		return game && game->getPlayer(userGameID) ? game->getPlayer(userGameID)->getHiresAt(timeDiff) : -1;
 	}
 	
 	bool willSendWith(SpecialistType type);

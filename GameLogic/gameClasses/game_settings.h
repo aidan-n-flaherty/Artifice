@@ -17,7 +17,11 @@ enum Mode {
 
 class GameSettings
 {
+private:
+    static bool tmp;
+
 public:
+    static int currentlySimulating;
     static double simulationSpeed;
     static int resourcesToWin;
     static Mode gameMode;
@@ -30,6 +34,19 @@ public:
     static int height;
     static std::unordered_map<SpecialistType, std::string> specialistDescriptions;
     static std::vector<std::tuple<double, double, double>> playerColors;
+
+    static void reset();
+
+    static bool reset(int gameID) {
+        if(gameID != currentlySimulating) {
+            currentlySimulating = gameID;
+            reset();
+
+            return true;
+        }
+
+        return false;
+    }
 };
 
 #endif

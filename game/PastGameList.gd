@@ -2,14 +2,14 @@ extends GameList
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	gameIDs = GameData.getPastGames()
-	
 	super()
 	
-func generateButton(id) -> Button:
+func initList():
+	gameIDs = GameData.getPastGames()
+	
+func generateButton(id):
 	var button = preload("res://GameButton.tscn").instantiate()
-	button.text = str("Game: ", str(id))
-	button.connect("pressed", GameData.viewGame.bind(id))
+	button.init(id)
 	return button
 
 

@@ -1,26 +1,58 @@
-[gd_scene load_steps=2 format=3 uid="uid://cjk6c8mh5xqbe"]
+[gd_scene load_steps=4 format=3 uid="uid://dmg0putetptq4"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1hby1"]
-bg_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
+[ext_resource type="Script" path="res://GameButton.gd" id="1_rw82v"]
+[ext_resource type="Theme" uid="uid://bfwpaonloeco5" path="res://resources/theme.tres" id="2_wym5e"]
+[ext_resource type="Texture2D" uid="uid://bmf74bvs118ed" path="res://resources/images/locked.png" id="3_qhnco"]
 
-[node name="GameButton" type="Button"]
-custom_minimum_size = Vector2(0, 60)
-anchors_preset = -1
-anchor_right = 0.007
-anchor_bottom = 0.004
-offset_right = -7.56
-offset_bottom = -7.68
-size_flags_horizontal = 3
-theme_override_styles/normal = SubResource("StyleBoxFlat_1hby1")
+[node name="GameButton" type="MarginContainer"]
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 86.0
+grow_horizontal = 2
+script = ExtResource("1_rw82v")
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 2
+theme = ExtResource("2_wym5e")
 
 [node name="Margin" type="MarginContainer" parent="."]
 layout_mode = 2
-offset_right = 46.0
-offset_bottom = 26.0
+mouse_filter = 2
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 30
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 30
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Margin"]
 layout_mode = 2
+mouse_filter = 2
+
+[node name="Title" type="Label" parent="Margin/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Test"
+
+[node name="Players" type="Label" parent="Margin/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "0/10"
+horizontal_alignment = 2
+
+[node name="Password" type="HBoxContainer" parent="Margin/HBoxContainer"]
+visible = false
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Spacer" type="Control" parent="Margin/HBoxContainer/Password"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="TextureRect" type="TextureRect" parent="Margin/HBoxContainer/Password"]
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("3_qhnco")
+expand_mode = 2
+stretch_mode = 4
+
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]

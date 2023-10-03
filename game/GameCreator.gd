@@ -40,7 +40,7 @@ func _on_create_pressed():
 		}
 	}
 	
-	GameData.addGame(await HTTPManager.postReq("/createMatch", data))
+	GameData.addGame(await HTTPManager.postReq("/createMatch", data, {}))
 
 func _on_sunday_toggled(button_pressed):
 	if button_pressed:

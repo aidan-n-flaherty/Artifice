@@ -12,6 +12,11 @@ var detailDisplay
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	pass
+	
+func init(gameID):
+	self.gameID = gameID
+	
 	game = GameData.getGame(gameID)
 	game.connect("addOrder", addOrder)
 	game.connect("selectVessel", selectVessel)
@@ -34,23 +39,7 @@ func _process(delta):
 	pass
 	
 func addOrder(type, referenceID, timestamp, arguments):
-	print(game.getTime())
-	var order = await HTTPManager.putReq("/updateOrder", {
-		"type": type,
-		"referenceID": referenceID,
-		"timestamp": timestamp,
-		"argumentIDs": arguments
-	}, {
-		"gameID": gameID
-	})
-	
-	print(order)
-
-	if(!order): return;
-	
-	game.addOrder(order.type, int(order.id), int(order.referenceID), float(order.timestamp), int(order.senderID), PackedInt32Array(order.argumentIDs), int(order.argumentIDs.size()))
-	
-	print("Order registered")
+	GameData.addOrder(gameID, type, referenceID, timestamp, arguments)
 
 func setDisplay(scene):
 	if detailDisplay != null:
@@ -117,3 +106,7 @@ func _on_shop_button_toggled(button_pressed):
 func _on_logs_button_toggled(button_pressed):
 	setMenuDisplay($Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel/Logs,
 		button_pressed)
+
+
+func _on_back_button_pressed():
+	GameData.goto_scene("res://MainMenu.tscn")

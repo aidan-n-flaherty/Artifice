@@ -44,19 +44,4 @@ func _process(delta):
 		$MarginContainer/HBoxContainer/MarginContainer/Button.show()
 
 func _on_button_pressed():
-	var order = await HTTPManager.putReq("/updateOrder", {
-		"type": "PROMOTE",
-		"referenceID": int(game.getReferenceID()),
-		"timestamp": game.getTime(),
-		"argumentIDs": [int(specialistID), promotionOptions[0]]
-	}, {
-		"gameID": gameID
-	})
-	
-	print(order)
-
-	if(!order): return;
-	
-	game.addOrder(order.type, int(order.id), int(order.referenceID), float(order.timestamp), int(order.senderID), PackedInt32Array(order.argumentIDs), int(order.argumentIDs.size()))
-	
-	print("Order registered")
+	GameData.addOrder(gameID, "PROMOTE", int(game.getReferenceID()), game.getTime(), [int(specialistID), promotionOptions[0]])

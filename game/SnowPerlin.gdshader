@@ -26,9 +26,12 @@ void fragment() {
 	
 	ALBEDO = albedo - vec3(1.0 * height);
 	
-	if(height2 > 0.45) {
-		float delta = min(1.0, 30.0 * (height2 - 0.45));
-		ALBEDO = (1.0 - delta) * ALBEDO + delta * vec3(0.03 * min(1.0, -1.0 + 10.0 * height3));
+	if(height2 > 0.4) {
+		float delta = min(1.0, 15.0 * (height2 - 0.4));
+		ROUGHNESS = 1.0 - delta;
+		METALLIC = delta;
+		
+		ALBEDO = (1.0 - delta) * ALBEDO + delta * vec3(0.0);
 		ALPHA = (1.0 - delta) * ALPHA + delta * min(1.0, -1.0 + 10.0 * height3);
 	}
 	

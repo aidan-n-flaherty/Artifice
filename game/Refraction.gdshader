@@ -10,6 +10,8 @@ uniform sampler2D noise2;
 
 uniform sampler2D noise3;
 
+uniform sampler2D gradient;
+
 uniform float speed = 0.005;
 
 uniform float cameraSize = 100;
@@ -27,6 +29,8 @@ void fragment() {
 	
 	vec4 c = texture(screen_texture, UV + vec2(displacement/cameraSize, 0)).rgba;
 	
+	vec3 grad = texture(gradient, UV).rgb;
+	
 	c.rgb *= ALPHA;
-	ALBEDO = c.rgb * 0.5 + vec3(0.075 * mix(displacement - 0.25, displacement - 0.25, 0.5)) * 0.5;
+	ALBEDO = vec3(c.r * grad.r, c.g * grad.g, c.b * grad.b) * 0.5 + vec3(0.25 * mix(displacement - 0.25, displacement - 0.25, 0.5)) * 0.5;
 }

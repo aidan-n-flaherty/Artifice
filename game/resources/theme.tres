@@ -1,10 +1,13 @@
-[gd_resource type="Theme" load_steps=12 format=3 uid="uid://bfwpaonloeco5"]
+[gd_resource type="Theme" load_steps=15 format=3 uid="uid://bfwpaonloeco5"]
 
 [ext_resource type="StyleBox" uid="uid://eumwqqqm3xf5" path="res://resources/themes/VSlider/SliderGrabber.tres" id="1_5y2jy"]
+[ext_resource type="StyleBox" uid="uid://coornuougjr7i" path="res://resources/themes/MenuButton/ButtonNormal.tres" id="1_ngkpv"]
 [ext_resource type="StyleBox" uid="uid://c7dthdfqb540q" path="res://resources/themes/HSlider/SliderGrabber.tres" id="1_rcjo0"]
+[ext_resource type="StyleBox" uid="uid://bbcqsraqxn7j" path="res://resources/themes/MenuButton/ButtonHover.tres" id="2_f27bt"]
 [ext_resource type="StyleBox" uid="uid://d2ba8dokdt8od" path="res://resources/themes/VSlider/SliderBackground.tres" id="2_fmtt5"]
 [ext_resource type="StyleBox" uid="uid://bqenjova5mxm8" path="res://resources/themes/HSlider/SliderGrabberHighlight.tres" id="2_jyi0i"]
 [ext_resource type="StyleBox" uid="uid://djp7uu7yqrg50" path="res://resources/themes/HSlider/SliderBackground.tres" id="3_3eak2"]
+[ext_resource type="StyleBox" uid="uid://btgfmsxfwcri7" path="res://resources/themes/MenuButton/ButtonPress.tres" id="3_jjt6s"]
 
 [sub_resource type="ImageTexture" id="ImageTexture_o73ma"]
 
@@ -19,6 +22,9 @@
 [sub_resource type="ImageTexture" id="ImageTexture_v25u4"]
 
 [resource]
+Button/styles/hover = ExtResource("2_f27bt")
+Button/styles/normal = ExtResource("1_ngkpv")
+Button/styles/pressed = ExtResource("3_jjt6s")
 HSlider/icons/grabber = SubResource("ImageTexture_o73ma")
 HSlider/icons/grabber_disabled = SubResource("ImageTexture_wgccs")
 HSlider/icons/grabber_highlight = SubResource("ImageTexture_r4qux")
