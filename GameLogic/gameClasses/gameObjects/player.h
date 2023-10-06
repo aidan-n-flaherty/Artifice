@@ -102,6 +102,8 @@ public:
     int getHiresAt(double& fractionalProduction, double timeDiff) const;
     int getResourcesAt(double& fractionalHires, double timeDiff) const;
 
+    int getUnitsAt(double timeDiff) const;
+
     int getResources() const { return resources; }
     int getHires() const { return hires; }
     int getCapacity() const;
