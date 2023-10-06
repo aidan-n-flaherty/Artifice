@@ -18,6 +18,7 @@
 #include "../GameLogic/gameClasses/game_settings.h"
 #include "vessel_node.h"
 #include "outpost_node.h"
+#include "player_node.h"
 #include "floor_display.h"
 
 namespace godot {
@@ -31,6 +32,7 @@ private:
 	
 	std::unordered_map<int, VesselNode*> vessels;
 	std::unordered_map<int, OutpostNode*> outposts;
+	std::unordered_map<int, PlayerNode*> players;
 
 	FloorDisplay* floorDisplay = nullptr;
 
@@ -108,6 +110,7 @@ public:
 	PackedVector2Array getOutpostPositions();
 	PackedInt32Array getShopOptions();
 	PackedInt32Array getPromotionOptions(int specialistID);
+	Array GameInterface::getSortedPlayers();
 
 	int getSpecialistType(int specialistID) { return game->getSpecialist(specialistID)->getType(); };
 

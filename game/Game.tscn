@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://Game.gd" id="1_s53r2"]
 [ext_resource type="Script" path="res://CameraPivot.gd" id="2_t2ckv"]
 [ext_resource type="PackedScene" uid="uid://n0lobms04k46" path="res://Timeline.tscn" id="3_jhu7k"]
-[ext_resource type="Texture2D" uid="uid://kgw0jdd458kr" path="res://resources/floorNoise/StoneNoise.tres" id="6_ys1ym"]
+[ext_resource type="Texture2D" uid="uid://b0wfr3sq3dkv7" path="res://resources/floorNoise/StoneNoise.tres" id="6_ys1ym"]
 [ext_resource type="Shader" path="res://TreePerlin.gdshader" id="7_6hmkj"]
 [ext_resource type="Shader" path="res://SnowPerlin.gdshader" id="8_4e3wm"]
 [ext_resource type="Texture2D" uid="uid://ni2tx8u0abmi" path="res://resources/floorNoise/SnowNoise.tres" id="8_wgwxy"]
