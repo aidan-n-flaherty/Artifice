@@ -110,7 +110,7 @@ public:
 	PackedVector2Array getOutpostPositions();
 	PackedInt32Array getShopOptions();
 	PackedInt32Array getPromotionOptions(int specialistID);
-	Array GameInterface::getSortedPlayers();
+	Array getSortedPlayers();
 
 	int getSpecialistType(int specialistID) { return game->getSpecialist(specialistID)->getType(); };
 

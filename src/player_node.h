@@ -13,6 +13,8 @@ class PlayerNode : public Node {
 
 private:
 	Player* player;
+    double currentTime;
+	double timeDiff;
 
 protected:
 	static void _bind_methods();
@@ -24,6 +26,17 @@ public:
 		
 	Player* getPlayer(){ return player; }
 	
+    void setReference(Player* player) { this->player = player;}
+
+    void setDiff(double time, double diff) { 
+		currentTime = time;
+		timeDiff = diff;
+	}
+	
+    int getUnits() { return player->getUnitsAt(timeDiff); }
+    int getCapacity() {return player->getCapacity(); }
+
+	double getDiff() { return timeDiff; }
 };
 
 }

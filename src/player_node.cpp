@@ -12,8 +12,8 @@
 using namespace godot;
 
 void PlayerNode::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("getUnits"), &PlayerNode::get);
-	ClassDB::bind_method(D_METHOD("getCapacity"), &PlayerNode::canProduce);
+	ClassDB::bind_method(D_METHOD("getUnits"), &PlayerNode::getUnits);
+	ClassDB::bind_method(D_METHOD("getCapacity"), &PlayerNode::getCapacity);
 
 }
 

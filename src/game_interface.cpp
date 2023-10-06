@@ -110,9 +110,9 @@ void GameInterface::init(int gameID, int userID, Dictionary settingOverrides) {
 GameSettings GameInterface::loadSettings() {
 	GameSettings settings;
 
-	if(settingOverrides.has("simulationSpeed") && Variant::can_convert(settingOverrides["simulationSpeed"].get_type(), Variant::FLOAT)) {
-		settings.simulationSpeed = double(settingOverrides["simulationSpeed"]);
-	}
+		if(settingOverrides.has("simulationSpeed") && Variant::can_convert(settingOverrides["simulationSpeed"].get_type(), Variant::FLOAT)) {
+			settings.simulationSpeed = double(settingOverrides["simulationSpeed"]);
+			}
 
 	return settings;
 }
@@ -131,6 +131,8 @@ void GameInterface::_process(double delta) {
 		for(const auto& pair : vessels) pair.second->setDiff(time, timeDiff);
 		
 		for(const auto& pair : outposts) pair.second->setDiff(time, timeDiff);
+
+		for(const auto& pair : players) pair.second->setDiff(time,timeDiff);
 
 		floorDisplay->setDiff(timeDiff);
 		floorDisplay->queue_redraw();
@@ -179,6 +181,15 @@ void GameInterface::update() {
 			} else it++;
 		}
 
+		for(auto it = players.begin(); it != players.end();) {
+			if(!game->hasPlayer(it->first)) {
+				it->second->queue_free();
+				remove_child(it->second);
+				it = players.erase(it);
+			} else it++;
+		}
+
+
 		for(auto it = selectedSpecialists.begin(); it != selectedSpecialists.end();) {
 			if(!game->hasSpecialist(*it)) {
 				setSelectedSpecialist(*it);
@@ -211,6 +222,18 @@ void GameInterface::update() {
 				add_child(newOutpost);
 			}
 		}
+
+		for(const auto& pair : game->getPlayers()) {
+			if(players.find(pair.first) != players.end()) {
+				players[pair.first]->setReference(pair.second);
+			} else {
+				PlayerNode* newPlayer = memnew(PlayerNode(pair.second));
+				newPlayer->setReference(pair.second);
+				players[pair.first] = newPlayer;
+				add_child(newPlayer);
+			}
+		}
+
 	}
 }
 
@@ -409,6 +432,17 @@ PackedVector2Array GameInterface::getOutpostPositions() {
 
 	for(auto& pair : outposts) {
 		arr.push_back(Vector2(pair.second->get_position().x, pair.second->get_position().z));
+	}
+
+	return arr;
+}
+
+Array GameInterface::getSortedPlayers() {
+	Array arr;
+	std::vector<Player*> sortedPlayers = game->sortedPlayers();
+
+	for(Player* player_ : sortedPlayers) {
+		arr.push_back(players[player_->getID()]);
 	}
 
 	return arr;
