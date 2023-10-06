@@ -294,7 +294,7 @@ int Player::getUnitsAt(double timeDiff) const {
 
     for(Outpost* o : outposts) totalUnits += o->getUnitsAt(timeDiff);
 
-    for(Vessel* v : vessels) totalUnits += v->getUnits(timeDiff);
+    for(Vessel* v : vessels) totalUnits += v->getUnitsAt(timeDiff);
 
     return totalUnits;
 }
