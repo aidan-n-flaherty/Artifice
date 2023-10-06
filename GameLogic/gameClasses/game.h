@@ -15,6 +15,7 @@
 #include "gameObjects/outpost.h"
 #include "gameObjects/specialist.h"
 #include "gameObjects/positional_object.h"
+#include "game_settings.h"
 #include "order.h"
 #include "event.h"
 
@@ -60,7 +61,7 @@ private:
     int simulatorID = -1;
 
     int lastExecutedOrder = -1;
-    int gameObjCounter;
+    int gameObjCounter = 0;
 
     std::unordered_map<int, Player*> players;
     std::unordered_map<int, Vessel*> vessels;
@@ -74,10 +75,12 @@ private:
 
     std::multiset<std::shared_ptr<Game>, GameOrder> cache;
 
+    GameSettings* settings;
+
 public:
     // Deterministically creates a pseudo-random map and initializes all player states.
     Game(){};
-    Game(int simulatorID, double startTime, double endTime, const std::map<int, std::string>& players, int seed, bool cacheEnabled);
+    Game(GameSettings settings, int simulatorID, double startTime, double endTime, const std::map<int, std::string>& players, int seed, bool cacheEnabled);
     Game(const Game& game);
     ~Game();
 
@@ -130,6 +133,12 @@ public:
     
     double getTime() const { return stateTime; }
     double getEndTime() const { return endTime; }
+
+    int incrementObjCounter() { return gameObjCounter++; }
+
+    int getObjCounter() { return gameObjCounter++; }
+
+    GameSettings* getSettings() { return settings; };
 
     // These functions are strictly for client side rendering
     std::shared_ptr<Game> lastState(double timestamp);

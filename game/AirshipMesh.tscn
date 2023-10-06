@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://c80qrqpvv8oji"]
+[gd_scene load_steps=6 format=3 uid="uid://c80qrqpvv8oji"]
 
 [ext_resource type="Script" path="res://AirshipMesh.gd" id="1_yg6xk"]
 [ext_resource type="PackedScene" uid="uid://ksos37w5hi7k" path="res://resources/airship/alternate_airship.blend" id="2_1e350"]
+[ext_resource type="PackedScene" uid="uid://lt6dhhn4o63l" path="res://resources/airship/airship.blend" id="3_bd5ce"]
 [ext_resource type="PackedScene" uid="uid://c3ctitj3875oy" path="res://Counter.tscn" id="3_i6xow"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_s31l7"]
@@ -19,6 +20,10 @@ shape = SubResource("CapsuleShape3D_s31l7")
 
 [node name="airship" parent="." instance=ExtResource("2_1e350")]
 transform = Transform3D(-3.93403e-08, 0, -0.9, 0, 0.9, 0, 0.9, 0, -3.93403e-08, 0.305345, 0, 0)
+
+[node name="airship2" parent="." instance=ExtResource("3_bd5ce")]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0.758425, 0, 0)
+visible = false
 
 [node name="RotationInvariant" type="Node3D" parent="."]
 

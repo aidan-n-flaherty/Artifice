@@ -36,16 +36,30 @@ public:
     }
 
     Event* convert(Game* game) override {
-        if(!game->hasPlayer(getSenderID()) || game->getPlayer(getSenderID())->hasLost()) return nullptr;
+        if(!game->hasPlayer(getSenderID()) || game->getPlayer(getSenderID())->hasLost()) {
+            std::cout << "ORDER ERROR: outpost not owned by player" << std::endl;
+            return nullptr;
+        }
 
-        if(!game->hasOutpost(originID) || !game->hasPosObject(targetID)) return nullptr;
+        if(!game->hasOutpost(originID) || !game->hasPosObject(targetID)) {
+            std::cout << "ORDER ERROR: nonexistent origin or target" << std::endl;
+            return nullptr;
+        }
 
         if(originID == targetID) return nullptr;
 
         Outpost* outpost = game->getOutpost(originID);
         PositionalObject* target = game->getPosObject(targetID);
 
-        if(!outpost->canRemoveSpecialists(specialistIDs) || outpost->getOwnerID() != getSenderID() || !outpost->canRemoveUnits(numUnits)) return nullptr;
+        if(outpost->getOwnerID() != getSenderID()) {
+            std::cout << "ORDER ERROR: user does not own outpost" << std::endl;
+            return nullptr;
+        }
+
+        if(!outpost->canRemoveSpecialists(specialistIDs) || !outpost->canRemoveUnits(numUnits)) {
+            std::cout << "ORDER ERROR: insufficient specialists or units" << std::endl;
+            return nullptr;
+        }
 
         std::list<Specialist*> specialists;
         for(int specialistID : specialistIDs) specialists.push_back(game->getSpecialist(specialistID));
@@ -61,10 +75,13 @@ public:
                 }
             }
 
-            if(!hasPirate) return nullptr;
+            if(!hasPirate) {
+                std::cout << "ORDER ERROR: cannot target vessel without pirate" << std::endl;
+                return nullptr;
+            }
         }
 
-        updateOrders(game->getOrders());
+        updateOrders(game, game->getOrders());
 
         return new SendEvent(this, getTimestamp(), numUnits, specialists, outpost, target);
     }

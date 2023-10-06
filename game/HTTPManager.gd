@@ -88,11 +88,15 @@ func putReq(path, data, params, includeToken=true):
 	
 	return body
 	
-func getReq(path, params):
+func getReq(path, params={}, includeToken=true):
 	var reqNode = HTTPRequest.new()
 	add_child(reqNode)
 	
 	var first = true
+	if(includeToken):
+		path += str("?token=", GameData.token)
+		first = false
+		
 	for key in params.keys():
 		if first:
 			path += "?"

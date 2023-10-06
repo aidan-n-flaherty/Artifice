@@ -79,8 +79,6 @@ void GameInterface::init(int gameID, int userID, Dictionary settingOverrides) {
 
 	this->settingOverrides = settingOverrides;
 
-	loadSettings();
-
 	current = getTimeMillis();
 	
 	std::map<int, std::string> players;
@@ -88,7 +86,8 @@ void GameInterface::init(int gameID, int userID, Dictionary settingOverrides) {
 	players[654321] = "Joe";
 	players[987654] = "Steve";
 	
-	completeGame = std::shared_ptr<Game>(new Game(userID, current, current + simulationBuffer / GameSettings::simulationSpeed, players, 42083, true));
+	settings = loadSettings();
+	completeGame = std::shared_ptr<Game>(new Game(settings, userID, current, current + simulationBuffer / settings.simulationSpeed, players, 42083, true));
 
 	for(int i = 0; i < 30; i++) {
 		std::list<int> specialists;
@@ -108,12 +107,14 @@ void GameInterface::init(int gameID, int userID, Dictionary settingOverrides) {
 	update();
 }
 
-void GameInterface::loadSettings() {
-	if(GameSettings::reset(gameID)) {
-		if(settingOverrides.has("simulationSpeed") && Variant::can_convert(settingOverrides["simulationSpeed"].get_type(), Variant::FLOAT)) {
-			GameSettings::simulationSpeed = double(settingOverrides["simulationSpeed"]);
-		}
+GameSettings GameInterface::loadSettings() {
+	GameSettings settings;
+
+	if(settingOverrides.has("simulationSpeed") && Variant::can_convert(settingOverrides["simulationSpeed"].get_type(), Variant::FLOAT)) {
+		settings.simulationSpeed = double(settingOverrides["simulationSpeed"]);
 	}
+
+	return settings;
 }
 
 void GameInterface::_process(double delta) {
@@ -148,9 +149,7 @@ void GameInterface::setTime(double t) {
 }
 
 void GameInterface::update() {
-	loadSettings();
-
-	if(game == nullptr || current + simulationBuffer / GameSettings::simulationSpeed > nextEndState) {
+	if(game == nullptr || current + simulationBuffer / settings.simulationSpeed > nextEndState) {
 		if(current > nextEndState) game = nullptr;
 
 		completeGame = completeGame->lastState(nextEndState);
@@ -188,26 +187,6 @@ void GameInterface::update() {
 		}
 
 		if(selectedNode && !game->hasPosObject(selectedNode->getID())) unselect();
-
-		/*for(auto it = selectedSpecialists.begin(); it != selectedSpecialists.end();) {
-
-			if(game->hasSpecialist(*it) && game->getSpecialist(*it)->getContainer() && game->hasPosObject(game->getSpecialist(*it)->getContainer()->getID())) {
-				PositionalObject* container = game->getSpecialist(*it)->getContainer();
-				std::list<Specialist*> specialists = container->getSpecialists();
-
-				if(!std::any_of(specialists.begin(), specialists.end(), [&it](auto& s){
-					return s->getID() == *it;
-				})) {
-					getObj(container->getID())->setSpecialistSelected(*it, false);
-
-					emit_signal("deselectSpecialist", *it);
-					it = selectedSpecialists.erase(it);
-				} else it++;
-			} else {
-				emit_signal("deselectSpecialist", *it);
-				it = selectedSpecialists.erase(it);
-			}
-		}*/
 		
 		for(const auto& pair : game->getVessels()) {
 			if(vessels.find(pair.first) != vessels.end()) {
@@ -460,7 +439,7 @@ String GameInterface::getSpecialistName(int specialistNum) {
 }
 
 String GameInterface::getSpecialistDescription(int specialistNum) {
-	return String(GameSettings::specialistDescriptions[SpecialistType(specialistNum)].c_str());
+	return String(settings.specialistDescriptions[SpecialistType(specialistNum)].c_str());
 }
 
 double GameInterface::getNextArrivalEvent(int vesselID) {

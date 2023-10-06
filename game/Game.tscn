@@ -1,4 +1,4 @@
-[gd_scene load_steps=63 format=3 uid="uid://dgp4l24s2rulk"]
+[gd_scene load_steps=64 format=3 uid="uid://dgp4l24s2rulk"]
 
 [ext_resource type="Script" path="res://Game.gd" id="1_s53r2"]
 [ext_resource type="Script" path="res://CameraPivot.gd" id="2_t2ckv"]
@@ -48,6 +48,8 @@ sky = SubResource("Sky_7srwa")
 sky_custom_fov = 90.0
 sky_rotation = Vector3(-0.785398, 0, 0)
 reflected_light_source = 2
+glow_intensity = 0.0
+glow_strength = 2.0
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_2wh2d"]
 viewport_path = NodePath("Viewport/Viewport3D/CameraPivot/FloorDisplay")
@@ -154,6 +156,10 @@ shader_parameter/noise2 = SubResource("NoiseTexture2D_mpw5d")
 shader_parameter/noise3 = SubResource("NoiseTexture2D_mhia5")
 shader_parameter/gradient = SubResource("GradientTexture2D_6itsa")
 
+[sub_resource type="Environment" id="Environment_auhjg"]
+background_mode = 1
+background_color = Color(1, 1, 1, 1)
+
 [sub_resource type="BoxMesh" id="BoxMesh_j234n"]
 size = Vector3(3, 30, 3)
 
@@ -258,13 +264,16 @@ void fragment() {
 domain_warp_enabled = true
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_e25qt"]
+width = 400
+height = 1080
 noise = SubResource("FastNoiseLite_cea77")
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_siy2b"]
 fractal_type = 2
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_spmof"]
-height = 1024
+width = 400
+height = 1080
 noise = SubResource("FastNoiseLite_siy2b")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_k676y"]
@@ -277,7 +286,7 @@ shader_parameter/metallic_texture_channel = null
 shader_parameter/specular = 0.5
 shader_parameter/metallic = 0.0
 shader_parameter/heightmap_scale = 16.0
-shader_parameter/heightmap_min_layers = 8
+shader_parameter/heightmap_min_layers = 16
 shader_parameter/heightmap_max_layers = 32
 shader_parameter/heightmap_flip = Vector2(1, 1)
 shader_parameter/uv1_scale = Vector3(1, 1, 1)
@@ -318,7 +327,6 @@ environment = SubResource("Environment_jfb01")
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="Viewport/Viewport3D"]
 transform = Transform3D(-0.0533566, 0.722889, -0.6889, 0.687064, 0.527203, 0.5, 0.724635, -0.44664, -0.524801, 0, 0, 0)
 layers = 2
-light_energy = 2.0
 light_bake_mode = 1
 shadow_enabled = true
 shadow_bias = 0.01
@@ -403,6 +411,7 @@ size = Vector2i(1000, 1838)
 transform = Transform3D(-1, 6.18173e-08, 6.18173e-08, 0, 0.707107, -0.707107, -8.74228e-08, -0.707107, -0.707107, 0, -100, -100)
 keep_aspect = 0
 cull_mask = 5
+environment = SubResource("Environment_auhjg")
 projection = 1
 current = true
 fov = 37.8493
@@ -676,38 +685,6 @@ mouse_filter = 0
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="LogContainer" type="MarginContainer" parent="MenuBar/VSplitContainer/Tabs/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/margin_left = 30
-theme_override_constants/margin_top = 30
-theme_override_constants/margin_right = 30
-theme_override_constants/margin_bottom = 30
-
-[node name="LogsButton" type="TextureButton" parent="MenuBar/VSplitContainer/Tabs/HBoxContainer/LogContainer"]
-layout_mode = 2
-toggle_mode = true
-button_group = SubResource("ButtonGroup_ocfcu")
-texture_normal = ExtResource("12_fsvp4")
-ignore_texture_size = true
-stretch_mode = 5
-
-[node name="ShopContainer" type="MarginContainer" parent="MenuBar/VSplitContainer/Tabs/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/margin_left = 30
-theme_override_constants/margin_top = 30
-theme_override_constants/margin_right = 30
-theme_override_constants/margin_bottom = 30
-
-[node name="ShopButton" type="TextureButton" parent="MenuBar/VSplitContainer/Tabs/HBoxContainer/ShopContainer"]
-layout_mode = 2
-toggle_mode = true
-button_group = SubResource("ButtonGroup_ocfcu")
-texture_normal = ExtResource("13_xkygy")
-ignore_texture_size = true
-stretch_mode = 5
-
 [node name="StatusContainer" type="MarginContainer" parent="MenuBar/VSplitContainer/Tabs/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -740,13 +717,45 @@ texture_normal = ExtResource("15_lpw6h")
 ignore_texture_size = true
 stretch_mode = 5
 
+[node name="ShopContainer" type="MarginContainer" parent="MenuBar/VSplitContainer/Tabs/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 30
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 30
+
+[node name="ShopButton" type="TextureButton" parent="MenuBar/VSplitContainer/Tabs/HBoxContainer/ShopContainer"]
+layout_mode = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_ocfcu")
+texture_normal = ExtResource("13_xkygy")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="LogContainer" type="MarginContainer" parent="MenuBar/VSplitContainer/Tabs/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 30
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 30
+
+[node name="LogsButton" type="TextureButton" parent="MenuBar/VSplitContainer/Tabs/HBoxContainer/LogContainer"]
+layout_mode = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_ocfcu")
+texture_normal = ExtResource("12_fsvp4")
+ignore_texture_size = true
+stretch_mode = 5
+
 [node name="RSpacer" type="Control" parent="MenuBar/VSplitContainer/Tabs/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
 [connection signal="pressed" from="Viewport/GameOverlay/Overlay/VBoxContainer/TopSpacer/MarginContainer/BackButton" to="." method="_on_back_button_pressed"]
 [connection signal="value_changed" from="Viewport/GameOverlay/Overlay/VBoxContainer/HBoxContainer/PercentBar" to="." method="_on_percent_bar_value_changed"]
-[connection signal="toggled" from="MenuBar/VSplitContainer/Tabs/HBoxContainer/LogContainer/LogsButton" to="." method="_on_logs_button_toggled"]
-[connection signal="toggled" from="MenuBar/VSplitContainer/Tabs/HBoxContainer/ShopContainer/ShopButton" to="." method="_on_shop_button_toggled"]
 [connection signal="toggled" from="MenuBar/VSplitContainer/Tabs/HBoxContainer/StatusContainer/StatusButton" to="." method="_on_status_button_toggled"]
 [connection signal="toggled" from="MenuBar/VSplitContainer/Tabs/HBoxContainer/ChatContainer/ChatButton" to="." method="_on_chat_button_toggled"]
+[connection signal="toggled" from="MenuBar/VSplitContainer/Tabs/HBoxContainer/ShopContainer/ShopButton" to="." method="_on_shop_button_toggled"]
+[connection signal="toggled" from="MenuBar/VSplitContainer/Tabs/HBoxContainer/LogContainer/LogsButton" to="." method="_on_logs_button_toggled"]

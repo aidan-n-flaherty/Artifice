@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://chwn0jkvlrsvw"]
+[gd_scene load_steps=3 format=3 uid="uid://chwn0jkvlrsvw"]
 
 [ext_resource type="Script" path="res://Settings.gd" id="1_4ep52"]
+[ext_resource type="PackedScene" uid="uid://ca2km7m7ec3av" path="res://PastGameList.tscn" id="2_kt6mu"]
 
 [node name="Settings" type="Control"]
 layout_mode = 3
@@ -12,9 +13,86 @@ grow_vertical = 2
 script = ExtResource("1_4ep52")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 50
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
+
+[node name="Username" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Username"]
+layout_mode = 2
+text = "Username"
+
+[node name="Username" type="TextEdit" parent="MarginContainer/VBoxContainer/Username"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "test"
+placeholder_text = "username"
+scroll_fit_content_height = true
+
+[node name="Stats" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Stats"
+horizontal_alignment = 1
+
+[node name="Rating" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Rating"]
+layout_mode = 2
+text = "Rating"
+
+[node name="Rating" type="Label" parent="MarginContainer/VBoxContainer/Rating"]
+layout_mode = 2
+text = "test"
+
+[node name="GamesWon" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/GamesWon"]
+layout_mode = 2
+text = "Games won"
+
+[node name="GamesWon" type="Label" parent="MarginContainer/VBoxContainer/GamesWon"]
+layout_mode = 2
+text = "test"
+
+[node name="GamesLost" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/GamesLost"]
+layout_mode = 2
+text = "Games lost"
+
+[node name="GamesLost" type="Label" parent="MarginContainer/VBoxContainer/GamesLost"]
+layout_mode = 2
+text = "test"
+
+[node name="PastGames" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Past games"
+horizontal_alignment = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="PastGameList" parent="MarginContainer/VBoxContainer/ScrollContainer" instance=ExtResource("2_kt6mu")]
+layout_mode = 2
+
+[connection signal="text_changed" from="MarginContainer/VBoxContainer/Username/Username" to="." method="_on_username_text_changed"]

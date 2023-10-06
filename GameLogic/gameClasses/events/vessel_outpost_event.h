@@ -65,9 +65,11 @@ public:
             Player* vesselOwner = vessel->getOwner();
             Player* outpostOwner = outpost->getOwner();
 
-            if(vesselWins) {
-                vesselOwner->addOutpost(outpost);
-                outpost->addUnits(vessel->getUnits() - outpost->getUnits());
+            if(!vessel->isDeleted() && !outpost->isDeleted()) {
+                if(vesselWins) {
+                    vesselOwner->addOutpost(outpost);
+                    outpost->addUnits(vessel->getUnits() - outpost->getUnits());
+                }
             }
 
             if(vesselOwner && !vesselOwner->controlsSpecialist(SpecialistType::QUEEN)) {

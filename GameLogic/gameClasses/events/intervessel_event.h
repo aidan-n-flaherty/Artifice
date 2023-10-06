@@ -81,15 +81,19 @@ public:
                 Player* vesselAOwner = vesselA->getOwner();
                 Player* vesselBOwner = vesselB->getOwner();
 
+                if(!winner->isDeleted() && !loser->isDeleted()) {
                 if(!loser->getSpecialists().empty()) {
                     winner->getOwner()->addVessel(loser);
                     loser->returnHome();
                 } else game->removeVessel(loser);
+                }
 
                 // winner was a pirate
-                if(winner->getTargetID() == loser->getID()) {
-                    winner->returnHome();
-                    winner->setSpeedModifier(4);
+                if(!winner->isDeleted()) {
+                    if(winner->getTargetID() == loser->getID()) {
+                        winner->returnHome();
+                        winner->setSpeedModifier(4);
+                    }
                 }
 
                 if(vesselAOwner && !vesselAOwner->controlsSpecialist(SpecialistType::QUEEN)) {

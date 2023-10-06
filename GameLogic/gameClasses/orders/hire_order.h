@@ -45,9 +45,9 @@ public:
         }
         if(!canHire) return nullptr;
 
-        updateOrders(game->getOrders());
+        updateOrders(game, game->getOrders());
 
-        return new HireEvent(this, getTimestamp(), player, new Specialist(t));
+        return new HireEvent(this, getTimestamp(), player, new Specialist(game->incrementObjCounter(), game->getSettings(), t));
     }
 
     std::string getType() override { return "Hire"; }

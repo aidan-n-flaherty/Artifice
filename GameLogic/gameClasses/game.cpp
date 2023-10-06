@@ -26,30 +26,28 @@
 /* The game constructor should create the entire starting state deterministically based on
 ** the random seed provided.
 */
-Game::Game(int simulatorID, double startTime, double endTime, const std::map<int, std::string> &playerInfo, int seed, bool cacheEnabled) :
+Game::Game(GameSettings settings, int simulatorID, double startTime, double endTime, const std::map<int, std::string> &playerInfo, int seed, bool cacheEnabled) :
     stateTime(startTime), endTime(endTime), cacheEnabled(cacheEnabled) {
     std::srand(seed);
 
-    // necessary since godot likes to instantiate unnecessary game objects for fun
-    GameObject::resetCounter(0);
-    int offset = GameObject::getIDCounter();
+    this->settings = new GameSettings(settings);
 
     for(auto pair : playerInfo) {
-        Player* p = new Player(pair.second, pair.first, 100);
+        Player* p = new Player(incrementObjCounter(), getSettings(), pair.second, pair.first, 100);
         if(pair.first == simulatorID) this->simulatorID = p->getID();
         addPlayer(p);
     }
 
     int t = 0;
     for(auto pair : playerInfo) {
-        Outpost* o = new Outpost(OutpostType::FACTORY, 20, 10 + 20 * (t % 2), 10 + 20 * (t % 3) * (t % 3));
+        Outpost* o = new Outpost(incrementObjCounter(), getSettings(), OutpostType::FACTORY, 20, 10 + 20 * (t % 2), 10 + 20 * (t % 3) * (t % 3));
         addOutpost(o);
-        getPlayer(offset + t)->addOutpost(getOutpost(o->getID()));
+        getPlayer(t)->addOutpost(getOutpost(o->getID()));
 
-        Specialist* s = new Specialist(t == 1 ? SpecialistType::PIRATE : SpecialistType::INFILTRATOR);
+        Specialist* s = new Specialist(incrementObjCounter(), getSettings(), t == 1 ? SpecialistType::PIRATE : SpecialistType::INFILTRATOR);
         addSpecialist(s);
         o->addSpecialist(getSpecialist(s->getID()));
-        getPlayer(offset + t)->addSpecialist(getSpecialist(s->getID()));
+        getPlayer(t)->addSpecialist(getSpecialist(s->getID()));
 
         t++;
         std::cout << pair.second << " has an outpost at (" << o->getPosition().getX() << ", " << o->getPosition().getY() << ")" << std::endl;
@@ -57,31 +55,31 @@ Game::Game(int simulatorID, double startTime, double endTime, const std::map<int
 
     t = 0;
     for(auto pair : playerInfo) {
-        Specialist* s = new Specialist(SpecialistType::QUEEN);
+        Specialist* s = new Specialist(incrementObjCounter(), getSettings(), SpecialistType::QUEEN);
         addSpecialist(s);
-        getPlayer(offset + t)->getOutposts().front()->addSpecialist(getSpecialist(s->getID()));
-        getPlayer(offset + t)->addSpecialist(getSpecialist(s->getID()));
+        getPlayer(t)->getOutposts().front()->addSpecialist(getSpecialist(s->getID()));
+        getPlayer(t)->addSpecialist(getSpecialist(s->getID()));
 
         if(t == 1) {
-            s = new Specialist(SpecialistType::NAVIGATOR);
+            s = new Specialist(incrementObjCounter(), getSettings(), SpecialistType::NAVIGATOR);
             addSpecialist(s);
-            getPlayer(offset + t)->getOutposts().front()->addSpecialist(getSpecialist(s->getID()));
-            getPlayer(offset + t)->addSpecialist(getSpecialist(s->getID()));
+            getPlayer(t)->getOutposts().front()->addSpecialist(getSpecialist(s->getID()));
+            getPlayer(t)->addSpecialist(getSpecialist(s->getID()));
 
-            s = new Specialist(SpecialistType::ADMIRAL);
+            s = new Specialist(incrementObjCounter(), getSettings(), SpecialistType::ADMIRAL);
             addSpecialist(s);
-            getPlayer(offset + t)->getOutposts().front()->addSpecialist(getSpecialist(s->getID()));
-            getPlayer(offset + t)->addSpecialist(getSpecialist(s->getID()));
+            getPlayer(t)->getOutposts().front()->addSpecialist(getSpecialist(s->getID()));
+            getPlayer(t)->addSpecialist(getSpecialist(s->getID()));
 
-            /*s = new Specialist(SpecialistType::SENTRY);
+            /*s = new Specialist(incrementObjCounter(), getSettings(), SpecialistType::SENTRY);
             addSpecialist(s);
-            getPlayer(offset + t)->getOutposts().front()->addSpecialist(getSpecialist(s->getID()));
-            getPlayer(offset + t)->addSpecialist(getSpecialist(s->getID()));*/
+            getPlayer(t)->getOutposts().front()->addSpecialist(getSpecialist(s->getID()));
+            getPlayer(t)->addSpecialist(getSpecialist(s->getID()));*/
 
-            s = new Specialist(SpecialistType::TYCOON);
+            s = new Specialist(incrementObjCounter(), getSettings(), SpecialistType::TYCOON);
             addSpecialist(s);
-            getPlayer(offset + t)->getOutposts().front()->addSpecialist(getSpecialist(s->getID()));
-            getPlayer(offset + t)->addSpecialist(getSpecialist(s->getID()));
+            getPlayer(t)->getOutposts().front()->addSpecialist(getSpecialist(s->getID()));
+            getPlayer(t)->addSpecialist(getSpecialist(s->getID()));
         }
         t++;
     }
@@ -89,7 +87,7 @@ Game::Game(int simulatorID, double startTime, double endTime, const std::map<int
     addEvent(new OutpostRangeEvent(getTime()));
 }
 
-Game::Game(const Game& game) : stateTime(game.stateTime), cacheEnabled(game.cacheEnabled), endTime(game.endTime), referenceID(game.referenceID), simulatorID(game.simulatorID), lastExecutedOrder(game.lastExecutedOrder), nextEndState(game.nextEndState), gameObjCounter(game.gameObjCounter) {
+Game::Game(const Game& game) : stateTime(game.stateTime), cacheEnabled(game.cacheEnabled), endTime(game.endTime), referenceID(game.referenceID), simulatorID(game.simulatorID), lastExecutedOrder(game.lastExecutedOrder), nextEndState(game.nextEndState), gameObjCounter(game.gameObjCounter), settings(game.settings) {
     for(Event* event : game.events) events.insert(event->copy());
     for(Event* event : game.simulatedEvents) simulatedEvents.push_back(event->copy());
     for(const auto& pair : game.vessels) vessels[pair.first] = new Vessel(*pair.second);
@@ -137,6 +135,13 @@ void Game::updateEvents() {
         if(vessel->isDeleted()) {
             removeRelevant(vessel->getID());
             itA = vessels.erase(itA);
+
+            for(auto& pair : vessels) {
+                if(pair.second->getTarget()->getID() == vessel->getID()) {
+                    pair.second->returnHome();
+                }
+            }
+
             delete vessel;
         } else itA++;
     }
@@ -210,8 +215,6 @@ void Game::updateState(double timestamp) {
 }
 
 void Game::cacheState() {
-    gameObjCounter = GameObject::getIDCounter();
-
     if(cacheEnabled) cache.insert(std::shared_ptr<Game>(new Game(*this)));
 }
 
@@ -228,7 +231,6 @@ std::list<std::pair<int, int>> Game::run() {
     while(!events.empty() || !orders.empty()) {
         std::multiset<Event*>::iterator event = events.begin();
 
-        GameObject::resetCounter(gameObjCounter);
         /*for(auto it = events.begin(); it != events.end(); it++) {
             std::cout << (*it)->getTimestamp() << ", ";
         }
@@ -284,7 +286,7 @@ std::vector<Player*> Game::sortedPlayers() const {
     std::vector<Player*> scores;
     for(auto& pair : getPlayers()) scores.push_back(pair.second);
 
-    switch(GameSettings::gameMode) {
+    switch(settings->gameMode) {
     case Mode::MINING:
         std::sort(scores.begin(), scores.end(), [](Player* a, Player* b) {
             return a->getResources() != b->getResources() ? a->getResources() > b->getResources()
@@ -321,9 +323,9 @@ bool Game::hasEnded() const {
     }
     if(alive <= 1) return true;
 
-    switch(GameSettings::gameMode) {
+    switch(settings->gameMode) {
     case Mode::MINING:
-        if(sorted.front()->getResources() < GameSettings::resourcesToWin) return false;
+        if(sorted.front()->getResources() < settings->resourcesToWin) return false;
         break;
     default: return false;
     }
@@ -351,7 +353,7 @@ std::list<std::pair<int, int>> Game::getScores() {
             if(i == j) continue;
 
             double expected = 1.0 / (1 + pow(10, (sorted[j]->getRating() - sorted[i]->getRating())/400.0));
-            scoreDelta += GameSettings::eloKValue * (score - expected);
+            scoreDelta += settings->eloKValue * (score - expected);
         }
 
         scores.push_back(std::make_pair<int, int>(sorted[i]->getUserID(), round(scoreDelta / (sorted.size() - 1))));
@@ -539,7 +541,7 @@ void Game::removeVessel(Vessel* v) {
 
 void Game::removeSpecialist(Specialist* s) {
     if(s->hasOwner()) s->getOwner()->removeSpecialist(s);
-    if(s->getContainer() != nullptr) s->getContainer()->removeSpecialist(s);
+    if(s->getContainer()) s->getContainer()->removeSpecialist(s);
     s->remove();
 }
 

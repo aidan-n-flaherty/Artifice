@@ -3,6 +3,7 @@
 
 #include <cstdlib>
 #include "order.h"
+#include "game_settings.h"
 
 class Game;
 
@@ -10,8 +11,8 @@ class GameObject
 {
 private:
     Order* originatingOrder;
-    
-    static unsigned int counter;
+
+    GameSettings* settings;
 
     const unsigned int ID;
 
@@ -20,7 +21,7 @@ private:
     bool deleted;
 
 public:
-    GameObject() : ID(counter++), stale(true), deleted(false) {}
+    GameObject(unsigned int ID, GameSettings* settings) : ID(ID), settings(settings), stale(true), deleted(false) {}
 
     unsigned int getID() const { return ID; }
 
@@ -29,12 +30,11 @@ public:
     
     void remove() { deleted = true; }
     bool isDeleted() const { return deleted; }
-
-    static int getIDCounter() { return counter; }
-    static void resetCounter(int num) { counter = num; }
     
     void setOriginatingOrder(Order* o) { originatingOrder = o; }
     Order* getOriginatingOrder() { return originatingOrder; }
+
+    const GameSettings* getSettings() const { return settings; }
 };
 
 #endif

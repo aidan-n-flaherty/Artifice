@@ -3,6 +3,7 @@
 
 #include <cstdlib>
 #include <cmath>
+#include "../game_settings.h"
 
 class Point
 {
@@ -12,9 +13,12 @@ private:
 
     bool invalid;
 
+    GameSettings* settings = nullptr;
+
 public:
     Point() : x(-1), y(-1), invalid(true) {};
     Point(double x, double y) : x(x), y(y), invalid(false) {};
+    Point(GameSettings* settings, double x, double y) : settings(settings), x(x), y(y), invalid(false) {};
 
     bool isInvalid() { return invalid; }
 

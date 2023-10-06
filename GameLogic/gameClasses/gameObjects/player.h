@@ -11,7 +11,7 @@
 #include "../event.h"
 #include "../game_settings.h"
 
-enum SpecialistType;
+enum SpecialistType : unsigned int;
 
 class Game;
 
@@ -48,8 +48,7 @@ private:
     int minesDrilled;
 
 public:
-    Player() {}
-    Player(std::string name, int userID, int rating) : userID(userID), name(name), rating(rating), defeated(false) {}
+    Player(unsigned int ID, GameSettings* settings, std::string name, int userID, int rating) : GameObject(ID, settings), userID(userID), name(name), rating(rating), defeated(false) {}
     
     void updatePointers(Game* game);
 
@@ -93,7 +92,7 @@ public:
 
     void removeHire() { hires -= 1; }
     void drillMine() { minesDrilled++; }
-    int getMineCost() { return GameSettings::costPerMine * (minesDrilled + 1); }
+    int getMineCost() { return getSettings()->costPerMine * (minesDrilled + 1); }
 
     int getUserID() const { return userID; }
     const std::string& getName() const { return name; }

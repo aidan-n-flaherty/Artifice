@@ -47,7 +47,7 @@ PositionalNode::PositionalNode(const StringName &file, PositionalObject* obj) {
 		Node3D* n = cast_to<Node3D>(mesh->instantiate());
 		n->set_name(("Mesh" + std::to_string(i) + std::to_string(j)).c_str());
 		n->connect("input_event", Callable(this, "select"), Object::CONNECT_DEFERRED);
-		n->set_position(Vector3(GameSettings::width * i, 0, GameSettings::height * j));
+		n->set_position(Vector3(obj->getSettings()->width * i, 0, obj->getSettings()->height * j));
   		add_child(n);
 	}
 
@@ -260,7 +260,7 @@ void PositionalNode::setSelected(bool selected) {
 }
 
 Vector3 PositionalNode::getColor() {
-	std::tuple<double, double, double> color = obj->hasOwner() ? GameSettings::playerColors[obj->getOwnerID() % GameSettings::playerColors.size()] : std::make_tuple(0.5, 0.5, 0.5);
+	std::tuple<double, double, double> color = obj->hasOwner() ? obj->getSettings()->playerColors[obj->getOwnerID() % obj->getSettings()->playerColors.size()] : std::make_tuple(0.5, 0.5, 0.5);
 
 	return Vector3(std::get<0>(color), std::get<1>(color), std::get<2>(color));
 }

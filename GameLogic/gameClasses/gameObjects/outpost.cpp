@@ -18,7 +18,7 @@ int Outpost::getShieldAt(double timeDiff) const {
 }
 
 double Outpost::nextProductionEvent() const {
-    return (1.0 - fractionalProduction) / (getOwner()->globalProductionSpeed() * GameSettings::simulationSpeed / (8.0 * 60 * 60));
+    return (1.0 - fractionalProduction) / (getOwner()->globalProductionSpeed() * getSettings()->simulationSpeed / (8.0 * 60 * 60));
 }
 
 /* The following two functions do not modify this instance unless you pass in
@@ -26,7 +26,7 @@ double Outpost::nextProductionEvent() const {
 ** or updating the game state.
 */
 int Outpost::getUnitsAt(double& fractionalProduction, double timeDiff) const {
-    timeDiff *= GameSettings::simulationSpeed;
+    timeDiff *= getSettings()->simulationSpeed;
 
     int units = getUnits();
 
@@ -48,7 +48,7 @@ int Outpost::getUnitsAt(double& fractionalProduction, double timeDiff) const {
 }
 
 int Outpost::getShieldAt(double& fractionalShield, double timeDiff) const {
-    timeDiff *= GameSettings::simulationSpeed;
+    timeDiff *= getSettings()->simulationSpeed;
 
     double shieldCharge = this->shieldCharge;
 
@@ -104,7 +104,7 @@ int Outpost::getFireRange() const {
 }
 
 int Outpost::getSonarRange() const {
-    int range = GameSettings::defaultSonar;
+    int range = getSettings()->defaultSonar;
 
     range = int((getOwner()->globalSonar() + 0.5 * controlsSpecialist(SpecialistType::PRINCESS)) * range);
 

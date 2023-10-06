@@ -28,7 +28,7 @@ int Player::getHiresAt(double timeDiff) const {
 ** or updating the game state.
 */
 int Player::getResourcesAt(double& fractionalProduction, double timeDiff) const {
-    timeDiff *= GameSettings::simulationSpeed;
+    timeDiff *= getSettings()->simulationSpeed;
 
     int resources = this->resources;
 
@@ -43,7 +43,7 @@ int Player::getResourcesAt(double& fractionalProduction, double timeDiff) const 
 }
 
 int Player::getHiresAt(double& fractionalHires, double timeDiff) const {
-    timeDiff *= GameSettings::simulationSpeed;
+    timeDiff *= getSettings()->simulationSpeed;
 
     int hires = this->hires;
 
@@ -101,7 +101,7 @@ std::list<Outpost*> Player::sortedOutposts(const PositionalObject* obj) {
 
 void Player::projectedVictory(Player* player, double timestamp, std::multiset<Event*, EventOrder> &events) {
     if(resourceProductionSpeed() > 0) {
-        int diff = ceil((GameSettings::resourcesToWin - (getResources() + fractionalProduction)) / resourceProductionSpeed());
+        int diff = ceil((getSettings()->resourcesToWin - (getResources() + fractionalProduction)) / resourceProductionSpeed());
         events.insert(new WinConditionEvent(timestamp + diff, player));
     }
 }

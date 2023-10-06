@@ -1,5 +1,6 @@
 #include "order.h"
 #include "game_object.h"
+#include "game.h"
 
 int Order::counter = 0;
 
@@ -9,9 +10,9 @@ int Order::counter = 0;
 ** the unanticipated creation of an object. This order must be an order that the opponent could not see
 ** when scheduling their order (hence the reference ID).
 */
-void Order::updateOrders(const std::multiset<Order*, OrderOrder> &orders) const {
+void Order::updateOrders(Game* game, const std::multiset<Order*, OrderOrder> &orders) const {
     for(auto &order : orders) {
-        if(getID() > order->getReferenceID() && order->getSenderID() != getSenderID()) order->adjustIDs(GameObject::getIDCounter());
+        if(getID() > order->getReferenceID() && order->getSenderID() != getSenderID()) order->adjustIDs(game->getObjCounter());
     }
 }
 

@@ -44,7 +44,7 @@ public:
         }
 
         // schedule the same event to occur in 2 hours
-        game->addEvent(new OutpostRangeEvent(getTimestamp() + GameSettings::fireRate / GameSettings::simulationSpeed));
+        game->addEvent(new OutpostRangeEvent(getTimestamp() + game->getSettings()->fireRate / game->getSettings()->simulationSpeed));
     }
 };
 

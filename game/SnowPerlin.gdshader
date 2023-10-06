@@ -13,7 +13,7 @@ vec3 normal(vec2 uv, sampler2D texture_norm) {
 	float top = texture(texture_norm, uv + vec2(0, epsilon)).r;
 	float bottom = texture(texture_norm, uv + vec2(0, -epsilon)).r;
 	
-	return normalize(vec3(2.0 * (right - left), 2.0 * (bottom - top), -4));
+	return normalize(vec3(2.0 * (right - left), 2.0 * (bottom - top), -4.0));
 }
 
 void fragment() {
@@ -50,7 +50,7 @@ void fragment() {
 		if(diff > 0.1) discard;
 	}
 
-	//vec3 norm = normal(pos, land);
-	//norm.y *= 1.0;
-	//NORMAL = normalize(norm);
+	vec3 norm = -normal(pos, land);
+	norm.y *= 1.0;
+	NORMAL = normalize(norm);
 }

@@ -33,7 +33,7 @@ public:
     }
 
     void run(Game* game) override {
-        Vessel* vessel = new Vessel(outpost->getOwner(), outpost->getPosition(), outpost, target, outpost->removeUnits(numUnits), outpost->removeSpecialists(specialists));
+        Vessel* vessel = new Vessel(game->incrementObjCounter(), game->getSettings(), outpost->getOwner(), outpost->getPosition(), outpost, target, outpost->removeUnits(numUnits), outpost->removeSpecialists(specialists));
         vessel->setOriginatingOrder(getOriginatingOrder());
 
         game->addVessel(vessel);

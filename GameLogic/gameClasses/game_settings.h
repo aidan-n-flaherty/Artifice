@@ -5,7 +5,6 @@
 #include <unordered_map>
 #include <vector>
 #include <tuple>
-#include "gameObjects/specialist.h"
 
 #ifndef _GAME_SETTINGS_H_
 #define _GAME_SETTINGS_H_
@@ -15,29 +14,31 @@ enum Mode {
     CONQUEST
 };
 
+enum SpecialistType : unsigned int;
+
 class GameSettings
 {
-private:
-    static bool tmp;
-
 public:
-    static int currentlySimulating;
-    static double simulationSpeed;
-    static int resourcesToWin;
-    static Mode gameMode;
-    static int eloKValue;
-    static int defaultSonar;
-    static int defaultMaxShield;
-    static int fireRate;
-    static int costPerMine;
-    static int width;
-    static int height;
-    static std::unordered_map<SpecialistType, std::string> specialistDescriptions;
-    static std::vector<std::tuple<double, double, double>> playerColors;
+    GameSettings() { loadDefaults(); }
 
-    static void reset();
+    double simulationSpeed;
+    int resourcesToWin;
+    Mode gameMode;
+    int eloKValue;
+    int defaultSonar;
+    int defaultMaxShield;
+    int fireRate;
+    int costPerMine;
+    int width;
+    int height;
+    std::unordered_map<SpecialistType, std::string> specialistDescriptions;
+    std::vector<std::tuple<double, double, double>> playerColors;
 
-    static bool reset(int gameID) {
+    void loadDefaults();
+
+    /*void reset();
+
+    bool reset(int gameID) {
         if(gameID != currentlySimulating) {
             currentlySimulating = gameID;
             reset();
@@ -46,7 +47,7 @@ public:
         }
 
         return false;
-    }
+    }*/
 };
 
 #endif

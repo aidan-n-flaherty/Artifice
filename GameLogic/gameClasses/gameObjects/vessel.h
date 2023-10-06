@@ -15,6 +15,8 @@
 
 class Game;
 
+class GameSettings;
+
 class Vessel : public PositionalObject
 {
 private:
@@ -27,11 +29,10 @@ private:
     double speedModifier = 1;
 
 public:
-    Vessel(){}
-    Vessel(Player* owner, const Point& position, Outpost* origin, 
+    Vessel(unsigned int ID, GameSettings* settings, Player* owner, const Point& position, Outpost* origin, 
         PositionalObject* target, int numUnits,
         const std::list<Specialist*> &specialists) :
-        PositionalObject(position, numUnits, specialists),
+        PositionalObject(ID, settings, position, numUnits, specialists),
         returnOutpost(origin), origin(origin), target(target), gift(false) { owner->addVessel(this); }
     void updatePointers(Game* game) override;
 

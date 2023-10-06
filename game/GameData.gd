@@ -2,6 +2,8 @@ extends Node
 
 signal gamesChanged
 
+signal userChanged
+
 var Game = preload("res://Game.tscn")
 
 var GameDetail = preload("res://GameDetail.tscn")
@@ -20,36 +22,31 @@ var gameDetails = {}
 
 var games = {}
 
-var id
+var id: int
 
-var token
+var token: int
+
+var user
 
 func _ready():
 	var root = get_tree().get_root()
 	current_scene = root.get_child(root.get_child_count() - 1)
 	
 	login()
+	loadUser()
 	loadGames()
 
 func goto_scene(path):
 	call_deferred("_deferred_goto_scene", path)
 
 func _deferred_goto_scene(path):
-	# It is now safe to remove the current scene
 	current_scene.queue_free()
 
-	# Load the new scene.
 	var s = ResourceLoader.load(path)
-
-	# Instance the new scene.
 	current_scene = s.instantiate()
 
-	# Add it to the active scene, as child of root.
 	get_tree().get_root().add_child(current_scene)
-
-	# Optionally, to make it compatible with the SceneTree.change_scene() API.
 	get_tree().set_current_scene(current_scene)
-
 
 func goto_node(node) -> void:
 	call_deferred("_deferred_goto_node", node)
@@ -62,10 +59,14 @@ func _deferred_goto_node(node) -> void:
 	get_tree().get_root().add_child(current_scene)
 	get_tree().set_current_scene(current_scene)
 
+func login():
+	id = 654321
+	token = 5577006791947779410
+	
 func viewGame(id: int):
 	#if(!games.has(id)):
 	games[id] = GameInterface.new()
-	games[id].init(id, self.id, getGameDetails(id).gameSettings)
+	games[id].init(id, self.id, getGameDetails(id).gameSettings.settingOverrides)
 	
 	var node = Game.instantiate()
 	node.init(id)
@@ -77,22 +78,22 @@ func viewGameDetails(id: int):
 	node.gameID = id
 
 	goto_node(node)
+
+func loadUser():
+	var user = await HTTPManager.getReq("/fetchSelf")
 	
-func login():
-	id = 654321
-	token = 5577006791947779410
+	if not user: return
+	
+	self.user = user
 	
 func loadGames():
-	var openGames = await HTTPManager.getReq("/fetchGames", {
-		"token": token
-	})
+	var openGames = await HTTPManager.getReq("/fetchGames")
 	
 	for game in openGames: 
 		openGameIDs[int(game.gameData.id)] = true
 		gameDetails[int(game.gameData.id)] = game
 	
 	var ongoingGames = await HTTPManager.getReq("/fetchUserGames", {
-		"token": token,
 		"past": false
 	})
 	
@@ -101,7 +102,6 @@ func loadGames():
 		gameDetails[int(game.gameData.id)] = game
 	
 	var pastGames = await HTTPManager.getReq("/fetchUserGames", {
-		"token": token,
 		"past": true
 	})
 	
@@ -119,7 +119,7 @@ func joinGame(id: int, password = ""):
 	
 	var game = await HTTPManager.getReq("/fetchGameDetails", {
 		"gameID": id
-	})
+	}, false)
 	
 	if not game: return
 	
@@ -160,6 +160,9 @@ func addOrder(gameID: int, type, referenceID, timestamp, arguments):
 	
 	print("Order registered")
 	
+func getUser():
+	return user
+
 func getGameDetails(id: int):
 	return gameDetails[id]
 

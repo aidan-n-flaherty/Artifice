@@ -35,6 +35,8 @@ private:
 	FloorDisplay* floorDisplay = nullptr;
 
 	Dictionary settingOverrides;
+
+	GameSettings settings;
 	
 	int gameID; 
 
@@ -70,7 +72,7 @@ public:
 
 	void init(int gameID, int userID, Dictionary settingOverrides);
 
-	void loadSettings();
+	GameSettings loadSettings();
 		
     void _process(double delta) override;
 		
@@ -120,8 +122,8 @@ public:
 
 	int getReferenceID() { return game->getReferenceID(); }
 
-	int getWidth() { return GameSettings::width; }
-	int getHeight() { return GameSettings::height; }
+	int getWidth() { return settings.width; }
+	int getHeight() { return settings.height; }
 		
 	void bulkAddOrder(const String &type, uint32_t ID, int32_t referenceID, double timestamp, uint32_t senderID, PackedInt32Array arguments, uint32_t argCount);
 	void endBulkAdd();

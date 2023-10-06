@@ -31,9 +31,8 @@ private:
     OutpostType type;
 
 public:
-    Outpost(){}
-    Outpost(OutpostType type, int numUnits, double x, double y) : PositionalObject(x, y, numUnits), shieldCharge(0),
-        maxShieldCharge(GameSettings::defaultMaxShield), fractionalProduction(0), fractionalShield(0), type(type) {}
+    Outpost(unsigned int ID, GameSettings* settings, OutpostType type, int numUnits, double x, double y) : PositionalObject(ID, settings, x, y, numUnits), shieldCharge(0),
+        maxShieldCharge(settings->defaultMaxShield), fractionalProduction(0), fractionalShield(0), type(type) {}
 
     OutpostType getType() const { return type; }
     void setType(OutpostType type) { this->type = type; }

@@ -40,7 +40,7 @@ public:
 
     virtual void adjustIDs(int createdID) {}
 
-    void updateOrders(const std::multiset<Order*, OrderOrder> &orders) const;
+    void updateOrders(Game* game, const std::multiset<Order*, OrderOrder> &orders) const;
 
     double getTimestamp() const { return timestamp; }
 

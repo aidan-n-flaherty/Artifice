@@ -27,7 +27,7 @@ public:
     void run(Game* game) override {
         outpost->setType(OutpostType::MINE);
         outpost->setOriginatingOrder(getOriginatingOrder());
-        outpost->removeUnits(GameSettings::costPerMine * (outpost->getOwner()->getMinesDrilled() + 1));
+        outpost->removeUnits(game->getSettings()->costPerMine * (outpost->getOwner()->getMinesDrilled() + 1));
     }
 };
 

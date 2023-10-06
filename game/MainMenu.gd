@@ -4,7 +4,6 @@ signal menuSelectionChanged(menuItem)
 
 @export_file("*.tscn") var playScreen
 @export_file("*.tscn") var searchScreen
-@export_file("*.tscn") var historyScreen
 @export_file("*.tscn") var settingsScreen
 @export_file("*.tscn") var createScreen
 
@@ -33,9 +32,6 @@ func switch_to(scene):
 
 func _on_play_pressed():
 	switch_to(playScreen)
-
-func _on_history_pressed():
-	switch_to(historyScreen)
 
 func _on_settings_pressed():
 	switch_to(settingsScreen)

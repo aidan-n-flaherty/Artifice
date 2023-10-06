@@ -7,11 +7,11 @@ double Point::distance(const Point &other) const {
 
 Point Point::normalized(double val) {
     double dist = distance(Point(0, 0));
-    return dist == 0 ? Point(0, 0) : Point(getX() * val/dist, getY() * val/dist);
+    return dist == 0 ? Point(settings, 0, 0) : Point(settings, getX() * val/dist, getY() * val/dist);
 }
 
 Point Point::movedTowards(const Point &other, double distance) const {
-    Point p(x, y);
+    Point p(settings, x, y);
     p += (p.closest(other) - p).normalized(distance);
 
     p.constrain();
@@ -26,10 +26,10 @@ void Point::moveTowards(const Point &other, double distance) {
 }
 
 void Point::constrain() {
-    while(x >= GameSettings::width) x -= GameSettings::width;
-    while(x < 0) x += GameSettings::width;
-    while(y >= GameSettings::height) y -= GameSettings::height;
-    while(y < 0) y += GameSettings::height;
+    while(x >= settings->width) x -= settings->width;
+    while(x < 0) x += settings->width;
+    while(y >= settings->height) y -= settings->height;
+    while(y < 0) y += settings->height;
 }
 
 Point Point::closest(const Point &other) const {
@@ -38,8 +38,8 @@ Point Point::closest(const Point &other) const {
     double minDist = distance(other);
 
     for(int i = 0; i < 3; i++) {
-        Point point(other.getX() + copysignf(GameSettings::width, getX() - other.getX()),
-                     other.getY() + copysignf(GameSettings::height, getY() - other.getY()));
+        Point point(other.getX() + copysignf(settings->width, getX() - other.getX()),
+                     other.getY() + copysignf(settings->height, getY() - other.getY()));
         
         double newDist = distance(point);
         if(newDist < minDist) {

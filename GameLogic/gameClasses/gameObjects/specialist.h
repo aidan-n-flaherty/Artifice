@@ -9,7 +9,7 @@
 #include "../game_object.h"
 #include "../possessable.h"
 
-enum SpecialistType {
+enum SpecialistType : unsigned int {
     NONE,
     QUEEN,
     PRINCESS,
@@ -44,6 +44,8 @@ enum SpecialistType {
 
 class Game;
 
+class GameSettings;
+
 class PositionalObject;
 
 class Player;
@@ -56,8 +58,7 @@ private:
     PositionalObject* container = nullptr;
 
 public:
-    Specialist(){}
-    Specialist(SpecialistType type) : type(type) {}
+    Specialist(unsigned int ID, GameSettings* settings, SpecialistType type) : GameObject(ID, settings), type(type) {}
     
     void updatePointers(Game *game) override;
 
