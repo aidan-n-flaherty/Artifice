@@ -24,6 +24,7 @@ void initialize_gamelogic_module(ModuleInitializationLevel p_level) {
     ClassDB::register_class<PositionalNode>();
     ClassDB::register_class<VesselNode>();
     ClassDB::register_class<OutpostNode>();
+    ClassDB::register_class<PlayerNode>();
 }
 
 void uninitialize_gamelogic_module(ModuleInitializationLevel p_level) {

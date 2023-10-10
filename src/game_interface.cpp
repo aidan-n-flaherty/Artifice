@@ -23,6 +23,7 @@
 #include <ctime>
 #include <cmath>
 #include <chrono>
+#include <utility>
 #include <map>
 #include <list>
 
@@ -48,7 +49,10 @@ void GameInterface::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("getWidth"), &GameInterface::getWidth);
 	ClassDB::bind_method(D_METHOD("getHeight"), &GameInterface::getHeight);
 	ClassDB::bind_method(D_METHOD("getHires"), &GameInterface::getHires);
+	ClassDB::bind_method(D_METHOD("getStartTime"), &GameInterface::getStartTime);
 	ClassDB::bind_method(D_METHOD("canHire"), &GameInterface::canHire);
+	ClassDB::bind_method(D_METHOD("hasStarted"), &GameInterface::hasStarted);
+	ClassDB::bind_method(D_METHOD("hasEnded"), &GameInterface::hasEnded);
 	ClassDB::bind_method(D_METHOD("getUserGameID"), &GameInterface::getUserGameID);
 	ClassDB::bind_method(D_METHOD("getReferenceID"), &GameInterface::getReferenceID);
 	ClassDB::bind_method(D_METHOD("getNextArrivalEvent"), &GameInterface::getNextArrivalEvent);
@@ -57,6 +61,8 @@ void GameInterface::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("getOutpostPositions"), &GameInterface::getOutpostPositions);
 	ClassDB::bind_method(D_METHOD("getShopOptions"), &GameInterface::getShopOptions);
 	ClassDB::bind_method(D_METHOD("getPromotionOptions"), &GameInterface::getPromotionOptions);
+	ClassDB::bind_method(D_METHOD("getSortedPlayers"), &GameInterface::getSortedPlayers);
+	ClassDB::bind_method(D_METHOD("getScore", "userID"), &GameInterface::getScore);
 	ClassDB::bind_method(D_METHOD("getSpecialistName"), &GameInterface::getSpecialistName);
 	ClassDB::bind_method(D_METHOD("getSpecialistDescription"), &GameInterface::getSpecialistDescription);
 	ClassDB::bind_method(D_METHOD("getSpecialistType"), &GameInterface::getSpecialistType);
@@ -73,7 +79,7 @@ void GameInterface::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("moveTo", PropertyInfo(Variant::FLOAT, "t")));
 }
 
-void GameInterface::init(int gameID, int userID, Dictionary settingOverrides) {
+void GameInterface::init(int gameID, int userID, int startTime, Dictionary settingOverrides) {
 	this->gameID = gameID;
 	this->userID = userID;
 
@@ -87,7 +93,7 @@ void GameInterface::init(int gameID, int userID, Dictionary settingOverrides) {
 	players[987654] = "Steve";
 	
 	settings = loadSettings();
-	completeGame = std::shared_ptr<Game>(new Game(settings, userID, current, current + simulationBuffer / settings.simulationSpeed, players, 42083, true));
+	completeGame = std::shared_ptr<Game>(new Game(settings, userID, startTime, startTime + simulationBuffer / settings.simulationSpeed, players, 42083, true));
 
 	for(int i = 0; i < 30; i++) {
 		std::list<int> specialists;
@@ -446,6 +452,16 @@ Array GameInterface::getSortedPlayers() {
 	}
 
 	return arr;
+}
+
+int GameInterface::getScore(int userID) {
+	std::list<std::pair<int, int>> scores = game->getScores();
+
+	for(const std::pair<int, int> &p : scores) {
+		if(p.first == userID) return p.second;
+	}
+
+	return -1;
 }
 
 PackedInt32Array GameInterface::getShopOptions() {

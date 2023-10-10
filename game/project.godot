@@ -21,6 +21,7 @@ config/icon="res://icon.svg"
 Factory="*res://Factory.gd"
 GameData="*res://GameData.gd"
 HTTPManager="*res://HTTPManager.gd"
+Utilities="*res://Utilities.gd"
 
 [debug]
 

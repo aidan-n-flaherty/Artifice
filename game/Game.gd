@@ -4,8 +4,6 @@ var gameID: int
 
 var game: GameInterface
 
-var startTime
-
 var menuDisplay
 
 var detailDisplay
@@ -25,7 +23,7 @@ func init(gameID):
 	game.connect("deselect", deselect)
 	game.connect("deselectSpecialist", deselectSpecialist)
 
-	startTime = int(Time.get_unix_time_from_system())
+	var startTime = int(Time.get_unix_time_from_system())
 	
 	$Viewport/Viewport3D.add_child(game)
 	$Viewport/GameOverlay/Overlay/VBoxContainer/Timeline.init(gameID)
@@ -36,8 +34,19 @@ func init(gameID):
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	pass
+	if not game.hasStarted():
+		$Viewport/GameOverlay/Overlay/NotStarted.show()
+		$Viewport/GameOverlay/Overlay/NotStarted/Label.text = "Game starts in " + Utilities.timeToStr(game.getStartTime() - game.getTime())
+	else:
+		$Viewport/GameOverlay/Overlay/NotStarted.hide()
 	
+	if game.hasEnded():
+		if not $Viewport/GameOverlay/Overlay/EndGame.visible:
+			$Viewport/GameOverlay/Overlay/EndGame.init(gameID)
+			$Viewport/GameOverlay/Overlay/EndGame.show()
+	else:
+		$Viewport/GameOverlay/Overlay/EndGame.hide()
+		
 func addOrder(type, referenceID, timestamp, arguments):
 	GameData.addOrder(gameID, type, referenceID, timestamp, arguments)
 

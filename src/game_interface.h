@@ -72,7 +72,7 @@ public:
 
     ~GameInterface() {}
 
-	void init(int gameID, int userID, Dictionary settingOverrides);
+	void init(int gameID, int userID, int startTime, Dictionary settingOverrides);
 
 	GameSettings loadSettings();
 		
@@ -111,6 +111,7 @@ public:
 	PackedInt32Array getShopOptions();
 	PackedInt32Array getPromotionOptions(int specialistID);
 	Array getSortedPlayers();
+	int getScore(int userID);
 
 	int getSpecialistType(int specialistID) { return game->getSpecialist(specialistID)->getType(); };
 
@@ -122,7 +123,10 @@ public:
 	double getNextBattleEvent(int objID);
 
 	bool canHire() { return game->getPlayer(userGameID)->getHiresAt(current) >= 0; }
+	bool hasStarted() { return current >= game->getStartTime(); }
+	bool hasEnded() { return game->hasEnded(); }
 
+	double getStartTime() { return game->getStartTime(); }
 	int getReferenceID() { return game->getReferenceID(); }
 
 	int getWidth() { return settings.width; }

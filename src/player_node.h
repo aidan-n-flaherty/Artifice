@@ -5,6 +5,7 @@
 #include <godot_cpp/classes/node3d.hpp>
 #include "../GameLogic/gameClasses/gameObjects/player.h"
 #include <godot_cpp/variant/utility_functions.hpp>
+#include <godot_cpp/variant/string.hpp>
 
 namespace godot {
 
@@ -34,7 +35,14 @@ public:
 	}
 	
     int getUnits() { return player->getUnitsAt(timeDiff); }
-    int getCapacity() {return player->getCapacity(); }
+
+    int getCapacity() { return player->getCapacity(); }
+
+	int getRating() { return player->getRating(); }
+
+	String getName() { return String(player->getName().c_str()); }
+
+	int getUserID() { return player->getUserID(); }
 
 	double getDiff() { return timeDiff; }
 };

@@ -66,7 +66,7 @@ func login():
 func viewGame(id: int):
 	#if(!games.has(id)):
 	games[id] = GameInterface.new()
-	games[id].init(id, self.id, getGameDetails(id).gameSettings.settingOverrides)
+	games[id].init(id, self.id, int(Time.get_unix_time_from_system() + 5), getGameDetails(id).gameSettings.settingOverrides)
 	
 	var node = Game.instantiate()
 	node.init(id)

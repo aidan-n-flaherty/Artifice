@@ -1,4 +1,4 @@
-[gd_scene load_steps=64 format=3 uid="uid://dgp4l24s2rulk"]
+[gd_scene load_steps=66 format=3 uid="uid://dgp4l24s2rulk"]
 
 [ext_resource type="Script" path="res://Game.gd" id="1_s53r2"]
 [ext_resource type="Script" path="res://CameraPivot.gd" id="2_t2ckv"]
@@ -19,6 +19,7 @@
 [ext_resource type="Texture2D" uid="uid://c0beg3px50da4" path="res://resources/gameMenuIcons/logsIcon.png" id="12_fsvp4"]
 [ext_resource type="PackedScene" uid="uid://cqdpj2uw0cloc" path="res://Shop.tscn" id="12_sa8gc"]
 [ext_resource type="PackedScene" uid="uid://symsrj5sm6dt" path="res://Status.tscn" id="13_20fpi"]
+[ext_resource type="PackedScene" uid="uid://clqpri4b5a2y0" path="res://EndGame.tscn" id="13_iadse"]
 [ext_resource type="Texture2D" uid="uid://cp6kr6lqkxiho" path="res://resources/gameMenuIcons/hireIcon.png" id="13_xkygy"]
 [ext_resource type="Texture2D" uid="uid://5rc0hts7wgcj" path="res://resources/gameMenuIcons/chartIcon.png" id="14_cfqet"]
 [ext_resource type="PackedScene" uid="uid://c7rmgavx0p0po" path="res://Chat.tscn" id="14_xpy25"]
@@ -296,6 +297,9 @@ shader_parameter/uv2_offset = Vector3(0, 0, 0)
 shader_parameter/texture_albedo = SubResource("NoiseTexture2D_e25qt")
 shader_parameter/texture_heightmap = SubResource("NoiseTexture2D_spmof")
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1u3xq"]
+bg_color = Color(0, 0, 0, 0.243137)
+
 [sub_resource type="ButtonGroup" id="ButtonGroup_ocfcu"]
 allow_unpress = true
 
@@ -457,6 +461,32 @@ dragger_visibility = 2
 layout_mode = 2
 size_flags_vertical = 3
 mouse_filter = 1
+
+[node name="NotStarted" type="Panel" parent="Viewport/GameOverlay/Overlay"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+theme_override_styles/panel = SubResource("StyleBoxFlat_1u3xq")
+
+[node name="Label" type="Label" parent="Viewport/GameOverlay/Overlay/NotStarted"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "This game starts in -1 seconds"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="EndGame" parent="Viewport/GameOverlay/Overlay" instance=ExtResource("13_iadse")]
+visible = false
+layout_mode = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Viewport/GameOverlay/Overlay"]
 layout_mode = 1

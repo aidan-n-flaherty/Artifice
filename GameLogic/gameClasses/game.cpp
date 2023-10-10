@@ -27,7 +27,7 @@
 ** the random seed provided.
 */
 Game::Game(GameSettings settings, int simulatorID, double startTime, double endTime, const std::map<int, std::string> &playerInfo, int seed, bool cacheEnabled) :
-    stateTime(startTime), endTime(endTime), cacheEnabled(cacheEnabled) {
+    startTime(startTime), stateTime(startTime), endTime(endTime), cacheEnabled(cacheEnabled) {
     std::srand(seed);
 
     this->settings = new GameSettings(settings);
@@ -87,7 +87,7 @@ Game::Game(GameSettings settings, int simulatorID, double startTime, double endT
     addEvent(new OutpostRangeEvent(getTime()));
 }
 
-Game::Game(const Game& game) : stateTime(game.stateTime), cacheEnabled(game.cacheEnabled), endTime(game.endTime), referenceID(game.referenceID), simulatorID(game.simulatorID), lastExecutedOrder(game.lastExecutedOrder), nextEndState(game.nextEndState), gameObjCounter(game.gameObjCounter), settings(game.settings) {
+Game::Game(const Game& game) : startTime(game.startTime), stateTime(game.stateTime), cacheEnabled(game.cacheEnabled), endTime(game.endTime), referenceID(game.referenceID), simulatorID(game.simulatorID), lastExecutedOrder(game.lastExecutedOrder), nextEndState(game.nextEndState), gameObjCounter(game.gameObjCounter), settings(game.settings) {
     for(Event* event : game.events) events.insert(event->copy());
     for(Event* event : game.simulatedEvents) simulatedEvents.push_back(event->copy());
     for(const auto& pair : game.vessels) vessels[pair.first] = new Vessel(*pair.second);
@@ -240,6 +240,12 @@ std::list<std::pair<int, int>> Game::run() {
         while(!orders.empty() && (events.empty() || (*event)->getTimestamp() > (*orders.begin())->getTimestamp())) {
             std::multiset<Order*>::iterator orderIt = orders.begin();
             Order* order = *orderIt;
+
+            if(order->getTimestamp() < stateTime) {
+                orders.erase(orderIt);
+                invalidOrders.push_back(order);
+                continue;
+            }
             // need an updated state to check for order validity
             updateState(order->getTimestamp());
 
@@ -346,7 +352,7 @@ std::list<std::pair<int, int>> Game::getScores() {
 
     for(int i = 0; i < sorted.size(); i++) {
         // 1st place has a score of 1, last place has a score of 0, linear interpolation for all in between
-        double score = (sorted.size() - 1 - i) / (sorted.size() - 1);
+        double score = (sorted.size() - 1.0 - i) / (sorted.size() - 1.0);
         double scoreDelta = 0;
 
         for(int j = 0; j < sorted.size(); j++) {

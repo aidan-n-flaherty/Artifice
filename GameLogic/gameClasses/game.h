@@ -47,10 +47,8 @@ private:
     // client-side support for easy time machine usage
     void cacheState();
 
-    // returns a list of players sorted in order of ranking, paired with their corresponding rating change
-    std::list<std::pair<int, int>> getScores();
-
     bool cacheEnabled;
+    double startTime;
     double stateTime;
     double endTime;
     double nextEndState;
@@ -86,6 +84,9 @@ public:
 
     // Uses the orders supplied and runs a full simulation of the game, returns player ids and rating changes
     std::list<std::pair<int, int>> run();
+
+    // returns a list of players sorted in order of ranking, paired with their corresponding rating change
+    std::list<std::pair<int, int>> getScores();
 
     // sorts players by how close they are to victory
     std::vector<Player*> sortedPlayers() const;
@@ -131,6 +132,7 @@ public:
 
     void setEndTime(double t) { endTime = t; }
     
+    double getStartTime() const { return startTime; }
     double getTime() const { return stateTime; }
     double getEndTime() const { return endTime; }
 
