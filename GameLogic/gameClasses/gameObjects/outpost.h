@@ -8,7 +8,7 @@
 #include "../game_settings.h"
 #include "../possessable.h"
 
-enum OutpostType {
+enum OutpostType : unsigned int {
     GENERATOR,
     FACTORY,
     MINE,

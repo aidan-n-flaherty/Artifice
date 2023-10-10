@@ -266,11 +266,9 @@ void Player::removeVessel(Vessel* vessel) {
 }
 
 int Player::getCapacity() const {
-    int totalCapacity = 150;
+    int totalCapacity = 150 + 50 * outpostsOfType(OutpostType::GENERATOR);
 
     for(Outpost* o : outposts) {
-        if(o->getType() == OutpostType::GENERATOR) totalCapacity += 50;
-
         totalCapacity += o->specialistCount(SpecialistType::TINKERER) * 3 * o->getMaxShield();
     }
 
@@ -297,4 +295,14 @@ int Player::getUnitsAt(double timeDiff) const {
     for(Vessel* v : vessels) totalUnits += v->getUnitsAt(timeDiff);
 
     return totalUnits;
+}
+
+int Player::outpostsOfType(OutpostType t) const {
+    int count = 0;
+
+    for(Outpost* o : outposts) {
+        if(o->getType() == t) count++;
+    }
+
+    return count;
 }

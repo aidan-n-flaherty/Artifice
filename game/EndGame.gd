@@ -14,7 +14,7 @@ func init(gameID: int):
 	
 	for child in $MarginContainer/ScrollContainer/VBoxContainer.get_children():
 		child.queue_free()
-		
+	
 	for player in game.getSortedPlayers():
 		var playerDetail = preload("res://PlayerDetail.tscn").instantiate()
 		playerDetail.init(player.getName(), game.getScore(player.getUserID()))
