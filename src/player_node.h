@@ -4,6 +4,7 @@
 #include "positional_node.h"
 #include <godot_cpp/classes/node3d.hpp>
 #include "../GameLogic/gameClasses/gameObjects/player.h"
+#include "../GameLogic/gameClasses/gameObjects/outpost.h"
 #include <godot_cpp/variant/utility_functions.hpp>
 #include <godot_cpp/variant/string.hpp>
 
@@ -43,6 +44,18 @@ public:
 	String getName() { return String(player->getName().c_str()); }
 
 	int getUserID() { return player->getUserID(); }
+
+	int getResources() { return player->getResourcesAt(timeDiff); }
+
+	int getOutposts() { return player->getOutposts().size(); }
+
+	int getVessels() { return player->getVessels().size(); }
+
+	int getFactories() { return player->outpostsOfType(OutpostType::FACTORY); }
+
+	int getGenerators() { return player->outpostsOfType(OutpostType::GENERATOR); }
+
+	int getMines() { return player->outpostsOfType(OutpostType::MINE); }
 
 	double getDiff() { return timeDiff; }
 };

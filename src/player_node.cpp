@@ -17,7 +17,12 @@ void PlayerNode::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("getRating"), &PlayerNode::getRating);
 	ClassDB::bind_method(D_METHOD("getName"), &PlayerNode::getName);
 	ClassDB::bind_method(D_METHOD("getUserID"), &PlayerNode::getUserID);
-
+	ClassDB::bind_method(D_METHOD("getResources"), &PlayerNode::getResources);
+	ClassDB::bind_method(D_METHOD("getOutposts"), &PlayerNode::getOutposts);
+	ClassDB::bind_method(D_METHOD("getVessels"), &PlayerNode::getVessels);
+	ClassDB::bind_method(D_METHOD("getFactories"), &PlayerNode::getFactories);
+	ClassDB::bind_method(D_METHOD("getMines"), &PlayerNode::getMines);
+	ClassDB::bind_method(D_METHOD("getGenerators"), &PlayerNode::getGenerators);
 }
 
 PlayerNode::PlayerNode(Player* player) : player(player) {

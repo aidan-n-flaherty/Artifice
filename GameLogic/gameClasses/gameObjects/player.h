@@ -13,6 +13,8 @@
 
 enum SpecialistType : unsigned int;
 
+enum OutpostType : unsigned int;
+
 class Game;
 
 class Vessel;
@@ -90,6 +92,8 @@ public:
     void addVessel(Vessel* vessel);
     void removeVessel(Vessel* vessel);
 
+    int outpostsOfType(OutpostType t) const;
+
     void removeHire() { hires -= 1; }
     void drillMine() { minesDrilled++; }
     int getMineCost() { return getSettings()->costPerMine * (minesDrilled + 1); }
@@ -97,12 +101,11 @@ public:
     int getUserID() const { return userID; }
     const std::string& getName() const { return name; }
 
+    int getUnitsAt(double timeDiff) const;
     int getHiresAt(double timeDiff) const;
     int getResourcesAt(double timeDiff) const;
     int getHiresAt(double& fractionalProduction, double timeDiff) const;
     int getResourcesAt(double& fractionalHires, double timeDiff) const;
-
-    int getUnitsAt(double timeDiff) const;
 
     int getResources() const { return resources; }
     int getHires() const { return hires; }
