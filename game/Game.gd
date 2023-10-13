@@ -26,7 +26,9 @@ func init(gameID):
 	var startTime = int(Time.get_unix_time_from_system())
 	
 	$Viewport/Viewport3D.add_child(game)
+	
 	$Viewport/GameOverlay/Overlay/VBoxContainer/Timeline.init(gameID)
+	$Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel/Status.init(gameID)
 	$Viewport/Viewport3D/CameraPivot.game = game
 	$Viewport/Viewport3D/CameraPivot/FloorDisplay.add_child(game.getFloorDisplay())
 	

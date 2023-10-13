@@ -1,6 +1,9 @@
-[gd_scene load_steps=3 format=3 uid="uid://nglncmsgw3a6"]
+[gd_scene load_steps=6 format=3 uid="uid://nglncmsgw3a6"]
 
 [ext_resource type="Script" path="res://PlayerStatus.gd" id="1_oj4yj"]
+[ext_resource type="Texture2D" uid="uid://bx5b8fumyeb1m" path="res://resources/icons/FactoryFill.png" id="2_nuxji"]
+[ext_resource type="Texture2D" uid="uid://dqwi4iodnv4ci" path="res://resources/icons/GeneratorFill.png" id="3_yh0ph"]
+[ext_resource type="Texture2D" uid="uid://bcplxjqo34w7y" path="res://resources/icons/MineFill.png" id="4_u2ybd"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_clcgh"]
 
@@ -10,6 +13,9 @@ anchor_right = 1.0
 offset_bottom = 27.0
 grow_horizontal = 2
 script = ExtResource("1_oj4yj")
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
@@ -42,11 +48,12 @@ size_flags_horizontal = 3
 
 [node name="HBox1" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBox"]
 layout_mode = 2
+theme_override_constants/separation = 5
 
 [node name="Units_Capacity" type="Label" parent="MarginContainer/HBoxContainer/VBox/HBox1"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "00000"
+text = "hello?"
 horizontal_alignment = 1
 
 [node name="Outposts" type="Label" parent="MarginContainer/HBoxContainer/VBox/HBox1"]
@@ -55,24 +62,54 @@ size_flags_horizontal = 3
 text = "x0"
 horizontal_alignment = 1
 
+[node name="factoryIcon" type="TextureRect" parent="MarginContainer/HBoxContainer/VBox/HBox1"]
+layout_mode = 2
+texture = ExtResource("2_nuxji")
+expand_mode = 3
+stretch_mode = 4
+
+[node name="x" type="Label" parent="MarginContainer/HBoxContainer/VBox/HBox1"]
+layout_mode = 2
+text = "x
+"
+
 [node name="Factories" type="Label" parent="MarginContainer/HBoxContainer/VBox/HBox1"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "x5"
-horizontal_alignment = 1
+text = "5"
+
+[node name="gensIcon" type="TextureRect" parent="MarginContainer/HBoxContainer/VBox/HBox1"]
+layout_mode = 2
+texture = ExtResource("3_yh0ph")
+expand_mode = 3
+stretch_mode = 4
+
+[node name="x2" type="Label" parent="MarginContainer/HBoxContainer/VBox/HBox1"]
+layout_mode = 2
+text = "x
+"
 
 [node name="Generators" type="Label" parent="MarginContainer/HBoxContainer/VBox/HBox1"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "x0"
-horizontal_alignment = 1
+text = "0"
+
+[node name="minesIcon" type="TextureRect" parent="MarginContainer/HBoxContainer/VBox/HBox1"]
+layout_mode = 2
+texture = ExtResource("4_u2ybd")
+expand_mode = 3
+stretch_mode = 4
+
+[node name="x3" type="Label" parent="MarginContainer/HBoxContainer/VBox/HBox1"]
+layout_mode = 2
+text = "x
+"
 
 [node name="Mines" type="Label" parent="MarginContainer/HBoxContainer/VBox/HBox1"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "x5
+text = "5
 "
-horizontal_alignment = 1
 
 [node name="HBox2" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBox"]
 layout_mode = 2
@@ -115,16 +152,26 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/separation = 5
 
 [node name="Spacer" type="Control" parent="MarginContainer/HBoxContainer/VBox/HBox2/Control/HBoxContainer"]
-custom_minimum_size = Vector2(5, 0)
 layout_mode = 2
 
-[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/VBox/HBox2/Control/HBoxContainer"]
+[node name="unitbar" type="Label" parent="MarginContainer/HBoxContainer/VBox/HBox2/Control/HBoxContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
-text = "25 / 100"
+text = "25"
 vertical_alignment = 1
 
-[node name="Panel" type="Panel" parent="."]
+[node name="out of _" type="Label" parent="MarginContainer/HBoxContainer/VBox/HBox2/Control/HBoxContainer"]
 layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "/
+"
+vertical_alignment = 1
+
+[node name="capabar" type="Label" parent="MarginContainer/HBoxContainer/VBox/HBox2/Control/HBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "100"
+vertical_alignment = 1
