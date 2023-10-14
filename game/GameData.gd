@@ -22,18 +22,22 @@ var gameDetails = {}
 
 var games = {}
 
+var chats = {}
+
 var id: int
 
 var token: int
 
 var user
 
+var users = {}
+
 func _ready():
 	var root = get_tree().get_root()
 	current_scene = root.get_child(root.get_child_count() - 1)
 	
 	login()
-	loadUser()
+	loadSelf()
 	loadGames()
 
 func goto_scene(path):
@@ -79,12 +83,34 @@ func viewGameDetails(id: int):
 
 	goto_node(node)
 
-func loadUser():
+func loadSelf():
 	var user = await HTTPManager.getReq("/fetchSelf")
 	
 	if not user: return
 	
 	self.user = user
+	
+func loadUser(userID: int):
+	var user = await HTTPManager.getReq("/fetchUser", {
+		"id": userID
+	})
+	
+	if not user: return null
+	
+	users[userID] = user
+	
+	return user
+
+func loadChats(gameID: int):
+	var chats = await HTTPManager.getReq("/fetchChats", {
+		"gameID": gameID
+	})
+	
+	if(chats):
+		self.chats[gameID] = chats
+		return chats
+	
+	return []
 	
 func loadGames():
 	var openGames = await HTTPManager.getReq("/fetchGames")
@@ -160,8 +186,14 @@ func addOrder(gameID: int, type, referenceID, timestamp, arguments):
 	
 	print("Order registered")
 	
-func getUser():
+func getSelf():
 	return user
+	
+func getUser(id: int):
+	return users[id]
+
+func getChats(gameID: int):
+	return chats[gameID]
 
 func getGameDetails(id: int):
 	return gameDetails[id]

@@ -84,3 +84,6 @@ func _unhandled_input(event):
 		$Floor/Floor1.get_surface_override_material(0).set_shader_parameter("cameraSize", $Camera3D.size)
 		$Floor.scale.z = $Camera3D.size/100.0
 		$Floor.scale.x = $Camera3D.size/100.0
+		$Terrain.get_surface_override_material(0).set_shader_parameter("cameraSize", $Camera3D.size)
+		$Terrain.scale.z = $Camera3D.size/100.0
+		$Terrain.scale.x = $Camera3D.size/100.0

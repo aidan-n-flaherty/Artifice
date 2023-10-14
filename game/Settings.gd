@@ -3,12 +3,12 @@ extends Control
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	GameData.userChanged.connect(loadUser)
+	GameData.userChanged.connect(loadSelf)
 	
-	loadUser()
+	loadSelf()
 	
-func loadUser():
-	var user = GameData.getUser()
+func loadSelf():
+	var user = GameData.getSelf()
 	if(!user): return
 	
 	$MarginContainer/VBoxContainer/Username/Username.text = user.username

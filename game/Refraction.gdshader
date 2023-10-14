@@ -24,7 +24,7 @@ void fragment() {
 	float dY = mag * sin(angle);
 	
 	float displacement = texture(noise, (UV - 0.5 + 0.05 * vec2(dX, dY)) * (cameraSize/100.0) + vec2(1.0, 2.0) * speed * TIME + NODE_POSITION_WORLD.xz/vec2(-100.0, 260.0)).r;
-	
+
 	//float displacement2 = texture(noise2, (UV - 0.5 + 0.01 * vec2(dX, dY)) * (cameraSize/100.0) + vec2(1.0, -1.0) * speed * TIME + NODE_POSITION_WORLD.xz/vec2(-100.0, 260.0)).r;
 	
 	vec4 c = texture(screen_texture, UV + vec2(displacement/cameraSize, 0)).rgba;

@@ -4,6 +4,7 @@ uniform float epsilon;
 uniform sampler2D land;
 uniform sampler2D ocean;
 uniform sampler2D stones;
+uniform sampler2D texturing;
 
 uniform float cameraSize;
 
@@ -24,7 +25,9 @@ void fragment() {
 	
 	float height3 = texture(stones, pos).r;
 	
-	ALBEDO = albedo - vec3(1.0 * height);
+	float height4 = texture(texturing, pos).r;
+	
+	ALBEDO = albedo + vec3(0.4 * height) - vec3(1.0 * height4);
 	
 	if(height2 > 0.4) {
 		float delta = min(1.0, 15.0 * (height2 - 0.4));
@@ -41,16 +44,16 @@ void fragment() {
 		if(height2 > 0.55) discard;
 	}
 	
-	float diff = height - (1.0 - NODE_POSITION_WORLD.y);
+	float diff = height - (1.0 - 1.5 * NODE_POSITION_WORLD.y);
 	float diff2 = height - (0.5 - NODE_POSITION_WORLD.y);
 	
-	if(diff2 < 0.0) discard;
+	//if(diff2 < 0.0) discard;
 	if(diff > 0.0) {
 		ALPHA = min(ALPHA, 1.0 - 10.0 * diff);
 		if(diff > 0.1) discard;
 	}
 
-	vec3 norm = -normal(pos, land);
-	norm.y *= 1.0;
-	NORMAL = normalize(norm);
+	//vec3 norm = -normal(pos, land);
+	//norm.y *= 1.0;
+	//NORMAL = normalize(norm);
 }

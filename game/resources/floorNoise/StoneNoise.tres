@@ -2,7 +2,7 @@
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_wqxmd"]
 noise_type = 2
-frequency = 0.1
+frequency = 0.05
 fractal_octaves = 1
 cellular_jitter = 0.9
 cellular_return_type = 4
@@ -12,7 +12,7 @@ domain_warp_frequency = 0.5
 domain_warp_fractal_gain = 0.7
 
 [resource]
-width = 400
-height = 1080
+width = 800
+height = 2080
 seamless = true
 noise = SubResource("FastNoiseLite_wqxmd")
