@@ -115,6 +115,7 @@ Game::~Game() {
     if(cache.size() == 0) {
         for(Order* o : orders) delete o;
         for(Order* o : invalidOrders) delete o;
+        delete settings;
     }
 }
 

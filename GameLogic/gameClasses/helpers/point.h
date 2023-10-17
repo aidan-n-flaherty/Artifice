@@ -8,8 +8,8 @@
 class Point
 {
 private:
-    double x;
-    double y;
+    double x = -1;
+    double y = -1;
 
     bool invalid;
 

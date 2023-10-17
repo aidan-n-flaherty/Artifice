@@ -48,11 +48,11 @@ private:
     // client-side support for easy time machine usage
     void cacheState();
 
-    bool cacheEnabled;
-    double startTime;
-    double stateTime;
-    double endTime;
-    double nextEndState;
+    bool cacheEnabled = false;
+    double startTime = 0.0;
+    double stateTime = 0.0;
+    double endTime = 0.0;
+    double nextEndState = 0.0;
 
     // client side variables to determine the most recent order sent by another player to use as a reference for IDs,
     // as well as the ID of the current player

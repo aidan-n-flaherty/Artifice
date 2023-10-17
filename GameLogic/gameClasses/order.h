@@ -23,14 +23,14 @@ class Order
 private:
     static int counter;
 
-    const int ID;
+    const int ID = 0;
 
     // this variable is important to determine which game state this order was created off of
-    const int referenceID;
+    const int referenceID = 0;
 
-    double timestamp;
+    double timestamp = 0.0;
 
-    int senderID;
+    int senderID = -1;
 
 public:
     Order() : ID(counter++), referenceID(-1) {};

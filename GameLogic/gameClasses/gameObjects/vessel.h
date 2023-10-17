@@ -24,9 +24,9 @@ private:
     Outpost* origin;
     PositionalObject* target;
 
-    bool gift;
+    bool gift = false;
 
-    double speedModifier = 1;
+    double speedModifier = 1.0;
 
 public:
     Vessel(unsigned int ID, GameSettings* settings, Player* owner, const Point& position, Outpost* origin, 

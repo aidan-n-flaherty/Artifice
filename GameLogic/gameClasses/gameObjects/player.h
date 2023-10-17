@@ -28,26 +28,26 @@ class PositionalObject;
 class Player : public GameObject
 {
 private:
-    int userID;
+    int userID = 0;
 
-    int rating;
+    int rating = 0;
 
     std::string name;
 
-    bool defeated;
-    double defeatedTime;
+    bool defeated = false;
+    double defeatedTime = 0.0;
 
     std::list<Specialist*> specialists;
     std::list<Outpost*> outposts;
     std::list<Vessel*> vessels;
 
-    int resources;
-    double fractionalProduction;
+    int resources = 0;
+    double fractionalProduction = 0.0;
 
     int hires = 10; // should be 1 in the future
-    double fractionalHires;
+    double fractionalHires = 0.0;
 
-    int minesDrilled;
+    int minesDrilled = 0;
 
 public:
     Player(unsigned int ID, GameSettings* settings, std::string name, int userID, int rating) : GameObject(ID, settings), userID(userID), name(name), rating(rating), defeated(false) {}

@@ -14,11 +14,11 @@ private:
 
     GameSettings* settings;
 
-    const unsigned int ID;
+    const unsigned int ID = 0;
 
-    bool stale;
+    bool stale = false;
 
-    bool deleted;
+    bool deleted = false;
 
 public:
     GameObject(unsigned int ID, GameSettings* settings) : ID(ID), settings(settings), stale(true), deleted(false) {}

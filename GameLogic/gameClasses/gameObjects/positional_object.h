@@ -15,7 +15,7 @@ class GameSettings;
 class PositionalObject : public GameObject, public Possessable
 {
 private:
-    int numUnits;
+    int numUnits = 0;
 
     Point position;
 

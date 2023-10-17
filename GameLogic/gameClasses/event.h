@@ -18,11 +18,11 @@ class Event
 private:
     static int counter;
 
-    const int ID;
+    const int ID = 0;
     
     Order* originatingOrder;
 
-    double timestamp;
+    double timestamp = 0.0;
 
 public:
     Event() : ID(counter++) {}

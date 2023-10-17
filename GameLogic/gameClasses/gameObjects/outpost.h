@@ -22,11 +22,11 @@ class Vessel;
 class Outpost : public PositionalObject
 {
 private:
-    double fractionalProduction;
+    double fractionalProduction = 0.0;
 
-    int maxShieldCharge;
-    int shieldCharge;
-    double fractionalShield;
+    int maxShieldCharge = 0;
+    int shieldCharge = 0;
+    double fractionalShield = 0.0;
 
     OutpostType type;
 
