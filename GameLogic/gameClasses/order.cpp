@@ -2,6 +2,8 @@
 #include "game_object.h"
 #include "game.h"
 
+#include <algorithm>
+
 int Order::counter = 0;
 
 /* Since IDs are assigned by order of creation, this function ensures that the player refers to the same
@@ -12,7 +14,10 @@ int Order::counter = 0;
 */
 void Order::updateOrders(Game* game, const std::multiset<Order*, OrderOrder> &orders) const {
     for(auto &order : orders) {
-        if(getID() > order->getReferenceID() && order->getSenderID() != getSenderID()) order->adjustIDs(game->getObjCounter());
+        // if the order's reference order has already been run, then this order must have not been seen
+        if(std::find_if(orders.begin(), orders.end(), [&order](Order* o) {
+            return o->getID() == order->getReferenceID();
+        }) == orders.end() && order->getSenderID() != getSenderID()) order->adjustIDs(game->getObjCounter());
     }
 }
 

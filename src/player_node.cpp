@@ -16,6 +16,7 @@ void PlayerNode::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("getCapacity"), &PlayerNode::getCapacity);
 	ClassDB::bind_method(D_METHOD("getRating"), &PlayerNode::getRating);
 	ClassDB::bind_method(D_METHOD("getName"), &PlayerNode::getName);
+	ClassDB::bind_method(D_METHOD("getID"), &PlayerNode::getID);
 	ClassDB::bind_method(D_METHOD("getUserID"), &PlayerNode::getUserID);
 	ClassDB::bind_method(D_METHOD("getResources"), &PlayerNode::getResources);
 	ClassDB::bind_method(D_METHOD("getOutposts"), &PlayerNode::getOutposts);

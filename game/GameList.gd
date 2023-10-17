@@ -21,7 +21,7 @@ func init():
 	
 	var ids = buttons.keys()
 	for id in ids:
-		if not gameIDs.contains(id):
+		if not gameIDs.has(id):
 			buttons[id].queue_free()
 			buttons.erase(id)
 	

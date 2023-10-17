@@ -26,8 +26,8 @@ func _ready():
 			var scalar = 10
 			var cube = BoxMesh.new()
 			cube.size = Vector3(0.5, scalar * height, 0.5)
-			#cube.material = preload("res://resources/gradient.tres")
-			cube.material = preload("res://resources/metal.tres")
+			cube.material = preload("res://resources/gradient.tres")
+			#cube.material = preload("res://resources/metal.tres")
 			var mesh = MeshInstance3D.new()
 			mesh.set_mesh(cube)
 			mesh.position = Vector3(x/2.0, scalar * height/2, y/2.0)

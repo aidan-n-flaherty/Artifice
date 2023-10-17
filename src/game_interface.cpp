@@ -41,13 +41,14 @@ double getTimeMillis() {
 void GameInterface::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("select"), &GameInterface::select);
 	
-	ClassDB::bind_method(D_METHOD("init", "gameID", "userID", "settingOverrides"), &GameInterface::init);
+	ClassDB::bind_method(D_METHOD("init", "gameID", "userID", "startTime", "players", "settingOverrides"), &GameInterface::init);
 	ClassDB::bind_method(D_METHOD("setTime", "t"), &GameInterface::setTime);
 	ClassDB::bind_method(D_METHOD("getTime"), &GameInterface::getTime);
 	ClassDB::bind_method(D_METHOD("setPercent", "percent"), &GameInterface::setPercent);
 	ClassDB::bind_method(D_METHOD("getPercent"), &GameInterface::getPercent);
 	ClassDB::bind_method(D_METHOD("getWidth"), &GameInterface::getWidth);
 	ClassDB::bind_method(D_METHOD("getHeight"), &GameInterface::getHeight);
+	ClassDB::bind_method(D_METHOD("getSimulationSpeed"), &GameInterface::getSimulationSpeed);
 	ClassDB::bind_method(D_METHOD("getHires"), &GameInterface::getHires);
 	ClassDB::bind_method(D_METHOD("getStartTime"), &GameInterface::getStartTime);
 	ClassDB::bind_method(D_METHOD("canHire"), &GameInterface::canHire);
@@ -68,6 +69,8 @@ void GameInterface::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("getSpecialistType"), &GameInterface::getSpecialistType);
 	ClassDB::bind_method(D_METHOD("getFloorDisplay"), &GameInterface::getFloorDisplay);
 	ClassDB::bind_method(D_METHOD("shiftToTime", "t"), &GameInterface::shiftToTime);
+	ClassDB::bind_method(D_METHOD("bulkAddOrder", "type", "ID", "referenceID", "timestamp", "senderID", "arguments", "argCount"), &GameInterface::bulkAddOrder);
+	ClassDB::bind_method(D_METHOD("endBulkAdd"), &GameInterface::endBulkAdd);
 	ClassDB::bind_method(D_METHOD("addOrder", "type", "ID", "referenceID", "timestamp", "senderID", "arguments", "argCount"), &GameInterface::addOrder);
 	ClassDB::bind_method(D_METHOD("cancelOrder", "ID"), &GameInterface::cancelOrder);
 	ADD_SIGNAL(MethodInfo("addOrder", PropertyInfo(Variant::STRING, "type"), PropertyInfo(Variant::INT, "referenceID"), PropertyInfo(Variant::INT, "timestamp"), PropertyInfo(Variant::PACKED_INT32_ARRAY, "arguments")));
@@ -79,7 +82,7 @@ void GameInterface::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("moveTo", PropertyInfo(Variant::FLOAT, "t")));
 }
 
-void GameInterface::init(int gameID, int userID, int startTime, Dictionary settingOverrides) {
+void GameInterface::init(int gameID, int userID, int startTime, Dictionary players, Dictionary settingOverrides) {
 	this->gameID = gameID;
 	this->userID = userID;
 
@@ -87,13 +90,28 @@ void GameInterface::init(int gameID, int userID, int startTime, Dictionary setti
 
 	current = getTimeMillis();
 	
-	std::map<int, std::string> players;
-	players[123456] = "Bob";
-	players[654321] = "Joe";
-	players[987654] = "Steve";
+	std::map<int, std::tuple<std::string, int, int>> playerMap;
+	playerMap[0] = std::make_tuple("Bob", 123456, 467);
+	playerMap[1] = std::make_tuple("Joe", 654321, 752);
+	playerMap[2] = std::make_tuple("Steve", 987654, 567);
+
+	Array ids = players.keys();
+	for(int i = 0; i < ids.size(); i++) {
+		if(Variant::can_convert(ids[i].get_type(), Variant::INT)) {
+			int id = int(ids[i]);
+
+			Dictionary player = Dictionary(players[ids[i]]);
+
+			int userID = int(player["id"]);
+			int rating = int(Dictionary(player["userStats"])["rating"]);
+			std::string name = std::string(String(player["username"]).utf8().get_data());
+
+			playerMap[id] = std::make_tuple(name, userID, rating);
+		}
+	}
 	
 	settings = loadSettings();
-	completeGame = std::shared_ptr<Game>(new Game(settings, userID, startTime, startTime + simulationBuffer / settings.simulationSpeed, players, 42083, true));
+	completeGame = std::shared_ptr<Game>(new Game(settings, userID, startTime, startTime + simulationBuffer / settings.simulationSpeed, playerMap, 42083, true));
 
 	for(int i = 0; i < 30; i++) {
 		std::list<int> specialists;
@@ -116,9 +134,9 @@ void GameInterface::init(int gameID, int userID, int startTime, Dictionary setti
 GameSettings GameInterface::loadSettings() {
 	GameSettings settings;
 
-		if(settingOverrides.has("simulationSpeed") && Variant::can_convert(settingOverrides["simulationSpeed"].get_type(), Variant::FLOAT)) {
-			settings.simulationSpeed = double(settingOverrides["simulationSpeed"]);
-			}
+	if(settingOverrides.has("simulationSpeed") && Variant::can_convert(settingOverrides["simulationSpeed"].get_type(), Variant::FLOAT)) {
+		settings.simulationSpeed = double(settingOverrides["simulationSpeed"]);
+	}
 
 	return settings;
 }
@@ -138,7 +156,7 @@ void GameInterface::_process(double delta) {
 		
 		for(const auto& pair : outposts) pair.second->setDiff(time, timeDiff);
 
-		for(const auto& pair : players) pair.second->setDiff(time,timeDiff);
+		for(const auto& pair : players) pair.second->setDiff(time, timeDiff);
 
 		floorDisplay->setDiff(timeDiff);
 		floorDisplay->queue_redraw();
@@ -239,7 +257,6 @@ void GameInterface::update() {
 				add_child(newPlayer);
 			}
 		}
-
 	}
 }
 
@@ -414,7 +431,6 @@ void GameInterface::endBulkAdd() {
 void GameInterface::addOrder(const String &type, uint32_t ID, int32_t referenceID, double timestamp, uint32_t senderID, PackedInt32Array arguments, uint32_t argCount) {
 	int arr[argCount];
 	for(int i = 0; i < argCount; i++) arr[i] = arguments[i];
-	std::string t(type.utf8().get_data());
 
 	completeGame = completeGame->processOrder(std::string(type.utf8().get_data()), ID, referenceID, timestamp, senderID, arr, argCount);
 	completeGame->run();

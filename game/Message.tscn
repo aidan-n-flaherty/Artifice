@@ -1,29 +1,50 @@
-[gd_scene load_steps=2 format=3 uid="uid://4o681gofc1wg"]
+[gd_scene load_steps=3 format=3 uid="uid://4o681gofc1wg"]
+
+[ext_resource type="Script" path="res://Message.gd" id="1_clcsq"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nk3lw"]
 bg_color = Color(0.207843, 0.470588, 1, 1)
-corner_radius_top_left = 20
-corner_radius_top_right = 20
-corner_radius_bottom_right = 20
-corner_radius_bottom_left = 20
+corner_radius_top_left = 30
+corner_radius_top_right = 30
+corner_radius_bottom_right = 30
+corner_radius_bottom_left = 30
 
 [node name="Message" type="MarginContainer"]
 anchors_preset = 10
 anchor_right = 1.0
 grow_horizontal = 2
+script = ExtResource("1_clcsq")
 
-[node name="Panel" type="Panel" parent="."]
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 2
+
+[node name="LSpacer" type="Control" parent="HBoxContainer"]
+visible = false
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+
+[node name="Control" type="MarginContainer" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Panel" type="Panel" parent="HBoxContainer/Control"]
+layout_mode = 2
+size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_nk3lw")
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
+[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/Control"]
 layout_mode = 2
-theme_override_constants/margin_left = 50
-theme_override_constants/margin_top = 50
-theme_override_constants/margin_right = 50
-theme_override_constants/margin_bottom = 50
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 20
 
-[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer"]
+[node name="Label" type="RichTextLabel" parent="HBoxContainer/Control/MarginContainer"]
 layout_mode = 2
 text = "Testing"
 fit_content = true
+
+[node name="RSpacer" type="Control" parent="HBoxContainer"]
+visible = false
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2

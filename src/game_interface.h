@@ -72,7 +72,7 @@ public:
 
     ~GameInterface() {}
 
-	void init(int gameID, int userID, int startTime, Dictionary settingOverrides);
+	void init(int gameID, int userID, int startTime, Dictionary players, Dictionary settingOverrides);
 
 	GameSettings loadSettings();
 		
@@ -129,6 +129,7 @@ public:
 	double getStartTime() { return game->getStartTime(); }
 	int getReferenceID() { return game->getReferenceID(); }
 
+	double getSimulationSpeed() { return settings.simulationSpeed; }
 	int getWidth() { return settings.width; }
 	int getHeight() { return settings.height; }
 		

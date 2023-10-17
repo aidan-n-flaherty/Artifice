@@ -21,11 +21,20 @@ script = ExtResource("1_dw2co")
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="Label" type="Label" parent="VBoxContainer"]
+[node name="HBoxContainer" type="MarginContainer" parent="VBoxContainer"]
 layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
 text = "Chats"
 label_settings = SubResource("LabelSettings_dyrnh")
 horizontal_alignment = 1
+
+[node name="Button" type="Button" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+text = "   New   "
 
 [node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer"]
 layout_mode = 2
@@ -35,3 +44,7 @@ horizontal_scroll_mode = 0
 [node name="ChatContainer" type="VBoxContainer" parent="VBoxContainer/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+
+[node name="ChatPanel" type="Control" parent="."]
+layout_mode = 2
+mouse_filter = 2

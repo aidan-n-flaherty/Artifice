@@ -31,7 +31,7 @@ public:
                 Vessel* target = nullptr;
 
                 for(auto& vessel : game->getVessels()) {
-                    if(outpost->distance(vessel.second->getPosition()) > outpost->getFireRange()) continue;
+                    if(vessel.second->getOwnerID() == outpost->getOwnerID() && outpost->distance(vessel.second->getPosition()) > outpost->getFireRange()) continue;
                     if(target == nullptr || vessel.second->getUnits() > target->getUnits()) target = vessel.second;
                 }
 
@@ -43,7 +43,7 @@ public:
             }
         }
 
-        // schedule the same event to occur in 2 hours
+        // schedule the same event to occur again
         game->addEvent(new OutpostRangeEvent(getTimestamp() + game->getSettings()->fireRate / game->getSettings()->simulationSpeed));
     }
 };

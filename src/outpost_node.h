@@ -13,7 +13,7 @@ class OutpostNode : public PositionalNode {
     GDCLASS(OutpostNode, PositionalNode)
 
 private:
-	Outpost* outpost;
+	Outpost* outpost = nullptr;
 
 protected:
 	static void _bind_methods();

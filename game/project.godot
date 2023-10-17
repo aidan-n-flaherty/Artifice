@@ -22,6 +22,7 @@ Factory="*res://Factory.gd"
 GameData="*res://GameData.gd"
 HTTPManager="*res://HTTPManager.gd"
 Utilities="*res://Utilities.gd"
+WebSocketManager="*res://WebSocketManager.gd"
 
 [debug]
 
@@ -31,8 +32,8 @@ settings/stdout/verbose_stdout=true
 
 window/size/viewport_width=1080
 window/size/viewport_height=1920
-window/stretch/mode="viewport"
-window/stretch/aspect="keep_height"
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
 window/handheld/orientation=1
 
 [input]

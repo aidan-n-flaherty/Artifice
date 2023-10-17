@@ -14,8 +14,10 @@ class PlayerNode : public Node {
     GDCLASS(PlayerNode, Node)
 
 private:
-	Player* player;
+	Player* player = nullptr;
+
     double currentTime;
+	
 	double timeDiff;
 
 protected:
@@ -44,6 +46,8 @@ public:
 	String getName() { return String(player->getName().c_str()); }
 
 	int getUserID() { return player->getUserID(); }
+
+	int getID() { return player->getID(); }
 
 	int getResources() { return player->getResourcesAt(timeDiff); }
 

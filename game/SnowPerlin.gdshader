@@ -7,6 +7,8 @@ uniform sampler2D stones;
 uniform sampler2D texturing;
 
 uniform float cameraSize;
+uniform int mapWidth;
+uniform int mapHeight;
 
 vec3 normal(vec2 uv, sampler2D texture_norm) {
 	float right = texture(texture_norm, uv + vec2(epsilon, 0)).r;

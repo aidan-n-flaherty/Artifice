@@ -18,7 +18,7 @@ uniform float cameraSize = 100;
 
 void fragment() {
 	float angle = 2.0 * PI * texture(noise3, (UV - 0.5) * (cameraSize/100.0) + vec2(-1.0, -1.0) * speed * TIME + NODE_POSITION_WORLD.xz/vec2(-100.0, 260.0)).r;
-	float mag = texture(noise2, (UV - 0.5) * (cameraSize/100.0) + vec2(1.0, -1.0) * speed * TIME + NODE_POSITION_WORLD.xz/vec2(-100.0, 260.0)).r;
+	float mag = 0.3 * texture(noise2, (UV - 0.5) * (cameraSize/100.0) + vec2(1.0, -1.0) * speed * TIME + NODE_POSITION_WORLD.xz/vec2(-100.0, 260.0)).r;
 	
 	float dX = mag * cos(angle);
 	float dY = mag * sin(angle);

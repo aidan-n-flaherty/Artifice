@@ -6,6 +6,7 @@
 #include <vector>
 #include <limits>
 #include <algorithm>
+#include <tuple>
 #include "game.h"
 #include "gameObjects/vessel.h"
 #include "order.h"
@@ -26,20 +27,20 @@
 /* The game constructor should create the entire starting state deterministically based on
 ** the random seed provided.
 */
-Game::Game(GameSettings settings, int simulatorID, double startTime, double endTime, const std::map<int, std::string> &playerInfo, int seed, bool cacheEnabled) :
+Game::Game(GameSettings settings, int simulatorID, double startTime, double endTime, std::map<int, std::tuple<std::string, int, int>> &playerInfo, int seed, bool cacheEnabled) :
     startTime(startTime), stateTime(startTime), endTime(endTime), cacheEnabled(cacheEnabled) {
     std::srand(seed);
 
     this->settings = new GameSettings(settings);
 
-    for(auto pair : playerInfo) {
-        Player* p = new Player(incrementObjCounter(), getSettings(), pair.second, pair.first, 100);
-        if(pair.first == simulatorID) this->simulatorID = p->getID();
+    for(int i = 0; i < playerInfo.size(); i++) {
+        auto [name, userID, rating] = playerInfo[i];
+        Player* p = new Player(incrementObjCounter(), getSettings(), name, userID, rating);
+        if(userID == simulatorID) this->simulatorID = p->getID();
         addPlayer(p);
     }
 
-    int t = 0;
-    for(auto pair : playerInfo) {
+    for(int t = 0; t < playerInfo.size(); t++) {
         Outpost* o = new Outpost(incrementObjCounter(), getSettings(), OutpostType::FACTORY, 20, 10 + 20 * (t % 2), 10 + 20 * (t % 3) * (t % 3));
         addOutpost(o);
         getPlayer(t)->addOutpost(getOutpost(o->getID()));
@@ -49,12 +50,10 @@ Game::Game(GameSettings settings, int simulatorID, double startTime, double endT
         o->addSpecialist(getSpecialist(s->getID()));
         getPlayer(t)->addSpecialist(getSpecialist(s->getID()));
 
-        t++;
-        std::cout << pair.second << " has an outpost at (" << o->getPosition().getX() << ", " << o->getPosition().getY() << ")" << std::endl;
+        std::cout << std::get<0>(playerInfo[t]) << " has an outpost at (" << o->getPosition().getX() << ", " << o->getPosition().getY() << ")" << std::endl;
     }
 
-    t = 0;
-    for(auto pair : playerInfo) {
+    for(int t = 0; t < playerInfo.size(); t++) {
         Specialist* s = new Specialist(incrementObjCounter(), getSettings(), SpecialistType::QUEEN);
         addSpecialist(s);
         getPlayer(t)->getOutposts().front()->addSpecialist(getSpecialist(s->getID()));
@@ -81,7 +80,6 @@ Game::Game(GameSettings settings, int simulatorID, double startTime, double endT
             getPlayer(t)->getOutposts().front()->addSpecialist(getSpecialist(s->getID()));
             getPlayer(t)->addSpecialist(getSpecialist(s->getID()));
         }
-        t++;
     }
 
     addEvent(new OutpostRangeEvent(getTime()));

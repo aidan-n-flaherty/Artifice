@@ -13,7 +13,7 @@ class VesselNode : public PositionalNode {
     GDCLASS(VesselNode, PositionalNode)
 
 private:
-	Vessel* vessel;
+	Vessel* vessel = nullptr;
 	
 public:
     VesselNode(Vessel* vessel);

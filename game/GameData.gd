@@ -4,6 +4,8 @@ signal gamesChanged
 
 signal userChanged
 
+signal chatChanged(chatID)
+
 var Game = preload("res://Game.tscn")
 
 var GameDetail = preload("res://GameDetail.tscn")
@@ -24,6 +26,8 @@ var games = {}
 
 var chats = {}
 
+var chatGroups = {}
+
 var id: int
 
 var token: int
@@ -39,6 +43,8 @@ func _ready():
 	login()
 	loadSelf()
 	loadGames()
+	
+	WebSocketManager.init(token)
 
 func goto_scene(path):
 	call_deferred("_deferred_goto_scene", path)
@@ -64,13 +70,12 @@ func _deferred_goto_node(node) -> void:
 	get_tree().set_current_scene(current_scene)
 
 func login():
-	id = 654321
+	id = 3
 	token = 5577006791947779410
 	
 func viewGame(id: int):
-	#if(!games.has(id)):
-	games[id] = GameInterface.new()
-	games[id].init(id, self.id, int(Time.get_unix_time_from_system() + 5), getGameDetails(id).gameSettings.settingOverrides)
+	if not hasGame(id):
+		await loadGameState(id)
 	
 	var node = Game.instantiate()
 	node.init(id)
@@ -101,14 +106,29 @@ func loadUser(userID: int):
 	
 	return user
 
+func loadChat(chatID: int):
+	var chat = await HTTPManager.getReq("/fetchChat", {
+		"chatID": chatID
+	})
+	
+	if chat and hasGame(chat.gameID):
+		self.chats[chatID] = chat
+		self.chatGroups[chat.gameID].push_front(chat)
+		
+		emit_signal("chatChanged", chatID)
+
 func loadChats(gameID: int):
-	var chats = await HTTPManager.getReq("/fetchChats", {
+	var chatGroup = await HTTPManager.getReq("/fetchChats", {
 		"gameID": gameID
 	})
 	
-	if(chats):
-		self.chats[gameID] = chats
-		return chats
+	if(chatGroup):
+		self.chatGroups[gameID] = chatGroup
+		
+		for chat in chatGroup:
+			self.chats[chat.id] = chat
+		
+		return chatGroup
 	
 	return []
 	
@@ -156,14 +176,32 @@ func addGame(game):
 	gameDetails[int(game.gameData.id)] = game
 	
 	emit_signal("gamesChanged")
+
+func bulkAddOrders(game, orders):
+	for order in orders:
+		game.bulkAddOrder(order.type, int(order.id), int(order.referenceID), float(order.timestamp), int(order.senderID), PackedInt32Array(order.argumentIDs), int(order.argumentIDs.size()))
+	game.endBulkAdd()
+
+func updateOrders(id: int):
+	if not hasGame(id):
+		return
 	
+	var orderData = await HTTPManager.getReq("/fetchOrders", {
+		"gameID": id,
+		"referenceID": games[id].getReferenceID()
+	})
+	
+	bulkAddOrders(games[id], orderData)
+
 func loadGameState(id: int):
-	var gameData = await HTTPManager.getReq("fetchGameState", {
-		"tokens": token,
+	var gameData = await HTTPManager.getReq("/fetchGameState", {
 		"gameID": id
 	})
 	
 	games[id] = GameInterface.new()
+	games[id].init(id, self.id, int(Time.get_unix_time_from_system() + 5), gameData.users, getGameDetails(id).gameSettings.settingOverrides)
+	
+	bulkAddOrders(games[id], gameData.orders)
 
 func addOrder(gameID: int, type, referenceID, timestamp, arguments):
 	var game = getGame(gameID)
@@ -185,18 +223,38 @@ func addOrder(gameID: int, type, referenceID, timestamp, arguments):
 	game.addOrder(order.type, int(order.id), int(order.referenceID), float(order.timestamp), int(order.senderID), PackedInt32Array(order.argumentIDs), int(order.argumentIDs.size()))
 	
 	print("Order registered")
+
+func addMessage(message):
+	chats[message.chatID].messages.push_back(message)
 	
+	emit_signal("chatChanged", message.chatID)
+
 func getSelf():
 	return user
+	
+func getID():
+	return user.id
 	
 func getUser(id: int):
 	return users[id]
 
 func getChats(gameID: int):
-	return chats[gameID]
+	return chatGroups[gameID]
+	
+func getChat(chatID: int):
+	return chats[chatID]
 
 func getGameDetails(id: int):
 	return gameDetails[id]
+	
+func hasGame(id: int):
+	return games.has(id)
+	
+func hasChat(id: int):
+	return chats.has(id)
+	
+func chatInGame(chatID: int, gameID: int):
+	return getChats(gameID).has(getChat(chatID))
 
 func getGame(id: int):
 	return games[id]

@@ -23,6 +23,7 @@ theme_override_constants/margin_bottom = 50
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
+mouse_filter = 2
 
 [node name="Participants" type="Label" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -32,3 +33,5 @@ text = "Test, test, and test"
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 0.780392)
 text = "Test"
+
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]

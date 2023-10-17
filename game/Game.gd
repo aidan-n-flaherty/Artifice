@@ -16,6 +16,8 @@ func init(gameID):
 	self.gameID = gameID
 	
 	game = GameData.getGame(gameID)
+	game.set_process(true)
+	
 	game.connect("addOrder", addOrder)
 	game.connect("selectVessel", selectVessel)
 	game.connect("selectOutpost", selectOutpost)
@@ -33,6 +35,7 @@ func init(gameID):
 	$Viewport/Viewport3D/CameraPivot/FloorDisplay.add_child(game.getFloorDisplay())
 	
 	$Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel/Shop.init(gameID)
+	$Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel/Chat.init(gameID)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -120,4 +123,8 @@ func _on_logs_button_toggled(button_pressed):
 
 
 func _on_back_button_pressed():
+	$Viewport/Viewport3D.remove_child(game)
+	$Viewport/Viewport3D/CameraPivot/FloorDisplay.remove_child(game.getFloorDisplay())
+	game.set_process(false)
+	
 	GameData.goto_scene("res://MainMenu.tscn")

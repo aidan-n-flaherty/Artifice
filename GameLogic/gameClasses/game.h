@@ -10,6 +10,7 @@
 #include <map>
 #include <memory>
 #include <vector>
+#include <tuple>
 #include "gameObjects/player.h"
 #include "gameObjects/vessel.h"
 #include "gameObjects/outpost.h"
@@ -78,7 +79,7 @@ private:
 public:
     // Deterministically creates a pseudo-random map and initializes all player states.
     Game(){};
-    Game(GameSettings settings, int simulatorID, double startTime, double endTime, const std::map<int, std::string>& players, int seed, bool cacheEnabled);
+    Game(GameSettings settings, int simulatorID, double startTime, double endTime, std::map<int, std::tuple<std::string, int, int>>& playerInfo, int seed, bool cacheEnabled);
     Game(const Game& game);
     ~Game();
 

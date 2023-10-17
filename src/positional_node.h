@@ -18,7 +18,7 @@ class PositionalNode : public Node3D {
     GDCLASS(PositionalNode, Node3D)
 
 private:
-	PositionalObject* obj;
+	PositionalObject* obj = nullptr;
 	
 	double currentTime;
 
