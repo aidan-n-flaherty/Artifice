@@ -1,18 +1,20 @@
-[gd_scene load_steps=87 format=3 uid="uid://dgp4l24s2rulk"]
+[gd_scene load_steps=66 format=3 uid="uid://dgp4l24s2rulk"]
 
 [ext_resource type="Script" path="res://Game.gd" id="1_s53r2"]
 [ext_resource type="Script" path="res://CameraPivot.gd" id="2_t2ckv"]
 [ext_resource type="PackedScene" uid="uid://n0lobms04k46" path="res://Timeline.tscn" id="3_jhu7k"]
 [ext_resource type="Texture2D" uid="uid://b0wfr3sq3dkv7" path="res://resources/floorNoise/StoneNoise.tres" id="6_ys1ym"]
+[ext_resource type="Shader" path="res://TreePerlin.gdshader" id="7_6hmkj"]
 [ext_resource type="Shader" path="res://SnowPerlin.gdshader" id="8_4e3wm"]
+[ext_resource type="Texture2D" uid="uid://ni2tx8u0abmi" path="res://resources/floorNoise/SnowNoise.tres" id="8_wgwxy"]
 [ext_resource type="Texture2D" uid="uid://cy7ou3wycwjra" path="res://resources/images/back.png" id="9_4ris4"]
+[ext_resource type="Texture2D" uid="uid://bu01kj5jvvq1b" path="res://resources/floorNoise/OceanNoise.tres" id="9_co6uu"]
 [ext_resource type="Material" uid="uid://li2d1mgnl1tk" path="res://resources/metal.tres" id="9_j8866"]
 [ext_resource type="Texture2D" uid="uid://brxrlxoa5qwsv" path="res://resources/snow.tres" id="9_kcgrj"]
 [ext_resource type="Theme" uid="uid://bfwpaonloeco5" path="res://resources/theme.tres" id="9_ttxpu"]
 [ext_resource type="Shader" path="res://Refraction.gdshader" id="9_xlyo3"]
 [ext_resource type="Texture2D" uid="uid://dg1n1bsa3ya68" path="res://resources/ocean.tres" id="10_i4d0l"]
 [ext_resource type="Script" path="res://VirtualCamera3D.gd" id="10_jokxl"]
-[ext_resource type="Shader" path="res://Terrain.gdshader" id="10_u7afu"]
 [ext_resource type="StyleBox" uid="uid://dgq41l16rxlq" path="res://resources/styles/roundRectBlack.tres" id="11_uh1qc"]
 [ext_resource type="Texture2D" uid="uid://c0beg3px50da4" path="res://resources/gameMenuIcons/logsIcon.png" id="12_fsvp4"]
 [ext_resource type="PackedScene" uid="uid://cqdpj2uw0cloc" path="res://Shop.tscn" id="12_sa8gc"]
@@ -46,7 +48,6 @@ background_mode = 2
 sky = SubResource("Sky_7srwa")
 sky_custom_fov = 90.0
 sky_rotation = Vector3(-0.785398, 0, 0)
-ambient_light_sky_contribution = 0.5
 reflected_light_source = 2
 glow_intensity = 0.0
 glow_strength = 2.0
@@ -57,177 +58,106 @@ viewport_path = NodePath("Viewport/Viewport3D/CameraPivot/FloorDisplay")
 [sub_resource type="PlaneMesh" id="PlaneMesh_8tg0o"]
 size = Vector2(100, 260)
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_cglbq"]
-noise_type = 2
-cellular_distance_function = 1
-cellular_jitter = 1.0
-cellular_return_type = 6
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_8ssah"]
-width = 800
-height = 2080
-seamless = true
-noise = SubResource("FastNoiseLite_cglbq")
-
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ps11k"]
-resource_local_to_scene = true
 render_priority = 0
 shader = ExtResource("8_4e3wm")
 shader_parameter/albedo = Color(1, 1, 1, 1)
-shader_parameter/epsilon = 0.003
+shader_parameter/epsilon = 0.01
 shader_parameter/cameraSize = 100.0
 shader_parameter/mapWidth = null
 shader_parameter/mapHeight = null
 shader_parameter/land = ExtResource("9_kcgrj")
 shader_parameter/ocean = ExtResource("10_i4d0l")
 shader_parameter/stones = ExtResource("6_ys1ym")
-shader_parameter/texturing = SubResource("NoiseTexture2D_8ssah")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_42j6n"]
+size = Vector2(100, 260)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_s5dhy"]
+noise_type = 2
+frequency = 0.2
+fractal_octaves = 1
+cellular_jitter = 0.8
+cellular_return_type = 4
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_5lxyf"]
+invert = true
+seamless = true
+noise = SubResource("FastNoiseLite_s5dhy")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_sp2b0"]
+render_priority = 0
+shader = ExtResource("7_6hmkj")
+shader_parameter/albedo = Color(0.0431373, 0.341176, 0.0980392, 1)
+shader_parameter/epsilon = null
+shader_parameter/heightmap_scale = 4.0
+shader_parameter/heightmap_min_layers = 32
+shader_parameter/heightmap_max_layers = 55
+shader_parameter/heightmap_flip = Vector2(1, 1)
+shader_parameter/cameraSize = 100.0
+shader_parameter/land = ExtResource("8_wgwxy")
+shader_parameter/ocean = ExtResource("9_co6uu")
+shader_parameter/stones = ExtResource("6_ys1ym")
+shader_parameter/texture_heightmap = SubResource("NoiseTexture2D_5lxyf")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_pn67n"]
 size = Vector2(100, 260)
 
-[sub_resource type="Gradient" id="Gradient_uns2y"]
-colors = PackedColorArray(0, 0, 0, 1, 0.180005, 0.180005, 0.180005, 1)
+[sub_resource type="Gradient" id="Gradient_v1klp"]
+offsets = PackedFloat32Array(0.00692042, 0.99654)
+colors = PackedColorArray(0, 0, 0, 1, 0.288518, 0.288518, 0.288518, 1)
 
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_wvt7w"]
-gradient = SubResource("Gradient_uns2y")
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_6itsa"]
+gradient = SubResource("Gradient_v1klp")
 fill_from = Vector2(1, 1)
-fill_to = Vector2(1, 0.00213675)
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_qnahw"]
-noise_type = 2
-frequency = 0.005
-fractal_type = 2
-cellular_distance_function = 1
-cellular_jitter = 1.0
-cellular_return_type = 6
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_sx24m"]
-width = 800
-height = 2080
-seamless = true
-noise = SubResource("FastNoiseLite_qnahw")
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_ilc18"]
-frequency = 0.05
-fractal_type = 2
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_amuig"]
-width = 800
-height = 2080
-seamless = true
-noise = SubResource("FastNoiseLite_ilc18")
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_lii30"]
-fractal_type = 2
-cellular_distance_function = 1
-cellular_jitter = 1.0
-cellular_return_type = 6
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_w6n7x"]
-width = 800
-height = 2080
-seamless = true
-noise = SubResource("FastNoiseLite_lii30")
-
-[sub_resource type="ViewportTexture" id="ViewportTexture_apg5s"]
-viewport_path = NodePath("Viewport/Viewport3D/CameraPivot/SubViewport")
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_bfofx"]
-resource_local_to_scene = true
-render_priority = 0
-shader = ExtResource("9_xlyo3")
-shader_parameter/speed = 0.005
-shader_parameter/cameraSize = 100.0
-shader_parameter/screen_texture = SubResource("ViewportTexture_apg5s")
-shader_parameter/noise = SubResource("NoiseTexture2D_sx24m")
-shader_parameter/noise2 = SubResource("NoiseTexture2D_amuig")
-shader_parameter/noise3 = SubResource("NoiseTexture2D_w6n7x")
-shader_parameter/gradient = SubResource("GradientTexture2D_wvt7w")
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_xk06g"]
-size = Vector2(100, 260)
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_8h4h1"]
-noise_type = 2
-frequency = 0.005
-cellular_distance_function = 1
-cellular_jitter = 0.8
-cellular_return_type = 6
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_pylon"]
-width = 800
-height = 2080
-seamless = true
-noise = SubResource("FastNoiseLite_8h4h1")
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_h22ry"]
-noise_type = 2
-cellular_jitter = 0.7
-cellular_return_type = 6
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_k7504"]
-noise = SubResource("FastNoiseLite_h22ry")
-
-[sub_resource type="Gradient" id="Gradient_mhdls"]
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_uns5y"]
-noise_type = 2
-frequency = 0.005
-fractal_type = 2
-fractal_octaves = 1
-fractal_weighted_strength = 1.0
-cellular_distance_function = 3
-cellular_jitter = 0.7
-cellular_return_type = 6
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ygns3"]
-width = 800
-height = 2080
-seamless = true
-color_ramp = SubResource("Gradient_mhdls")
-noise = SubResource("FastNoiseLite_uns5y")
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_qyedm"]
-noise_type = 2
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_evgjh"]
+noise_type = 3
 frequency = 0.02
-cellular_jitter = 0.8
-cellular_return_type = 4
+fractal_type = 3
+domain_warp_enabled = true
 
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_aa3ug"]
-noise = SubResource("FastNoiseLite_qyedm")
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_otoxq"]
+width = 800
+height = 2080
+invert = true
+seamless = true
+noise = SubResource("FastNoiseLite_evgjh")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_sil3n"]
+frequency = 0.02
+fractal_type = 2
+domain_warp_enabled = true
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_mpw5d"]
+width = 800
+height = 2080
+seamless = true
+noise = SubResource("FastNoiseLite_sil3n")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_xq8uh"]
+frequency = 0.05
+domain_warp_enabled = true
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_mhia5"]
+width = 400
+height = 1080
+noise = SubResource("FastNoiseLite_xq8uh")
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_qytxr"]
 viewport_path = NodePath("Viewport/Viewport3D/CameraPivot/SubViewport")
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_f80gx"]
-frequency = 0.1
-domain_warp_enabled = true
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_7tw3d"]
-width = 800
-height = 2080
-seamless = true
-noise = SubResource("FastNoiseLite_f80gx")
-
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_1fvqb"]
 resource_local_to_scene = true
 render_priority = 0
-shader = ExtResource("10_u7afu")
-shader_parameter/heightmap_scale = 4.0
-shader_parameter/heightmap_min_layers = 32
-shader_parameter/heightmap_max_layers = 32
-shader_parameter/heightmap_flip = Vector2(1, 1)
+shader = ExtResource("9_xlyo3")
+shader_parameter/speed = 0.003
 shader_parameter/cameraSize = 100.0
-shader_parameter/epsilon = 0.001
-shader_parameter/outposts = PackedVector2Array(0, 0)
-shader_parameter/outpostsLength = 1
 shader_parameter/screen_texture = SubResource("ViewportTexture_qytxr")
-shader_parameter/ridges = SubResource("NoiseTexture2D_ygns3")
-shader_parameter/erosion = SubResource("NoiseTexture2D_pylon")
-shader_parameter/texturing = SubResource("NoiseTexture2D_7tw3d")
-shader_parameter/rocks = SubResource("NoiseTexture2D_aa3ug")
-shader_parameter/hole = SubResource("NoiseTexture2D_k7504")
+shader_parameter/noise = SubResource("NoiseTexture2D_otoxq")
+shader_parameter/noise2 = SubResource("NoiseTexture2D_mpw5d")
+shader_parameter/noise3 = SubResource("NoiseTexture2D_mhia5")
+shader_parameter/gradient = SubResource("GradientTexture2D_6itsa")
 
 [sub_resource type="Environment" id="Environment_auhjg"]
 background_mode = 1
@@ -334,6 +264,7 @@ void fragment() {
 "
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_cea77"]
+domain_warp_enabled = true
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_e25qt"]
 width = 400
@@ -348,16 +279,6 @@ width = 400
 height = 1080
 noise = SubResource("FastNoiseLite_siy2b")
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_owqm8"]
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_mbsey"]
-noise = SubResource("FastNoiseLite_owqm8")
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_gb28f"]
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_bm0nq"]
-noise = SubResource("FastNoiseLite_gb28f")
-
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_k676y"]
 render_priority = 0
 shader = SubResource("Shader_e6y0e")
@@ -367,7 +288,7 @@ shader_parameter/roughness = 1.0
 shader_parameter/metallic_texture_channel = null
 shader_parameter/specular = 0.5
 shader_parameter/metallic = 0.0
-shader_parameter/heightmap_scale = -4.0
+shader_parameter/heightmap_scale = 16.0
 shader_parameter/heightmap_min_layers = 16
 shader_parameter/heightmap_max_layers = 32
 shader_parameter/heightmap_flip = Vector2(1, 1)
@@ -376,40 +297,7 @@ shader_parameter/uv1_offset = Vector3(0, 0, 0)
 shader_parameter/uv2_scale = Vector3(1, 1, 1)
 shader_parameter/uv2_offset = Vector3(0, 0, 0)
 shader_parameter/texture_albedo = SubResource("NoiseTexture2D_e25qt")
-shader_parameter/texture_metallic = SubResource("NoiseTexture2D_mbsey")
-shader_parameter/texture_roughness = SubResource("NoiseTexture2D_bm0nq")
 shader_parameter/texture_heightmap = SubResource("NoiseTexture2D_spmof")
-
-[sub_resource type="BoxMesh" id="BoxMesh_sqx6p"]
-size = Vector3(1, 50, 1)
-
-[sub_resource type="BoxMesh" id="BoxMesh_imk1r"]
-size = Vector3(50, 50, 50)
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_lmm5n"]
-size = Vector2(50, 50)
-
-[sub_resource type="Gradient" id="Gradient_uqro4"]
-offsets = PackedFloat32Array(0.0247934, 0.0330578)
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_ta04l"]
-noise_type = 2
-frequency = 0.0025
-fractal_type = 2
-fractal_octaves = 1
-cellular_distance_function = 1
-cellular_jitter = 0.7
-cellular_return_type = 4
-domain_warp_enabled = true
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_q4ala"]
-width = 2048
-height = 2048
-color_ramp = SubResource("Gradient_uqro4")
-noise = SubResource("FastNoiseLite_ta04l")
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1yqdi"]
-albedo_texture = SubResource("NoiseTexture2D_q4ala")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1u3xq"]
 bg_color = Color(0, 0, 0, 0.243137)
@@ -443,8 +331,8 @@ mouse_filter = 1
 environment = SubResource("Environment_jfb01")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="Viewport/Viewport3D"]
-transform = Transform3D(0.846193, -0.336793, -0.41295, 0, -0.774945, 0.632029, -0.532876, -0.534819, -0.655753, 0, 100, 0)
-layers = 3
+transform = Transform3D(-0.0533566, 0.722889, -0.6889, 0.687064, 0.527203, 0.5, 0.724635, -0.44664, -0.524801, 0, 0, 0)
+layers = 2
 light_bake_mode = 1
 shadow_enabled = true
 shadow_bias = 0.01
@@ -472,10 +360,9 @@ far = 300.0
 [node name="FloorDisplay" type="SubViewport" parent="Viewport/Viewport3D/CameraPivot"]
 disable_3d = true
 transparent_bg = true
-msaa_2d = 1
 size = Vector2i(1000, 2600)
 
-[node name="FloorSprite" type="Sprite3D" parent="Viewport/Viewport3D/CameraPivot"]
+[node name="Sprite3D" type="Sprite3D" parent="Viewport/Viewport3D/CameraPivot"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -99, -100)
 flip_h = true
 flip_v = true
@@ -508,20 +395,18 @@ mesh = SubResource("PlaneMesh_8tg0o")
 skeleton = NodePath("../..")
 surface_material_override/0 = SubResource("ShaderMaterial_ps11k")
 
+[node name="Trees" type="MeshInstance3D" parent="Viewport/Viewport3D/CameraPivot/Floor"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+visible = false
+mesh = SubResource("PlaneMesh_42j6n")
+surface_material_override/0 = SubResource("ShaderMaterial_sp2b0")
+
 [node name="Reflection" type="MeshInstance3D" parent="Viewport/Viewport3D/CameraPivot"]
 transform = Transform3D(1, -1.50996e-07, -8.74228e-08, 1.50996e-07, 1, 7.6233e-21, -8.74228e-08, 1.32005e-14, -1, 0, -100, -100)
 layers = 2
 sorting_offset = -1.0
 cast_shadow = 0
 mesh = SubResource("PlaneMesh_pn67n")
-surface_material_override/0 = SubResource("ShaderMaterial_bfofx")
-
-[node name="Terrain" type="MeshInstance3D" parent="Viewport/Viewport3D/CameraPivot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -100, -100)
-visible = false
-layers = 2
-cast_shadow = 0
-mesh = SubResource("PlaneMesh_xk06g")
 surface_material_override/0 = SubResource("ShaderMaterial_1fvqb")
 
 [node name="SubViewport" type="SubViewport" parent="Viewport/Viewport3D/CameraPivot"]
@@ -563,22 +448,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 15.7165, 0)
 visible = false
 mesh = SubResource("PlaneMesh_df7dv")
 surface_material_override/0 = SubResource("ShaderMaterial_k676y")
-
-[node name="MeshInstance3D5" type="MeshInstance3D" parent="Viewport/Viewport3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -10)
-visible = false
-mesh = SubResource("BoxMesh_sqx6p")
-
-[node name="MeshInstance3D6" type="MeshInstance3D" parent="Viewport/Viewport3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 9.81246, 0)
-visible = false
-mesh = SubResource("BoxMesh_imk1r")
-
-[node name="MeshInstance3D7" type="MeshInstance3D" parent="Viewport/Viewport3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.58267, 0)
-visible = false
-mesh = SubResource("PlaneMesh_lmm5n")
-surface_material_override/0 = SubResource("StandardMaterial3D_1yqdi")
 
 [node name="GameOverlay" type="VSplitContainer" parent="Viewport"]
 layout_mode = 1
@@ -779,6 +648,7 @@ visible = false
 layout_mode = 1
 
 [node name="Status" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel" instance=ExtResource("13_20fpi")]
+process_mode = 4
 visible = false
 layout_mode = 1
 
