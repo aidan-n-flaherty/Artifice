@@ -18,6 +18,7 @@ func update():
 		if(capacity > largestCapacity):
 			largestCapacity = capacity
 	
+	var i = 0
 	for p in players:
 		
 		var username = p.getName()
@@ -36,12 +37,14 @@ func update():
 		if playerStatuses.has(p.getUserID()):
 			playerStatus = playerStatuses[p.getUserID()]
 			playerStatus.init(username, units, capacity, resources, largestCapacity, win, outposts, factories, generators, mines)
+			$MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer.move_child(playerStatus,i)
+	
 		else:
 			playerStatus = preload("res://PlayerStatus.tscn").instantiate()
 			playerStatus.init(username, units, capacity, resources, largestCapacity, win, outposts, factories, generators, mines)
 			playerStatuses[p.getUserID()] = playerStatus
 			$MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer.add_child(playerStatus)
-	
+		i += 1
 		
 		
 		
