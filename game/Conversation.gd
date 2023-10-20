@@ -6,9 +6,7 @@ var chat
 
 var participants
 
-var messageIDs = []
-
-var messages = []
+var messages = {}
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -20,23 +18,25 @@ func init(chat, participants):
 	
 	refresh(chat.messages)
 	
-func refresh(messages):
-	chat.messages.sort_custom(func(a, b): return a.timestamp < b.timestamp)
-	for message in chat.messages:
-		if messageIDs.has(message.id):
-			continue
+func refresh(messageList):
+	messageList.sort_custom(func(a, b): return a.timestamp < b.timestamp)
+	
+	for index in len(messageList):
+		var message = messageList[index]
 		
-		messageIDs.push_back(message.id)
+		var messageNode
 		
-		var messageNode = preload("res://Message.tscn")
-		messageNode.init(message)
-		
-		messages.push_back(message)
-		
-		if len(messages) > 0:
-			messages.back().add_sibling(messageNode)
+		if messages.has(message.id):
+			messageNode = messages[message.id]
 		else:
+			messageNode = preload("res://Message.tscn").instantiate()
+			messageNode.init(message)
+			
+			messages[message.id] = messageNode
+			
 			$MarginContainer/VBoxContainer/ScrollContainer/MessageContainer.add_child(messageNode)
+		
+		$MarginContainer/VBoxContainer/ScrollContainer/MessageContainer.move_child(messageNode, index)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -48,3 +48,10 @@ func chatChanged(chatID: int):
 
 func _on_back_pressed():
 	emit_signal("deselected", self)
+
+func _on_button_pressed():
+	if $MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/TextEdit.text == "":
+		return
+	
+	if await GameData.sendMessage(chat.id, $MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/TextEdit.text):
+		$MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/TextEdit.clear()

@@ -113,7 +113,7 @@ func loadChat(chatID: int):
 	
 	if chat and hasGame(chat.gameID):
 		self.chats[chatID] = chat
-		self.chatGroups[chat.gameID].push_front(chat)
+		self.chatGroups[int(chat.gameID)].push_front(chat)
 		
 		emit_signal("chatChanged", chatID)
 
@@ -126,7 +126,7 @@ func loadChats(gameID: int):
 		self.chatGroups[gameID] = chatGroup
 		
 		for chat in chatGroup:
-			self.chats[chat.id] = chat
+			self.chats[int(chat.id)] = chat
 		
 		return chatGroup
 	
@@ -224,10 +224,16 @@ func addOrder(gameID: int, type, referenceID, timestamp, arguments):
 	
 	print("Order registered")
 
+func sendMessage(chatID: int, content: String) -> bool:
+	return await HTTPManager.postReq("/sendMessage", {
+		"chatID": chatID,
+		"content": content
+	}, {})
+
 func addMessage(message):
-	chats[message.chatID].messages.push_back(message)
+	chats[int(message.chatID)].messages.push_back(message)
 	
-	emit_signal("chatChanged", message.chatID)
+	emit_signal("chatChanged", int(message.chatID))
 
 func getSelf():
 	return user
