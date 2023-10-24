@@ -129,6 +129,7 @@ public:
 	Array getBattlePhases();
 	Array getNextBattleUsers(int objID);
 	Array getNextBattleMessages(int objID, const String& phase);
+	Dictionary getNextBattleStartingUnits(int objID);
 	Dictionary getNextBattleUnits(int objID, const String& phase);
 
 	bool canHire() { return game->getPlayer(userGameID)->getHiresAt(current) >= 0; }

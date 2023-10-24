@@ -61,6 +61,7 @@ void GameInterface::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("getNextBattleEvent"), &GameInterface::getNextBattleEvent);
 	ClassDB::bind_method(D_METHOD("getBattlePhases"), &GameInterface::getBattlePhases);
 	ClassDB::bind_method(D_METHOD("getNextBattleMessages", "objID", "phase"), &GameInterface::getNextBattleMessages);
+	ClassDB::bind_method(D_METHOD("getNextBattleStartingUnits", "objID"), &GameInterface::getNextBattleStartingUnits);
 	ClassDB::bind_method(D_METHOD("getNextBattleUnits", "objID", "phase"), &GameInterface::getNextBattleUnits);
 	ClassDB::bind_method(D_METHOD("getOutpostPositions"), &GameInterface::getOutpostPositions);
 	ClassDB::bind_method(D_METHOD("getShopOptions"), &GameInterface::getShopOptions);
@@ -591,6 +592,22 @@ Array GameInterface::getNextBattleMessages(int objID, const String& phase) {
 	}
 
 	return arr;
+}
+
+Dictionary GameInterface::getNextBattleStartingUnits(int objID) {
+	const BattleEvent* b = completeGame->nextBattle(objID, current);
+
+	Dictionary d;
+
+	if(!b) return d;
+
+	std::unordered_map<int, int> units = b->getStartingUnits();
+
+	for(auto& pair : units) {
+		d[pair.first] = pair.second;
+	}
+
+	return d;
 }
 
 Dictionary GameInterface::getNextBattleUnits(int objID, const String& phase) {

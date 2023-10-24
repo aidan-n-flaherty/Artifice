@@ -106,6 +106,13 @@ public:
         return std::make_pair<int, int>(a->getOwnerID(), b->getOwnerID());
     }
 
+    const std::unordered_map<int, int> getStartingUnits() const {
+        return std::unordered_map<int, int> {
+            { aID, startingUnitsA },
+            { bID, startingUnitsB }
+        };
+    }
+
     const std::list<std::pair<int, std::string>>& getBattleLog(const std::string &phase) const {
         return battleLog.at(phase);
     }
