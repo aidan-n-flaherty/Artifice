@@ -127,8 +127,9 @@ public:
 	double getNextProductionEvent(int outpostID);
 	double getNextBattleEvent(int objID);
 	Array getBattlePhases();
+	Array getNextBattleUsers(int objID);
 	Array getNextBattleMessages(int objID, const String& phase);
-	Vector2i getNextBattleUnits(int objID, const String& phase);
+	Dictionary getNextBattleUnits(int objID, const String& phase);
 
 	bool canHire() { return game->getPlayer(userGameID)->getHiresAt(current) >= 0; }
 	bool hasStarted() { return current >= game->getStartTime(); }

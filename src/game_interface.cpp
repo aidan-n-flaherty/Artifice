@@ -561,6 +561,19 @@ Array GameInterface::getBattlePhases() {
 	return arr;
 }
 
+Array GameInterface::getNextBattleUsers(int objID) {
+	const BattleEvent* b = completeGame->nextBattle(objID, current);
+
+	Array arr;
+
+	if(!b) return arr;
+
+	arr.push_back(players[b->getBattleUsers().first]);
+	arr.push_back(players[b->getBattleUsers().second]);
+
+	return arr;
+}
+
 Array GameInterface::getNextBattleMessages(int objID, const String& phase) {
 	const BattleEvent* b = completeGame->nextBattle(objID, current);
 
@@ -580,14 +593,20 @@ Array GameInterface::getNextBattleMessages(int objID, const String& phase) {
 	return arr;
 }
 
-Vector2i GameInterface::getNextBattleUnits(int objID, const String& phase) {
+Dictionary GameInterface::getNextBattleUnits(int objID, const String& phase) {
 	const BattleEvent* b = completeGame->nextBattle(objID, current);
 
-	if(!b) return Vector2i(0, 0);
+	Dictionary d;
 
-	const std::pair<int, int>& units = b->getPhaseUnits(std::string(phase.utf8().get_data()));
+	if(!b) return d;
 
-	return Vector2i(units.first, units.second);
+	std::unordered_map<int, int> units = b->getPhaseUnits(std::string(phase.utf8().get_data()));
+
+	for(auto& pair : units) {
+		d[pair.first] = pair.second;
+	}
+
+	return d;
 }
 
 Color GameInterface::getColor(int userID) {

@@ -102,12 +102,20 @@ public:
         return { "Specialist Phase", "Post-Specialist Phase", "Combat Resolution Phase", "Post-Combat Phase" };
     }
 
+    const std::pair<int, int> getBattleUsers() const {
+        return std::make_pair<int, int>(a->getOwnerID(), b->getOwnerID());
+    }
+
     const std::list<std::pair<int, std::string>>& getBattleLog(const std::string &phase) const {
         return battleLog.at(phase);
     }
 
-    const std::pair<int, int>& getPhaseUnits(const std::string &phase) const {
-        return phaseUnits.at(phase);
+    const std::unordered_map<int, int> getPhaseUnits(const std::string &phase) const {
+        const std::pair<int, int>& p = phaseUnits.at(phase);
+        return std::unordered_map<int, int> {
+            { aID, p.first },
+            { bID, p.second }
+        };
     }
 };
 
