@@ -59,6 +59,9 @@ void GameInterface::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("getNextArrivalEvent"), &GameInterface::getNextArrivalEvent);
 	ClassDB::bind_method(D_METHOD("getNextProductionEvent"), &GameInterface::getNextProductionEvent);
 	ClassDB::bind_method(D_METHOD("getNextBattleEvent"), &GameInterface::getNextBattleEvent);
+	ClassDB::bind_method(D_METHOD("getBattlePhases"), &GameInterface::getBattlePhases);
+	ClassDB::bind_method(D_METHOD("getNextBattleMessages", "objID", "phase"), &GameInterface::getNextBattleMessages);
+	ClassDB::bind_method(D_METHOD("getNextBattleUnits", "objID", "phase"), &GameInterface::getNextBattleUnits);
 	ClassDB::bind_method(D_METHOD("getOutpostPositions"), &GameInterface::getOutpostPositions);
 	ClassDB::bind_method(D_METHOD("getShopOptions"), &GameInterface::getShopOptions);
 	ClassDB::bind_method(D_METHOD("getPromotionOptions"), &GameInterface::getPromotionOptions);
