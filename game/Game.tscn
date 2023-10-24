@@ -651,6 +651,7 @@ expand_mode = 2
 stretch_mode = 4
 
 [node name="BackButton" type="TextureButton" parent="Viewport/GameOverlay/Overlay/VBoxContainer/TopSpacer/MarginContainer"]
+modulate = Color(0, 0, 0, 1)
 layout_mode = 2
 texture_normal = ExtResource("9_4ris4")
 ignore_texture_size = true

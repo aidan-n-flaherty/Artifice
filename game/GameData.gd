@@ -72,6 +72,9 @@ func _deferred_goto_node(node) -> void:
 func login():
 	id = 3
 	token = 5577006791947779410
+	#id = 4
+	#token = 8674665223082153551
+	
 	
 func viewGame(id: int):
 	if not hasGame(id):
@@ -105,6 +108,16 @@ func loadUser(userID: int):
 	users[userID] = user
 	
 	return user
+	
+func createChat(gameID: int, users: PackedInt32Array):
+	var chatID = await HTTPManager.postReq("/makeChat", users, {
+		"gameID": gameID
+	})
+	
+	if not chatID:
+		return false
+	
+	return chatID
 
 func loadChat(chatID: int):
 	var chat = await HTTPManager.getReq("/fetchChat", {
@@ -165,7 +178,7 @@ func joinGame(id: int, password = ""):
 	
 	var game = await HTTPManager.getReq("/fetchGameDetails", {
 		"gameID": id
-	}, false)
+	})
 	
 	if not game: return
 	
@@ -231,6 +244,10 @@ func sendMessage(chatID: int, content: String) -> bool:
 	}, {})
 
 func addMessage(message):
+	for m in chats[int(message.chatID)].messages:
+		if message.chatID == m.chatID:
+			return
+	
 	chats[int(message.chatID)].messages.push_back(message)
 	
 	emit_signal("chatChanged", int(message.chatID))
@@ -242,7 +259,7 @@ func getID():
 	return user.id
 	
 func getUser(id: int):
-	return users[id]
+	return users[id] if users.has(id) else await loadUser(id)
 
 func getChats(gameID: int):
 	return chatGroups[gameID]

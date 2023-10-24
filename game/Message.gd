@@ -12,8 +12,10 @@ func init(message):
 	$HBoxContainer/Control/MarginContainer/Label.text = message.content
 	
 	if message.senderID == GameData.getID():
+		$HBoxContainer/Control/SelfSent.show()
 		$HBoxContainer/LSpacer.show()
 	else:
+		$HBoxContainer/Control/OtherSent.show()
 		$HBoxContainer/RSpacer.show()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

@@ -25,7 +25,7 @@ func refresh(chats):
 		
 		var userChat = preload("res://UserChat.tscn").instantiate()
 		
-		userChat.init(chat)
+		userChat.init(gameID, chat.id)
 		userChat.selected.connect(selected)
 		userChat.deselected.connect(deselected)
 		

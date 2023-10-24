@@ -7,6 +7,9 @@
 #include <memory>
 #include <unordered_map>
 #include <unordered_set>
+#include <godot_cpp/variant/vector2.hpp>
+#include <godot_cpp/variant/vector2i.hpp>
+#include <godot_cpp/variant/color.hpp>
 #include <godot_cpp/variant/packed_vector2_array.hpp>
 #include <godot_cpp/variant/packed_string_array.hpp>
 #include <godot_cpp/variant/packed_int32_array.hpp>
@@ -107,11 +110,13 @@ public:
 	void setPercent(double percent) { this->percent = percent; }
 	double getPercent() { return percent; }
 
+	PackedInt32Array getPlayerIDs();
 	PackedVector2Array getOutpostPositions();
 	PackedInt32Array getShopOptions();
 	PackedInt32Array getPromotionOptions(int specialistID);
 	Array getSortedPlayers();
 	int getScore(int userID);
+	Color getColor(int userID);
 
 	int getSpecialistType(int specialistID) { return game->getSpecialist(specialistID)->getType(); };
 
@@ -121,6 +126,9 @@ public:
 	double getNextArrivalEvent(int vesselID);
 	double getNextProductionEvent(int outpostID);
 	double getNextBattleEvent(int objID);
+	Array getBattlePhases();
+	Array getNextBattleMessages(int objID, const String& phase);
+	Vector2i getNextBattleUnits(int objID, const String& phase);
 
 	bool canHire() { return game->getPlayer(userGameID)->getHiresAt(current) >= 0; }
 	bool hasStarted() { return current >= game->getStartTime(); }

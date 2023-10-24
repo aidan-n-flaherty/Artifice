@@ -1,9 +1,16 @@
-[gd_scene load_steps=3 format=3 uid="uid://4o681gofc1wg"]
+[gd_scene load_steps=4 format=3 uid="uid://4o681gofc1wg"]
 
 [ext_resource type="Script" path="res://Message.gd" id="1_clcsq"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nk3lw"]
 bg_color = Color(0.207843, 0.470588, 1, 1)
+corner_radius_top_left = 30
+corner_radius_top_right = 30
+corner_radius_bottom_right = 30
+corner_radius_bottom_left = 30
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b2bbd"]
+bg_color = Color(0.164706, 0.164706, 0.164706, 1)
 corner_radius_top_left = 30
 corner_radius_top_right = 30
 corner_radius_bottom_right = 30
@@ -27,10 +34,17 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Panel" type="Panel" parent="HBoxContainer/Control"]
+[node name="SelfSent" type="Panel" parent="HBoxContainer/Control"]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_nk3lw")
+
+[node name="OtherSent" type="Panel" parent="HBoxContainer/Control"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_b2bbd")
 
 [node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/Control"]
 layout_mode = 2

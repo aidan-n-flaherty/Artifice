@@ -40,6 +40,20 @@ theme_override_constants/margin_bottom = 50
 layout_mode = 2
 theme_override_constants/separation = 20
 
+[node name="PlayerList" type="FlowContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/h_separation = 20
+theme_override_constants/v_separation = 20
+
+[node name="Back" type="TextureButton" parent="MarginContainer/VBoxContainer/PlayerList"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+texture_normal = ExtResource("2_ukwkm")
+ignore_texture_size = true
+stretch_mode = 4
+
 [node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
@@ -85,14 +99,5 @@ size_flags_horizontal = 8
 size_flags_vertical = 8
 text = "Send"
 
-[node name="Back" type="TextureButton" parent="MarginContainer"]
-custom_minimum_size = Vector2(100, 100)
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 0
-texture_normal = ExtResource("2_ukwkm")
-ignore_texture_size = true
-stretch_mode = 4
-
+[connection signal="pressed" from="MarginContainer/VBoxContainer/PlayerList/Back" to="." method="_on_back_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/Button" to="." method="_on_button_pressed"]
-[connection signal="pressed" from="MarginContainer/Back" to="." method="_on_back_pressed"]

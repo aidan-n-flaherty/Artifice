@@ -405,7 +405,7 @@ const BattleEvent* Game::nextBattle(int id, double timestamp) {
     for(Event* event : simulatedEvents) {
         if(event->getTimestamp() > timestamp && event->referencesObject(id)) {
             BattleEvent* b = dynamic_cast<BattleEvent*>(event);
-            if(b) return b;
+            if(b && !b->isFriendly()) return b;
         }
     }
 

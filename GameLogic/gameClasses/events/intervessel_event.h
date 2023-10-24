@@ -20,7 +20,9 @@ private:
 public:
     IntervesselEvent(){};
     IntervesselEvent(double timestamp, Vessel* vesselA, Vessel* vesselB) :
-        BattleEvent(timestamp, vesselA, vesselB), vesselA(vesselA), vesselB(vesselB) {}
+        BattleEvent(timestamp, vesselA, vesselB), vesselA(vesselA), vesselB(vesselB) {
+        if(vesselA->isGift() || vesselB->isGift()) setFriendly();
+    }
 
     Event* copy() override { return new IntervesselEvent(*this); }
 
@@ -82,10 +84,10 @@ public:
                 Player* vesselBOwner = vesselB->getOwner();
 
                 if(!winner->isDeleted() && !loser->isDeleted()) {
-                if(!loser->getSpecialists().empty()) {
-                    winner->getOwner()->addVessel(loser);
-                    loser->returnHome();
-                } else game->removeVessel(loser);
+                    if(!loser->getSpecialists().empty()) {
+                        winner->getOwner()->addVessel(loser);
+                        loser->returnHome();
+                    } else game->removeVessel(loser);
                 }
 
                 // winner was a pirate

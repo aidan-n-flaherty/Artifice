@@ -4,21 +4,33 @@ signal selected(conversation)
 
 signal deselected(conversation)
 
+var chatID
+
 var chat
 
 var participants
+
+var gameID
+
+var game
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	pass # Replace with function body.
 
-func init(chat):
-	self.chat = chat
+func init(gameID, chatID):
+	game = GameData.getGame(gameID)
+	self.gameID = gameID
+	
+	self.chatID = chatID
+	chat = GameData.getChat(chatID)
+	
+	participants = []
 	
 	$MarginContainer/VBoxContainer/Participants.text = ""
 	for i in len(chat.participants):
-		var user = GameData.getUser(chat.participants[i])
-		participants.add(user)
+		var user = await GameData.getUser(chat.participants[i])
+		participants.push_back(user)
 		
 		if i > 0:
 			$MarginContainer/VBoxContainer/Participants.text += ", "
@@ -32,7 +44,7 @@ func _process(delta):
 
 func _on_button_pressed():
 	var conversation = preload("res://Conversation.tscn").instantiate()
-	conversation.init(chat, participants)
+	conversation.init(gameID, chatID, participants)
 	conversation.deselected.connect(deselectedConversation)
 	
 	emit_signal("selected", conversation)

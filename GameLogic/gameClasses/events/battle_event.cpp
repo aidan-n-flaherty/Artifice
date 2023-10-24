@@ -3,6 +3,8 @@
 #include ".././game_settings.h"
 
 void BattleEvent::specialistPhase(Game* game) {
+    setPhase("Specialist Phase");
+
     int unitsA = a->getUnits();
     int unitsB = b->getUnits();
 
@@ -105,13 +107,24 @@ void BattleEvent::specialistPhase(Game* game) {
     if(v2 && o1) {
         if(v2->controlsSpecialist(SpecialistType::INFILTRATOR)) o1->removeShield(o2->getShield());
     }
+
+    setPhaseUnits();
 }
 
 void BattleEvent::postSpecialistPhase(Game* game) {
+    setPhase("Post-Specialist Phase");
+
     int unitsA = a->getUnits();
     int unitsB = b->getUnits();
 
-    if(a->controlsSpecialist(SpecialistType::REVERED_ELDER) != b->controlsSpecialist(SpecialistType::REVERED_ELDER)) return;
+    if(a->controlsSpecialist(SpecialistType::REVERED_ELDER) && !b->controlsSpecialist(SpecialistType::REVERED_ELDER)) {
+        addMessage(a->getOwnerID(), a->getOwner()->getName() + "'s Revered Elder removes all specialists from combat.");
+        return;
+    }
+    if(b->controlsSpecialist(SpecialistType::REVERED_ELDER) && !a->controlsSpecialist(SpecialistType::REVERED_ELDER)) {
+        addMessage(b->getOwnerID(), b->getOwner()->getName() + "'s Revered Elder removes all specialists from combat.");
+        return;
+    }
 
     if(b->ownerControlsSpecialist(SpecialistType::KING)) {
         addMessage(b->getOwnerID(), b->getOwner()->getName() + "'s King kills " + std::to_string(a->removeUnits(int(unitsB / 3.0))) + " units");
@@ -120,10 +133,21 @@ void BattleEvent::postSpecialistPhase(Game* game) {
     if(a->ownerControlsSpecialist(SpecialistType::KING)) {
         addMessage(a->getOwnerID(), a->getOwner()->getName() + "'s King kills " + std::to_string(b->removeUnits(int(unitsA / 3.0))) + " units");
     }
+
+    setPhaseUnits();
 }
 
 void BattleEvent::victorySpecialistPhase(Game* game) {
-    if(a->controlsSpecialist(SpecialistType::REVERED_ELDER) != b->controlsSpecialist(SpecialistType::REVERED_ELDER)) return;
+    setPhase("Combat Resolution Phase");
+
+    if(a->controlsSpecialist(SpecialistType::REVERED_ELDER) && !b->controlsSpecialist(SpecialistType::REVERED_ELDER)) {
+        addMessage(a->getOwnerID(), a->getOwner()->getName() + "'s Revered Elder removes all specialists from combat.");
+        return;
+    }
+    if(b->controlsSpecialist(SpecialistType::REVERED_ELDER) && !a->controlsSpecialist(SpecialistType::REVERED_ELDER)) {
+        addMessage(b->getOwnerID(), b->getOwner()->getName() + "'s Revered Elder removes all specialists from combat.");
+        return;
+    }
 
     if(a->getOwnerID() == getVictor() && a->ownerControlsSpecialist(SpecialistType::ENGINEER)) {
         int lostUnits = startingUnitsA - a->getUnits();
@@ -142,16 +166,51 @@ void BattleEvent::victorySpecialistPhase(Game* game) {
         b->addUnits(restored);
         addMessage(b->getOwnerID(), b->getOwner()->getName() + "'s Engineer restores " + std::to_string(restored) + " units");
     }
+
+    setPhaseUnits();
 }
 
 void BattleEvent::defeatSpecialistPhase(Game* game) {
-    if(a->controlsSpecialist(SpecialistType::REVERED_ELDER) != b->controlsSpecialist(SpecialistType::REVERED_ELDER)) return;
+    if(a->controlsSpecialist(SpecialistType::REVERED_ELDER) && !b->controlsSpecialist(SpecialistType::REVERED_ELDER)) {
+        addMessage(a->getOwnerID(), a->getOwner()->getName() + "'s Revered Elder removes all specialists from combat.");
+        return;
+    }
+    if(b->controlsSpecialist(SpecialistType::REVERED_ELDER) && !a->controlsSpecialist(SpecialistType::REVERED_ELDER)) {
+        addMessage(b->getOwnerID(), b->getOwner()->getName() + "'s Revered Elder removes all specialists from combat.");
+        return;
+    }
+
+    setPhaseUnits();
 }
 
 void BattleEvent::postCombatSpecialistPhase(Game* game) {
-    if(a->controlsSpecialist(SpecialistType::REVERED_ELDER) != b->controlsSpecialist(SpecialistType::REVERED_ELDER)) return;
+    setPhase("Post-Combat Phase");
+
+    if(a->controlsSpecialist(SpecialistType::REVERED_ELDER) && !b->controlsSpecialist(SpecialistType::REVERED_ELDER)) {
+        addMessage(a->getOwnerID(), a->getOwner()->getName() + "'s Revered Elder removes all specialists from combat.");
+        return;
+    }
+    if(b->controlsSpecialist(SpecialistType::REVERED_ELDER) && !a->controlsSpecialist(SpecialistType::REVERED_ELDER)) {
+        addMessage(b->getOwnerID(), b->getOwner()->getName() + "'s Revered Elder removes all specialists from combat.");
+        return;
+    }
+
+    // to ensure order invariance, we have to check if both vessels have assassins first
+    bool removeSpecialistsA = b->controlsSpecialist(SpecialistType::ASSASSIN);
+    bool removeSpecialistsB = a->controlsSpecialist(SpecialistType::ASSASSIN);
+
+    if(removeSpecialistsA && !a->getSpecialists().empty()) {
+        addMessage(a->getOwnerID(), a->getOwner()->getName() + "'s Assassin kills all enemy specialists.");
+        while(!a->getSpecialists().empty()) game->removeSpecialist(a->getSpecialists().front());
+    }
+    if(removeSpecialistsB && !b->getSpecialists().empty()) {
+        addMessage(b->getOwnerID(), b->getOwner()->getName() + "'s Assassin kills all enemy specialists.");
+        while(!b->getSpecialists().empty()) game->removeSpecialist(b->getSpecialists().front());
+    }
 
     if(a->controlsSpecialist(SpecialistType::MARTYR)) {
+        addMessage(a->getOwnerID(), a->getOwner()->getName() + "'s Martyr detonates.");
+
         int range = game->getSettings()->defaultSonar/5;
 
         for(const auto &v : game->getVessels()) {
@@ -169,6 +228,8 @@ void BattleEvent::postCombatSpecialistPhase(Game* game) {
     }
 
     if(b->controlsSpecialist(SpecialistType::MARTYR)) {
+        addMessage(a->getOwnerID(), a->getOwner()->getName() + "'s Martyr detonates.");
+
         int range = game->getSettings()->defaultSonar/5;
 
         for(const auto &v : game->getVessels()) {
@@ -185,10 +246,5 @@ void BattleEvent::postCombatSpecialistPhase(Game* game) {
         }
     }
 
-    // to ensure order invariance, we have to check if both vessels have assassins first
-    bool removeSpecialistsA = b->controlsSpecialist(SpecialistType::ASSASSIN);
-    bool removeSpecialistsB = a->controlsSpecialist(SpecialistType::ASSASSIN);
-
-    if(removeSpecialistsA) while(!a->getSpecialists().empty()) game->removeSpecialist(a->getSpecialists().front());
-    if(removeSpecialistsB) while(!b->getSpecialists().empty()) game->removeSpecialist(b->getSpecialists().front());
+    setPhaseUnits();
 }

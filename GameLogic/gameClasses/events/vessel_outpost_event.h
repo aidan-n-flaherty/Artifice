@@ -16,11 +16,14 @@ class VesselOutpostEvent : public BattleEvent
 private:
     Vessel* vessel;
     Outpost* outpost;
+
     int vID;
 
 public:
     VesselOutpostEvent(){};
-    VesselOutpostEvent(double timestamp, Vessel* vessel, Outpost* outpost) : BattleEvent(timestamp, vessel, outpost), vessel(vessel), outpost(outpost), vID(vessel->getID()) { }
+    VesselOutpostEvent(double timestamp, Vessel* vessel, Outpost* outpost) : BattleEvent(timestamp, vessel, outpost), vessel(vessel), outpost(outpost), vID(vessel->getID()) {
+        if(vessel->isGift()) setFriendly();
+    }
 
     Event* copy() override { return new VesselOutpostEvent(*this); }
 

@@ -2,18 +2,38 @@ extends MarginContainer
 
 signal deselected(conversation)
 
+var chatID
+
 var chat
 
 var participants
 
 var messages = {}
 
+var gameID
+
+var game
+
+var temporary
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	GameData.chatChanged.connect(chatChanged)
 
-func init(chat, participants):
-	self.chat = chat
+func initTemp(gameID):
+	temporary = true
+	
+	game = GameData.getGame(gameID)
+	self.gameID = gameID
+
+func init(gameID, chatID, participants):
+	temporary = false
+	
+	game = GameData.getGame(gameID)
+	self.gameID = gameID
+	
+	chat = GameData.getChat(chatID)
+	self.chatID = chatID
 	self.participants = participants
 	
 	refresh(chat.messages)
@@ -43,7 +63,7 @@ func _process(delta):
 	pass
 
 func chatChanged(chatID: int):
-	if chatID == chat.id:
+	if chat and chatID == chat.id:
 		refresh(chat.messages)
 
 func _on_back_pressed():
@@ -52,6 +72,9 @@ func _on_back_pressed():
 func _on_button_pressed():
 	if $MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/TextEdit.text == "":
 		return
+	
+	if !chatID:
+		chatID = await GameData.makeChat()
 	
 	if await GameData.sendMessage(chat.id, $MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/TextEdit.text):
 		$MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/TextEdit.clear()

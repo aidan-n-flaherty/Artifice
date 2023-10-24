@@ -62,8 +62,10 @@ void GameInterface::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("getOutpostPositions"), &GameInterface::getOutpostPositions);
 	ClassDB::bind_method(D_METHOD("getShopOptions"), &GameInterface::getShopOptions);
 	ClassDB::bind_method(D_METHOD("getPromotionOptions"), &GameInterface::getPromotionOptions);
+	ClassDB::bind_method(D_METHOD("getPlayerIDs"), &GameInterface::getPlayerIDs);
 	ClassDB::bind_method(D_METHOD("getSortedPlayers"), &GameInterface::getSortedPlayers);
 	ClassDB::bind_method(D_METHOD("getScore", "userID"), &GameInterface::getScore);
+	ClassDB::bind_method(D_METHOD("getColor", "userID"), &GameInterface::getColor);
 	ClassDB::bind_method(D_METHOD("getSpecialistName"), &GameInterface::getSpecialistName);
 	ClassDB::bind_method(D_METHOD("getSpecialistDescription"), &GameInterface::getSpecialistDescription);
 	ClassDB::bind_method(D_METHOD("getSpecialistType"), &GameInterface::getSpecialistType);
@@ -459,6 +461,16 @@ PackedVector2Array GameInterface::getOutpostPositions() {
 	return arr;
 }
 
+PackedInt32Array GameInterface::getPlayerIDs() {
+	PackedInt32Array arr;
+
+	for(const auto& pair : game->getPlayers()) {
+		arr.push_back(uint32_t(pair.second->getUserID()));
+	}
+
+	return arr;
+}
+
 Array GameInterface::getSortedPlayers() {
 	Array arr;
 	std::vector<Player*> sortedPlayers = game->sortedPlayers();
@@ -535,3 +547,55 @@ double GameInterface::getNextBattleEvent(int objID) {
 
 	return e ? e->getTimestamp() : -1;
 }
+
+Array GameInterface::getBattlePhases() {
+	Array arr;
+
+	for(const std::string& str : BattleEvent::getPhases()) {
+		arr.push_back(String(str.c_str()));
+	}
+
+	return arr;
+}
+
+Array GameInterface::getNextBattleMessages(int objID, const String& phase) {
+	const BattleEvent* b = completeGame->nextBattle(objID, current);
+
+	Array arr;
+
+	if(!b) return arr;
+
+	for(const std::pair<int, std::string> &p : b->getBattleLog(std::string(phase.utf8().get_data()))) {
+		Array pair;
+
+		pair.push_back(p.first);
+		pair.push_back(String(p.second.c_str()));
+
+		arr.push_back(pair);
+	}
+
+	return arr;
+}
+
+Vector2i GameInterface::getNextBattleUnits(int objID, const String& phase) {
+	const BattleEvent* b = completeGame->nextBattle(objID, current);
+
+	if(!b) return Vector2i(0, 0);
+
+	const std::pair<int, int>& units = b->getPhaseUnits(std::string(phase.utf8().get_data()));
+
+	return Vector2i(units.first, units.second);
+}
+
+Color GameInterface::getColor(int userID) {
+	for(auto pair : game->getPlayers()) {
+		if(pair.second->getUserID() == userID) {
+			std::tuple<double, double, double> color = settings.playerColors[pair.first % settings.playerColors.size()];
+
+			return Color(std::get<0>(color), std::get<1>(color), std::get<2>(color));
+		}
+	}
+
+	return Color(0.0, 0.0, 0.0);
+}
+

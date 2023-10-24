@@ -20,4 +20,7 @@ func _process(delta):
 
 
 func _on_button_pressed():
-	GameData.goto_scene("res://GameDetail.tscn")
+	var gameDetail = preload("res://GameDetail.tscn").instantiate()
+	gameDetail.init(gameID)
+	
+	GameData.goto_node(gameDetail)
