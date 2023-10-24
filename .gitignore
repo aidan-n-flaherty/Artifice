@@ -3,3 +3,4 @@ godot-cpp/
 .godot/
 *.os
 *.template_debug
+*.dblite
