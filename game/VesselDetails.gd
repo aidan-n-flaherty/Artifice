@@ -6,6 +6,8 @@ var game: GameInterface
 
 var vessel: VesselNode
 
+signal battleForecastOpen(vessel)
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	pass # Replace with function body.
@@ -48,3 +50,7 @@ func _on_gift_pressed():
 	game.addOrder(order.type, int(order.id), int(order.referenceID), float(order.timestamp), int(order.senderID), PackedInt32Array(order.argumentIDs), int(order.argumentIDs.size()))
 	
 	print("Order registered")
+
+
+func _on_battle_forecast_pressed():
+	emit_signal("battleForecastOpen", vessel)

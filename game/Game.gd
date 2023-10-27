@@ -66,7 +66,13 @@ func setDisplay(scene):
 func selectVessel(vessel):
 	var scene = preload("res://VesselDetails.tscn").instantiate()
 	scene.init(vessel, gameID)
+	scene.battleForecastOpen.connect(vesselBattleForecast)
 	setDisplay(scene)
+
+func vesselBattleForecast(vessel):
+	var scene = $"Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel/Battle Forecast"
+	scene.init(gameID, vessel.getID())
+	setMenuDisplay(scene, true)
 
 func selectOutpost(outpost):
 	var scene = preload("res://OutpostDetails.tscn").instantiate()

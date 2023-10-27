@@ -1,4 +1,4 @@
-[gd_scene load_steps=87 format=3 uid="uid://dgp4l24s2rulk"]
+[gd_scene load_steps=88 format=3 uid="uid://dgp4l24s2rulk"]
 
 [ext_resource type="Script" path="res://Game.gd" id="1_s53r2"]
 [ext_resource type="Script" path="res://CameraPivot.gd" id="2_t2ckv"]
@@ -23,6 +23,7 @@
 [ext_resource type="PackedScene" uid="uid://c7rmgavx0p0po" path="res://Chat.tscn" id="14_xpy25"]
 [ext_resource type="Texture2D" uid="uid://ddtmrm6d6rl0c" path="res://resources/gameMenuIcons/chatIcon.png" id="15_lpw6h"]
 [ext_resource type="PackedScene" uid="uid://8bjal0hti5cr" path="res://Logs.tscn" id="15_yfjeb"]
+[ext_resource type="PackedScene" uid="uid://c0o7lbwqyauwq" path="res://Battle Forecast.tscn" id="20_x2ppo"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_duiyy"]
 frequency = 0.05
@@ -788,6 +789,10 @@ visible = false
 layout_mode = 1
 
 [node name="Logs" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel" instance=ExtResource("15_yfjeb")]
+visible = false
+layout_mode = 1
+
+[node name="Battle Forecast" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel" instance=ExtResource("20_x2ppo")]
 visible = false
 layout_mode = 1
 

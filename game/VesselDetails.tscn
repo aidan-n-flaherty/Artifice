@@ -53,6 +53,15 @@ size_flags_horizontal = 3
 layout_mode = 2
 text = "Cancel order"
 
+[node name="Spacer3" type="Control" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="BattleForecast" type="Button" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Battle Forecast"
+
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/Jump" to="." method="_on_jump_pressed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/Gift" to="." method="_on_gift_pressed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/Cancel" to="." method="_on_cancel_pressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/BattleForecast" to="." method="_on_battle_forecast_pressed"]
