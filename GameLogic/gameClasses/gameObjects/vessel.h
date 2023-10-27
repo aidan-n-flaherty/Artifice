@@ -46,6 +46,7 @@ public:
     int getOriginID() const { return origin != nullptr ? origin->getID() : -1; }
     void setOrigin(Outpost* origin) { this->origin = origin; }
 
+    static double getSpeed(double speed, double simulationSpeed, Player* p, std::list<Specialist*> specialists, PositionalObject* target);
     double getSpeed() const override;
     void setSpeedModifier(double speed) { this->speedModifier = speed; }
 

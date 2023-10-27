@@ -81,20 +81,7 @@ void PositionalNode::selectSpecialist(Camera3D *camera, const Ref<InputEvent> &e
 }
 
 void PositionalNode::setReference(PositionalObject* obj, int specialistDisplacement) {
-	//PositionalObject* tmp = this->obj;
-
 	this->obj = obj;
-
-	/*if(tmp != nullptr) {
-		for(Specialist* s1 : obj->getSpecialists()) {
-			std::list<Specialist*> specialists = tmp->getSpecialists();
-			if(!std::any_of(specialists.begin(), specialists.end(), [&s1](auto s2) {
-				return s1->getID() == s2->getID();
-			})) specialistAddition.push_back(s1->getID());
-		}
-	} else {*/
-		//for(Specialist* s : obj->getSpecialists()) specialistAddition.push_back(s->getID());
-	//}
 
 	for(int i = 0; i < get_child_count(); i++) {
 		Node* n = get_child(i)->get_node_or_null("RotationInvariant");

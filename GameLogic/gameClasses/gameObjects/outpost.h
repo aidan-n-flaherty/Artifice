@@ -50,6 +50,7 @@ public:
     int getShieldAt(double timeDiff) const;
     int getUnitsAt(double& fractionalProduction, double timeDiff) const;
     int getShieldAt(double& fractionalShield, double timeDiff) const;
+    double getProjectedSpeed(PositionalObject* target, std::list<int> selectedSpecialists) const;
 
     // returns seconds until another set of units are produced
     double nextProductionEvent() const;

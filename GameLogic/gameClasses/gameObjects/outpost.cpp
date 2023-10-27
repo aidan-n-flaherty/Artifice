@@ -110,3 +110,15 @@ int Outpost::getSonarRange() const {
 
     return range;
 }
+
+double Outpost::getProjectedSpeed(PositionalObject* target, std::list<int> selectedSpecialists) const {
+    std::list<Specialist*> tempSpecialists;
+
+    for(Specialist* s : getSpecialists()) {
+        if(std::find(selectedSpecialists.begin(), selectedSpecialists.end(), s->getID()) != selectedSpecialists.end()) {
+            tempSpecialists.push_back(s);
+        }
+    }
+
+    return Vessel::getSpeed(1.0, getSettings()->simulationSpeed, getOwner(), tempSpecialists, target);
+}

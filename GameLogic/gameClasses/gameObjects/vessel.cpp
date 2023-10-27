@@ -74,18 +74,22 @@ void Vessel::update(double timeDiff) {
     moveTowards(targetedPos, distance);
 }
 
+double Vessel::getSpeed(double speed, double simulationSpeed, Player* p, std::list<Specialist*> specialists, PositionalObject* target) {
+    if(controlsSpecialist(p, specialists, SpecialistType::GENERAL) || controlsSpecialist(p, specialists, SpecialistType::LIEUTENANT)) speed = fmax(speed, 1.5);
+    if(specialists.empty() && p->controlsSpecialist(SpecialistType::ADMIRAL)) speed = fmax(speed, 1.5);
+    if(controlsSpecialist(p, specialists, SpecialistType::ADMIRAL)) speed = fmax(speed, 2);
+    if(controlsSpecialist(p, specialists, SpecialistType::HELMSMAN)) speed = fmax(speed, 2);
+    if(controlsSpecialist(p, specialists, SpecialistType::PIRATE) && (!target || dynamic_cast<Vessel*>(target))) speed = fmax(speed, 2);
+    if(controlsSpecialist(p, specialists, SpecialistType::SMUGGLER) && (!target || target->getOwnerID() == p->getID())) speed = fmax(speed, 3);
+
+    return speed * (simulationSpeed * 2.0 / (60 * 60));
+}
+
 // should be modified to work with specialist effects
 double Vessel::getSpeed() const {
     double speed = speedModifier;
 
-    if(controlsSpecialist(SpecialistType::GENERAL) || controlsSpecialist(SpecialistType::LIEUTENANT)) speed = fmax(speed, 1.5);
-    if(getSpecialists().empty() && ownerControlsSpecialist(SpecialistType::ADMIRAL)) speed = fmax(speed, 1.5);
-    if(controlsSpecialist(SpecialistType::ADMIRAL)) speed = fmax(speed, 2);
-    if(controlsSpecialist(SpecialistType::HELMSMAN)) speed = fmax(speed, 2);
-    if(dynamic_cast<Vessel*>(getTarget()) && controlsSpecialist(SpecialistType::PIRATE)) speed = fmax(speed, 2);
-    if(controlsSpecialist(SpecialistType::SMUGGLER) && getTarget()->getOwnerID() == getOwnerID()) speed = fmax(speed, 3);
-
-    return speed * (getSettings()->simulationSpeed * 2.0 / (60 * 60));
+    return Vessel::getSpeed(speed, getSettings()->simulationSpeed, getOwner(), getSpecialists(), getTarget());
 }
 
 // generate collision events for other vessels

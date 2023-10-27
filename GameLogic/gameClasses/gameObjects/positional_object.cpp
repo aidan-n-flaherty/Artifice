@@ -94,16 +94,20 @@ int PositionalObject::specialistCount(SpecialistType t) const {
     return count;
 }
 
-bool PositionalObject::controlsSpecialist(SpecialistType t) const {
-    if(!hasOwner()) return false;
-
+bool PositionalObject::controlsSpecialist(Player* p, std::list<Specialist*> specialists, SpecialistType t) {
     for(auto it = specialists.begin(); it != specialists.end(); ++it){
-        if((*it)->getType() == t && (*it)->getOwnerID() == getOwnerID()) {
+        if((*it)->getType() == t && (*it)->getOwnerID() == p->getID()) {
             return true;
         }
     }
 
     return false;
+}
+
+bool PositionalObject::controlsSpecialist(SpecialistType t) const {
+    if(!hasOwner()) return false;
+
+    return PositionalObject::controlsSpecialist(getOwner(), specialists, t);
 }
 
 Specialist* PositionalObject::getSpecialist(SpecialistType t) {

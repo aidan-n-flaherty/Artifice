@@ -12,6 +12,8 @@ class Game;
 
 class GameSettings;
 
+class Player;
+
 class PositionalObject : public GameObject, public Possessable
 {
 private:
@@ -56,6 +58,7 @@ public:
     bool ownerControlsSpecialist(SpecialistType type) const;
     int ownerSpecialistCount(SpecialistType type) const;
     int specialistCount(SpecialistType t) const;
+    static bool controlsSpecialist(Player* p, std::list<Specialist*> specialists, SpecialistType t);
     bool controlsSpecialist(SpecialistType t) const;
 
     Specialist* getSpecialist(SpecialistType t);
