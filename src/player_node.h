@@ -7,6 +7,7 @@
 #include "../GameLogic/gameClasses/gameObjects/outpost.h"
 #include <godot_cpp/variant/utility_functions.hpp>
 #include <godot_cpp/variant/string.hpp>
+#include <godot_cpp/variant/color.hpp>
 
 namespace godot {
 
@@ -44,6 +45,11 @@ public:
 	int getRating() { return player->getRating(); }
 
 	String getName() { return String(player->getName().c_str()); }
+
+	Color getColor() {
+		std::tuple<double, double, double> color = player->getSettings()->playerColors[getID() % player->getSettings()->playerColors.size()];
+		return Color(std::get<0>(color), std::get<1>(color), std::get<2>(color));
+	}
 
 	int getUserID() { return player->getUserID(); }
 

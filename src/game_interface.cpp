@@ -67,6 +67,7 @@ void GameInterface::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("getShopOptions"), &GameInterface::getShopOptions);
 	ClassDB::bind_method(D_METHOD("getPromotionOptions"), &GameInterface::getPromotionOptions);
 	ClassDB::bind_method(D_METHOD("getPlayerIDs"), &GameInterface::getPlayerIDs);
+	ClassDB::bind_method(D_METHOD("getPlayers"), &GameInterface::getPlayers);
 	ClassDB::bind_method(D_METHOD("getSortedPlayers"), &GameInterface::getSortedPlayers);
 	ClassDB::bind_method(D_METHOD("getScore", "userID"), &GameInterface::getScore);
 	ClassDB::bind_method(D_METHOD("getColor", "userID"), &GameInterface::getColor);
@@ -475,6 +476,17 @@ PackedInt32Array GameInterface::getPlayerIDs() {
 	return arr;
 }
 
+Array GameInterface::getPlayers() {
+	Array arr;
+
+	for(const auto& pair : game->getPlayers()) {
+		arr.push_back(players[pair.second->getID()]);
+	}
+
+	return arr;
+}
+
+
 Array GameInterface::getSortedPlayers() {
 	Array arr;
 	std::vector<Player*> sortedPlayers = game->sortedPlayers();
@@ -569,8 +581,8 @@ Array GameInterface::getNextBattleUsers(int objID) {
 
 	if(!b) return arr;
 
-	arr.push_back(players[b->getBattleUsers().first]);
-	arr.push_back(players[b->getBattleUsers().second]);
+	if(players.find(b->getBattleUsers().first) != players.end()) arr.push_back(players[b->getBattleUsers().first]);
+	if(players.find(b->getBattleUsers().second) != players.end()) arr.push_back(players[b->getBattleUsers().second]);
 
 	return arr;
 }

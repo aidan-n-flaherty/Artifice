@@ -40,12 +40,11 @@ theme_override_constants/margin_bottom = 50
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="PlayerList" type="FlowContainer" parent="MarginContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-theme_override_constants/h_separation = 20
-theme_override_constants/v_separation = 20
+theme_override_constants/separation = 20
 
-[node name="Back" type="TextureButton" parent="MarginContainer/VBoxContainer/PlayerList"]
+[node name="Back" type="TextureButton" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 size_flags_horizontal = 0
@@ -54,9 +53,16 @@ texture_normal = ExtResource("2_ukwkm")
 ignore_texture_size = true
 stretch_mode = 4
 
+[node name="PlayerList" type="FlowContainer" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/h_separation = 20
+theme_override_constants/v_separation = 20
+
 [node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
+horizontal_scroll_mode = 0
 
 [node name="MessageContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer"]
 layout_mode = 2
@@ -93,11 +99,11 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_30bys")
 placeholder_text = "Write a message..."
 wrap_mode = 1
 
-[node name="Button" type="Button" parent="MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer"]
+[node name="Send" type="Button" parent="MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 8
 text = "Send"
 
-[connection signal="pressed" from="MarginContainer/VBoxContainer/PlayerList/Back" to="." method="_on_back_pressed"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/Button" to="." method="_on_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/Back" to="." method="_on_back_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/Send" to="." method="_on_send_pressed"]

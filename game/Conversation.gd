@@ -16,6 +16,8 @@ var game
 
 var temporary
 
+var playerTags = []
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	GameData.chatChanged.connect(chatChanged)
@@ -25,16 +27,35 @@ func initTemp(gameID):
 	
 	game = GameData.getGame(gameID)
 	self.gameID = gameID
+	
+	for player in game.getPlayers():
+		var playerTag = preload("res://PlayerTag.tscn").instantiate()
+		
+		playerTag.init(player, false, true)
+		playerTags.push_back(playerTag)
+		$MarginContainer/VBoxContainer/PlayerList.add_child(playerTag)
 
-func init(gameID, chatID, participants):
+func init(gameID, chatID):
 	temporary = false
 	
 	game = GameData.getGame(gameID)
 	self.gameID = gameID
 	
+	for tag in playerTags:
+		$MarginContainer/VBoxContainer/PlayerList.remove_child(tag)
+		tag.queue_free()
+	playerTags.clear()
+	
 	chat = GameData.getChat(chatID)
 	self.chatID = chatID
-	self.participants = participants
+	
+	for player in game.getPlayers():
+		if PackedInt32Array(chat.participants).has(player.getUserID()):
+			var playerTag = preload("res://PlayerTag.tscn").instantiate()
+		
+			playerTag.init(player, true, false)
+			playerTags.push_back(playerTag)
+			$MarginContainer/VBoxContainer/PlayerList.add_child(playerTag)
 	
 	refresh(chat.messages)
 	
@@ -60,21 +81,39 @@ func refresh(messageList):
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	pass
+	var canSend = false
+	for tag in playerTags:
+		if tag.isSelected():
+			canSend = true
+			break
+	
+	$MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/Send.disabled = not canSend
 
 func chatChanged(chatID: int):
 	if chat and chatID == chat.id:
 		refresh(chat.messages)
+	else:
+		init(gameID, chatID)
 
 func _on_back_pressed():
 	emit_signal("deselected", self)
 
-func _on_button_pressed():
+func _on_send_pressed():
 	if $MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/TextEdit.text == "":
 		return
 	
 	if !chatID:
-		chatID = await GameData.makeChat()
+		var playerIDs = PackedInt32Array()
+		for tag in playerTags:
+			if tag.isSelected():
+				playerIDs.push_back(tag.getUserID())
+		
+		var tmp = await GameData.createChat(gameID, playerIDs)
+
+		if tmp:
+			chatID = int(tmp)
+		else:
+			return
 	
-	if await GameData.sendMessage(chat.id, $MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/TextEdit.text):
+	if await GameData.sendMessage(chatID, $MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/TextEdit.text):
 		$MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/TextEdit.clear()

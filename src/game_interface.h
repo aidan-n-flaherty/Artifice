@@ -114,6 +114,7 @@ public:
 	PackedVector2Array getOutpostPositions();
 	PackedInt32Array getShopOptions();
 	PackedInt32Array getPromotionOptions(int specialistID);
+	Array getPlayers();
 	Array getSortedPlayers();
 	int getScore(int userID);
 	Color getColor(int userID);

@@ -32,7 +32,7 @@ func processMessage(message: String):
 		
 		GameData.updateOrders(gameID)
 	elif message.begins_with("[CHAT]"):
-		message.erase(0, len("[GAMEUPDATE]"))
+		message.erase(0, len("[CHAT]"))
 		
 		var chatID = message.to_int()
 		
