@@ -24,6 +24,8 @@ var gameDetails = {}
 
 var games = {}
 
+var messageBuffer = {}
+
 var chats = {}
 
 var chatGroups = {}
@@ -110,14 +112,14 @@ func loadUser(userID: int):
 	return user
 	
 func createChat(gameID: int, users: PackedInt32Array):
-	var chatID = await HTTPManager.postReq("/makeChat", users, {
+	var returnVal = await HTTPManager.postReq("/makeChat", users, {
 		"gameID": gameID
 	})
 	
-	if not chatID:
+	if not returnVal:
 		return false
 	
-	return chatID
+	return returnVal["chatID"]
 
 func loadChat(chatID: int):
 	var chat = await HTTPManager.getReq("/fetchChat", {
@@ -127,6 +129,11 @@ func loadChat(chatID: int):
 	if chat and hasGame(chat.gameID):
 		self.chats[chatID] = chat
 		self.chatGroups[int(chat.gameID)].push_front(chat)
+		
+		if messageBuffer.has(chat.id):
+			var messages = messageBuffer[chat.id].filter(func(m1): return not chat.messages.any(func(m2): return m1.id == m2.id))
+			chat.messages.append_array(messages)
+			messageBuffer.erase(chat.id)
 		
 		emit_signal("chatChanged", chatID)
 
@@ -244,8 +251,16 @@ func sendMessage(chatID: int, content: String) -> bool:
 	}, {})
 
 func addMessage(message):
+	if not chats.has(int(message.chatID)):
+		if messageBuffer.has(message.chatID):
+			messageBuffer[message.chatID].push_back(message)
+		else:
+			messageBuffer[message.chatID] = [ message ]
+		
+		return
+	
 	for m in chats[int(message.chatID)].messages:
-		if message.chatID == m.chatID:
+		if message.id == m.id:
 			return
 	
 	chats[int(message.chatID)].messages.push_back(message)
@@ -277,7 +292,7 @@ func hasChat(id: int):
 	return chats.has(id)
 	
 func chatInGame(chatID: int, gameID: int):
-	return getChats(gameID).has(getChat(chatID))
+	return getChat(chatID).gameID == gameID
 
 func getGame(id: int):
 	return games[id]

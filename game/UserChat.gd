@@ -44,7 +44,7 @@ func _process(delta):
 
 func _on_button_pressed():
 	var conversation = preload("res://Conversation.tscn").instantiate()
-	conversation.init(gameID, chatID, participants)
+	conversation.init(gameID, chatID)
 	conversation.deselected.connect(deselectedConversation)
 	
 	emit_signal("selected", conversation)

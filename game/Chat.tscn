@@ -48,3 +48,5 @@ size_flags_horizontal = 3
 [node name="ChatPanel" type="Control" parent="."]
 layout_mode = 2
 mouse_filter = 2
+
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/NewChat" to="." method="_on_new_chat_pressed"]

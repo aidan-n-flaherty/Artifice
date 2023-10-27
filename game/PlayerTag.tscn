@@ -1,0 +1,90 @@
+[gd_scene load_steps=9 format=3 uid="uid://dcji62ofxfmw2"]
+
+[ext_resource type="Script" path="res://PlayerTag.gd" id="1_j33fx"]
+[ext_resource type="Texture2D" uid="uid://c1f04o6gimvxl" path="res://resources/images/whiteCircle.png" id="2_uqb2n"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dkyom"]
+bg_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 30
+corner_radius_top_right = 30
+corner_radius_bottom_right = 30
+corner_radius_bottom_left = 30
+corner_detail = 16
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hl7n8"]
+bg_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 30
+corner_radius_top_right = 30
+corner_radius_bottom_right = 30
+corner_radius_bottom_left = 30
+corner_detail = 16
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mlsyb"]
+bg_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 30
+corner_radius_top_right = 30
+corner_radius_bottom_right = 30
+corner_radius_bottom_left = 30
+corner_detail = 16
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cm8ws"]
+bg_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 30
+corner_radius_top_right = 30
+corner_radius_bottom_right = 30
+corner_radius_bottom_left = 30
+corner_detail = 16
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8vtvj"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_kwpe0"]
+font_size = 24
+outline_color = Color(0, 0, 0, 1)
+shadow_size = 6
+shadow_color = Color(0, 0, 0, 1)
+
+[node name="PlayerTag" type="MarginContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_j33fx")
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_dkyom")
+theme_override_styles/hover = SubResource("StyleBoxFlat_hl7n8")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_mlsyb")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_cm8ws")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_8vtvj")
+toggle_mode = true
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 20
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+text = "Testing"
+label_settings = SubResource("LabelSettings_kwpe0")
+horizontal_alignment = 1
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("2_uqb2n")
+expand_mode = 1
+stretch_mode = 5
+
+[connection signal="toggled" from="Button" to="." method="_on_button_toggled"]
