@@ -1,0 +1,47 @@
+[gd_scene load_steps=3 format=3 uid="uid://dkqa1mt1040vg"]
+
+[ext_resource type="Script" path="res://ForecastMessage.gd" id="1_ww412"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_utvb8"]
+bg_color = Color(0.360784, 0.360784, 0.360784, 1)
+
+[node name="ForecastMessage" type="MarginContainer"]
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 23.0
+grow_horizontal = 2
+script = ExtResource("1_ww412")
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="LSpacer" type="Control" parent="HBoxContainer2"]
+visible = false
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+
+[node name="Control" type="MarginContainer" parent="HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Panel" type="Panel" parent="HBoxContainer2/Control"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_utvb8")
+
+[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer2/Control"]
+layout_mode = 2
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 20
+
+[node name="RichTextLabel" type="RichTextLabel" parent="HBoxContainer2/Control/MarginContainer"]
+layout_mode = 2
+text = "Hello? Test's TestSpecialist did Test things."
+fit_content = true
+
+[node name="RSpacer" type="Control" parent="HBoxContainer2"]
+visible = false
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
