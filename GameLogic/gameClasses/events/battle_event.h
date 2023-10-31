@@ -28,6 +28,9 @@ private:
     int aID;
     int bID;
 
+    int aOwnerID;
+    int bOwnerID;
+
     int startingUnitsA = 0;
     int startingUnitsB = 0;
 
@@ -41,7 +44,7 @@ private:
 
 public:
     BattleEvent(){}
-    BattleEvent(double timestamp, PositionalObject* a, PositionalObject* b) : Event(nullptr, timestamp), a(a), b(b), aID(a->getID()), bID(b->getID()), friendly(a->getOwnerID() == b->getOwnerID()) {}
+    BattleEvent(double timestamp, PositionalObject* a, PositionalObject* b) : Event(nullptr, timestamp), a(a), b(b), aID(a->getID()), bID(b->getID()), aOwnerID(a->getOwnerID()), bOwnerID(b->getOwnerID()), friendly(a->getOwnerID() == b->getOwnerID()) {}
     
     Event* copy() override { return new BattleEvent(*this); }
 
@@ -95,6 +98,7 @@ public:
 
     void setPhase(const std::string &phase) {
         currentPhase = phase;
+        battleLog[phase] = std::list<std::pair<int, std::string>>();
         setPhaseUnits();
     }
 
@@ -103,13 +107,13 @@ public:
     }
 
     const std::pair<int, int> getBattleUsers() const {
-        return std::make_pair<int, int>(a->getOwnerID(), b->getOwnerID());
+        return std::make_pair(aOwnerID, bOwnerID);
     }
 
     const std::unordered_map<int, int> getStartingUnits() const {
         return std::unordered_map<int, int> {
-            { aID, startingUnitsA },
-            { bID, startingUnitsB }
+            { aOwnerID, startingUnitsA },
+            { bOwnerID, startingUnitsB }
         };
     }
 
@@ -120,8 +124,8 @@ public:
     const std::unordered_map<int, int> getPhaseUnits(const std::string &phase) const {
         const std::pair<int, int>& p = phaseUnits.at(phase);
         return std::unordered_map<int, int> {
-            { aID, p.first },
-            { bID, p.second }
+            { aOwnerID, p.first },
+            { bOwnerID, p.second }
         };
     }
 };

@@ -580,8 +580,9 @@ Array GameInterface::getNextBattleUsers(int objID) {
 
 	Array arr;
 
-	if(!b) return arr;
-
+	if(!b) {
+		return arr;
+	}
 	if(players.find(b->getBattleUsers().first) != players.end()) arr.push_back(players[b->getBattleUsers().first]);
 	if(players.find(b->getBattleUsers().second) != players.end()) arr.push_back(players[b->getBattleUsers().second]);
 

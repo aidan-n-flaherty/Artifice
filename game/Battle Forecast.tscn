@@ -122,3 +122,6 @@ layout_mode = 2
 
 [node name="Final Result" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer"]
 layout_mode = 2
+
+[node name="PostBattle" type="VBoxContainer" parent="VBoxContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
