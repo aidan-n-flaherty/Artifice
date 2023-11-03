@@ -54,6 +54,8 @@ public:
             postSpecialistPhase(game);
 
             // remove units until one vessel has nothing left
+            setPreVictoryUnits(vesselA->getOwnerID(), vesselA->getUnits());
+            setPreVictoryUnits(vesselB->getOwnerID(), vesselB->getUnits());
             int val = std::min(vesselA->getUnits(), vesselB->getUnits());
 
             vesselA->removeUnits(val);

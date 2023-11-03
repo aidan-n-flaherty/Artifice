@@ -71,6 +71,11 @@ void GameInterface::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("getNextBattleStartingUnits", "objID"), &GameInterface::getNextBattleStartingUnits);
 	ClassDB::bind_method(D_METHOD("getNextBattleUnits", "objID", "phase"), &GameInterface::getNextBattleUnits);
 	ClassDB::bind_method(D_METHOD("getNextBattleUsers", "objID"), &GameInterface::getNextBattleUsers);
+	ClassDB::bind_method(D_METHOD("getNextBattlePreVictoryUnits", "objID"), &GameInterface::getNextBattlePreVictoryUnits);
+	ClassDB::bind_method(D_METHOD("getNextBattleShields", "objID"), &GameInterface::getNextBattleShields);
+	ClassDB::bind_method(D_METHOD("getNextBattleVictor", "objID"), &GameInterface::getNextBattleVictor);
+	ClassDB::bind_method(D_METHOD("getNextBattleVictorUnits", "objID"), &GameInterface::getNextBattleVictorUnits);
+	ClassDB::bind_method(D_METHOD("getNextBattleCaptures", "objID"), &GameInterface::getNextBattleCaptures);
 	ClassDB::bind_method(D_METHOD("getOutpostPositions"), &GameInterface::getOutpostPositions);
 	ClassDB::bind_method(D_METHOD("getShopOptions"), &GameInterface::getShopOptions);
 	ClassDB::bind_method(D_METHOD("getPromotionOptions"), &GameInterface::getPromotionOptions);
@@ -722,6 +727,69 @@ Dictionary GameInterface::getNextBattleUnits(int objID, const String& phase) {
 	}
 
 	return d;
+}
+
+
+Dictionary GameInterface::getNextBattlePreVictoryUnits(int objID) {
+	const BattleEvent* b = completeGame->nextBattle(objID, getTime());
+
+	Dictionary d;
+
+	if(!b) return d;
+
+	std::unordered_map<int, int> units = b->getPreVictoryUnits();
+
+	for(auto& pair : units) {
+		d[pair.first] = pair.second;
+	}
+
+	return d;
+}
+
+Dictionary GameInterface::getNextBattleShields(int objID) {
+	const BattleEvent* b = completeGame->nextBattle(objID, getTime());
+
+	Dictionary d;
+
+	if(!b) return d;
+
+	std::unordered_map<int, int> units = b->getShields();
+
+	for(auto& pair : units) {
+		d[pair.first] = pair.second;
+	}
+
+	return d;
+}
+
+PlayerNode* GameInterface::getNextBattleVictor(int objID) {
+	const BattleEvent* b = completeGame->nextBattle(objID, getTime());
+
+	if(!b) return nullptr;
+
+	return players[b->getVictor()];
+}
+
+int GameInterface::getNextBattleVictorUnits(int objID) {
+	const BattleEvent* b = completeGame->nextBattle(objID, getTime());
+
+	if(!b) return -1;
+
+	return b->getVictorUnits();
+}
+
+Array GameInterface::getNextBattleCaptures(int objID) {
+	const BattleEvent* b = completeGame->nextBattle(objID, getTime());
+
+	Array arr;
+
+	if(!b) return arr;
+
+	for(std::string &name : b->getCaptures()) {
+		arr.push_back(String(name.c_str()));
+	}
+
+	return arr;
 }
 
 Color GameInterface::getColor(int userID) {

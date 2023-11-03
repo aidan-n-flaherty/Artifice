@@ -19,6 +19,7 @@ class BattleEvent : public Event
 private:
     std::unordered_map<std::string, std::list<std::pair<int, std::string>>> battleLog;
     std::unordered_map<std::string, std::pair<int, int>> phaseUnits;
+    std::list<std::string> captures;
 
     std::string currentPhase;
 
@@ -37,6 +38,9 @@ private:
     int preVictoryUnitsA = 0;
     int preVictoryUnitsB = 0;
 
+    int shieldsA = 0;
+    int shieldsB = 0;
+
     int victorUnits = 0;
 
     Point location;
@@ -47,7 +51,9 @@ private:
 
 public:
     BattleEvent(){}
-    BattleEvent(double timestamp, PositionalObject* a, PositionalObject* b) : Event(nullptr, timestamp), a(a), b(b), aID(a->getID()), bID(b->getID()), aOwnerID(a->getOwnerID()), bOwnerID(b->getOwnerID()), friendly(a->getOwnerID() == b->getOwnerID()) {}
+    BattleEvent(double timestamp, PositionalObject* a, PositionalObject* b) : Event(nullptr, timestamp),
+        a(a), b(b), aID(a->getID()), bID(b->getID()), aOwnerID(a->getOwnerID()), bOwnerID(b->getOwnerID()),
+        friendly(a->getOwnerID() == b->getOwnerID()) {}
     
     Event* copy() override { return new BattleEvent(*this); }
 
@@ -86,12 +92,24 @@ public:
 
     void setVictor(int victorID) {
         this->victorID = victorID;
-        setVictorUnits(victorID == aID ? a->getUnits() : b->getUnits());
+
+        std::list<Specialist*> captured;
+        if(victorID == aOwnerID) {
+            setVictorUnits(a->getUnits());
+            captured = b->getSpecialists();
+        } else if(victorID == bOwnerID) {
+            setVictorUnits(b->getUnits());
+            captured = a->getSpecialists();
+        }
+
+        for(Specialist* s : captured) captures.push_back(s->typeAsString());
     }
     int getVictor() const { return victorID; }
 
     void setVictorUnits(int units) { victorUnits = units; }
     int getVictorUnits() const { return victorUnits; }
+
+    std::list<std::string> getCaptures() const { return captures; }
 
     void setFriendly() { friendly = true; }
     bool isFriendly() const { return a->getOwnerID() == b->getOwnerID(); }
@@ -117,17 +135,27 @@ public:
         };
     }
 
-    const std::unordered_map<int, int> getPreVictoryUnits() const {
-        return std::unordered_map<int, int> {
-            { aID, preVictoryUnitsA },
-            { bID, preVictoryUnitsB }
-        };
+    void setPreVictoryUnits(int ownerID, int amount) {
+        if(ownerID == aOwnerID) preVictoryUnitsA = amount;
+        else if(ownerID == bOwnerID) preVictoryUnitsB = amount;
     }
 
     const std::unordered_map<int, int> getPreVictoryUnits() const {
         return std::unordered_map<int, int> {
-            { aID, preVictoryUnitsA },
-            { bID, preVictoryUnitsB }
+            { aOwnerID, preVictoryUnitsA },
+            { bOwnerID, preVictoryUnitsB }
+        };
+    }
+
+    void setShields(int ownerID, int amount) {
+        if(ownerID == aOwnerID) shieldsA = amount;
+        else if(ownerID == bOwnerID) shieldsB = amount;
+    }
+
+    const std::unordered_map<int, int> getShields() const {
+        return std::unordered_map<int, int> {
+            { aOwnerID, shieldsA },
+            { bOwnerID, shieldsB }
         };
     }
 

@@ -51,6 +51,10 @@ public:
             specialistPhase(game);
             postSpecialistPhase(game);
 
+            setPreVictoryUnits(vessel->getOwnerID(), vessel->getUnits());
+            setPreVictoryUnits(outpost->getOwnerID(), outpost->getUnits());
+            setShields(outpost->getOwnerID(), outpost->getShield());
+
             int val = std::min(vessel->getUnits(), outpost->getUnits() + outpost->getShield());
             vessel->removeUnits(val);
             outpost->removeUnits(val - outpost->removeShield(val));

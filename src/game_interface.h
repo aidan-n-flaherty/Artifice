@@ -161,6 +161,11 @@ public:
 	Array getNextBattleMessages(int objID, const String& phase);
 	Dictionary getNextBattleStartingUnits(int objID);
 	Dictionary getNextBattleUnits(int objID, const String& phase);
+	Dictionary getNextBattlePreVictoryUnits(int objID);
+	Dictionary getNextBattleShields(int objID);
+	PlayerNode* getNextBattleVictor(int objID);
+	int getNextBattleVictorUnits(int objID);
+	Array getNextBattleCaptures(int objID);
 
 	bool canHire() { return game->getPlayer(userGameID)->getHiresAt(current) >= 0; }
 	bool hasStarted() { return current >= game->getStartTime(); }
