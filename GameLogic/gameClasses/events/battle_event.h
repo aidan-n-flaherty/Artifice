@@ -34,6 +34,9 @@ private:
     int startingUnitsA = 0;
     int startingUnitsB = 0;
 
+    int preVictoryUnitsA = 0;
+    int preVictoryUnitsB = 0;
+
     int victorUnits = 0;
 
     Point location;
@@ -87,9 +90,6 @@ public:
     }
     int getVictor() const { return victorID; }
 
-    int getStartingUnitsA() const { return startingUnitsA; }
-    int getStartingUnitsB() const { return startingUnitsB; }
-
     void setVictorUnits(int units) { victorUnits = units; }
     int getVictorUnits() const { return victorUnits; }
 
@@ -114,6 +114,20 @@ public:
         return std::unordered_map<int, int> {
             { aOwnerID, startingUnitsA },
             { bOwnerID, startingUnitsB }
+        };
+    }
+
+    const std::unordered_map<int, int> getPreVictoryUnits() const {
+        return std::unordered_map<int, int> {
+            { aID, preVictoryUnitsA },
+            { bID, preVictoryUnitsB }
+        };
+    }
+
+    const std::unordered_map<int, int> getPreVictoryUnits() const {
+        return std::unordered_map<int, int> {
+            { aID, preVictoryUnitsA },
+            { bID, preVictoryUnitsB }
         };
     }
 
