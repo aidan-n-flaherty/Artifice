@@ -120,5 +120,17 @@ horizontal_alignment = 2
 [node name="Spacer2" type="Control" parent="VBoxContainer/ScrollContainer/VBoxContainer/Power"]
 layout_mode = 2
 
-[node name="Final Result" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer"]
+[node name="Final Result" type="VBoxContainer" parent="VBoxContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Winner" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer/Final Result"]
+layout_mode = 2
+
+[node name="WinnerUnits" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer/Final Result"]
+layout_mode = 2
+
+[node name="Captures" type="VBoxContainer" parent="VBoxContainer/ScrollContainer/VBoxContainer/Final Result"]
+layout_mode = 2
+
+[node name="PostBattle" type="VBoxContainer" parent="VBoxContainer/ScrollContainer/VBoxContainer"]
 layout_mode = 2

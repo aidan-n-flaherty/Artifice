@@ -15,9 +15,16 @@ func init(gameID:int, objectID:int):
 	
 	game = GameData.getGame(gameID)
 	
+	
 	players = game.getNextBattleUsers(objectID)
+	
+	if (len(players) == 0):
+		print("None here!")
+		return
 	p1 = players[0]
 	p2 = players[1]
+	
+	
 	
 	#set names
 	$VBoxContainer/ScrollContainer/VBoxContainer/PlayerDivide/Player1/NameP1.text = p1.getName()
@@ -26,22 +33,52 @@ func init(gameID:int, objectID:int):
 	pUnits = game.getNextBattleStartingUnits(objectID)
 	
 	#set starting units
-	$VBoxContainer/ScrollContainer/VBoxContainer/PlayerDivide/Player1/UnitsP1.text = pUnits[p1.getID()]
-	$VBoxContainer/ScrollContainer/VBoxContainer/PlayerDivide/Player2/UnitsP2.text = pUnits[p2.getID()]
+	$VBoxContainer/ScrollContainer/VBoxContainer/PlayerDivide/Player1/UnitsP1.text = str(pUnits[p1.getID()])
+	$VBoxContainer/ScrollContainer/VBoxContainer/PlayerDivide/Player2/UnitsP2.text = str(pUnits[p2.getID()])
 	
 	phases = game.getBattlePhases()
 	
+
+	var postPhases = []
 	
 	for phase in phases:
+		if (phase == "Combat Resolution Phase" || phase == "Post-Combat Phase"):
+			postPhases.push_back(game.getNextBattleMessages(objectID, phase))
+			continue
+		
+		battleMessages = game.getNextBattleMessages(objectID, phase)
+		print(battleMessages)
+		continue
+		if (len(battleMessages) != 0):
+			var displayPhase
+			displayPhase = preload("res://BattleSpecialistEffects.tscn").instantiate()
+			displayPhase.init(p1.getID(), phase, battleMessages)
+			$VBoxContainer/ScrollContainer/VBoxContainer/Bonuses.add_child(displayPhase)
+	
+	#whatever to power/final
+	
+	#power
+	
+	#get unit counts
+	#get shield charge (getters not in C++)
+	#get total power (calculated gdscript side)
+	
+	#final result
+	#get winner (no bind)
+	#get remaining units (no bind)
+	#get captures (no getters in C++)
+	
+	
+	for phase in postPhases:
 		battleMessages = game.getNextBattleMessages(objectID, phase)
 		
-		var displayPhase
-		displayPhase = preload("res://BattleSpecialistEffects.tscn").instantiate()
-		displayPhase.init(p1.getID(), phase, battleMessages)
-		$VBoxContainer/ScrollContainer/VBoxContainer/Bonuses.add_child(displayPhase)
+		continue
+		if (len(battleMessages) != 0):
+			var displayPhase
+			displayPhase = preload("res://BattleSpecialistEffects.tscn").instantiate()
+			displayPhase.init(p1.getID(), phase, battleMessages)
+			$VBoxContainer/ScrollContainer/VBoxContainer/PostBattle.add_child(displayPhase)
 	
-	
-		
 	
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
