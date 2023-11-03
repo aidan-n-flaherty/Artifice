@@ -7,6 +7,7 @@
 #include <limits>
 #include <algorithm>
 #include <tuple>
+#include <random>
 #include "game.h"
 #include "gameObjects/vessel.h"
 #include "order.h"
@@ -40,47 +41,140 @@ Game::Game(GameSettings settings, int simulatorID, double startTime, double endT
         addPlayer(p);
     }
 
-    for(int t = 0; t < playerInfo.size(); t++) {
-        Outpost* o = new Outpost(incrementObjCounter(), getSettings(), OutpostType::FACTORY, 20, 10 + 20 * (t % 2), 10 + 20 * (t % 3) * (t % 3));
-        addOutpost(o);
-        getPlayer(t)->addOutpost(getOutpost(o->getID()));
+    // start map generation
 
-        Specialist* s = new Specialist(incrementObjCounter(), getSettings(), t == 1 ? SpecialistType::PIRATE : SpecialistType::INFILTRATOR);
-        addSpecialist(s);
-        o->addSpecialist(getSpecialist(s->getID()));
-        getPlayer(t)->addSpecialist(getSpecialist(s->getID()));
+    int numIterations = 100;
+    double epsilon = 0.0001;
 
-        std::cout << std::get<0>(playerInfo[t]) << " has an outpost at (" << o->getPosition().getX() << ", " << o->getPosition().getY() << ")" << std::endl;
+    std::vector<std::pair<int, Point>> startingPositions;
+    std::vector<std::pair<int, Point>> outpostPositions;
+
+    std::unordered_map<int, std::vector<OutpostType>> outpostTypes;
+
+    std::mt19937 gen(seed);
+
+    int n = 0;
+    for(auto& pair : players) {
+        double angle = 2 * acos(-1) * (n++) / players.size();
+
+        std::uniform_real_distribution<> dis(0.0, 1.0);
+        Point pos = Point(this->settings, dis(gen) * this->settings->width, dis(gen) * this->settings->height);
+        pos.constrain();
+
+        startingPositions.push_back(std::make_pair(pair.first, pos));
+        
+        std::vector<OutpostType> types;
+        for(int i = 0; i < getSettings()->outpostsPerPlayer; i++) {
+            if(i < getSettings()->factoryDensity * getSettings()->outpostsPerPlayer) types.push_back(OutpostType::FACTORY);
+            else types.push_back(OutpostType::GENERATOR);
+        }
+        std::shuffle(types.begin(), types.end(), std::default_random_engine(seed));
+
+        outpostTypes[pair.first] = types;
     }
 
-    for(int t = 0; t < playerInfo.size(); t++) {
-        Specialist* s = new Specialist(incrementObjCounter(), getSettings(), SpecialistType::QUEEN);
-        addSpecialist(s);
-        getPlayer(t)->getOutposts().front()->addSpecialist(getSpecialist(s->getID()));
-        getPlayer(t)->addSpecialist(getSpecialist(s->getID()));
+    for(int i = 0; i < numIterations; i++) {
+        double mag = 10.0 - (10.0 * i) / numIterations;
+        for(int j = 0; j < startingPositions.size(); j++) {
+            for(int k = j + 1; k < startingPositions.size(); k++) {
+                if(j == k) continue;
 
-        if(t == 1) {
-            s = new Specialist(incrementObjCounter(), getSettings(), SpecialistType::NAVIGATOR);
-            addSpecialist(s);
-            getPlayer(t)->getOutposts().front()->addSpecialist(getSpecialist(s->getID()));
-            getPlayer(t)->addSpecialist(getSpecialist(s->getID()));
+                Point& a = startingPositions[j].second;
+                Point& b = startingPositions[k].second;
 
-            s = new Specialist(incrementObjCounter(), getSettings(), SpecialistType::ADMIRAL);
-            addSpecialist(s);
-            getPlayer(t)->getOutposts().front()->addSpecialist(getSpecialist(s->getID()));
-            getPlayer(t)->addSpecialist(getSpecialist(s->getID()));
+                double dist = a.closestDistance(b);
 
-            /*s = new Specialist(incrementObjCounter(), getSettings(), SpecialistType::SENTRY);
-            addSpecialist(s);
-            getPlayer(t)->getOutposts().front()->addSpecialist(getSpecialist(s->getID()));
-            getPlayer(t)->addSpecialist(getSpecialist(s->getID()));*/
+                if(dist < epsilon) {
+                    double angle = atan2(cos(i + j), sin(i + j));
+                    a.set(a.getX() + epsilon * cos(angle), a.getY() + epsilon * sin(angle));
+                }
 
-            s = new Specialist(incrementObjCounter(), getSettings(), SpecialistType::TYCOON);
-            addSpecialist(s);
-            getPlayer(t)->getOutposts().front()->addSpecialist(getSpecialist(s->getID()));
-            getPlayer(t)->addSpecialist(getSpecialist(s->getID()));
+                Point newA = a.movedTowards(a.closest(b), -mag/(0.01 * dist + 1));
+                Point newB = b.movedTowards(b.closest(a), -mag/(0.01 * dist + 1));
+
+                a = newA;
+                b = newB;
+            }
         }
     }
+
+    for(auto& pair : startingPositions) {
+        for(int i = 0; i < getSettings()->outpostsPerPlayer; i++) {
+            double angle = 2 * acos(-1) * i / getSettings()->outpostsPerPlayer;
+
+            Point pos = Point(getSettings(), pair.second.getX() + 20 * cos(angle), pair.second.getY() + 20 * sin(angle));
+            pos.constrain();
+
+            outpostPositions.push_back(std::make_pair(pair.first, pos));
+        }
+    }
+
+    for(int i = 0; i < numIterations; i++) {
+        double mag = 10.0 - (10.0 * i) / numIterations;
+        for(int j = 0; j < outpostPositions.size(); j++) {
+            for(int k = 0; k < startingPositions.size(); k++) {
+                Point& a = outpostPositions[j].second;
+                const Point& b = startingPositions[k].second;
+
+                double dist = a.closestDistance(b);
+
+                if(dist < epsilon) {
+                    double angle = atan2(cos(i + j), sin(i + j));
+                    a.set(a.getX() + epsilon * cos(angle), a.getY() + epsilon * sin(angle));
+                }
+
+                if(dist > 50) continue;
+
+                a.moveTowards(a.closest(b), -mag/(0.1 * dist + 1));
+            }
+
+            for(int k = j + 1; k < outpostPositions.size(); k++) {
+                if(j == k) continue;
+
+                Point& a = outpostPositions[j].second;
+                Point& b = outpostPositions[k].second;
+
+                double dist = a.closestDistance(b);
+
+                if(dist < epsilon) {
+                    double angle = atan2(cos(i + j), sin(i + j));
+                    a.set(a.getX() + epsilon * cos(angle), a.getY() + epsilon * sin(angle));
+                }
+
+                if(dist > 50) continue;
+
+                Point newA = a.movedTowards(a.closest(b), -mag/(0.25 * dist + 1));
+                Point newB = b.movedTowards(b.closest(a), -mag/(0.25 * dist + 1));
+
+                a = newA;
+                b = newB;
+            }
+        }
+    }
+
+    for(const std::pair<int, Point>& pair : startingPositions) {
+        Outpost* o = new Outpost(incrementObjCounter(), getSettings(), OutpostType::FACTORY, 20, pair.second.getX(), pair.second.getY());
+        addOutpost(o);
+        getPlayer(pair.first)->addOutpost(getOutpost(o->getID()));
+
+        Specialist* s = new Specialist(incrementObjCounter(), getSettings(), SpecialistType::QUEEN);
+        addSpecialist(s);
+        getPlayer(pair.first)->getOutposts().front()->addSpecialist(getSpecialist(s->getID()));
+        getPlayer(pair.first)->addSpecialist(getSpecialist(s->getID()));
+    }
+
+    for(const std::pair<int, Point>& pair : outpostPositions) {
+        OutpostType type = outpostTypes[pair.first].front();
+        outpostTypes[pair.first].erase(outpostTypes[pair.first].begin());
+
+        Outpost* o = new Outpost(incrementObjCounter(), getSettings(), type, 20, pair.second.getX(), pair.second.getY());
+        addOutpost(o);
+        getPlayer(pair.first)->addOutpost(getOutpost(o->getID()));
+
+        std::cout << pair.first << " has an outpost at " << o->getPosition().getX() << ", " << o->getPosition().getY() << std::endl;
+    }
+
+    // end map generation
 
     addEvent(new OutpostRangeEvent(getTime()));
 }

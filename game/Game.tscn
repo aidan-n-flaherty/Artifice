@@ -1,7 +1,8 @@
-[gd_scene load_steps=88 format=3 uid="uid://dgp4l24s2rulk"]
+[gd_scene load_steps=91 format=3 uid="uid://dgp4l24s2rulk"]
 
 [ext_resource type="Script" path="res://Game.gd" id="1_s53r2"]
 [ext_resource type="Script" path="res://CameraPivot.gd" id="2_t2ckv"]
+[ext_resource type="Shader" path="res://FloorShader.gdshader" id="3_auwix"]
 [ext_resource type="PackedScene" uid="uid://n0lobms04k46" path="res://Timeline.tscn" id="3_jhu7k"]
 [ext_resource type="Texture2D" uid="uid://b0wfr3sq3dkv7" path="res://resources/floorNoise/StoneNoise.tres" id="6_ys1ym"]
 [ext_resource type="Shader" path="res://SnowPerlin.gdshader" id="8_4e3wm"]
@@ -52,8 +53,17 @@ reflected_light_source = 2
 glow_intensity = 0.0
 glow_strength = 2.0
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_2wh2d"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_o0wgf"]
 viewport_path = NodePath("Viewport/Viewport3D/CameraPivot/FloorDisplay")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_rqbvh"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("3_auwix")
+shader_parameter/screen_texture = SubResource("ViewportTexture_o0wgf")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_utrlp"]
+size = Vector2(100, 260)
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_8tg0o"]
 size = Vector2(100, 260)
@@ -476,15 +486,11 @@ transparent_bg = true
 msaa_2d = 1
 size = Vector2i(1000, 2600)
 
-[node name="FloorSprite" type="Sprite3D" parent="Viewport/Viewport3D/CameraPivot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -99, -100)
-flip_h = true
-flip_v = true
-pixel_size = 0.1
-axis = 1
-double_sided = false
-render_priority = 1
-texture = SubResource("ViewportTexture_2wh2d")
+[node name="FloorSprite" type="MeshInstance3D" parent="Viewport/Viewport3D/CameraPivot"]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, -100, -100)
+sorting_offset = 1000.0
+material_override = SubResource("ShaderMaterial_rqbvh")
+mesh = SubResource("PlaneMesh_utrlp")
 
 [node name="Floor" type="Node3D" parent="Viewport/Viewport3D/CameraPivot"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -100, -100)

@@ -34,7 +34,7 @@ public:
     void setOriginatingOrder(Order* o) { originatingOrder = o; }
     Order* getOriginatingOrder() { return originatingOrder; }
 
-    const GameSettings* getSettings() const { return settings; }
+    GameSettings* getSettings() const { return settings; }
 };
 
 #endif

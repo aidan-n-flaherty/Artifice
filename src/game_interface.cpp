@@ -14,11 +14,13 @@
 #include <godot_cpp/classes/viewport.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
 #include <godot_cpp/variant/callable.hpp>
+#include <godot_cpp/variant/packed_vector3_array.hpp>
 #include <godot_cpp/variant/packed_vector2_array.hpp>
 #include <godot_cpp/variant/packed_string_array.hpp>
 #include <godot_cpp/variant/packed_int32_array.hpp>
 #include <godot_cpp/variant/string.hpp>
 #include <godot_cpp/variant/dictionary.hpp>
+#include <godot_cpp/variant/vector3.hpp>
 #include <cstdlib>
 #include <ctime>
 #include <cmath>
@@ -39,9 +41,14 @@ double getTimeMillis() {
 }
 
 void GameInterface::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("select"), &GameInterface::select);
-	
+	ClassDB::bind_method(D_METHOD("select", "id"), &GameInterface::select);
+	ClassDB::bind_method(D_METHOD("unselect"), &GameInterface::unselect);
+	ClassDB::bind_method(D_METHOD("getTarget", "x", "y"), &GameInterface::getTarget);
+	ClassDB::bind_method(D_METHOD("projectedTime", "x", "y"), &GameInterface::projectedTime);
+	ClassDB::bind_method(D_METHOD("setMouse", "x", "y"), &GameInterface::setMouse);
+	ClassDB::bind_method(D_METHOD("setDrag", "drag"), &GameInterface::setDrag);
 	ClassDB::bind_method(D_METHOD("init", "gameID", "userID", "startTime", "players", "settingOverrides"), &GameInterface::init);
+	ClassDB::bind_method(D_METHOD("setTempTime", "t"), &GameInterface::setTempTime);
 	ClassDB::bind_method(D_METHOD("setTime", "t"), &GameInterface::setTime);
 	ClassDB::bind_method(D_METHOD("getTime"), &GameInterface::getTime);
 	ClassDB::bind_method(D_METHOD("setPercent", "percent"), &GameInterface::setPercent);
@@ -102,6 +109,8 @@ void GameInterface::init(int gameID, int userID, int startTime, Dictionary playe
 	playerMap[0] = std::make_tuple("Bob", 123456, 467);
 	playerMap[1] = std::make_tuple("Joe", 654321, 752);
 	playerMap[2] = std::make_tuple("Steve", 987654, 567);
+	playerMap[3] = std::make_tuple("Jeff", 314159, 429);
+	playerMap[4] = std::make_tuple("Bill", 765432, 758);
 
 	Array ids = players.keys();
 	for(int i = 0; i < ids.size(); i++) {
@@ -157,16 +166,26 @@ void GameInterface::_process(double delta) {
 
 	update();
 	
-	if(game != nullptr) {
-		double timeDiff = current - game->getTime();
+	if(game != nullptr && currentGame != nullptr) {
+		double timeDiff = getTime() - game->getTime();
+
+		double simulatedDiff = getCurrent() - simulatedGame->getTime();
+
+		Player* p = future ? currentGame->getPlayer(getUserGameID()) : game->getPlayer(getUserGameID());
 		
-		for(const auto& pair : vessels) pair.second->setDiff(time, timeDiff);
+		for(const auto& pair : vessels) {
+			pair.second->setDiff(time, timeDiff);
+			if(p) pair.second->set_visible(p->withinRange(pair.second->getObj(), timeDiff));
+		}
 		
-		for(const auto& pair : outposts) pair.second->setDiff(time, timeDiff);
+		for(const auto& pair : outposts) {
+			pair.second->setDiff(time, timeDiff);
+			if(p) pair.second->set_visible(p->withinRange(pair.second->getObj(), timeDiff));
+		}
 
 		for(const auto& pair : players) pair.second->setDiff(time, timeDiff);
 
-		floorDisplay->setDiff(timeDiff);
+		floorDisplay->setDiff(timeDiff, simulatedDiff);
 		floorDisplay->queue_redraw();
 	}
 }
@@ -183,8 +202,8 @@ void GameInterface::setTime(double t) {
 }
 
 void GameInterface::update() {
-	if(game == nullptr || current + simulationBuffer / settings.simulationSpeed > nextEndState) {
-		if(current > nextEndState) game = nullptr;
+	if(game == nullptr || getTime() + simulationBuffer / settings.simulationSpeed > nextEndState) {
+		if(getTime() > nextEndState) game = nullptr;
 
 		completeGame = completeGame->lastState(nextEndState);
 		completeGame->setEndTime(nextEndState);
@@ -192,9 +211,21 @@ void GameInterface::update() {
 		nextEndState = completeGame->getNextEndState();
 	}
 
-	if(game == nullptr || current < game->getTime() || current >= nextState) {
-		game = completeGame->lastState(current);
-		nextState = completeGame->nextState(current);
+	if(currentGame == nullptr || getTimeMillis() >= nextCurrentState) {
+		currentGame = completeGame->lastState(getTimeMillis());
+		nextCurrentState = completeGame->nextState(getTimeMillis());
+	}
+
+	if(simulatedGame == nullptr || getCurrent() < simulatedGame->getTime() || getCurrent() >= nextSimulatedState) {
+		simulatedGame = completeGame->lastState(getCurrent());
+		nextSimulatedState = completeGame->nextState(getCurrent());
+
+		if(selected >= 0 && !getSelected()) unselect();
+	}
+
+	if(game == nullptr || getTime() < game->getTime() || getTime() >= nextState) {
+		game = completeGame->lastState(getTime());
+		nextState = completeGame->nextState(getTime());
 		nextEndState = completeGame->getNextEndState();
 		
 		for(auto it = vessels.begin(); it != vessels.end();) {
@@ -228,8 +259,6 @@ void GameInterface::update() {
 				it = selectedSpecialists.begin();
 			} else it++;
 		}
-
-		if(selectedNode && !game->hasPosObject(selectedNode->getID())) unselect();
 		
 		for(const auto& pair : game->getVessels()) {
 			if(vessels.find(pair.first) != vessels.end()) {
@@ -268,7 +297,7 @@ void GameInterface::update() {
 	}
 }
 
-PositionalNode* GameInterface::getObj(int id) {
+PositionalNode* GameInterface::getNode(int id) {
 	PositionalNode* obj = nullptr;
 
 	if(vessels.find(id) != vessels.end()) obj = vessels[id];
@@ -278,9 +307,9 @@ PositionalNode* GameInterface::getObj(int id) {
 }
 
 bool GameInterface::willSendWith(SpecialistType type) {
-	if(!selectedNode) return false;
+	if(!getSelected()) return false;
 
-	for(Specialist* s : selectedNode->getObj()->getSpecialists()) {
+	for(Specialist* s : getSelected()->getSpecialists()) {
 		if(s->getType() == type && s->getOwnerID() == getUserGameID() && selectedSpecialists.find(s->getID()) != selectedSpecialists.end()) {
 			return true;
 		}
@@ -292,7 +321,7 @@ bool GameInterface::willSendWith(SpecialistType type) {
 // event propagated from positional nodes, occurs when something is clicked on
 void GameInterface::select(int id) {
 	// selecting the same thing deselects
-	if(selectedNode && id == selectedNode->getID()) {
+	if(getSelected() && id == getSelected()->getID()) {
 		unselect();
 		
 		return;
@@ -303,36 +332,41 @@ void GameInterface::select(int id) {
 		return;
 	}
 
-	PositionalNode* target = getObj(id);
+	PositionalObject* target = getObj(id);
 
-	if(selectedNode) {
-		VesselNode* v1 = dynamic_cast<VesselNode*>(selectedNode);
-		OutpostNode* o1 = dynamic_cast<OutpostNode*>(selectedNode);
+	double timeDiff = current - game->getTime();
 
-		VesselNode* v2 = dynamic_cast<VesselNode*>(target);
-		OutpostNode* o2 = dynamic_cast<OutpostNode*>(target);
+	if(getSelected()) {
+		Vessel* v1 = dynamic_cast<Vessel*>(getSelected());
+		Outpost* o1 = dynamic_cast<Outpost*>(getSelected());
+
+		Vessel* v2 = dynamic_cast<Vessel*>(target);
+		Outpost* o2 = dynamic_cast<Outpost*>(target);
 
 
 		if(o1) {
 			if(v2 && !willSendWith(SpecialistType::PIRATE)) return;
 
-			int units = selectedNode->getObj()->getUnitsAt(selectedNode->getDiff());
-
-			if(units <= 0) {
-				unselect();
-				return;
-			}
+			int units = getSelected()->getUnitsAt(timeDiff);
 
 
-			int parameters[] = { std::max(1, int(percent * units)), selectedNode->getID(), target->getID() };
+			uint32_t parameters[] = { uint32_t(std::max(1, int(percent * units))), selected, target->getID() };
 			Array arguments;
 
 			for(int i = 0; i < 3; i++) arguments.push_back(parameters[i]);
 
+			bool sentSpecialists = false;
+
 			while(!selectedSpecialists.empty()) {
+				sentSpecialists = true;
 				arguments.push_back(*selectedSpecialists.begin());
-				selectedNode->setSpecialistSelected(*selectedSpecialists.begin(), false);
+				if(getNode(selected)) getNode(selected)->setSpecialistSelected(*selectedSpecialists.begin(), false);
 				selectedSpecialists.erase(selectedSpecialists.begin());
+			}
+
+			if(units <= 0 && !sentSpecialists) {
+				unselect();
+				return;
 			}
 
 			emit_signal("addOrder", "SEND", game->getReferenceID(), current, arguments);
@@ -341,11 +375,11 @@ void GameInterface::select(int id) {
 			
 			return;
 		} else if(v1) {
-			if(!selectedNode->getObj()->controlsSpecialist(SpecialistType::NAVIGATOR)) return;
+			if(!getSelected()->controlsSpecialist(SpecialistType::NAVIGATOR)) return;
 
-			if(v2 && !selectedNode->getObj()->controlsSpecialist(SpecialistType::PIRATE)) return;
+			if(v2 && !getSelected()->controlsSpecialist(SpecialistType::PIRATE)) return;
 
-			int parameters[] = { selectedNode->getID(), target->getID() };
+			uint32_t parameters[] = { selected, target->getID() };
 			Array arguments;
 
 			for(int i = 0; i < 2; i++) arguments.push_back(parameters[i]);
@@ -370,9 +404,9 @@ void GameInterface::unselect() {
 }
 
 void GameInterface::setSelected(int id) {
-	if(selectedNode) selectedNode->setSelected(false);
+	if(getSelected() && getNode(selected)) getNode(selected)->setSelected(false);
 
-	PositionalNode* obj = getObj(id);
+	PositionalNode* obj = getNode(id);
 
 	if(obj) obj->setSelected(true);
 
@@ -381,7 +415,7 @@ void GameInterface::setSelected(int id) {
 	if(v) emit_signal("selectVessel", v);
 	if(o) emit_signal("selectOutpost", o);
 
-	selectedNode = obj;
+	selected = id;
 }
 
 void GameInterface::setSelectedSpecialist(int id) {
@@ -391,7 +425,7 @@ void GameInterface::setSelectedSpecialist(int id) {
 
 	int containerID = s->getContainer() ? s->getContainer()->getID() : -1;
 	bool owned = s->getContainer() && s->getContainer()->getOwnerID() == getUserGameID();
-	PositionalNode* container = getObj(containerID);
+	PositionalNode* container = getNode(containerID);
 
 	for(auto& pair : vessels) if(pair.first != containerID || !owned) pair.second->clearSelectedSpecialists();
 	for(auto& pair : outposts) if(pair.first != containerID || !owned) pair.second->clearSelectedSpecialists();
@@ -455,6 +489,56 @@ void GameInterface::cancelOrder(uint32_t ID) {
 	game = nullptr;
 	
 	update();
+}
+
+PositionalNode* GameInterface::getTarget(double x, double y) {
+	PositionalNode* target = nullptr;
+
+	Point p = Point(game->getSettings(), x, y);
+	p.constrain();
+
+	double minDist = 5.0;
+
+	for(auto& pair : outposts) {
+		if(pair.first == selected || !pair.second->is_visible()) continue;
+
+		double mag = pair.second->getObj()->getPositionAt(pair.second->getDiff()).closestDistance(p);
+		if(mag < minDist) {
+			target = pair.second;
+			minDist = mag;
+		}
+	}
+
+	if(willSendWith(SpecialistType::PIRATE)) {
+		for(auto& pair : vessels) {
+			if(pair.first == selected || !pair.second->is_visible()) continue;
+
+			double mag = pair.second->getObj()->getPositionAt(pair.second->getDiff()).closestDistance(p);
+			if(mag < minDist) {
+				target = pair.second;
+				minDist = mag;
+			}
+		}
+	}
+
+	return target;
+}
+
+double GameInterface::projectedTime(double x, double y) {
+	if(!getSelected()) return -1;
+
+	double timeDiff = getCurrent() - simulatedGame->getTime();
+
+	Point p = Point(game->getSettings(), x, y);
+	p = getSelected()->getPositionAt(timeDiff).closest(p);
+
+	PositionalNode* target = getTarget(x, y);
+
+	double speed = getSelected()->getProjectedSpeed(target ? target->getObj() : nullptr, selectedSpecialists);
+
+	double mag = (target ? target->getObj()->getPositionAt(target->getDiff()) : p).closestDistance(getSelected()->getPositionAt(timeDiff));
+
+	return mag/speed;
 }
 
 PackedVector2Array GameInterface::getOutpostPositions() {
@@ -538,7 +622,7 @@ String GameInterface::getSpecialistDescription(int specialistNum) {
 }
 
 double GameInterface::getNextArrivalEvent(int vesselID) {
-	const VesselOutpostEvent* e = completeGame->nextArrival(vesselID, current);
+	const VesselOutpostEvent* e = completeGame->nextArrival(vesselID, getTime());
 
 	return e ? e->getTimestamp() : -1;
 }
@@ -550,7 +634,7 @@ double GameInterface::getNextProductionEvent(int outpostID) {
 
 	double time = curr->getTime();
 
-	while(curr->getTime() + curr->getOutpost(outpostID)->nextProductionEvent() > next || curr->getTime() + curr->getOutpost(outpostID)->nextProductionEvent() <= current) {
+	while(curr->getTime() + curr->getOutpost(outpostID)->nextProductionEvent() > next || curr->getTime() + curr->getOutpost(outpostID)->nextProductionEvent() <= getTime()) {
 		curr = completeGame->lastState(next);
 		next = completeGame->nextState(curr->getTime());
 		time = curr->getTime();
@@ -560,7 +644,7 @@ double GameInterface::getNextProductionEvent(int outpostID) {
 }
 
 double GameInterface::getNextBattleEvent(int objID) {
-	const BattleEvent* e = completeGame->nextBattle(objID, current);
+	const BattleEvent* e = completeGame->nextBattle(objID, getTime());
 
 	return e ? e->getTimestamp() : -1;
 }
@@ -576,7 +660,7 @@ Array GameInterface::getBattlePhases() {
 }
 
 Array GameInterface::getNextBattleUsers(int objID) {
-	const BattleEvent* b = completeGame->nextBattle(objID, current);
+	const BattleEvent* b = completeGame->nextBattle(objID, getTime());
 
 	Array arr;
 
@@ -589,7 +673,7 @@ Array GameInterface::getNextBattleUsers(int objID) {
 }
 
 Array GameInterface::getNextBattleMessages(int objID, const String& phase) {
-	const BattleEvent* b = completeGame->nextBattle(objID, current);
+	const BattleEvent* b = completeGame->nextBattle(objID, getTime());
 
 	Array arr;
 
@@ -608,7 +692,7 @@ Array GameInterface::getNextBattleMessages(int objID, const String& phase) {
 }
 
 Dictionary GameInterface::getNextBattleStartingUnits(int objID) {
-	const BattleEvent* b = completeGame->nextBattle(objID, current);
+	const BattleEvent* b = completeGame->nextBattle(objID, getTime());
 
 	Dictionary d;
 
@@ -624,7 +708,7 @@ Dictionary GameInterface::getNextBattleStartingUnits(int objID) {
 }
 
 Dictionary GameInterface::getNextBattleUnits(int objID, const String& phase) {
-	const BattleEvent* b = completeGame->nextBattle(objID, current);
+	const BattleEvent* b = completeGame->nextBattle(objID, getTime());
 
 	Dictionary d;
 

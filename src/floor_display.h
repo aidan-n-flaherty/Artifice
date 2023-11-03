@@ -15,23 +15,30 @@ class FloorDisplay : public Control {
     GDCLASS(FloorDisplay, Control)
 
 private:
-    GameInterface* game;
+    GameInterface* gameInterface;
 
     double timeDiff;
+
+    double simulatedDiff;
 
 protected:
 	static void _bind_methods() {};
 
 public:
     FloorDisplay() {}
-    FloorDisplay(GameInterface* game);
+    FloorDisplay(GameInterface* gameInterface);
     ~FloorDisplay() {}
 		
     void _draw() override;
     
-    void setDiff(double diff) { timeDiff = diff; }
+    void setDiff(double timeDiff, double simulatedDiff) {
+        this->timeDiff = timeDiff;
+        this->simulatedDiff = simulatedDiff;
+    }
 	
 	double getDiff() { return timeDiff; }
+
+    double getSimulatedDiff() { return simulatedDiff; }
 };
 
 }

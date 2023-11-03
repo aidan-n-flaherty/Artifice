@@ -1,7 +1,16 @@
 extends Area3D
 
+var units
+
+var shield
+
+var selected
+
+var color
+
 # Called when the node enters the scene tree for the first time.
 func _ready():	
+	return
 	var noise = FastNoiseLite.new()
 	
 	noise.frequency = 0.15
@@ -38,7 +47,12 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	$RotationInvariant/Units.setValue(str(get_parent().getUnits()))
-	$RotationInvariant/Shield.setValue(str(get_parent().getShield()))
-	$RotationInvariant/Units.setSelection(get_parent().isSelected())
-	$RotationInvariant/Units.setColor(get_parent().getColor())
+	if units != get_parent().getUnits(): $RotationInvariant/Units.setValue(str(get_parent().getUnits()))
+	if shield != get_parent().getShield(): $RotationInvariant/Shield.setValue(str(get_parent().getShield()))
+	if selected != get_parent().isSelected(): $RotationInvariant/Units.setSelection(get_parent().isSelected())
+	if color != get_parent().getColor(): $RotationInvariant/Units.setColor(get_parent().getColor())
+	
+	units = get_parent().getUnits()
+	shield = get_parent().getShield()
+	selected = get_parent().isSelected()
+	color = get_parent().getColor()

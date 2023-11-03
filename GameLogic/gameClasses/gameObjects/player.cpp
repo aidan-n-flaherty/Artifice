@@ -306,3 +306,23 @@ int Player::outpostsOfType(OutpostType t) const {
 
     return count;
 }
+
+bool Player::withinRange(PositionalObject* obj, double timeDiff) const {
+    if(obj->getOwnerID() == getID()) return true;
+
+    Vessel* v = dynamic_cast<Vessel*>(obj);
+
+    for(Outpost* o : outposts) {
+        if(o->getPositionAt(timeDiff).closestDistance(obj->getPositionAt(timeDiff)) < o->getSonarRange()) return true;
+
+        if(v && v->getTargetID() == o->getID()) return true;
+    }
+
+    if(v) {
+        for(Vessel* v1 : vessels) {
+            if(v->getTargetID() == v1->getID()) return true;
+        }
+    }
+
+    return false;
+}

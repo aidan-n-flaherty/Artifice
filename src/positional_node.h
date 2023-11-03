@@ -61,6 +61,8 @@ public:
 	
 	void selectSpecialist(Camera3D *camera, const Ref<InputEvent> &event, int32_t id);
 
+	virtual void setVisible(bool visible) { set_visible(visible); };
+
 	PositionalObject* getObj() { return obj; }
 
 	void clearSelectedSpecialists() {

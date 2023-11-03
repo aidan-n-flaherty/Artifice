@@ -93,6 +93,7 @@ public:
     void removeVessel(Vessel* vessel);
 
     int outpostsOfType(OutpostType t) const;
+    bool withinRange(PositionalObject* obj, double timeDiff) const;
 
     void removeHire() { hires -= 1; }
     void drillMine() { minesDrilled++; }

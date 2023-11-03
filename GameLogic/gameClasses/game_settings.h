@@ -22,6 +22,7 @@ public:
     GameSettings() { loadDefaults(); }
 
     double simulationSpeed;
+    double factoryDensity;
     int resourcesToWin;
     Mode gameMode;
     int eloKValue;
@@ -29,6 +30,7 @@ public:
     int defaultMaxShield;
     int fireRate;
     int costPerMine;
+    int outpostsPerPlayer;
     int width;
     int height;
     std::unordered_map<SpecialistType, std::string> specialistDescriptions;

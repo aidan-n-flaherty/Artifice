@@ -11,14 +11,15 @@ private:
     double x = -1;
     double y = -1;
 
-    bool invalid;
+    bool invalid = false;
 
     GameSettings* settings = nullptr;
 
+    double distance(const Point &other) const;
+
 public:
     Point() : x(-1), y(-1), invalid(true) {};
-    Point(double x, double y) : x(x), y(y), invalid(false) {};
-    Point(GameSettings* settings, double x, double y) : settings(settings), x(x), y(y), invalid(false) {};
+    Point(GameSettings* settings, double x, double y) : settings(settings), x(x), y(y), invalid(false) { };
 
     bool isInvalid() { return invalid; }
 
@@ -26,13 +27,13 @@ public:
 
     double getY() const { return y; }
 
-    void setX(double x) { this->x = x; }
+    void setX(double x) { this->x = x; constrain(); }
 
-    void setY(double y) { this->y = y; }
+    void setY(double y) { this->y = y; constrain(); }
     
-    void set(double x, double y) { this->x = x; this->y = y; }
+    void set(double x, double y) { this->x = x; this->y = y; constrain(); }
 
-    double distance(const Point &other) const;
+    double closestDistance(const Point &other) const;
 
     Point closest(const Point &other) const;
 
@@ -57,11 +58,11 @@ public:
     }
 
     Point operator+(const Point &other) {
-         return Point(x + other.x, y + other.y);
+         return Point(settings, x + other.x, y + other.y);
     }
 
     Point operator-(const Point &other) {
-         return Point(x - other.x, y - other.y);
+         return Point(settings, x - other.x, y - other.y);
     }
 
     double operator*(const Point &other) {
@@ -69,7 +70,7 @@ public:
     }
 
     Point operator*(double scalar) {
-         return Point(x * scalar, y * scalar);
+         return Point(settings, x * scalar, y * scalar);
     }
 
     bool operator==(const Point &other) {

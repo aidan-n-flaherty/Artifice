@@ -31,7 +31,7 @@ public:
                 Vessel* target = nullptr;
 
                 for(auto& vessel : game->getVessels()) {
-                    if(vessel.second->getOwnerID() == outpost->getOwnerID() && outpost->distance(vessel.second->getPosition()) > outpost->getFireRange()) continue;
+                    if(vessel.second->getOwnerID() == outpost->getOwnerID() || outpost->distance(vessel.second->getPosition()) > outpost->getFireRange()) continue;
                     if(target == nullptr || vessel.second->getUnits() > target->getUnits()) target = vessel.second;
                 }
 

@@ -7,10 +7,12 @@
 #include <memory>
 #include <unordered_map>
 #include <unordered_set>
+#include <utility>
 #include <godot_cpp/variant/vector2.hpp>
 #include <godot_cpp/variant/vector2i.hpp>
 #include <godot_cpp/variant/color.hpp>
 #include <godot_cpp/variant/packed_vector2_array.hpp>
+#include <godot_cpp/variant/packed_vector3_array.hpp>
 #include <godot_cpp/variant/packed_string_array.hpp>
 #include <godot_cpp/variant/packed_int32_array.hpp>
 #include <godot_cpp/variant/dictionary.hpp>
@@ -31,7 +33,16 @@ class GameInterface : public Node3D {
 
 private:
 	std::shared_ptr<Game> completeGame = nullptr;
+
 	std::shared_ptr<Game> game = nullptr;
+	double nextState = 0.0;
+	double nextEndState = 0.0;
+
+	std::shared_ptr<Game> currentGame = nullptr;
+	double nextCurrentState = 0.0;
+
+	std::shared_ptr<Game> simulatedGame = nullptr;
+	double nextSimulatedState = 0.0;
 	
 	std::unordered_map<int, VesselNode*> vessels;
 	std::unordered_map<int, OutpostNode*> outposts;
@@ -43,19 +54,17 @@ private:
 
 	GameSettings settings;
 	
-	int gameID; 
+	int gameID = -1; 
 
-	int userID, userGameID;
-
-	double nextState;
-
-	double nextEndState;
+	int userID = -1, userGameID = -1;
 	
-	PositionalNode* selectedNode = nullptr;
+	unsigned int selected = -1;
 	
 	std::set<int> selectedSpecialists;
 	
-	double current;
+	double current = 0.0;
+
+	double tempTime = 0.0;
 	
 	bool future = true;
 
@@ -64,6 +73,10 @@ private:
 	double percent = 1.0;
 
 	double epsilon = 0.00001;
+
+	bool drag = false;
+
+	Point mouse;
 
 protected:
 	static void _bind_methods();
@@ -87,6 +100,8 @@ public:
 
 	std::shared_ptr<Game> getCompleteGame() { return completeGame; }
 	std::shared_ptr<Game> getGame() { return game; }
+	std::shared_ptr<Game> getSimulatedGame() { return currentGame; }
+	std::shared_ptr<Game> getCurrentGame() { return currentGame; }
 
 	int getUserGameID() { return userGameID; }
 
@@ -95,21 +110,35 @@ public:
 		return game && game->getPlayer(userGameID) ? game->getPlayer(userGameID)->getHiresAt(timeDiff) : -1;
 	}
 	
+	bool simulatingFuture() { return future; }
 	bool willSendWith(SpecialistType type);
 	void setSelectedSpecialist(int id);
 	void select(int id);
 	void setSelected(int id);
 	void unselect();
-	PositionalNode* getSelected() { return selectedNode; }
-	PositionalNode* getObj(int id);
+	void setMouse(double x, double y) {
+		mouse = Point(game->getSettings(), x, y);
+		if(getSelected()) mouse = getSelected()->getPosition().closest(mouse);
+		else mouse.constrain();
+	}
+	const Point& getMouse() { return mouse; }
+	void setDrag(bool drag) { this->drag = drag; }
+	bool isDragging() { return drag; }; 
+	PositionalObject* getSelected() { return getObj(selected); }
+	PositionalObject* getObj(int id) { return simulatedGame->getPosObject(id); }
+	PositionalNode* getNode(int id);
 	
 	void shiftToTime(double t);
 	void setTime(double t);
-	double getTime() { return current; }
+	void setTempTime(double t) { tempTime = t; }
+	double getTime() { return current + tempTime; }
+	double getCurrent() { return current; }
 
 	void setPercent(double percent) { this->percent = percent; }
 	double getPercent() { return percent; }
 
+	PositionalNode* getTarget(double x, double y);
+	double projectedTime(double x, double y);
 	PackedInt32Array getPlayerIDs();
 	PackedVector2Array getOutpostPositions();
 	PackedInt32Array getShopOptions();

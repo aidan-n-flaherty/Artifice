@@ -9,7 +9,7 @@ var lastDiff
 
 var momentum = Vector2(0, 0)
 
-var pos
+var pos = Vector2(0, 0)
 
 var game
 
@@ -19,6 +19,12 @@ var zoom = 0
 
 @export var minZoom = 0.5
 
+var selectedNode = null
+
+var target = null
+
+var targetPos = null
+
 func updatePos():
 	pos = Vector2(position.x, position.z + 100)
 
@@ -27,6 +33,9 @@ func updatePos():
 	#var arr = game.getOutpostPositions();
 	#$Floor.get_surface_override_material(0).set_shader_parameter("outposts", arr)
 	#$Floor.get_surface_override_material(0).set_shader_parameter("outpostsLength", arr.size())
+
+func selected(node):
+	selectedNode = node
 
 func _process(delta):
 	if not dragging:
@@ -38,7 +47,20 @@ func _process(delta):
 		
 		momentum *= 0.9
 	
-	pass
+	if dragging and selectedNode and targetPos:
+		target = game.getTarget(targetPos.x, targetPos.y)
+		
+		var mousePos = targetPos
+		if target:
+			mousePos = Vector2(target.get_position().x, target.get_position().z)
+		
+		var time = game.projectedTime(mousePos.x, mousePos.y)
+		
+		game.setTempTime(time)
+		
+		game.setDrag(true)
+		
+		game.setMouse(mousePos.x, mousePos.y)
 
 func _unhandled_input(event):
 	if event.is_action("drag"):
@@ -49,6 +71,23 @@ func _unhandled_input(event):
 			dragging = true
 		else:
 			dragging = false
+			game.setDrag(false)
+			game.setTempTime(0.0)
+			if selectedNode and target:
+				game.select(target.getID())
+				target = null
+			selectedNode = null
+			targetPos = null
+	elif event is InputEventMouseMotion and dragging and selectedNode:
+		var diff = event.position
+		
+		diff.x -= get_viewport().get_visible_rect().size.x/2.0
+		diff.y -= get_viewport().get_visible_rect().size.y/2.0
+		
+		diff.x *= $Camera3D.size / 1.0 / get_viewport().get_visible_rect().size.x
+		diff.y *= $Camera3D.size / 1.0 / get_viewport().get_visible_rect().size.x * sqrt(2)
+		
+		targetPos = pos - diff
 	elif event is InputEventMouseMotion and dragging:
 		var diff = event.position - mouse_start_pos
 		#print(diff * $Camera3D.size / 1.0 / get_viewport().get_visible_rect().size)
@@ -84,6 +123,9 @@ func _unhandled_input(event):
 		$Floor/Floor1.get_surface_override_material(0).set_shader_parameter("cameraSize", $Camera3D.size)
 		$Floor.scale.z = $Camera3D.size/100.0
 		$Floor.scale.x = $Camera3D.size/100.0
+		$FloorDisplay.size = Vector2($Camera3D.size * 10, $Camera3D.size * 26)
+		$FloorSprite.scale.z = $Camera3D.size/100.0
+		$FloorSprite.scale.x = $Camera3D.size/100.0
 		$Terrain.get_surface_override_material(0).set_shader_parameter("cameraSize", $Camera3D.size)
 		$Terrain.scale.z = $Camera3D.size/100.0
 		$Terrain.scale.x = $Camera3D.size/100.0

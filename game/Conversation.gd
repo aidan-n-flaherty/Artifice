@@ -33,7 +33,7 @@ func initTemp(gameID):
 		
 		playerTag.init(player, false, true)
 		playerTags.push_back(playerTag)
-		$MarginContainer/VBoxContainer/PlayerList.add_child(playerTag)
+		$MarginContainer/VBoxContainer/HBoxContainer/PlayerList.add_child(playerTag)
 
 func init(gameID, chatID):
 	temporary = false
@@ -42,7 +42,7 @@ func init(gameID, chatID):
 	self.gameID = gameID
 	
 	for tag in playerTags:
-		$MarginContainer/VBoxContainer/PlayerList.remove_child(tag)
+		$MarginContainer/VBoxContainer/HBoxContainer/PlayerList.remove_child(tag)
 		tag.queue_free()
 	playerTags.clear()
 	
@@ -55,7 +55,7 @@ func init(gameID, chatID):
 		
 			playerTag.init(player, true, false)
 			playerTags.push_back(playerTag)
-			$MarginContainer/VBoxContainer/PlayerList.add_child(playerTag)
+			$MarginContainer/VBoxContainer/HBoxContainer/PlayerList.add_child(playerTag)
 	
 	refresh(chat.messages)
 	

@@ -8,7 +8,7 @@ void PositionalObject::updatePointers(Game* game) {
 }
 
 double PositionalObject::distance(const Point &other) const {
-    return position.distance(position.closest(other));
+    return position.closestDistance(other);
 }
 
 bool PositionalObject::canRemoveUnits(int count) const {
@@ -118,4 +118,16 @@ Specialist* PositionalObject::getSpecialist(SpecialistType t) {
     }
 
     return nullptr;
+}
+
+double PositionalObject::getProjectedSpeed(PositionalObject* target, std::set<int> selectedSpecialists) const {
+    std::list<Specialist*> tempSpecialists;
+
+    for(Specialist* s : getSpecialists()) {
+        if(selectedSpecialists.find(s->getID()) != selectedSpecialists.end()) {
+            tempSpecialists.push_back(s);
+        }
+    }
+
+    return Vessel::getSpeed(1.0, getSettings()->simulationSpeed, getOwner(), tempSpecialists, target);
 }

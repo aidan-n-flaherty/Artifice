@@ -1,17 +1,24 @@
 #include "point.h"
 #include "../game_settings.h"
+#include <iostream>
 
 double Point::distance(const Point &other) const {
     return sqrt((x - other.x) * (x - other.x) + (y - other.y) * (y - other.y));
 }
 
+double Point::closestDistance(const Point &other) const {
+    Point o = closest(other);
+    return distance(o);
+}
+
 Point Point::normalized(double val) {
-    double dist = distance(Point(0, 0));
+    double dist = sqrt(x * x + y * y);
     return dist == 0 ? Point(settings, 0, 0) : Point(settings, getX() * val/dist, getY() * val/dist);
 }
 
 Point Point::movedTowards(const Point &other, double distance) const {
     Point p(settings, x, y);
+
     p += (p.closest(other) - p).normalized(distance);
 
     p.constrain();
@@ -37,9 +44,9 @@ Point Point::closest(const Point &other) const {
 
     double minDist = distance(other);
 
-    for(int i = 0; i < 3; i++) {
-        Point point(other.getX() + copysignf(settings->width, getX() - other.getX()),
-                     other.getY() + copysignf(settings->height, getY() - other.getY()));
+    for(int i = 1; i <= 3; i++) {
+        Point point(settings, other.getX() + (i % 2) * copysignf(settings->width, getX() - other.getX()),
+                     other.getY() + (i / 2) * copysignf(settings->height, getY() - other.getY()));
         
         double newDist = distance(point);
         if(newDist < minDist) {

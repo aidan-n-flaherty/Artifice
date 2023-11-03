@@ -60,8 +60,6 @@ void PositionalNode::_process(double delta) {
 	if(obj == nullptr) return;
 
 	timePassed += delta;
-
-	set_visible(true);
 }
 
 void PositionalNode::select(Camera3D *camera, const Ref<InputEvent> &event, const Vector3 &position, const Vector3 &normal, int32_t shape_idx) {

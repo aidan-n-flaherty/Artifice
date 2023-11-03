@@ -3,6 +3,8 @@
 
 #include <cstdlib>
 #include <algorithm>
+#include <list>
+#include <set>
 #include "../game_object.h"
 #include "../helpers/point.h"
 #include "specialist.h"
@@ -42,6 +44,8 @@ public:
 
     std::list<Specialist*> getSpecialists() const { return specialists; }
     virtual double getSpeed() const { return 0; };
+
+    double getProjectedSpeed(PositionalObject* target, std::set<int> selectedSpecialists) const;
 
     void addUnits(int count) { numUnits += count; }
     void addSpecialist(Specialist* specialists);

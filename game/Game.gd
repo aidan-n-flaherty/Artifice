@@ -67,6 +67,7 @@ func selectVessel(vessel):
 	var scene = preload("res://VesselDetails.tscn").instantiate()
 	scene.init(vessel, gameID)
 	scene.battleForecastOpen.connect(vesselBattleForecast)
+	$Viewport/Viewport3D/CameraPivot.selected(vessel)
 	setDisplay(scene)
 
 func vesselBattleForecast(vessel):
@@ -77,6 +78,7 @@ func vesselBattleForecast(vessel):
 func selectOutpost(outpost):
 	var scene = preload("res://OutpostDetails.tscn").instantiate()
 	scene.init(outpost, gameID)
+	$Viewport/Viewport3D/CameraPivot.selected(outpost)
 	setDisplay(scene)
 	
 func selectSpecialist(specialist):

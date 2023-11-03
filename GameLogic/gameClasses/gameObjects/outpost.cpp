@@ -92,6 +92,8 @@ int Outpost::removeShield(int amount) {
 int Outpost::getMaxShield() const {
     int shield = maxShieldCharge + getOwner()->globalMaxShield();
 
+    if(controlsSpecialist(SpecialistType::QUEEN)) shield += 20;
+
     shield += 10 * specialistCount(SpecialistType::SECURITY_CHIEF);
 
     shield += 40 * specialistCount(SpecialistType::KING);
@@ -109,16 +111,4 @@ int Outpost::getSonarRange() const {
     range = int((getOwner()->globalSonar() + 0.5 * controlsSpecialist(SpecialistType::PRINCESS)) * range);
 
     return range;
-}
-
-double Outpost::getProjectedSpeed(PositionalObject* target, std::list<int> selectedSpecialists) const {
-    std::list<Specialist*> tempSpecialists;
-
-    for(Specialist* s : getSpecialists()) {
-        if(std::find(selectedSpecialists.begin(), selectedSpecialists.end(), s->getID()) != selectedSpecialists.end()) {
-            tempSpecialists.push_back(s);
-        }
-    }
-
-    return Vessel::getSpeed(1.0, getSettings()->simulationSpeed, getOwner(), tempSpecialists, target);
 }

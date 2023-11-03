@@ -30,7 +30,7 @@ const Point Vessel::getTargetPos() const {
 
     // loop twice in the event that it would be faster to move in the opposite direction
     for(int i = 0; i < 2; i++) {
-        Point targetDelta = Point(targetTarget.getX() - targetPos.getX(), targetTarget.getY() - targetPos.getY()).normalized(target->getSpeed());
+        Point targetDelta = Point(getSettings(), targetTarget.getX() - targetPos.getX(), targetTarget.getY() - targetPos.getY()).normalized(target->getSpeed());
         Point diff = targetPos - getPosition();
 
         double a = (targetDelta * targetDelta - getSpeed() * getSpeed());
