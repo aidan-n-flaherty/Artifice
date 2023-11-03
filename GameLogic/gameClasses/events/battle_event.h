@@ -117,12 +117,12 @@ public:
         };
     }
 
-    const std::list<std::pair<int, std::string>>& getBattleLog(const std::string &phase) const {
-        return battleLog.at(phase);
+    const std::list<std::pair<int, std::string>> getBattleLog(const std::string &phase) const {
+        return battleLog.find(phase) != battleLog.end() ? battleLog.at(phase) : std::list<std::pair<int, std::string>>();
     }
 
     const std::unordered_map<int, int> getPhaseUnits(const std::string &phase) const {
-        const std::pair<int, int>& p = phaseUnits.at(phase);
+        const std::pair<int, int>& p = phaseUnits.find(phase) != phaseUnits.end() ? phaseUnits.at(phase) : std::make_pair(0, 0);
         return std::unordered_map<int, int> {
             { aOwnerID, p.first },
             { bOwnerID, p.second }

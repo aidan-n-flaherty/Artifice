@@ -57,6 +57,18 @@ func init(gameID:int, objectID:int):
 	
 	#whatever to power/final
 	
+	#power
+	
+	#get unit counts
+	#get shield charge (getters not in C++)
+	#get total power (calculated gdscript side)
+	
+	#final result
+	#get winner (no bind)
+	#get remaining units (no bind)
+	#get captures (no getters in C++)
+	
+	
 	for phase in postPhases:
 		battleMessages = game.getNextBattleMessages(objectID, phase)
 		
