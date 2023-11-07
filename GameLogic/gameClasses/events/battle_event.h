@@ -102,7 +102,11 @@ public:
             captured = a->getSpecialists();
         }
 
-        for(Specialist* s : captured) captures.push_back(s->typeAsString());
+        for(Specialist* s : captured) {
+            std::string str = s->typeAsString();
+            std::replace(str.begin(), str.end(), '_', ' ');
+            captures.push_back(str);
+        }
     }
     int getVictor() const { return victorID; }
 

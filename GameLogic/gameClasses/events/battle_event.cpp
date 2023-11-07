@@ -71,14 +71,24 @@ void BattleEvent::specialistPhase(Game* game) {
 
     if(v1 && v2) {
         if(v1->controlsSpecialist(SpecialistType::SABOTEUR)) {
+            addMessage(v1->getOwnerID(), v1->getOwner()->getName() + "'s Saboteur redirects the enemy vessel to its origin.");
             v2->returnHome();
         }
 
         if(v2->controlsSpecialist(SpecialistType::SABOTEUR)) {
+            addMessage(v2->getOwnerID(), v2->getOwner()->getName() + "'s Saboteur redirects the enemy vessel to its origin.");
             v1->returnHome();
         }
 
-        if(v1->controlsSpecialist(SpecialistType::DOUBLE_AGENT) || v2->controlsSpecialist(SpecialistType::DOUBLE_AGENT)) {
+        if(v1->controlsSpecialist(SpecialistType::DOUBLE_AGENT) != v2->controlsSpecialist(SpecialistType::DOUBLE_AGENT)) {
+            if(v1->controlsSpecialist(SpecialistType::DOUBLE_AGENT)) {
+                addMessage(v1->getOwnerID(), v1->getOwner()->getName() + "'s Double Agent swaps all specialists, swaps vessel ownership, destroys all units on both sides.");
+            }
+
+            if(v2->controlsSpecialist(SpecialistType::DOUBLE_AGENT)) {
+                addMessage(v2->getOwnerID(), v2->getOwner()->getName() + "'s Double Agent swaps all specialists, swaps vessel ownership, and destroys all units on both sides.");
+            }
+
             // change ownership of all specialists
             for(Specialist* specialist : v1->getSpecialists()) {
                 if(v1->hasOwner()) v1->getOwner()->removeSpecialist(specialist);
@@ -101,11 +111,17 @@ void BattleEvent::specialistPhase(Game* game) {
     }
 
     if(v1 && o2) {
-        if(v1->controlsSpecialist(SpecialistType::INFILTRATOR)) o2->removeShield(o2->getShield());
+        if(v1->controlsSpecialist(SpecialistType::INFILTRATOR)) {
+            addMessage(v1->getOwnerID(), v1->getOwner()->getName() + "'s Infiltrator removes all enemy shields.");
+            o2->removeShield(o2->getShield());
+        }
     }
 
     if(v2 && o1) {
-        if(v2->controlsSpecialist(SpecialistType::INFILTRATOR)) o1->removeShield(o2->getShield());
+        if(v2->controlsSpecialist(SpecialistType::INFILTRATOR)) {
+            addMessage(v2->getOwnerID(), v2->getOwner()->getName() + "'s Infiltrator removes all enemy shields.");
+            o1->removeShield(o2->getShield());
+        }
     }
 
     setPhaseUnits();
@@ -117,12 +133,7 @@ void BattleEvent::postSpecialistPhase(Game* game) {
     int unitsA = a->getUnits();
     int unitsB = b->getUnits();
 
-    if(a->controlsSpecialist(SpecialistType::REVERED_ELDER) && !b->controlsSpecialist(SpecialistType::REVERED_ELDER)) {
-        addMessage(a->getOwnerID(), a->getOwner()->getName() + "'s Revered Elder removes all specialists from combat.");
-        return;
-    }
-    if(b->controlsSpecialist(SpecialistType::REVERED_ELDER) && !a->controlsSpecialist(SpecialistType::REVERED_ELDER)) {
-        addMessage(b->getOwnerID(), b->getOwner()->getName() + "'s Revered Elder removes all specialists from combat.");
+    if(a->controlsSpecialist(SpecialistType::REVERED_ELDER) != b->controlsSpecialist(SpecialistType::REVERED_ELDER)) {
         return;
     }
 
@@ -140,12 +151,7 @@ void BattleEvent::postSpecialistPhase(Game* game) {
 void BattleEvent::victorySpecialistPhase(Game* game) {
     setPhase("Combat Resolution Phase");
 
-    if(a->controlsSpecialist(SpecialistType::REVERED_ELDER) && !b->controlsSpecialist(SpecialistType::REVERED_ELDER)) {
-        addMessage(a->getOwnerID(), a->getOwner()->getName() + "'s Revered Elder removes all specialists from combat.");
-        return;
-    }
-    if(b->controlsSpecialist(SpecialistType::REVERED_ELDER) && !a->controlsSpecialist(SpecialistType::REVERED_ELDER)) {
-        addMessage(b->getOwnerID(), b->getOwner()->getName() + "'s Revered Elder removes all specialists from combat.");
+    if(a->controlsSpecialist(SpecialistType::REVERED_ELDER) != b->controlsSpecialist(SpecialistType::REVERED_ELDER)) {
         return;
     }
 
@@ -171,12 +177,7 @@ void BattleEvent::victorySpecialistPhase(Game* game) {
 }
 
 void BattleEvent::defeatSpecialistPhase(Game* game) {
-    if(a->controlsSpecialist(SpecialistType::REVERED_ELDER) && !b->controlsSpecialist(SpecialistType::REVERED_ELDER)) {
-        addMessage(a->getOwnerID(), a->getOwner()->getName() + "'s Revered Elder removes all specialists from combat.");
-        return;
-    }
-    if(b->controlsSpecialist(SpecialistType::REVERED_ELDER) && !a->controlsSpecialist(SpecialistType::REVERED_ELDER)) {
-        addMessage(b->getOwnerID(), b->getOwner()->getName() + "'s Revered Elder removes all specialists from combat.");
+    if(a->controlsSpecialist(SpecialistType::REVERED_ELDER) != b->controlsSpecialist(SpecialistType::REVERED_ELDER)) {
         return;
     }
 
@@ -186,12 +187,7 @@ void BattleEvent::defeatSpecialistPhase(Game* game) {
 void BattleEvent::postCombatSpecialistPhase(Game* game) {
     setPhase("Post-Combat Phase");
 
-    if(a->controlsSpecialist(SpecialistType::REVERED_ELDER) && !b->controlsSpecialist(SpecialistType::REVERED_ELDER)) {
-        addMessage(a->getOwnerID(), a->getOwner()->getName() + "'s Revered Elder removes all specialists from combat.");
-        return;
-    }
-    if(b->controlsSpecialist(SpecialistType::REVERED_ELDER) && !a->controlsSpecialist(SpecialistType::REVERED_ELDER)) {
-        addMessage(b->getOwnerID(), b->getOwner()->getName() + "'s Revered Elder removes all specialists from combat.");
+    if(a->controlsSpecialist(SpecialistType::REVERED_ELDER) != b->controlsSpecialist(SpecialistType::REVERED_ELDER)) {
         return;
     }
 
