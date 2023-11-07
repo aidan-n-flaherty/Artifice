@@ -487,13 +487,13 @@ msaa_2d = 1
 size = Vector2i(1000, 2600)
 
 [node name="FloorSprite" type="MeshInstance3D" parent="Viewport/Viewport3D/CameraPivot"]
-transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, -100, -100)
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, -100, -100)
 sorting_offset = 1000.0
 material_override = SubResource("ShaderMaterial_rqbvh")
 mesh = SubResource("PlaneMesh_utrlp")
 
 [node name="Floor" type="Node3D" parent="Viewport/Viewport3D/CameraPivot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -100, -100)
+transform = Transform3D(1, -1.74846e-07, 0, 1.74846e-07, 1, 0, 0, 0, 1, 0, -100, -100)
 
 [node name="Floor1" type="MeshInstance3D" parent="Viewport/Viewport3D/CameraPivot/Floor"]
 cast_shadow = 0
@@ -516,9 +516,10 @@ skeleton = NodePath("../..")
 surface_material_override/0 = SubResource("ShaderMaterial_ps11k")
 
 [node name="Reflection" type="MeshInstance3D" parent="Viewport/Viewport3D/CameraPivot"]
-transform = Transform3D(1, -1.50996e-07, -8.74228e-08, 1.50996e-07, 1, 7.6233e-21, -8.74228e-08, 1.32005e-14, -1, 0, -100, -100)
+transform = Transform3D(1, 8.74228e-08, 0, -8.74228e-08, 1, 0, 0, 0, -1, 0, -100, -100)
+visible = false
 layers = 2
-sorting_offset = -1000.0
+sorting_offset = -10000.0
 cast_shadow = 0
 mesh = SubResource("PlaneMesh_pn67n")
 surface_material_override/0 = SubResource("ShaderMaterial_bfofx")
