@@ -82,6 +82,7 @@ void GameInterface::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("getPlayerIDs"), &GameInterface::getPlayerIDs);
 	ClassDB::bind_method(D_METHOD("getPlayers"), &GameInterface::getPlayers);
 	ClassDB::bind_method(D_METHOD("getSortedPlayers"), &GameInterface::getSortedPlayers);
+	ClassDB::bind_method(D_METHOD("getCurrentSortedPlayers"), &GameInterface::getCurrentSortedPlayers);
 	ClassDB::bind_method(D_METHOD("getScore", "userID"), &GameInterface::getScore);
 	ClassDB::bind_method(D_METHOD("getColor", "userID"), &GameInterface::getColor);
 	ClassDB::bind_method(D_METHOD("getSpecialistName"), &GameInterface::getSpecialistName);
@@ -482,6 +483,8 @@ void GameInterface::addOrder(const String &type, uint32_t ID, int32_t referenceI
 	completeGame = completeGame->processOrder(std::string(type.utf8().get_data()), ID, referenceID, timestamp, senderID, arr, argCount);
 	completeGame->run();
 	game = nullptr;
+	simulatedGame = nullptr;
+	currentGame = nullptr;
 
 	current += epsilon;
 	
@@ -492,6 +495,8 @@ void GameInterface::cancelOrder(uint32_t ID) {
 	completeGame = completeGame->removeOrder(ID);
 	completeGame->run();
 	game = nullptr;
+	simulatedGame = nullptr;
+	currentGame = nullptr;
 	
 	update();
 }
@@ -588,6 +593,17 @@ Array GameInterface::getSortedPlayers() {
 	return arr;
 }
 
+Array GameInterface::getCurrentSortedPlayers() {
+	Array arr;
+	std::vector<Player*> sortedPlayers = currentGame->sortedPlayers();
+
+	for(Player* p : sortedPlayers) {
+		arr.push_back(players[p->getID()]);
+	}
+
+	return arr;
+}
+
 int GameInterface::getScore(int userID) {
 	std::list<std::pair<int, int>> scores = game->getScores();
 
@@ -669,9 +685,8 @@ Array GameInterface::getNextBattleUsers(int objID) {
 
 	Array arr;
 
-	if(!b) {
-		return arr;
-	}
+	if(!b) return arr;
+	
 	if(players.find(b->getBattleUsers().first) != players.end()) arr.push_back(players[b->getBattleUsers().first]);
 	if(players.find(b->getBattleUsers().second) != players.end()) arr.push_back(players[b->getBattleUsers().second]);
 

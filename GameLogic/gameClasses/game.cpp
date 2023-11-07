@@ -300,6 +300,8 @@ void Game::updateEvents() {
 void Game::updateState(double timestamp) {
     double secondsElapsed = timestamp - stateTime;
 
+    if(secondsElapsed == 0) return;
+
     for(auto& pair : vessels) pair.second->update(secondsElapsed);
     for(auto& pair : outposts) pair.second->update(secondsElapsed);
     for(auto& pair : players) pair.second->update(secondsElapsed);
@@ -339,6 +341,7 @@ std::list<std::pair<int, int>> Game::run() {
                 invalidOrders.push_back(order);
                 continue;
             }
+
             // need an updated state to check for order validity
             updateState(order->getTimestamp());
 
@@ -369,6 +372,8 @@ std::list<std::pair<int, int>> Game::run() {
         }
 
         events.erase(event);
+
+        //if(dynamic_cast<OutpostRangeEvent*>(e) && vessels.empty()) continue; 
 
         updateState(e->getTimestamp());
 

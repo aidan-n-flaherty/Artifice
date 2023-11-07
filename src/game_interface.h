@@ -145,6 +145,7 @@ public:
 	PackedInt32Array getPromotionOptions(int specialistID);
 	Array getPlayers();
 	Array getSortedPlayers();
+	Array getCurrentSortedPlayers();
 	int getScore(int userID);
 	Color getColor(int userID);
 
@@ -169,7 +170,7 @@ public:
 
 	bool canHire() { return game->getPlayer(userGameID)->getHiresAt(current) >= 0; }
 	bool hasStarted() { return current >= game->getStartTime(); }
-	bool hasEnded() { return game->hasEnded(); }
+	bool hasEnded() { return currentGame->hasEnded(); }
 
 	double getStartTime() { return game->getStartTime(); }
 	int getReferenceID() { return game->getReferenceID(); }

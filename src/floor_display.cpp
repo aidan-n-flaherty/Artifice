@@ -14,7 +14,7 @@ using namespace godot;
 FloorDisplay::FloorDisplay(GameInterface* gameInterface) : gameInterface(gameInterface) {}
 
 void FloorDisplay::_draw() {
-    if(!gameInterface || !gameInterface->getGame() || !gameInterface->getCompleteGame()) return;
+    if(!gameInterface || !gameInterface->getGame() || !gameInterface->getCompleteGame() || !gameInterface->getCurrentGame()) return;
 
     std::shared_ptr<Game> game = gameInterface->getGame();
     std::shared_ptr<Game> current = gameInterface->getCurrentGame();

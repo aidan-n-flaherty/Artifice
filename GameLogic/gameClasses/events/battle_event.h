@@ -112,7 +112,7 @@ public:
     std::list<std::string> getCaptures() const { return captures; }
 
     void setFriendly() { friendly = true; }
-    bool isFriendly() const { return a->getOwnerID() == b->getOwnerID(); }
+    bool isFriendly() const { return friendly; }
 
     void setPhase(const std::string &phase) {
         currentPhase = phase;
