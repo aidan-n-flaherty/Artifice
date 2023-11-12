@@ -8,6 +8,8 @@ var menuDisplay
 
 var detailDisplay
 
+var viewingEnd = false
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	pass
@@ -46,10 +48,16 @@ func _process(delta):
 		$Viewport/GameOverlay/Overlay/NotStarted.hide()
 	
 	if game.hasEnded():
-		if not $Viewport/GameOverlay/Overlay/EndGame.visible:
-			$Viewport/GameOverlay/Overlay/EndGame.init(gameID)
-			$Viewport/GameOverlay/Overlay/EndGame.show()
+		if not viewingEnd:
+			viewingEnd = true
+	
+			if not GameData.isFinished(gameID):
+				if await GameData.verifyEnd(gameID):
+					await GameData.viewEnd(gameID)
+					$Viewport/GameOverlay/Overlay/EndGame.init(gameID)
+					$Viewport/GameOverlay/Overlay/EndGame.show()
 	else:
+		viewingEnd = false
 		$Viewport/GameOverlay/Overlay/EndGame.hide()
 		
 func addOrder(type, referenceID, timestamp, arguments):
@@ -136,3 +144,14 @@ func _on_back_button_pressed():
 	game.set_process(false)
 	
 	GameData.goto_scene("res://MainMenu.tscn")
+
+
+func _on_camera_pivot_unselect():
+	game.unselect()
+	
+	setMenuDisplay(null, false)
+	
+	$MenuBar/VSplitContainer/Tabs/HBoxContainer/StatusContainer/StatusButton.button_pressed = false
+	$MenuBar/VSplitContainer/Tabs/HBoxContainer/ChatContainer/ChatButton.button_pressed = false
+	$MenuBar/VSplitContainer/Tabs/HBoxContainer/ShopContainer/ShopButton.button_pressed = false
+	$MenuBar/VSplitContainer/Tabs/HBoxContainer/LogContainer/LogsButton.button_pressed = false

@@ -10,7 +10,10 @@ var color
 
 # Called when the node enters the scene tree for the first time.
 func _ready():	
+	
+	
 	return
+	
 	var noise = FastNoiseLite.new()
 	
 	noise.frequency = 0.15

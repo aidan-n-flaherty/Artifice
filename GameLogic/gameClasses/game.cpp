@@ -176,7 +176,7 @@ Game::Game(GameSettings settings, int simulatorID, double startTime, double endT
 
     // end map generation
 
-    addEvent(new OutpostRangeEvent(getTime()));
+    //addEvent(new OutpostRangeEvent(getTime()));
 }
 
 Game::Game(const Game& game) : startTime(game.startTime), stateTime(game.stateTime), cacheEnabled(game.cacheEnabled), endTime(game.endTime), referenceID(game.referenceID), simulatorID(game.simulatorID), lastExecutedOrder(game.lastExecutedOrder), nextEndState(game.nextEndState), gameObjCounter(game.gameObjCounter), settings(game.settings) {
@@ -268,6 +268,7 @@ void Game::updateEvents() {
         removeRelevant(outpost->getID());
     }*/
 
+    std::cout << "hi" << std::endl;
     // All vessels flagged for update (e.g. global speed change) may have different combat times.
     for(auto itA = vessels.begin(); itA != vessels.end(); itA++) {
         Vessel* vessel = itA->second;
@@ -321,6 +322,8 @@ void Game::cacheState() {
 std::list<std::pair<int, int>> Game::run() {
     updateEvents();
 
+    bool ranOutOfTime = false;
+
     // loops until no events or orders remain.
     // note that events will always be run before orders given the same timestamp.
     while(!events.empty() || !orders.empty()) {
@@ -365,15 +368,16 @@ std::list<std::pair<int, int>> Game::run() {
         
         Event* e = *event;
 
-        // only simulate the game until a certain time so that infinite future simulation does not happen
-        if(e->getTimestamp() > endTime) {
-            nextEndState = e->getTimestamp();
-            break;
-        }
-
         events.erase(event);
 
         //if(dynamic_cast<OutpostRangeEvent*>(e) && vessels.empty()) continue; 
+
+        nextEndState = e->getTimestamp();
+
+        if(e->getTimestamp() > endTime) {
+            ranOutOfTime = true;
+            break;
+        }
 
         updateState(e->getTimestamp());
 
@@ -382,6 +386,8 @@ std::list<std::pair<int, int>> Game::run() {
 
         updateEvents();
     }
+
+    if(!ranOutOfTime) nextEndState = std::numeric_limits<double>::max();
 
     return getScores();
 }

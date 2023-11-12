@@ -136,14 +136,14 @@ void GameInterface::init(int gameID, int userID, int startTime, Dictionary playe
 	settings = loadSettings();
 	completeGame = std::shared_ptr<Game>(new Game(settings, userID, startTime, startTime + simulationBuffer / settings.simulationSpeed, playerMap, 42083, true));
 
-	for(int i = 0; i < 30; i++) {
+	/*for(int i = 0; i < 30; i++) {
 		std::list<int> specialists;
 		completeGame->addOrder(new SendOrder(current + i * 20, 2, 1, specialists, 7, 5, completeGame->getReferenceID()));
 	}
 	for(int i = 0; i < 30; i++) {
 		std::list<int> specialists;
 		completeGame->addOrder(new SendOrder(current + 10 + i * 20, 2, 1, specialists, 7, 3, completeGame->getReferenceID()));
-	}
+	}*/
 
 	completeGame->run();
 	nextEndState = completeGame->getNextEndState();
@@ -355,24 +355,15 @@ void GameInterface::select(int id) {
 
 			int units = getSelected()->getUnitsAt(timeDiff);
 
-
-			uint32_t parameters[] = { uint32_t(std::max(1, int(percent * units))), selected, target->getID() };
+			uint32_t parameters[] = { uint32_t(std::max(selectedSpecialists.empty() ? 1 : 0, int(percent * units))), selected, target->getID() };
 			Array arguments;
 
 			for(int i = 0; i < 3; i++) arguments.push_back(parameters[i]);
 
-			bool sentSpecialists = false;
-
 			while(!selectedSpecialists.empty()) {
-				sentSpecialists = true;
 				arguments.push_back(*selectedSpecialists.begin());
 				if(getNode(selected)) getNode(selected)->setSpecialistSelected(*selectedSpecialists.begin(), false);
 				selectedSpecialists.erase(selectedSpecialists.begin());
-			}
-
-			if(units <= 0 && !sentSpecialists) {
-				unselect();
-				return;
 			}
 
 			emit_signal("addOrder", "SEND", game->getReferenceID(), current, arguments);

@@ -267,6 +267,22 @@ func addMessage(message):
 	
 	emit_signal("chatChanged", int(message.chatID))
 
+func verifyEnd(gameID: int):
+	if await HTTPManager.getReq("/verifyGameEnd", {
+		"gameID": gameID
+	}):
+		gameDetails[id].gameData.finished = true
+		return true
+	
+	return false
+	
+func viewEnd(gameID: int):
+	WebSocketManager.sendMessage("[VIEWGAMEEND]" + str(gameID))
+	emit_signal("gamesChanged")
+	
+func isFinished(gameID: int):
+	return gameDetails[id].gameData.finished
+
 func getSelf():
 	return user
 	

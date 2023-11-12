@@ -12,9 +12,9 @@ void Player::updatePointers(Game* game) {
 }
 
 int Player::getResourcesAt(double timeDiff) const {
-    double fractionalProduction = this->fractionalProduction;
+    double fractionalResProduction = this->fractionalResProduction;
     
-    return getResourcesAt(fractionalProduction, timeDiff);
+    return getResourcesAt(fractionalResProduction, timeDiff);
 }
 
 int Player::getHiresAt(double timeDiff) const {
@@ -27,15 +27,15 @@ int Player::getHiresAt(double timeDiff) const {
 ** references to the actual member variables, allowing them to be used for interpolation
 ** or updating the game state.
 */
-int Player::getResourcesAt(double& fractionalProduction, double timeDiff) const {
+int Player::getResourcesAt(double& fractionalResProduction, double timeDiff) const {
     timeDiff *= getSettings()->simulationSpeed;
 
     int resources = this->resources;
 
     // while loops necessary in case a tick doesn't happen for several hours
-    fractionalProduction += timeDiff * resourceProductionSpeed();
-    while(fractionalProduction >= 1) {
-        fractionalProduction -= 1;
+    fractionalResProduction += timeDiff * resourceProductionSpeed();
+    while(fractionalResProduction >= 1) {
+        fractionalResProduction -= 1;
         resources += 1;
     }
 
@@ -57,7 +57,10 @@ int Player::getHiresAt(double& fractionalHires, double timeDiff) const {
 }
 
 void Player::update(double timeDiff) {
-    resources = getResourcesAt(this->fractionalProduction, timeDiff);
+    std::unordered_map<int, int> unitDiff = calculateUnitsAt(this->fractionalProduction, timeDiff);
+    for(Outpost* o : outposts) o->addUnits(unitDiff[o->getID()]);
+
+    resources = getResourcesAt(this->fractionalResProduction, timeDiff);
 
     hires = getHiresAt(this->fractionalHires, timeDiff);
 }
@@ -295,6 +298,41 @@ int Player::getUnitsAt(double timeDiff) const {
     for(Vessel* v : vessels) totalUnits += v->getUnitsAt(timeDiff);
 
     return totalUnits;
+}
+
+std::unordered_map<int, int> Player::calculateUnitsAt(double& fractionalProduction, double timeDiff) const {
+    timeDiff *= getSettings()->simulationSpeed;
+        
+    std::list<Outpost*> tmp = outposts;
+    tmp.sort([]( const Outpost* a, const Outpost* b ) { return a->getID() > b->getID(); } );
+
+    std::unordered_map<int, int> units;
+
+    int totalUnits = getUnits();
+
+    fractionalProduction += timeDiff * globalProductionSpeed() * (1.0 / (8.0 * 60 * 60));
+    while(fractionalProduction >= 1) {
+        fractionalProduction -= 1;
+
+        for(Outpost* o : tmp) {
+            if(o->getType() != OutpostType::FACTORY) continue;
+
+            int productionAmount = globalProductionAmount();
+            productionAmount += 6 * o->specialistCount(SpecialistType::FOREMAN);
+            productionAmount += 3 * o->specialistCount(SpecialistType::TYCOON);
+            
+            int n = std::fmin(std::fmax(0, getCapacity() - totalUnits), productionAmount);
+
+            if(getCapacity() - totalUnits <= 0) break;
+
+            units[o->getID()] += n;
+            totalUnits += n;
+        }
+
+        if(getCapacity() - totalUnits <= 0) break;
+    }
+
+    return units;
 }
 
 int Player::outpostsOfType(OutpostType t) const {

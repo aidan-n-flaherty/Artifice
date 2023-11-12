@@ -22,8 +22,6 @@ class Vessel;
 class Outpost : public PositionalObject
 {
 private:
-    double fractionalProduction = 0.0;
-
     int maxShieldCharge = 0;
     int shieldCharge = 0;
     double fractionalShield = 0.0;
@@ -32,7 +30,7 @@ private:
 
 public:
     Outpost(unsigned int ID, GameSettings* settings, OutpostType type, int numUnits, double x, double y) : PositionalObject(ID, settings, x, y, numUnits), shieldCharge(0),
-        maxShieldCharge(settings->defaultMaxShield), fractionalProduction(0), fractionalShield(0), type(type) {}
+        maxShieldCharge(settings->defaultMaxShield), fractionalShield(0), type(type) {}
 
     OutpostType getType() const { return type; }
     void setType(OutpostType type) { this->type = type; }

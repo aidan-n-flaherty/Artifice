@@ -20,6 +20,14 @@ func init(token: int):
 		expBackoff = 1
 		timer = 0.0
 
+func sendMessage(message: String):
+	var state = socket.get_ready_state()
+	
+	if state == WebSocketPeer.STATE_OPEN:
+		socket.send_text(message)
+	else:
+		print("Could not send message, socket is closed")
+
 func processMessage(message: String):
 	var messageObj = JSON.parse_string(message)
 	

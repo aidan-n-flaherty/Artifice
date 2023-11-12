@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://c3ctitj3875oy"]
+[gd_scene load_steps=10 format=3 uid="uid://c3ctitj3875oy"]
 
 [ext_resource type="Script" path="res://Counter.gd" id="1_4wo8n"]
 
@@ -24,6 +24,12 @@ size = Vector3(3, 0.25, 3)
 [sub_resource type="BoxMesh" id="BoxMesh_rcfwq"]
 size = Vector3(4, 0.05, 4)
 
+[sub_resource type="ViewportTexture" id="ViewportTexture_i3e7o"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="LabelSettings" id="LabelSettings_07qfb"]
+font_size = 22
+
 [node name="Counter" type="Area3D"]
 script = ExtResource("1_4wo8n")
 
@@ -41,8 +47,11 @@ mesh = SubResource("BoxMesh_47c2b")
 
 [node name="Label3D" type="Label3D" parent="."]
 transform = Transform3D(-1, -6.18172e-08, 6.18172e-08, 0, 0.707107, 0.707107, -8.74228e-08, 0.707107, -0.707107, 0, 0.1, -0.1)
+visible = false
+pixel_size = 0.075
+double_sided = false
 text = "00"
-font_size = 400
+font_size = 30
 outline_size = 0
 
 [node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
@@ -58,3 +67,26 @@ layers = 2
 material_override = SubResource("StandardMaterial3D_06cfc")
 cast_shadow = 0
 mesh = SubResource("BoxMesh_rcfwq")
+
+[node name="Sprite3D" type="Sprite3D" parent="."]
+transform = Transform3D(-1, 6.18172e-08, -6.18172e-08, 0, 0.707107, 0.707107, 8.74228e-08, 0.707107, -0.707107, 0, 0.1, -0.1)
+pixel_size = 0.1
+texture = SubResource("ViewportTexture_i3e7o")
+
+[node name="SubViewport" type="SubViewport" parent="."]
+disable_3d = true
+transparent_bg = true
+size = Vector2i(40, 20)
+
+[node name="Label" type="Label" parent="SubViewport"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 6
+size_flags_vertical = 6
+text = "999"
+label_settings = SubResource("LabelSettings_07qfb")
+horizontal_alignment = 1
+vertical_alignment = 1

@@ -33,7 +33,7 @@ void fragment() {
 	
 	if(height2 > 0.4) {
 		float delta = min(1.0, 15.0 * (height2 - 0.4));
-		ROUGHNESS = 1.0 - delta;
+		//ROUGHNESS = 1.0 - delta;
 		METALLIC = delta;
 		
 		ALBEDO = (1.0 - delta) * ALBEDO + delta * vec3(0.0);

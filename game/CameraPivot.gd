@@ -1,5 +1,7 @@
 extends Marker3D
 
+signal unselect
+
 var mouse_start_pos
 var screen_start_position
 
@@ -70,6 +72,9 @@ func _unhandled_input(event):
 			screen_start_position = Vector2(position.x, position.z)
 			dragging = true
 		else:
+			if not selectedNode and event.position == mouse_start_pos:
+				emit_signal("unselect")
+			
 			dragging = false
 			game.setDrag(false)
 			game.setTempTime(0.0)
@@ -117,12 +122,6 @@ func _unhandled_input(event):
 		
 		$Camera3D.size = 100 * ((minZoom + maxZoom)/2.0 + tanh(zoom) * (maxZoom - minZoom) / PI)
 		$SubViewport/VirtualCamera3D.size = $Camera3D.size
-		$Reflection.scale.z = -$Camera3D.size/100.0
-		$Reflection.scale.x = -$Camera3D.size/100.0
-		$Reflection.get_surface_override_material(0).set_shader_parameter("cameraSize", $Camera3D.size)
-		$Floor/Floor1.get_surface_override_material(0).set_shader_parameter("cameraSize", $Camera3D.size)
-		$Floor.scale.z = $Camera3D.size/100.0
-		$Floor.scale.x = $Camera3D.size/100.0
 		$FloorDisplay.size = Vector2($Camera3D.size * 10, $Camera3D.size * 26)
 		$FloorSprite.scale.z = $Camera3D.size/100.0
 		$FloorSprite.scale.x = $Camera3D.size/100.0

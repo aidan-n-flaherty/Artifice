@@ -64,6 +64,11 @@ public:
         std::list<Specialist*> specialists;
         for(int specialistID : specialistIDs) specialists.push_back(game->getSpecialist(specialistID));
 
+        if(specialists.empty() && numUnits <= 0) {
+            std::cout << "ORDER ERROR: cannot send empty vessel" << std::endl;
+            return nullptr;
+        }
+
         // only pirates may target vessels
         if(game->hasVessel(targetID)) {
             bool hasPirate = false;

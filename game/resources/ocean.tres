@@ -1,9 +1,13 @@
-[gd_resource type="NoiseTexture2D" load_steps=2 format=3 uid="uid://dg1n1bsa3ya68"]
+[gd_resource type="NoiseTexture2D" load_steps=3 format=3 uid="uid://dg1n1bsa3ya68"]
+
+[sub_resource type="Gradient" id="Gradient_uj0lg"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_5stih"]
+noise_type = 0
 frequency = 0.005
 fractal_octaves = 10
 fractal_ping_pong_strength = 1.0
+cellular_distance_function = 3
 cellular_jitter = 1.0
 cellular_return_type = 6
 
@@ -11,4 +15,5 @@ cellular_return_type = 6
 width = 800
 height = 2080
 seamless = true
+color_ramp = SubResource("Gradient_uj0lg")
 noise = SubResource("FastNoiseLite_5stih")

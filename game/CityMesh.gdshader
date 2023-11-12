@@ -2,39 +2,44 @@ shader_type spatial;
 
 uniform sampler2D heightMap;
 uniform sampler2D buildingNoise;
+uniform sampler2D streetNoise;
 uniform float epsilon;
 
-vec3 normal(vec2 uv, sampler2D texture_norm) {
-	float right = texture(texture_norm, uv + vec2(epsilon, 0)).r;
-	float left = texture(texture_norm, uv + vec2(-epsilon, 0)).r;
-	float top = texture(texture_norm, uv + vec2(0, epsilon)).r;
-	float bottom = texture(texture_norm, uv + vec2(0, -epsilon)).r;
-	
-	return normalize(vec3(2.0 * (right - left), 2.0 * (bottom - top), -4));
-}
+varying vec2 pos;
+
 void vertex() {
-	vec2 pos = VERTEX.xz / 4.0;
+	vec2 position = VERTEX.xz / 10.0;
+	pos = position;
 	
-	float dist = sqrt(dot(pos, pos));
+	float dist = 2.0 * sqrt(dot(pos, pos)) - 1.2;
 	float baseHeight = pow(1.0 - dist, 1.5);
 	
-	float height = 1.0 - texture(heightMap, pos).r;
-	float height2 = texture(buildingNoise, (pos + 1.0) / 2.0).r;
-	height = height2;
-	if(dist > 0.6) height -= 3.0 * (dist - 0.6);
-
-	VERTEX.y += baseHeight * 10.0 * height;
-	//VERTEX.x += 0.25 * max(0.0, height - 0.5) * pos.x / dist;
-	//VERTEX.z += 0.25 * max(0.0, height - 0.5) * pos.y / dist;
+	float building = texture(buildingNoise, pos).r;
 	
-	COLOR.rgb = vec3(min(1.0, 2.0 - 3.0 * height));
-	if(height < 0.0) COLOR.a = 0.0;
+	float street = texture(streetNoise, pos).r;
+	
+	VERTEX.y += baseHeight * 2.0;
+	VERTEX.y *= building * street;
+	
+	COLOR.rgb =  vec3(0.0);
 }
 
 void fragment() {
-	vec2 pos = VERTEX.xz / 4.0;
-	
 	ALBEDO = COLOR.rgb;
 	
-	ALPHA = COLOR.a;
+	float dist = 2.0 * sqrt(dot(pos, pos)) - 1.2;
+	float baseHeight = pow(1.0 - dist, 1.5);
+	
+	float building = texture(buildingNoise, pos).r;
+	
+	float street = texture(streetNoise, pos).r;
+	
+	float height = texture(heightMap, pos).r;
+	
+	if(building * street < 0.001) ALPHA = 0.0;
+	
+	if(baseHeight < 0.5 * height) ALPHA = 0.0;
+	
+	METALLIC = 1.0;
+	ROUGHNESS = 0.0;
 }

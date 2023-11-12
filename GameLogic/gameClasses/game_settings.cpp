@@ -15,7 +15,7 @@ void GameSettings::loadDefaults() {
     GameSettings::defaultMaxShield = 20;
     GameSettings::fireRate = 2 * 60 * 60;
     GameSettings::costPerMine = 50;
-    GameSettings::outpostsPerPlayer = 10;
+    GameSettings::outpostsPerPlayer = 5;
     GameSettings::width = 200;
     GameSettings::height = 200;
 

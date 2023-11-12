@@ -7,6 +7,7 @@
 #include <set>
 #include <list>
 #include <algorithm>
+#include <unordered_map>
 #include "../game_object.h"
 #include "../event.h"
 #include "../game_settings.h"
@@ -42,12 +43,14 @@ private:
     std::list<Vessel*> vessels;
 
     int resources = 0;
-    double fractionalProduction = 0.0;
+    double fractionalResProduction = 0.0;
 
     int hires = 10; // should be 1 in the future
     double fractionalHires = 0.0;
 
     int minesDrilled = 0;
+
+    double fractionalProduction = 0.0;
 
 public:
     Player(unsigned int ID, GameSettings* settings, std::string name, int userID, int rating) : GameObject(ID, settings), userID(userID), name(name), rating(rating), defeated(false) {}
@@ -57,6 +60,8 @@ public:
     void update(double timeDiff);
 
     int getRating() const { return rating; }
+
+    double getFractionalProduction() { return fractionalProduction; }
 
     double globalSpeed() const;
     int globalMaxShield() const;
@@ -102,6 +107,7 @@ public:
     int getUserID() const { return userID; }
     const std::string& getName() const { return name; }
 
+    std::unordered_map<int, int> calculateUnitsAt(double& fractionalProduction, double timeDiff) const;
     int getUnitsAt(double timeDiff) const;
     int getHiresAt(double timeDiff) const;
     int getResourcesAt(double timeDiff) const;

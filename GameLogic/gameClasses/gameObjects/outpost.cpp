@@ -6,7 +6,7 @@
 #include "../game_settings.h"
 
 int Outpost::getUnitsAt(double timeDiff) const {
-    double fractionalProduction = this->fractionalProduction;
+    double fractionalProduction = hasOwner() ? getOwner()->getFractionalProduction() : 0;
     
     return getUnitsAt(fractionalProduction, timeDiff);
 }
@@ -18,7 +18,7 @@ int Outpost::getShieldAt(double timeDiff) const {
 }
 
 double Outpost::nextProductionEvent() const {
-    return (1.0 - fractionalProduction) / (getOwner()->globalProductionSpeed() * getSettings()->simulationSpeed / (8.0 * 60 * 60));
+    return hasOwner() ? (1.0 - getOwner()->getFractionalProduction()) / (getOwner()->globalProductionSpeed() * getSettings()->simulationSpeed / (8.0 * 60 * 60)) : -1;
 }
 
 /* The following two functions do not modify this instance unless you pass in
@@ -26,25 +26,11 @@ double Outpost::nextProductionEvent() const {
 ** or updating the game state.
 */
 int Outpost::getUnitsAt(double& fractionalProduction, double timeDiff) const {
-    timeDiff *= getSettings()->simulationSpeed;
-
     int units = getUnits();
 
-    if(getOwnerID() == -1 || type != OutpostType::FACTORY) return units;
+    if(!hasOwner() || type != OutpostType::FACTORY) return units;
 
-    // while loops necessary in case a tick doesn't happen for several hours
-    fractionalProduction += timeDiff * getOwner()->globalProductionSpeed() * (1.0 / (8.0 * 60 * 60));
-    while(fractionalProduction >= 1) {
-        fractionalProduction -= 1;
-
-        int productionAmount = getOwner()->globalProductionAmount();
-        productionAmount += 6 * specialistCount(SpecialistType::FOREMAN);
-        productionAmount += 3 * specialistCount(SpecialistType::TYCOON);
-
-        units += std::fmin(std::fmax(0, getOwner()->getCapacity() - getOwner()->getUnits()), productionAmount);
-    }
-
-    return units;
+    return units + getOwner()->calculateUnitsAt(fractionalProduction, timeDiff)[getID()];
 }
 
 int Outpost::getShieldAt(double& fractionalShield, double timeDiff) const {
@@ -75,8 +61,6 @@ int Outpost::getShieldAt(double& fractionalShield, double timeDiff) const {
 }
 
 void Outpost::update(double timeDiff) {
-    setUnits(getUnitsAt(this->fractionalProduction, timeDiff));
-
     shieldCharge = getShieldAt(this->fractionalShield, timeDiff);
 }
 

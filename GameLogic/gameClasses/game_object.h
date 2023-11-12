@@ -16,7 +16,7 @@ private:
 
     const unsigned int ID = 0;
 
-    bool stale = false;
+    bool stale = true;
 
     bool deleted = false;
 

@@ -1,6 +1,39 @@
-[gd_scene load_steps=3 format=3 uid="uid://1uo32prj4rnw"]
+[gd_scene load_steps=3 format=3 uid="uid://ben1bgtevbg7x"]
 
-[ext_resource type="Script" path="res://GameMenu.gd" id="1_xaoyy"]
+[sub_resource type="GDScript" id="GDScript_ouvw5"]
+script/source = "extends MarginContainer
+
+@export_file(\"*.tscn\") var MenuScreen
+@export_file(\"*.tscn\") var OpenGameList
+
+func _init():
+	GameData.loadGames()
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	pass # Replace with function body.
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+	pass
+
+func _on_back_pressed():
+	GameData.goto_scene(MenuScreen)
+
+func setItem(item):
+	var node = get_node(\"VBoxOuter/VBoxInner/Content\")
+	
+	for child in node.get_children():
+		child.queue_free()
+	
+	node.add_child(item)
+
+func _on_progress_pressed():
+	setItem(load(OpenGameList).instantiate())
+
+func _on_open_pressed():
+	setItem(load(OpenGameList).instantiate())
+"
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_60jl3"]
 
@@ -14,7 +47,7 @@ theme_override_constants/margin_left = 150
 theme_override_constants/margin_top = 150
 theme_override_constants/margin_right = 150
 theme_override_constants/margin_bottom = 150
-script = ExtResource("1_xaoyy")
+script = SubResource("GDScript_ouvw5")
 MenuScreen = "res://MainMenu.tscn"
 OpenGameList = "res://OpenGameList.tscn"
 

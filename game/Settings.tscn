@@ -90,6 +90,7 @@ horizontal_alignment = 1
 
 [node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
+size_flags_vertical = 3
 horizontal_scroll_mode = 0
 
 [node name="PastGameList" parent="MarginContainer/VBoxContainer/ScrollContainer" instance=ExtResource("2_kt6mu")]
