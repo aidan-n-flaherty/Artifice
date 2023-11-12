@@ -80,8 +80,14 @@ func selectVessel(vessel):
 
 func vesselBattleForecast(vessel):
 	var scene = $"Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel/Battle Forecast"
+	scene.queue_free()
+	$"Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel/".remove_child(scene)
+	
+	scene = preload("res://Battle Forecast.tscn").instantiate()
 	scene.init(gameID, vessel.getID())
+	$"Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel/".add_child(scene)
 	setMenuDisplay(scene, true)
+	
 
 func selectOutpost(outpost):
 	var scene = preload("res://OutpostDetails.tscn").instantiate()

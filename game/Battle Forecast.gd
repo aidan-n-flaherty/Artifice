@@ -48,12 +48,12 @@ func init(gameID:int, objectID:int):
 	
 	for phase in phases:
 		if (phase == "Combat Resolution Phase" || phase == "Post-Combat Phase"):
-			postPhases.push_back(game.getNextBattleMessages(objectID, phase))
+			postPhases.push_back(phase)
 			continue
 		
 		battleMessages = game.getNextBattleMessages(objectID, phase)
 		print(battleMessages)
-		continue
+
 		if (len(battleMessages) != 0):
 			var displayPhase
 			displayPhase = preload("res://BattleSpecialistEffects.tscn").instantiate()
@@ -125,18 +125,18 @@ func init(gameID:int, objectID:int):
 	
 	for capture in captures:
 		var captureStatement = Label.new()
+		captureStatement.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
 		captureStatement.text = "Captures " + capture
 		$VBoxContainer/ScrollContainer/VBoxContainer/FinalResult/Captures.add_child(captureStatement)
 	
-	
+	var postBattleMessages
 	for phase in postPhases:
-		battleMessages = game.getNextBattleMessages(objectID, phase)
+		postBattleMessages = game.getNextBattleMessages(objectID, phase)
 		
-		continue
-		if (len(battleMessages) != 0):
+		if (len(postBattleMessages) != 0):
 			var displayPhase
 			displayPhase = preload("res://BattleSpecialistEffects.tscn").instantiate()
-			displayPhase.init(p1.getID(), phase, battleMessages)
+			displayPhase.init(p1.getID(), phase, postBattleMessages)
 			$VBoxContainer/ScrollContainer/VBoxContainer/PostBattle.add_child(displayPhase)
 	
 	

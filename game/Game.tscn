@@ -563,12 +563,51 @@ msaa_2d = 1
 size = Vector2i(1000, 2600)
 
 [node name="FloorSprite" type="MeshInstance3D" parent="Viewport/Viewport3D/CameraPivot"]
+<<<<<<< HEAD
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, -99.9, -100)
+=======
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, -100, -100)
+>>>>>>> e05763e3402649108a992bef3868523953ddf0c5
 sorting_offset = 1000.0
 sorting_use_aabb_center = false
 material_override = SubResource("ShaderMaterial_rqbvh")
 mesh = SubResource("PlaneMesh_utrlp")
 
+<<<<<<< HEAD
+=======
+[node name="Floor" type="Node3D" parent="Viewport/Viewport3D/CameraPivot"]
+transform = Transform3D(1, -1.74846e-07, 0, 1.74846e-07, 1, 0, 0, 0, 1, 0, -100, -100)
+
+[node name="Floor1" type="MeshInstance3D" parent="Viewport/Viewport3D/CameraPivot/Floor"]
+cast_shadow = 0
+mesh = SubResource("PlaneMesh_8tg0o")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("ShaderMaterial_ps11k")
+
+[node name="Floor2" type="MeshInstance3D" parent="Viewport/Viewport3D/CameraPivot/Floor"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
+cast_shadow = 0
+mesh = SubResource("PlaneMesh_8tg0o")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("ShaderMaterial_ps11k")
+
+[node name="Floor3" type="MeshInstance3D" parent="Viewport/Viewport3D/CameraPivot/Floor"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+cast_shadow = 0
+mesh = SubResource("PlaneMesh_8tg0o")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("ShaderMaterial_ps11k")
+
+[node name="Reflection" type="MeshInstance3D" parent="Viewport/Viewport3D/CameraPivot"]
+transform = Transform3D(1, 8.74228e-08, 0, -8.74228e-08, 1, 0, 0, 0, -1, 0, -100, -100)
+visible = false
+layers = 2
+sorting_offset = -10000.0
+cast_shadow = 0
+mesh = SubResource("PlaneMesh_pn67n")
+surface_material_override/0 = SubResource("ShaderMaterial_bfofx")
+
+>>>>>>> e05763e3402649108a992bef3868523953ddf0c5
 [node name="Terrain" type="MeshInstance3D" parent="Viewport/Viewport3D/CameraPivot"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -100, -100)
 layers = 2
