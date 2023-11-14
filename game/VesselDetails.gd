@@ -16,10 +16,12 @@ func init(vessel, gameID):
 	self.vessel = vessel
 	self.gameID = gameID
 	game = GameData.getGame(gameID)
+	
+	$VBoxContainer/HBoxContainer2/Units.text = str(vessel.getUnits())
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	pass
+	$VBoxContainer/HBoxContainer2/VBoxContainer/Arrival.text = "Arrives in " + Utilities.timeToStr(game.getNextArrivalEvent(vessel.getID()) - game.getTime())
 
 func _on_cancel_pressed():
 	print(vessel.getOriginatingOrder())

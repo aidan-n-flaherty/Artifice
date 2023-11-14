@@ -11,11 +11,15 @@ uniform sampler2D stoneTexture;
 uniform sampler2D noise1;
 uniform sampler2D noise2;
 uniform sampler2D noise3;
+uniform sampler2D hole;
 uniform sampler2D texture_normal;
 uniform sampler2D ridge_normal;
 
 uniform float cameraSize;
 uniform float epsilon;
+
+uniform vec2 outposts[50];
+uniform int outpostsLength = 0;
 
 vec3 normal(vec2 uv, sampler2D texture_norm) {
 	float right = texture(texture_norm, uv + vec2(epsilon, 0)).r;
@@ -36,6 +40,17 @@ void fragment() {
 	float erode = texture(erosion, pos).r;
 	
 	ridge *= erode;
+	
+	float holes = texture(hole, pos).r;
+	
+	for(int i = 0; i < outpostsLength; i++) {
+		float dX = pos.x * 100.0 - outposts[i].x;
+		float dY = pos.y * 260.0 - outposts[i].y;
+		float mag = sqrt(dX * dX + dY * dY);
+		if(mag + 5.0 * holes < 10.0) {
+			discard;
+		}
+	}
 	
 	float tex = texture(texturing, pos).r;
 	
@@ -77,12 +92,13 @@ void fragment() {
 				if(texture(ridges, pos - vec2(0.0, 0.2 * height)).r < 0.6) break;
 			}
 			
-			if(height >= 0.2) ALBEDO *= 0.0;
-			else ALBEDO = (0.75 * rock + 0.25) * vec3(0.1 - height);
+			ALBEDO = (0.75 * rock + 0.25) * vec3(0.1 - height);
 		} else {
 			ALBEDO = newAlbedo;
 			NORMAL_MAP = texture(ridge_normal, pos).rgb;
 		}
+		
+		if(ALBEDO.r < 0.001) discard;
 	} else {
 		NORMAL_MAP = texture(texture_normal, pos).rgb;
 	}

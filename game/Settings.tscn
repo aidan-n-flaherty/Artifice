@@ -1,99 +1,164 @@
-[gd_scene load_steps=3 format=3 uid="uid://chwn0jkvlrsvw"]
+[gd_scene load_steps=5 format=3 uid="uid://chwn0jkvlrsvw"]
 
 [ext_resource type="Script" path="res://Settings.gd" id="1_4ep52"]
-[ext_resource type="PackedScene" uid="uid://ca2km7m7ec3av" path="res://PastGameList.tscn" id="2_kt6mu"]
+[ext_resource type="PackedScene" uid="uid://ca2km7m7ec3av" path="res://PastGameList.tscn" id="2_kldvo"]
 
-[node name="Settings" type="Control"]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("1_4ep52")
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b4f1s"]
+bg_color = Color(0.0588235, 0.0588235, 0.0588235, 1)
+corner_radius_bottom_right = 60
+corner_radius_bottom_left = 60
+corner_detail = 16
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
-layout_mode = 1
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_u21hr"]
+bg_color = Color(0.0980392, 0.0980392, 0.0980392, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[node name="Settings" type="MarginContainer"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/margin_left = 50
-theme_override_constants/margin_top = 50
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 50
+script = ExtResource("1_4ep52")
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_b4f1s")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 100
 theme_override_constants/margin_right = 50
 theme_override_constants/margin_bottom = 50
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer"]
 layout_mode = 2
+horizontal_scroll_mode = 0
 
-[node name="Username" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/ScrollContainer"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 theme_override_constants/separation = 20
 
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Username"]
+[node name="GridContainer" type="GridContainer" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/h_separation = 20
+theme_override_constants/v_separation = 10
+columns = 2
+
+[node name="Username" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/GridContainer"]
 layout_mode = 2
 text = "Username"
 
-[node name="Username" type="TextEdit" parent="MarginContainer/VBoxContainer/Username"]
+[node name="UsernameText" type="LineEdit" parent="MarginContainer/ScrollContainer/VBoxContainer/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "test"
-placeholder_text = "username"
-scroll_fit_content_height = true
+text = "-1"
 
-[node name="Stats" type="Label" parent="MarginContainer/VBoxContainer"]
+[node name="Password" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+text = "Password"
+
+[node name="PasswordText" type="LineEdit" parent="MarginContainer/ScrollContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Test"
+secret = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 30
+
+[node name="Control" type="VBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="Stats" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control"]
 layout_mode = 2
 text = "Stats"
 horizontal_alignment = 1
 
-[node name="Rating" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control"]
 layout_mode = 2
-theme_override_constants/separation = 20
+size_flags_vertical = 3
 
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Rating"]
+[node name="Panel" type="Panel" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_u21hr")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="GridContainer2" type="GridContainer" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/h_separation = 20
+theme_override_constants/v_separation = 10
+columns = 2
+
+[node name="RatingLabel" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/MarginContainer/GridContainer2"]
 layout_mode = 2
 text = "Rating"
 
-[node name="Rating" type="Label" parent="MarginContainer/VBoxContainer/Rating"]
+[node name="Rating" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/MarginContainer/GridContainer2"]
 layout_mode = 2
-text = "test"
+text = "-1"
 
-[node name="GamesWon" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+[node name="VictoriesLabel" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/MarginContainer/GridContainer2"]
 layout_mode = 2
-theme_override_constants/separation = 20
+text = "Victories"
 
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/GamesWon"]
+[node name="Victories" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/MarginContainer/GridContainer2"]
 layout_mode = 2
-text = "Games won"
+size_flags_horizontal = 3
+text = "-1"
 
-[node name="GamesWon" type="Label" parent="MarginContainer/VBoxContainer/GamesWon"]
+[node name="DefeatsLabel" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/MarginContainer/GridContainer2"]
 layout_mode = 2
-text = "test"
+text = "Defeats"
 
-[node name="GamesLost" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+[node name="Defeats" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/MarginContainer/GridContainer2"]
 layout_mode = 2
-theme_override_constants/separation = 20
+size_flags_horizontal = 3
+text = "-1"
 
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/GamesLost"]
+[node name="ForfeitsLabel" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/MarginContainer/GridContainer2"]
 layout_mode = 2
-text = "Games lost"
+text = "Forfeits"
 
-[node name="GamesLost" type="Label" parent="MarginContainer/VBoxContainer/GamesLost"]
+[node name="Forfeits" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/MarginContainer/GridContainer2"]
 layout_mode = 2
-text = "test"
+text = "-1"
 
-[node name="PastGames" type="Label" parent="MarginContainer/VBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
-text = "Past games"
+size_flags_horizontal = 3
+
+[node name="MatchHistory" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "Match History"
 horizontal_alignment = 1
 
-[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
-horizontal_scroll_mode = 0
 
-[node name="PastGameList" parent="MarginContainer/VBoxContainer/ScrollContainer" instance=ExtResource("2_kt6mu")]
+[node name="Panel" type="Panel" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/VBoxContainer/MarginContainer"]
 layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_u21hr")
 
-[connection signal="text_changed" from="MarginContainer/VBoxContainer/Username/Username" to="." method="_on_username_text_changed"]
+[node name="PastGameList" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/VBoxContainer/MarginContainer" instance=ExtResource("2_kldvo")]
+layout_mode = 2

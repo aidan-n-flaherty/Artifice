@@ -1,5 +1,4 @@
-extends Control
-
+extends MarginContainer
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -11,10 +10,10 @@ func loadSelf():
 	var user = GameData.getSelf()
 	if(!user): return
 	
-	$MarginContainer/VBoxContainer/Username/Username.text = user.username
-	$MarginContainer/VBoxContainer/GamesWon/GamesWon.text = str(user.userStats.gamesWon)
-	$MarginContainer/VBoxContainer/GamesLost/GamesLost.text = str(user.userStats.gamesLost)
-	$MarginContainer/VBoxContainer/Rating/Rating.text = str(user.userStats.rating)
+	$MarginContainer/ScrollContainer/VBoxContainer/GridContainer/UsernameText.text = user.username
+	$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/MarginContainer/GridContainer2/Victories.text = str(user.userStats.gamesWon)
+	$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/MarginContainer/GridContainer2/Defeats.text = str(user.userStats.gamesLost)
+	$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/MarginContainer/GridContainer2/Rating.text = str(user.userStats.rating)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

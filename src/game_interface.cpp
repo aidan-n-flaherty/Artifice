@@ -241,7 +241,7 @@ void GameInterface::update() {
 				it = vessels.erase(it);
 			} else it++;
 		}
-		
+
 		for(auto it = outposts.begin(); it != outposts.end();) {
 			if(!game->hasOutpost(it->first)) {
 				it->second->queue_free();
@@ -255,14 +255,6 @@ void GameInterface::update() {
 				it->second->queue_free();
 				remove_child(it->second);
 				it = players.erase(it);
-			} else it++;
-		}
-
-
-		for(auto it = selectedSpecialists.begin(); it != selectedSpecialists.end();) {
-			if(!game->hasSpecialist(*it)) {
-				setSelectedSpecialist(*it);
-				it = selectedSpecialists.begin();
 			} else it++;
 		}
 		
@@ -299,6 +291,13 @@ void GameInterface::update() {
 				players[pair.first] = newPlayer;
 				add_child(newPlayer);
 			}
+		}
+
+		for(auto it = selectedSpecialists.begin(); it != selectedSpecialists.end();) {
+			if(!game->hasSpecialist(*it)) {
+				setSelectedSpecialist(*it);
+				it = selectedSpecialists.begin();
+			} else it++;
 		}
 	}
 }
@@ -419,6 +418,16 @@ void GameInterface::setSelectedSpecialist(int id) {
 	bool selected = selectedSpecialists.find(id) == selectedSpecialists.end();
 
 	Specialist* s = game->getSpecialist(id);
+
+	if(!s) {
+		for(auto& pair : vessels) if(pair.second->hasSelectedSpecialist(id)) pair.second->setSpecialistSelected(id, false);
+		for(auto& pair : outposts) if(pair.second->hasSelectedSpecialist(id)) pair.second->setSpecialistSelected(id, false);
+
+		selectedSpecialists.erase(id);
+		emit_signal("deselectSpecialist", id);
+
+		return;
+	}
 
 	int containerID = s->getContainer() ? s->getContainer()->getID() : -1;
 	bool owned = s->getContainer() && s->getContainer()->getOwnerID() == getUserGameID();

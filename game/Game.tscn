@@ -1,4 +1,4 @@
-[gd_scene load_steps=89 format=3 uid="uid://dgp4l24s2rulk"]
+[gd_scene load_steps=92 format=3 uid="uid://dgp4l24s2rulk"]
 
 [ext_resource type="Script" path="res://Game.gd" id="1_s53r2"]
 [ext_resource type="Script" path="res://CameraPivot.gd" id="2_t2ckv"]
@@ -52,20 +52,20 @@ reflected_light_source = 2
 glow_enabled = true
 glow_normalized = true
 glow_bloom = 1.0
+fog_enabled = true
 fog_light_energy = 0.0
-fog_sun_scatter = 0.2
 fog_density = 0.0
-fog_height = 8.9
-fog_height_density = 0.5
+fog_sky_affect = 0.0
+fog_height_density = 0.6
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_rpofh"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_t44t4"]
 viewport_path = NodePath("Viewport/Viewport3D/CameraPivot/FloorDisplay")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_rqbvh"]
 resource_local_to_scene = true
 render_priority = 0
 shader = ExtResource("3_auwix")
-shader_parameter/screen_texture = SubResource("ViewportTexture_rpofh")
+shader_parameter/screen_texture = SubResource("ViewportTexture_t44t4")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_utrlp"]
 size = Vector2(100, 260)
@@ -89,6 +89,22 @@ height = 2080
 seamless = true
 color_ramp = SubResource("Gradient_u3xmn")
 noise = SubResource("FastNoiseLite_8h4h1")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_3wike"]
+frequency = 0.0152
+fractal_octaves = 10
+cellular_distance_function = 3
+cellular_jitter = 1.0
+cellular_return_type = 4
+domain_warp_enabled = true
+domain_warp_type = 1
+domain_warp_amplitude = 20.0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_kjdxf"]
+width = 800
+height = 2080
+seamless = true
+noise = SubResource("FastNoiseLite_3wike")
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_qnahw"]
 noise_type = 2
@@ -235,6 +251,8 @@ render_priority = 0
 shader = ExtResource("10_u7afu")
 shader_parameter/cameraSize = 100.0
 shader_parameter/epsilon = 0.1
+shader_parameter/outposts = PackedVector2Array()
+shader_parameter/outpostsLength = 0
 shader_parameter/screen_texture = SubResource("ViewportTexture_cswc1")
 shader_parameter/ridges = SubResource("NoiseTexture2D_ygns3")
 shader_parameter/erosion = SubResource("NoiseTexture2D_pylon")
@@ -245,8 +263,12 @@ shader_parameter/stoneTexture = SubResource("NoiseTexture2D_r1vl3")
 shader_parameter/noise1 = SubResource("NoiseTexture2D_a40hr")
 shader_parameter/noise2 = SubResource("NoiseTexture2D_qskt8")
 shader_parameter/noise3 = SubResource("NoiseTexture2D_n05uk")
+shader_parameter/hole = SubResource("NoiseTexture2D_kjdxf")
 shader_parameter/texture_normal = SubResource("NoiseTexture2D_uke5f")
 shader_parameter/ridge_normal = SubResource("NoiseTexture2D_h2jwo")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nf48j"]
+albedo_color = Color(0, 0, 0, 1)
 
 [sub_resource type="Environment" id="Environment_auhjg"]
 background_mode = 1
@@ -563,51 +585,12 @@ msaa_2d = 1
 size = Vector2i(1000, 2600)
 
 [node name="FloorSprite" type="MeshInstance3D" parent="Viewport/Viewport3D/CameraPivot"]
-<<<<<<< HEAD
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, -99.9, -100)
-=======
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, -100, -100)
->>>>>>> e05763e3402649108a992bef3868523953ddf0c5
 sorting_offset = 1000.0
 sorting_use_aabb_center = false
 material_override = SubResource("ShaderMaterial_rqbvh")
 mesh = SubResource("PlaneMesh_utrlp")
 
-<<<<<<< HEAD
-=======
-[node name="Floor" type="Node3D" parent="Viewport/Viewport3D/CameraPivot"]
-transform = Transform3D(1, -1.74846e-07, 0, 1.74846e-07, 1, 0, 0, 0, 1, 0, -100, -100)
-
-[node name="Floor1" type="MeshInstance3D" parent="Viewport/Viewport3D/CameraPivot/Floor"]
-cast_shadow = 0
-mesh = SubResource("PlaneMesh_8tg0o")
-skeleton = NodePath("../..")
-surface_material_override/0 = SubResource("ShaderMaterial_ps11k")
-
-[node name="Floor2" type="MeshInstance3D" parent="Viewport/Viewport3D/CameraPivot/Floor"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
-cast_shadow = 0
-mesh = SubResource("PlaneMesh_8tg0o")
-skeleton = NodePath("../..")
-surface_material_override/0 = SubResource("ShaderMaterial_ps11k")
-
-[node name="Floor3" type="MeshInstance3D" parent="Viewport/Viewport3D/CameraPivot/Floor"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
-cast_shadow = 0
-mesh = SubResource("PlaneMesh_8tg0o")
-skeleton = NodePath("../..")
-surface_material_override/0 = SubResource("ShaderMaterial_ps11k")
-
-[node name="Reflection" type="MeshInstance3D" parent="Viewport/Viewport3D/CameraPivot"]
-transform = Transform3D(1, 8.74228e-08, 0, -8.74228e-08, 1, 0, 0, 0, -1, 0, -100, -100)
-visible = false
-layers = 2
-sorting_offset = -10000.0
-cast_shadow = 0
-mesh = SubResource("PlaneMesh_pn67n")
-surface_material_override/0 = SubResource("ShaderMaterial_bfofx")
-
->>>>>>> e05763e3402649108a992bef3868523953ddf0c5
 [node name="Terrain" type="MeshInstance3D" parent="Viewport/Viewport3D/CameraPivot"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -100, -100)
 layers = 2
@@ -616,6 +599,15 @@ sorting_use_aabb_center = false
 cast_shadow = 0
 mesh = SubResource("PlaneMesh_xk06g")
 surface_material_override/0 = SubResource("ShaderMaterial_1fvqb")
+
+[node name="Darkness" type="MeshInstance3D" parent="Viewport/Viewport3D/CameraPivot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -110, -110)
+layers = 2
+sorting_offset = -10000.0
+sorting_use_aabb_center = false
+cast_shadow = 0
+mesh = SubResource("PlaneMesh_xk06g")
+surface_material_override/0 = SubResource("StandardMaterial3D_nf48j")
 
 [node name="SubViewport" type="SubViewport" parent="Viewport/Viewport3D/CameraPivot"]
 transparent_bg = true
@@ -658,7 +650,7 @@ mesh = SubResource("PlaneMesh_df7dv")
 surface_material_override/0 = SubResource("ShaderMaterial_k676y")
 
 [node name="MeshInstance3D5" type="MeshInstance3D" parent="Viewport/Viewport3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -10)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.277729)
 visible = false
 mesh = SubResource("BoxMesh_sqx6p")
 

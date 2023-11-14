@@ -26,13 +26,15 @@ public:
     void _process(double delta) override;
 		
 	void setReference(Outpost* outpost) {
-		PositionalNode::setReference(outpost, 2);
+		PositionalNode::setReference(outpost, 1);
 		this->outpost = outpost;
 	}
 
 	Outpost* getOutpost(){ return outpost; }
 
 	int getShield() { return outpost != nullptr ? outpost->getShieldAt(getDiff()) : -1; }
+
+	int getMaxShield() { return outpost != nullptr ? outpost->getMaxShield() : -1; }
 
 	bool canProduce() { return outpost->getType() == OutpostType::FACTORY; }
 

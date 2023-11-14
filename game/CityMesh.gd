@@ -1,8 +1,8 @@
 extends Area3D
 
-var units
+var units = -1
 
-var shield
+var shield = -1
 
 var selected
 
@@ -10,7 +10,8 @@ var color
 
 # Called when the node enters the scene tree for the first time.
 func _ready():	
-	
+	#$factory.rotation.y = abs(sin(get_parent().getID() * 10.0)) * 2 * PI
+	#$factory2.rotation.y = $factory.rotation.y + PI/2 + abs(cos(get_parent().getID() * 20.0)) * PI/4
 	
 	return
 	
@@ -51,7 +52,7 @@ func _ready():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	if units != get_parent().getUnits(): $RotationInvariant/Units.setValue(str(get_parent().getUnits()))
-	if shield != get_parent().getShield(): $RotationInvariant/Shield.setValue(str(get_parent().getShield()))
+	if shield != get_parent().getShield(): $SubViewport/OutpostInfo.setShield(get_parent().getShield(), get_parent().getMaxShield())
 	if selected != get_parent().isSelected(): $RotationInvariant/Units.setSelection(get_parent().isSelected())
 	if color != get_parent().getColor(): $RotationInvariant/Units.setColor(get_parent().getColor())
 	

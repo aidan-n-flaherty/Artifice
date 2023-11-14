@@ -7,5 +7,5 @@ void fragment() {
 	ALBEDO = color.rgb;
 	ALPHA = color.a;
 	
-	if(ALPHA == 1.0) ALPHA = max(max(color.r, color.g), color.b);
+	if(ALPHA == 1.0) ALPHA = max(max(1.0 - color.r, 1.0 - color.g), 1.0 - color.b);
 }

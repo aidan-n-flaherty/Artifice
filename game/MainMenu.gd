@@ -16,19 +16,19 @@ func _ready():
 	
 	current = ResourceLoader.load(GameData.currentTab).instantiate()
 	
-	get_node("Content").add_child(current)
+	$VSplitContainer/Content.add_child(current)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
 	pass
 	
 func switch_to(scene):
-	get_node("Content").remove_child(current)
+	$VSplitContainer/Content.remove_child(current)
 	
 	GameData.currentTab = scene
 	current = ResourceLoader.load(GameData.currentTab).instantiate()
 	
-	get_node("Content").add_child(current)
+	$VSplitContainer/Content.add_child(current)
 
 func _on_play_pressed():
 	switch_to(playScreen)

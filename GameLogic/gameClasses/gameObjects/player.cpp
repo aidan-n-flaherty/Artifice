@@ -329,7 +329,7 @@ std::unordered_map<int, int> Player::calculateUnitsAt(double& fractionalProducti
             totalUnits += n;
         }
 
-        if(getCapacity() - totalUnits <= 0) break;
+        if(getCapacity() - totalUnits <= 0) fractionalProduction -= int(fractionalProduction);
     }
 
     return units;

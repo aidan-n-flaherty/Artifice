@@ -41,7 +41,7 @@ void FloorDisplay::_draw() {
                 double x1 = pair.second->getPositionAt(getDiff()).getX();
                 double y1 = pair.second->getPositionAt(getDiff()).getY();
 
-                draw_circle(Vector2(x1 - x, y1 - y) * pixels, pair.second->getSonarRange() * pixels, Color(1.0, 1.0, 1.0));
+                draw_circle(Vector2(x1 - x, y1 - y) * pixels, pair.second->getSonarRange() * pixels, Color(0.0, 0.0, 0.0));
             }
         }
     }
@@ -57,7 +57,7 @@ void FloorDisplay::_draw() {
                 double x1 = pair.second->getPositionAt(getDiff()).getX();
                 double y1 = pair.second->getPositionAt(getDiff()).getY();
 
-                draw_circle(Vector2(x1 - x, y1 - y) * pixels, pair.second->getSonarRange() * pixels - 5, Color(0.0, 0.0, 0.0));
+                draw_circle(Vector2(x1 - x, y1 - y) * pixels, pair.second->getSonarRange() * pixels - 5, Color(1.0, 1.0, 1.0));
             }
         }
     }
@@ -86,7 +86,7 @@ void FloorDisplay::_draw() {
                 double x1 = gameInterface->getSelected()->getPositionAt(getSimulatedDiff()).getX();
                 double y1 = gameInterface->getSelected()->getPositionAt(getSimulatedDiff()).getY();
 
-                draw_line(Vector2(x1 - x, y1 - y) * pixels, Vector2(gameInterface->getMouse().getX() - x, gameInterface->getMouse().getY() - y) * pixels, Color(1.0, 1.0, 1.0), 5.0);
+                draw_line(Vector2(x1 - x, y1 - y) * pixels, Vector2(gameInterface->getMouse().getX() - x, gameInterface->getMouse().getY() - y) * pixels, Color(0.0, 0.0, 0.0), 5.0);
             }
 
             for(const auto& pair : game->getVessels()) {
@@ -98,9 +98,9 @@ void FloorDisplay::_draw() {
                 double deltaY = pair.second->getTargetPos().getY() - y1;
                 double deltaMag = sqrt(deltaX * deltaX + deltaY * deltaY);
 
-                if(pair.second->getOrigin()) draw_line(Vector2(x1 - x, y1 - y) * pixels - 8 * Vector2(deltaX / deltaMag, deltaY / deltaMag), Vector2(pair.second->getOrigin()->getPosition().getX() - x, pair.second->getOrigin()->getPosition().getY() - y) * pixels, Color(1.0, 1.0, 1.0, 0.5), 3.0);
-                draw_arc(Vector2(x1 - x, y1 - y) * pixels, 8, 0, UtilityFunctions::deg_to_rad(360), 32, Color(1.0, 1.0, 1.0), 3.0, true);
-                draw_line(Vector2(x1 - x, y1 - y) * pixels + 8 * Vector2(deltaX / deltaMag, deltaY / deltaMag), Vector2(pair.second->getTargetPos().getX() - x, pair.second->getTargetPos().getY() - y) * pixels, Color(1.0, 1.0, 1.0), 5.0);
+                if(pair.second->getOrigin()) draw_line(Vector2(x1 - x, y1 - y) * pixels - 8 * Vector2(deltaX / deltaMag, deltaY / deltaMag), Vector2(pair.second->getOrigin()->getPosition().getX() - x, pair.second->getOrigin()->getPosition().getY() - y) * pixels, Color(0.0, 0.0, 0.0, 0.5), 3.0);
+                draw_arc(Vector2(x1 - x, y1 - y) * pixels, 8, 0, UtilityFunctions::deg_to_rad(360), 32, Color(0.0, 0.0, 0.0), 3.0, true);
+                draw_line(Vector2(x1 - x, y1 - y) * pixels + 8 * Vector2(deltaX / deltaMag, deltaY / deltaMag), Vector2(pair.second->getTargetPos().getX() - x, pair.second->getTargetPos().getY() - y) * pixels, Color(0.0, 0.0, 0.0), 5.0);
             }
 
             for(const auto& pair : game->getVessels()) {
@@ -122,15 +122,15 @@ void FloorDisplay::_draw() {
                         c = Color(0.75, 0.75, 0.75);
                     }
 
-                    draw_circle(Vector2(x1 - x, y1 - y) * pixels, 10, Color(1.0, 1.0, 1.0));
+                    draw_circle(Vector2(x1 - x, y1 - y) * pixels, 10, Color(0.0, 0.0, 0.0));
                     draw_circle(Vector2(x1 - x, y1 - y) * pixels, 9, c);
-                    draw_arc(Vector2(x1 - x, y1 - y) * pixels, 5, 0, UtilityFunctions::deg_to_rad(360), 32, Color(1.0, 1.0, 1.0), 0.5, true);
+                    draw_arc(Vector2(x1 - x, y1 - y) * pixels, 5, 0, UtilityFunctions::deg_to_rad(360), 32, Color(0.0, 0.0, 0.0), 0.5, true);
 
                     for(int i = 45; i < 360; i += 90) {
                         double x2 = x1 + 0.3 * cos(UtilityFunctions::deg_to_rad(i)), x3 = x1 + cos(UtilityFunctions::deg_to_rad(i));
                         double y2 = y1 + 0.3 * sin(UtilityFunctions::deg_to_rad(i)), y3 = y1 + sin(UtilityFunctions::deg_to_rad(i));
 
-                        draw_line(Vector2(x2 - x, y2 - y) * pixels, Vector2(x3 - x, y3 - y) * pixels, Color(1.0, 1.0, 1.0), 0.5, true);
+                        draw_line(Vector2(x2 - x, y2 - y) * pixels, Vector2(x3 - x, y3 - y) * pixels, Color(0.0, 0.0, 0.0), 0.5, true);
                     }
                 }
             }

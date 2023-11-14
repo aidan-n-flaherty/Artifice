@@ -1,238 +1,511 @@
-[gd_scene load_steps=3 format=3 uid="uid://b0lbit2kouhl7"]
+[gd_scene load_steps=12 format=3 uid="uid://b0lbit2kouhl7"]
 
 [ext_resource type="Script" path="res://GameCreator.gd" id="1_5sudp"]
 [ext_resource type="Theme" uid="uid://bfwpaonloeco5" path="res://resources/theme.tres" id="2_dbg4x"]
+[ext_resource type="Theme" uid="uid://c4m6lidwyxgc" path="res://resources/UITheme.tres" id="2_fgpad"]
 
-[node name="GameCreator" type="Control"]
-layout_mode = 3
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y31xg"]
+bg_color = Color(0.0588235, 0.0588235, 0.0588235, 1)
+corner_radius_bottom_right = 60
+corner_radius_bottom_left = 60
+corner_detail = 16
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_7ve58"]
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_1qmji"]
+
+[sub_resource type="ImageTexture" id="ImageTexture_167ub"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pdba2"]
+content_margin_left = 16.0
+content_margin_top = 16.0
+content_margin_right = 16.0
+content_margin_bottom = 16.0
+bg_color = Color(0.145098, 0.145098, 0.145098, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_17p40"]
+bg_color = Color(0.733333, 0.733333, 0.733333, 1)
+corner_radius_top_left = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="LabelSettings" id="LabelSettings_xa2yv"]
+font_color = Color(0.45098, 0.45098, 0.45098, 1)
+
+[sub_resource type="FontVariation" id="FontVariation_jv2b6"]
+spacing_top = 6
+spacing_bottom = 6
+
+[node name="GameCreator" type="MarginContainer"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_right = -1080.0
-offset_bottom = -1920.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 50
 script = ExtResource("1_5sudp")
 
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_y31xg")
+
 [node name="MarginContainer" type="MarginContainer" parent="."]
-layout_mode = 0
-offset_right = 1080.0
-offset_bottom = 1920.0
+layout_mode = 2
 theme_override_constants/margin_left = 50
-theme_override_constants/margin_top = 50
+theme_override_constants/margin_top = 100
 theme_override_constants/margin_right = 50
 theme_override_constants/margin_bottom = 50
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = 10
 
-[node name="LobbyName" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-theme_override_constants/separation = 20
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
 
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/LobbyName"]
+[node name="GridContainer" type="GridContainer" parent="MarginContainer/VBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/h_separation = 20
+theme_override_constants/v_separation = 20
+columns = 2
+
+[node name="LobbyName" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
 layout_mode = 2
 text = "Lobby Name"
 
-[node name="Input" type="LineEdit" parent="MarginContainer/VBoxContainer/LobbyName"]
+[node name="LobbyNameText" type="LineEdit" parent="MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Password" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = 20
-
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Password"]
+[node name="Password" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
 layout_mode = 2
 text = "Password (Optional)"
 
-[node name="Input" type="LineEdit" parent="MarginContainer/VBoxContainer/Password"]
+[node name="PasswordText" type="LineEdit" parent="MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "Leave blank for no password"
 
-[node name="NumPlayers" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = 20
-
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/NumPlayers"]
+[node name="NumPlayers" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
 layout_mode = 2
 text = "Number of Players"
 
-[node name="HSlider" type="HSlider" parent="MarginContainer/VBoxContainer/NumPlayers"]
+[node name="NumPlayersButtons" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme = ExtResource("2_dbg4x")
-min_value = 2.0
-max_value = 10.0
-value = 2.0
-rounded = true
-tick_count = 9
 
-[node name="SimulationTimescale" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+[node name="2" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/GridContainer/NumPlayersButtons"]
 layout_mode = 2
-theme_override_constants/separation = 20
+size_flags_horizontal = 3
+theme = ExtResource("2_fgpad")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_7ve58")
+text = "2"
 
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/SimulationTimescale"]
+[node name="3" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/GridContainer/NumPlayersButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("2_fgpad")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_7ve58")
+text = "3"
+
+[node name="4" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/GridContainer/NumPlayersButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("2_fgpad")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_7ve58")
+text = "4"
+
+[node name="5" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/GridContainer/NumPlayersButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("2_fgpad")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_7ve58")
+text = "5"
+
+[node name="6" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/GridContainer/NumPlayersButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("2_fgpad")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_7ve58")
+text = "6"
+
+[node name="7" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/GridContainer/NumPlayersButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("2_fgpad")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_7ve58")
+text = "7"
+
+[node name="8" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/GridContainer/NumPlayersButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("2_fgpad")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_7ve58")
+text = "8"
+
+[node name="9" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/GridContainer/NumPlayersButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("2_fgpad")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_7ve58")
+text = "9"
+
+[node name="10" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/GridContainer/NumPlayersButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("2_fgpad")
+toggle_mode = true
+button_pressed = true
+button_group = SubResource("ButtonGroup_7ve58")
+text = "10"
+
+[node name="SimulationTimescale" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
 layout_mode = 2
 text = "Simulation Timescale"
 
-[node name="Buttons" type="HBoxContainer" parent="MarginContainer/VBoxContainer/SimulationTimescale"]
+[node name="SimulationTimescaleButtons" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Days" type="Button" parent="MarginContainer/VBoxContainer/SimulationTimescale/Buttons"]
+[node name="Days" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/GridContainer/SimulationTimescaleButtons"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme = ExtResource("2_fgpad")
 toggle_mode = true
+button_pressed = true
+button_group = SubResource("ButtonGroup_1qmji")
 text = "Days"
 
-[node name="Hours" type="Button" parent="MarginContainer/VBoxContainer/SimulationTimescale/Buttons"]
+[node name="Hours" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/GridContainer/SimulationTimescaleButtons"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme = ExtResource("2_fgpad")
 toggle_mode = true
+button_group = SubResource("ButtonGroup_1qmji")
 text = "Hours"
 
-[node name="Minutes" type="Button" parent="MarginContainer/VBoxContainer/SimulationTimescale/Buttons"]
+[node name="Minutes" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/GridContainer/SimulationTimescaleButtons"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme = ExtResource("2_fgpad")
 toggle_mode = true
+button_group = SubResource("ButtonGroup_1qmji")
 text = "Minutes"
 
-[node name="SimulationSpeed" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+[node name="ActiveHours" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
 layout_mode = 2
-theme_override_constants/separation = 20
+text = "Active Hours"
 
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/SimulationSpeed"]
+[node name="ActiveHoursRows" type="VBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
+layout_mode = 2
+
+[node name="ActiveHoursButtons" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/GridContainer/ActiveHoursRows"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="0" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/GridContainer/ActiveHoursRows/ActiveHoursButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("2_fgpad")
+toggle_mode = true
+button_pressed = true
+text = "12 AM"
+
+[node name="1" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/GridContainer/ActiveHoursRows/ActiveHoursButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("2_fgpad")
+toggle_mode = true
+button_pressed = true
+text = "1"
+
+[node name="2" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/GridContainer/ActiveHoursRows/ActiveHoursButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("2_fgpad")
+toggle_mode = true
+button_pressed = true
+text = "2"
+
+[node name="3" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/GridContainer/ActiveHoursRows/ActiveHoursButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("2_fgpad")
+toggle_mode = true
+button_pressed = true
+text = "3"
+
+[node name="4" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/GridContainer/ActiveHoursRows/ActiveHoursButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("2_fgpad")
+toggle_mode = true
+button_pressed = true
+text = "4 AM"
+
+[node name="5" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/GridContainer/ActiveHoursRows/ActiveHoursButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("2_fgpad")
+toggle_mode = true
+button_pressed = true
+text = "5"
+
+[node name="6" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/GridContainer/ActiveHoursRows/ActiveHoursButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("2_fgpad")
+toggle_mode = true
+button_pressed = true
+text = "6"
+
+[node name="7" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/GridContainer/ActiveHoursRows/ActiveHoursButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("2_fgpad")
+toggle_mode = true
+button_pressed = true
+text = "7"
+
+[node name="8" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/GridContainer/ActiveHoursRows/ActiveHoursButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("2_fgpad")
+toggle_mode = true
+button_pressed = true
+text = "8 AM"
+
+[node name="9" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/GridContainer/ActiveHoursRows/ActiveHoursButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("2_fgpad")
+toggle_mode = true
+button_pressed = true
+text = "9"
+
+[node name="10" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/GridContainer/ActiveHoursRows/ActiveHoursButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("2_fgpad")
+toggle_mode = true
+button_pressed = true
+text = "10"
+
+[node name="11" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/GridContainer/ActiveHoursRows/ActiveHoursButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("2_fgpad")
+toggle_mode = true
+button_pressed = true
+text = "11"
+
+[node name="ActiveHoursButtons2" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/GridContainer/ActiveHoursRows"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="12" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/GridContainer/ActiveHoursRows/ActiveHoursButtons2"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("2_fgpad")
+toggle_mode = true
+button_pressed = true
+text = "12 PM"
+
+[node name="13" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/GridContainer/ActiveHoursRows/ActiveHoursButtons2"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("2_fgpad")
+toggle_mode = true
+button_pressed = true
+text = "1"
+
+[node name="14" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/GridContainer/ActiveHoursRows/ActiveHoursButtons2"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("2_fgpad")
+toggle_mode = true
+button_pressed = true
+text = "2"
+
+[node name="15" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/GridContainer/ActiveHoursRows/ActiveHoursButtons2"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("2_fgpad")
+toggle_mode = true
+button_pressed = true
+text = "3"
+
+[node name="16" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/GridContainer/ActiveHoursRows/ActiveHoursButtons2"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("2_fgpad")
+toggle_mode = true
+button_pressed = true
+text = "4 PM"
+
+[node name="17" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/GridContainer/ActiveHoursRows/ActiveHoursButtons2"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("2_fgpad")
+toggle_mode = true
+button_pressed = true
+text = "5"
+
+[node name="18" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/GridContainer/ActiveHoursRows/ActiveHoursButtons2"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("2_fgpad")
+toggle_mode = true
+button_pressed = true
+text = "6"
+
+[node name="19" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/GridContainer/ActiveHoursRows/ActiveHoursButtons2"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("2_fgpad")
+toggle_mode = true
+button_pressed = true
+text = "7"
+
+[node name="20" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/GridContainer/ActiveHoursRows/ActiveHoursButtons2"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("2_fgpad")
+toggle_mode = true
+button_pressed = true
+text = "8 PM"
+
+[node name="21" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/GridContainer/ActiveHoursRows/ActiveHoursButtons2"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("2_fgpad")
+toggle_mode = true
+button_pressed = true
+text = "9"
+
+[node name="22" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/GridContainer/ActiveHoursRows/ActiveHoursButtons2"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("2_fgpad")
+toggle_mode = true
+button_pressed = true
+text = "10"
+
+[node name="23" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/GridContainer/ActiveHoursRows/ActiveHoursButtons2"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("2_fgpad")
+toggle_mode = true
+button_pressed = true
+text = "11"
+
+[node name="Speed" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
 layout_mode = 2
 text = "Simulation Speed"
 
-[node name="HSlider" type="HSlider" parent="MarginContainer/VBoxContainer/SimulationSpeed"]
+[node name="SpeedSlider" type="HSlider" parent="MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_vertical = 1
 theme = ExtResource("2_dbg4x")
-min_value = 1.0
-max_value = 3600.0
+theme_override_icons/grabber = SubResource("ImageTexture_167ub")
+theme_override_styles/slider = SubResource("StyleBoxFlat_pdba2")
+theme_override_styles/grabber_area = SubResource("StyleBoxFlat_17p40")
+min_value = 0.5
+max_value = 2.0
 step = 0.0
 value = 1.0
 exp_edit = true
 
-[node name="RatingConstraints" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = 20
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/GridContainer/SpeedSlider"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
 
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/RatingConstraints"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/GridContainer/SpeedSlider/MarginContainer"]
+layout_mode = 2
+
+[node name="Slow" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/GridContainer/SpeedSlider/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Slow (0.5x)"
+label_settings = SubResource("LabelSettings_xa2yv")
+
+[node name="Fast" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/GridContainer/SpeedSlider/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Fast (2x)"
+label_settings = SubResource("LabelSettings_xa2yv")
+horizontal_alignment = 2
+
+[node name="Rating" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
 layout_mode = 2
 text = "Minimum Rating"
 
-[node name="HSlider" type="HSlider" parent="MarginContainer/VBoxContainer/RatingConstraints"]
+[node name="RatingSlider" type="HSlider" parent="MarginContainer/VBoxContainer/ScrollContainer/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("2_dbg4x")
 max_value = 3000.0
 step = 100.0
 
-[node name="StartTime" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = 20
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/GridContainer/RatingSlider"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
 
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/StartTime"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/GridContainer/RatingSlider/MarginContainer"]
 layout_mode = 2
-text = "Daily Start Time"
 
-[node name="HSlider" type="HSlider" parent="MarginContainer/VBoxContainer/StartTime"]
+[node name="Low" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/GridContainer/RatingSlider/MarginContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme = ExtResource("2_dbg4x")
-max_value = 23.0
-tick_count = 24
+text = "500"
+label_settings = SubResource("LabelSettings_xa2yv")
 
-[node name="Duration" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = 20
-
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Duration"]
-layout_mode = 2
-text = "Duration"
-
-[node name="HSlider" type="HSlider" parent="MarginContainer/VBoxContainer/Duration"]
+[node name="High" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/GridContainer/RatingSlider/MarginContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme = ExtResource("2_dbg4x")
-min_value = 1.0
-max_value = 24.0
-value = 1.0
-tick_count = 24
-
-[node name="Days" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = 20
-
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Days"]
-layout_mode = 2
-text = "Days"
-
-[node name="Buttons" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Days"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Sunday" type="Button" parent="MarginContainer/VBoxContainer/Days/Buttons"]
-layout_mode = 2
-size_flags_horizontal = 3
-toggle_mode = true
-text = "Sunday"
-
-[node name="Monday" type="Button" parent="MarginContainer/VBoxContainer/Days/Buttons"]
-layout_mode = 2
-size_flags_horizontal = 3
-toggle_mode = true
-text = "Monday"
-
-[node name="Tuesday" type="Button" parent="MarginContainer/VBoxContainer/Days/Buttons"]
-layout_mode = 2
-size_flags_horizontal = 3
-toggle_mode = true
-text = "Tuesday"
-
-[node name="Wednesday" type="Button" parent="MarginContainer/VBoxContainer/Days/Buttons"]
-layout_mode = 2
-size_flags_horizontal = 3
-toggle_mode = true
-text = "Wednesday"
-
-[node name="Thursday" type="Button" parent="MarginContainer/VBoxContainer/Days/Buttons"]
-layout_mode = 2
-size_flags_horizontal = 3
-toggle_mode = true
-text = "Thursday"
-
-[node name="Friday" type="Button" parent="MarginContainer/VBoxContainer/Days/Buttons"]
-layout_mode = 2
-size_flags_horizontal = 3
-toggle_mode = true
-text = "Friday"
-
-[node name="Saturday" type="Button" parent="MarginContainer/VBoxContainer/Days/Buttons"]
-layout_mode = 2
-size_flags_horizontal = 3
-toggle_mode = true
-text = "Saturday"
+text = "2000"
+label_settings = SubResource("LabelSettings_xa2yv")
+horizontal_alignment = 2
 
 [node name="Create" type="Button" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
+theme = ExtResource("2_fgpad")
+theme_override_fonts/font = SubResource("FontVariation_jv2b6")
+theme_override_font_sizes/font_size = 25
 text = "Create"
 
-[connection signal="toggled" from="MarginContainer/VBoxContainer/SimulationTimescale/Buttons/Days" to="." method="_on_days_toggled"]
-[connection signal="toggled" from="MarginContainer/VBoxContainer/SimulationTimescale/Buttons/Hours" to="." method="_on_hours_toggled"]
-[connection signal="toggled" from="MarginContainer/VBoxContainer/SimulationTimescale/Buttons/Minutes" to="." method="_on_minutes_toggled"]
-[connection signal="toggled" from="MarginContainer/VBoxContainer/Days/Buttons/Sunday" to="." method="_on_sunday_toggled"]
-[connection signal="toggled" from="MarginContainer/VBoxContainer/Days/Buttons/Monday" to="." method="_on_monday_toggled"]
-[connection signal="toggled" from="MarginContainer/VBoxContainer/Days/Buttons/Tuesday" to="." method="_on_tuesday_toggled"]
-[connection signal="toggled" from="MarginContainer/VBoxContainer/Days/Buttons/Wednesday" to="." method="_on_wednesday_toggled"]
-[connection signal="toggled" from="MarginContainer/VBoxContainer/Days/Buttons/Thursday" to="." method="_on_thursday_toggled"]
-[connection signal="toggled" from="MarginContainer/VBoxContainer/Days/Buttons/Friday" to="." method="_on_friday_toggled"]
-[connection signal="toggled" from="MarginContainer/VBoxContainer/Days/Buttons/Saturday" to="." method="_on_saturday_toggled"]
+[connection signal="toggled" from="MarginContainer/VBoxContainer/ScrollContainer/GridContainer/SimulationTimescaleButtons/Days" to="." method="_on_days_toggled"]
+[connection signal="toggled" from="MarginContainer/VBoxContainer/ScrollContainer/GridContainer/SimulationTimescaleButtons/Hours" to="." method="_on_hours_toggled"]
+[connection signal="toggled" from="MarginContainer/VBoxContainer/ScrollContainer/GridContainer/SimulationTimescaleButtons/Minutes" to="." method="_on_minutes_toggled"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/Create" to="." method="_on_create_pressed"]

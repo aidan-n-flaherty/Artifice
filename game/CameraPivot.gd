@@ -32,9 +32,9 @@ func updatePos():
 
 	#$Floor.get_surface_override_material(0).set_shader_parameter("offset", pos)
 	
-	#var arr = game.getOutpostPositions();
-	#$Floor.get_surface_override_material(0).set_shader_parameter("outposts", arr)
-	#$Floor.get_surface_override_material(0).set_shader_parameter("outpostsLength", arr.size())
+	#var arr = game.getOutpostPositions()
+	#$Terrain.get_surface_override_material(0).set_shader_parameter("outposts", arr)
+	#$Terrain.get_surface_override_material(0).set_shader_parameter("outpostsLength", arr.size())
 
 func selected(node):
 	selectedNode = node
@@ -128,3 +128,5 @@ func _unhandled_input(event):
 		$Terrain.get_surface_override_material(0).set_shader_parameter("cameraSize", $Camera3D.size)
 		$Terrain.scale.z = $Camera3D.size/100.0
 		$Terrain.scale.x = $Camera3D.size/100.0
+		$Darkness.scale.z = $Camera3D.size/100.0
+		$Darkness.scale.x = $Camera3D.size/100.0
