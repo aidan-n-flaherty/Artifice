@@ -98,7 +98,7 @@ func init(gameID:int, objectID:int):
 	var loser
 	var victorPower
 	var loserPower
-	if victor.getID() == p1.getID():
+	if (victor == null) or (victor.getID() == p1.getID()):
 		loser = p2
 		victorPower = p1Power
 		loserPower = p2Power
@@ -109,8 +109,10 @@ func init(gameID:int, objectID:int):
 	
 
 	
-	$VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/FinalResult/WinnerStatement/Winner.text = victor.getName()
-	
+	if victor:
+		$VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/FinalResult/WinnerStatement/Winner.text = victor.getName()
+	else:
+		$VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/FinalResult/WinnerStatement/Winner.text = "Nobody"
 	#get remaining units (no bind) getVictorUnits()
 	$VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/FinalResult/RemainingUnits/WinnerUnits.text = str(game.getNextBattleVictorUnits(objectID))
 	$VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/FinalResult/RemainingUnits/WinnerPower.text = str(victorPower)

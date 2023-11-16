@@ -1,9 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://dkqa1mt1040vg"]
+[gd_scene load_steps=2 format=3 uid="uid://dkqa1mt1040vg"]
 
 [ext_resource type="Script" path="res://ForecastMessage.gd" id="1_ww412"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_utvb8"]
-bg_color = Color(0.360784, 0.360784, 0.360784, 1)
 
 [node name="ForecastMessage" type="MarginContainer"]
 anchors_preset = 10
@@ -24,10 +21,9 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Panel" type="Panel" parent="HBoxContainer2/Control"]
+[node name="ColorRect" type="ColorRect" parent="HBoxContainer2/Control"]
 layout_mode = 2
-size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_utvb8")
+color = Color(0.305882, 0.305882, 0.305882, 1)
 
 [node name="MarginContainer" type="MarginContainer" parent="HBoxContainer2/Control"]
 layout_mode = 2
