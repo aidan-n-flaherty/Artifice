@@ -20,10 +20,14 @@ func _process(delta):
 	if outpost.canProduce():
 		$VBoxContainer/HBoxContainer/Spacer1.show()
 		$VBoxContainer/HBoxContainer/Jump.show()
+		
+		$VBoxContainer/HBoxContainer2/VBoxContainer/Production.text = "+" + str(outpost.getProductionAmount()) + " in " + Utilities.timeToStr(game.getNextProductionEvent(outpost.getID()) - game.getTime())
 	else:
 		$VBoxContainer/HBoxContainer/Spacer1.hide()
 		$VBoxContainer/HBoxContainer/Jump.hide()
 		
+		$VBoxContainer/HBoxContainer2/VBoxContainer/Production.text = "+50 to electrical output"
+	
 	if outpost.canMine():
 		$VBoxContainer/HBoxContainer/Mine.show()
 	else:
@@ -36,6 +40,8 @@ func _process(delta):
 	else:
 		$VBoxContainer/HBoxContainer/Spacer2.hide()
 		$VBoxContainer/HBoxContainer/Cancel.hide()
+	
+	$VBoxContainer/HBoxContainer2/Units.text = str(outpost.getUnits())
 
 
 func _on_jump_pressed():

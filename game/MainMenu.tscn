@@ -42,6 +42,7 @@ anchors_preset = -1
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
+dragger_visibility = 2
 
 [node name="Content" type="MarginContainer" parent="VSplitContainer"]
 layout_mode = 2

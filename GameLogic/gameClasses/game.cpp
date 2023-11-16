@@ -16,6 +16,7 @@
 #include "orders/hire_order.h"
 #include "orders/reroute_order.h"
 #include "orders/promote_order.h"
+#include "orders/release_order.h"
 #include "orders/mine_order.h"
 #include "helpers/point.h"
 #include "events/send_event.h"
@@ -268,7 +269,6 @@ void Game::updateEvents() {
         removeRelevant(outpost->getID());
     }*/
 
-    std::cout << "hi" << std::endl;
     // All vessels flagged for update (e.g. global speed change) may have different combat times.
     for(auto itA = vessels.begin(); itA != vessels.end(); itA++) {
         Vessel* vessel = itA->second;
@@ -580,6 +580,8 @@ std::shared_ptr<Game> Game::processOrder(const std::string &type, int ID, int re
 
     std::shared_ptr<Game> game = lastState(timestamp);
 
+    std::cout << orders.size() << std::endl;
+
     if(type == "SEND" && argumentIDs.size() >= 3) {
         int numUnits = argumentIDs.front();
         argumentIDs.pop_front();
@@ -592,6 +594,10 @@ std::shared_ptr<Game> Game::processOrder(const std::string &type, int ID, int re
         int specialistID = argumentIDs.front();
         argumentIDs.pop_front();
         game->addOrder(new HireOrder(ID, time, senderID, specialistID, referenceID));
+    } else if(type == "RELEASE" && argumentIDs.size() >= 1) {
+        int specialistID = argumentIDs.front();
+        argumentIDs.pop_front();
+        game->addOrder(new ReleaseOrder(ID, time, senderID, specialistID, referenceID));
     } else if(type == "GIFT" && argumentIDs.size() >= 1) {
         int vesselID = argumentIDs.front();
         argumentIDs.pop_front();
@@ -636,6 +642,8 @@ void Game::addSpecialist(Specialist* s) {
 }
 
 void Game::addOrder(Order* o) {
+    for(std::shared_ptr<Game> game : cache) game->orders.insert(o);
+
     orders.insert(o);
 }
 

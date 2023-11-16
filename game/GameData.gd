@@ -214,14 +214,14 @@ func updateOrders(id: int):
 	bulkAddOrders(games[id], orderData)
 
 func loadGameState(id: int):
-	var gameData = await HTTPManager.getReq("/fetchGameState", {
+	var gameState = await HTTPManager.getReq("/fetchGameState", {
 		"gameID": id
 	})
 	
 	games[id] = GameInterface.new()
-	games[id].init(id, self.id, int(Time.get_unix_time_from_system() + 5), gameData.users, getGameDetails(id).gameSettings.settingOverrides)
+	games[id].init(id, self.id, getGameDetails(id).gameData.startTime, gameState.users, getGameDetails(id).gameSettings.settingOverrides)
 	
-	bulkAddOrders(games[id], gameData.orders)
+	bulkAddOrders(games[id], gameState.orders)
 
 func addOrder(gameID: int, type, referenceID, timestamp, arguments):
 	var game = getGame(gameID)

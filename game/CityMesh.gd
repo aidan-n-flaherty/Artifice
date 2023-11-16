@@ -10,6 +10,7 @@ var color
 
 # Called when the node enters the scene tree for the first time.
 func _ready():	
+	$FloorSprite.texture = $SubViewport.get_texture()
 	#$factory.rotation.y = abs(sin(get_parent().getID() * 10.0)) * 2 * PI
 	#$factory2.rotation.y = $factory.rotation.y + PI/2 + abs(cos(get_parent().getID() * 20.0)) * PI/4
 	

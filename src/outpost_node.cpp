@@ -14,8 +14,10 @@ using namespace godot;
 void OutpostNode::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("getShield"), &OutpostNode::getShield);
 	ClassDB::bind_method(D_METHOD("getMaxShield"), &OutpostNode::getMaxShield);
+	ClassDB::bind_method(D_METHOD("getProductionAmount"), &OutpostNode::getProductionAmount);
 	ClassDB::bind_method(D_METHOD("canProduce"), &OutpostNode::canProduce);
 	ClassDB::bind_method(D_METHOD("canMine"), &OutpostNode::canMine);
+	ClassDB::bind_method(D_METHOD("getMineCost"), &OutpostNode::getMineCost);
 }
 
 OutpostNode::OutpostNode(Outpost* outpost) : PositionalNode("res://CityMesh.tscn", outpost), outpost(outpost) {

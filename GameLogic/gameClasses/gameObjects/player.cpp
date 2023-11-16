@@ -316,12 +316,8 @@ std::unordered_map<int, int> Player::calculateUnitsAt(double& fractionalProducti
 
         for(Outpost* o : tmp) {
             if(o->getType() != OutpostType::FACTORY) continue;
-
-            int productionAmount = globalProductionAmount();
-            productionAmount += 6 * o->specialistCount(SpecialistType::FOREMAN);
-            productionAmount += 3 * o->specialistCount(SpecialistType::TYCOON);
             
-            int n = std::fmin(std::fmax(0, getCapacity() - totalUnits), productionAmount);
+            int n = std::fmin(std::fmax(0, getCapacity() - totalUnits), o->getProductionAmount());
 
             if(getCapacity() - totalUnits <= 0) break;
 

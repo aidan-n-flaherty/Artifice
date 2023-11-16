@@ -38,10 +38,21 @@ func _process(delta):
 	if game.getSpecialistType(specialistID) != specialistNum:
 		init(specialistID, gameID)
 	
-	if promotionOptions[0] == 0 or not game.canHire():
-		$MarginContainer/HBoxContainer/MarginContainer/Button.hide()
+	if game.ownsSpecialist(specialistID):
+		$MarginContainer/HBoxContainer/MarginContainer/Release.hide()
+		if promotionOptions[0] == 0 or not game.canHire():
+			$MarginContainer/HBoxContainer/MarginContainer/Promote.hide()
+		else:
+			$MarginContainer/HBoxContainer/MarginContainer/Promote.show()
 	else:
-		$MarginContainer/HBoxContainer/MarginContainer/Button.show()
+		$MarginContainer/HBoxContainer/MarginContainer/Promote.hide()
+		if game.canRelease(specialistID):
+			$MarginContainer/HBoxContainer/MarginContainer/Release.show()
+		else:
+			$MarginContainer/HBoxContainer/MarginContainer/Release.hide()
 
-func _on_button_pressed():
+func _on_promote_pressed():
 	GameData.addOrder(gameID, "PROMOTE", int(game.getReferenceID()), game.getTime(), [int(specialistID), promotionOptions[0]])
+
+func _on_release_pressed():
+	GameData.addOrder(gameID, "RELEASE", int(game.getReferenceID()), game.getTime(), [int(specialistID)])

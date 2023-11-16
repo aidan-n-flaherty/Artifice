@@ -6,7 +6,7 @@ var game: GameInterface
 
 var vessel: VesselNode
 
-signal battleForecastOpen(vessel)
+signal battleForecastToggle(vessel)
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -22,6 +22,14 @@ func init(vessel, gameID):
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	$VBoxContainer/HBoxContainer2/VBoxContainer/Arrival.text = "Arrives in " + Utilities.timeToStr(game.getNextArrivalEvent(vessel.getID()) - game.getTime())
+	
+	if vessel.canUndo():
+		$VBoxContainer/HBoxContainer/Cancel.text = "Undo '" + vessel.getOriginatingOrderType() + "'"
+		$VBoxContainer/HBoxContainer/Spacer2.show()
+		$VBoxContainer/HBoxContainer/Cancel.show()
+	else:
+		$VBoxContainer/HBoxContainer/Spacer2.hide()
+		$VBoxContainer/HBoxContainer/Cancel.hide()
 
 func _on_cancel_pressed():
 	print(vessel.getOriginatingOrder())
@@ -55,4 +63,4 @@ func _on_gift_pressed():
 
 
 func _on_battle_forecast_pressed():
-	emit_signal("battleForecastOpen", vessel)
+	emit_signal("battleForecastToggle", vessel)

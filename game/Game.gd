@@ -12,7 +12,8 @@ var viewingEnd = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass
+	$Viewport/Viewport3D/CameraPivot/FloorSprite.material_override.set_shader_parameter("screen_texture", $Viewport/Viewport3D/CameraPivot/FloorDisplay.get_texture())
+	$Viewport/Viewport3D/CameraPivot/Terrain.get_surface_override_material(0).set_shader_parameter("screen_texture", $Viewport/Viewport3D/CameraPivot/SubViewport.get_texture())
 	
 func init(gameID):
 	self.gameID = gameID
@@ -74,19 +75,22 @@ func setDisplay(scene):
 func selectVessel(vessel):
 	var scene = preload("res://VesselDetails.tscn").instantiate()
 	scene.init(vessel, gameID)
-	scene.battleForecastOpen.connect(vesselBattleForecast)
+	scene.battleForecastToggle.connect(vesselBattleForecast)
 	$Viewport/Viewport3D/CameraPivot.selected(vessel)
 	setDisplay(scene)
 
 func vesselBattleForecast(vessel):
-	var scene = $"Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel/Battle Forecast"
-	scene.queue_free()
-	$"Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel/".remove_child(scene)
-	
-	scene = preload("res://Battle Forecast.tscn").instantiate()
-	scene.init(gameID, vessel.getID())
-	$"Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel/".add_child(scene)
-	setMenuDisplay(scene, true)
+	if $"Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel/Battle Forecast".visible:
+		setMenuDisplay(null, false)
+	else:
+		var scene = $"Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel/Battle Forecast"
+		scene.queue_free()
+		$"Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel/".remove_child(scene)
+		
+		scene = preload("res://Battle Forecast.tscn").instantiate()
+		scene.init(gameID, vessel.getID())
+		$"Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel/".add_child(scene)
+		setMenuDisplay(scene, true)
 	
 
 func selectOutpost(outpost):

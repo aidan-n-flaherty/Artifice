@@ -2,8 +2,8 @@
 
 [ext_resource type="Script" path="res://OutpostDetails.gd" id="1_n7jsx"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_hka7d"]
-font_size = 24
+[sub_resource type="LabelSettings" id="LabelSettings_0dtbu"]
+font_size = 55
 
 [node name="OutpostDetails" type="MarginContainer"]
 anchors_preset = 15
@@ -16,11 +16,29 @@ script = ExtResource("1_n7jsx")
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="VBoxContainer"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
-size_flags_vertical = 1
-text = "Testing"
-label_settings = SubResource("LabelSettings_hka7d")
+
+[node name="Units" type="Label" parent="VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+text = "-1"
+label_settings = SubResource("LabelSettings_0dtbu")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+
+[node name="Spacer" type="Control" parent="VBoxContainer/HBoxContainer2/VBoxContainer"]
+custom_minimum_size = Vector2(0, 7)
+layout_mode = 2
+
+[node name="UnitsLabel" type="Label" parent="VBoxContainer/HBoxContainer2/VBoxContainer"]
+layout_mode = 2
+text = "Units"
+vertical_alignment = 2
+
+[node name="Production" type="Label" parent="VBoxContainer/HBoxContainer2/VBoxContainer"]
+layout_mode = 2
+text = "-1 in"
 
 [node name="Spacer" type="Control" parent="VBoxContainer"]
 layout_mode = 2
@@ -42,7 +60,7 @@ size_flags_horizontal = 3
 
 [node name="Mine" type="Button" parent="VBoxContainer/HBoxContainer"]
 layout_mode = 2
-text = "Mine"
+text = "Mine (50)"
 
 [node name="Spacer2" type="Control" parent="VBoxContainer/HBoxContainer"]
 layout_mode = 2

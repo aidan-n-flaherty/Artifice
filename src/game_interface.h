@@ -153,6 +153,11 @@ public:
 
 	String getSpecialistName(int specialistNum);
 	String getSpecialistDescription(int specialistNum);
+	bool canRelease(int specialistID) {
+		return !ownsSpecialist(specialistID) && game->getSpecialist(specialistID)->getContainer() &&
+				game->getSpecialist(specialistID)->getContainer()->getOwnerID() == userGameID;
+	}
+	bool ownsSpecialist(int specialistID) { return game->getSpecialist(specialistID)->getOwnerID() == userGameID; }
 
 	double getNextArrivalEvent(int vesselID);
 	double getNextProductionEvent(int outpostID);

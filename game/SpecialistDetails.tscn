@@ -80,7 +80,8 @@ texture = ExtResource("3_cl3u5")
 expand_mode = 4
 stretch_mode = 5
 
-[node name="Button" type="Button" parent="MarginContainer/HBoxContainer/MarginContainer"]
+[node name="Promote" type="Button" parent="MarginContainer/HBoxContainer/MarginContainer"]
+visible = false
 custom_minimum_size = Vector2(150, 50)
 layout_mode = 2
 size_flags_horizontal = 4
@@ -95,4 +96,5 @@ size_flags_horizontal = 4
 size_flags_vertical = 8
 text = "Release"
 
-[connection signal="pressed" from="MarginContainer/HBoxContainer/MarginContainer/Button" to="." method="_on_button_pressed"]
+[connection signal="pressed" from="MarginContainer/HBoxContainer/MarginContainer/Promote" to="." method="_on_promote_pressed"]
+[connection signal="pressed" from="MarginContainer/HBoxContainer/MarginContainer/Release" to="." method="_on_release_pressed"]

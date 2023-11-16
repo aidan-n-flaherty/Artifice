@@ -59,6 +59,8 @@ void GameInterface::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("getHires"), &GameInterface::getHires);
 	ClassDB::bind_method(D_METHOD("getStartTime"), &GameInterface::getStartTime);
 	ClassDB::bind_method(D_METHOD("canHire"), &GameInterface::canHire);
+	ClassDB::bind_method(D_METHOD("canRelease", "specialistID"), &GameInterface::canRelease);
+	ClassDB::bind_method(D_METHOD("ownsSpecialist", "specialistID"), &GameInterface::ownsSpecialist);
 	ClassDB::bind_method(D_METHOD("hasStarted"), &GameInterface::hasStarted);
 	ClassDB::bind_method(D_METHOD("hasEnded"), &GameInterface::hasEnded);
 	ClassDB::bind_method(D_METHOD("getUserGameID"), &GameInterface::getUserGameID);
@@ -470,6 +472,8 @@ void GameInterface::bulkAddOrder(const String &type, uint32_t ID, int32_t refere
 void GameInterface::endBulkAdd() {
 	completeGame->run();
 	game = nullptr;
+	simulatedGame = nullptr;
+	currentGame = nullptr;
 	
 	current += epsilon;
 	
@@ -655,13 +659,13 @@ double GameInterface::getNextProductionEvent(int outpostID) {
 
 	double time = curr->getTime();
 
-	while(curr->getTime() + curr->getOutpost(outpostID)->nextProductionEvent() > next || curr->getTime() + curr->getOutpost(outpostID)->nextProductionEvent() <= getTime()) {
+	while(curr->getTime() + curr->getOutpost(outpostID)->nextProductionEvent(0) > next) {
 		curr = completeGame->lastState(next);
-		next = completeGame->nextState(curr->getTime());
-		time = curr->getTime();
+		time = next;
+		next = completeGame->nextState(time);
 	}
 
-	return time + curr->getOutpost(outpostID)->nextProductionEvent() + epsilon;
+	return time + curr->getOutpost(outpostID)->nextProductionEvent(getTime() - time) + epsilon;
 }
 
 double GameInterface::getNextBattleEvent(int objID) {

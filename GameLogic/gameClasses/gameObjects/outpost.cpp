@@ -17,8 +17,16 @@ int Outpost::getShieldAt(double timeDiff) const {
     return getShieldAt(fractionalShield, timeDiff);
 }
 
-double Outpost::nextProductionEvent() const {
-    return hasOwner() ? (1.0 - getOwner()->getFractionalProduction()) / (getOwner()->globalProductionSpeed() * getSettings()->simulationSpeed / (8.0 * 60 * 60)) : -1;
+double Outpost::nextProductionEvent(double timeDiff) const {
+    if(!hasOwner()) return -1;
+
+    int i = 1;
+    double time;
+    do {
+        time = (i++ - getOwner()->getFractionalProduction()) / (getOwner()->globalProductionSpeed() * getSettings()->simulationSpeed / (8.0 * 60 * 60));
+    } while(time < timeDiff);
+
+    return time;
 }
 
 /* The following two functions do not modify this instance unless you pass in
@@ -34,6 +42,8 @@ int Outpost::getUnitsAt(double& fractionalProduction, double timeDiff) const {
 }
 
 int Outpost::getShieldAt(double& fractionalShield, double timeDiff) const {
+    if(timeDiff <= 0) timeDiff = 0;
+    
     timeDiff *= getSettings()->simulationSpeed;
 
     double shieldCharge = this->shieldCharge;
@@ -95,4 +105,14 @@ int Outpost::getSonarRange() const {
     range = int((getOwner()->globalSonar() + 0.5 * controlsSpecialist(SpecialistType::PRINCESS)) * range);
 
     return range;
+}
+
+int Outpost::getProductionAmount() {
+    if(!getOwner()) return 0;
+
+    int productionAmount = getOwner()->globalProductionAmount();
+    productionAmount += 6 * specialistCount(SpecialistType::FOREMAN);
+    productionAmount += 3 * specialistCount(SpecialistType::TYCOON);
+
+    return productionAmount;
 }

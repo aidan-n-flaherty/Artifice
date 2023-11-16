@@ -34,10 +34,16 @@ func _process(delta):
 		if abs(change - target) < 0.01 * 3600.0 / game.getSimulationSpeed():
 			change = target
 		game.setTime(time_start_pos - change)
+		
+		print(abs((time_start_pos - change) - Time.get_unix_time_from_system()))
+		if abs((time_start_pos - change) - Time.get_unix_time_from_system()) < 3600.0 * 2.0 / game.getSimulationSpeed():
+			change = time_start_pos - Time.get_unix_time_from_system() + 0.01
+			target = time_start_pos - Time.get_unix_time_from_system() + 0.01
+			game.setTime(Time.get_unix_time_from_system() + 0.01)
 	
 	var diff = (Time.get_unix_time_from_system() - game.getTime()) * game.getSimulationSpeed() / 3600.0
 	
-	$ActualTime.position = $CurrentTime.position + Vector2(-40 + diff, 0)
+	$ActualTime.position = $CurrentTime.position + Vector2(-40 + 2 * diff, 0)
 
 func _input(event):
 	if event.is_action("drag"):
@@ -52,7 +58,7 @@ func _input(event):
 		else:
 			dragging = false
 	elif event is InputEventMouseMotion and dragging:
-		target = 3600.0 / game.getSimulationSpeed() * (event.position.x - mouse_start_pos.x)
+		target = 0.5 * 3600.0 / game.getSimulationSpeed() * (event.position.x - mouse_start_pos.x)
 	
 	if dragging:
 		accept_event()
@@ -69,6 +75,6 @@ func moveTo(t):
 	change = 0
 	self.target = time_start_pos - t
 	speed = 0.5
-	cap = 3600.0 / game.getSimulationSpeed()
+	cap = 2.0 * 3600.0 / game.getSimulationSpeed()
 
 

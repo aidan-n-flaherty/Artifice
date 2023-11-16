@@ -1,4 +1,4 @@
-[gd_scene load_steps=92 format=3 uid="uid://dgp4l24s2rulk"]
+[gd_scene load_steps=90 format=3 uid="uid://dgp4l24s2rulk"]
 
 [ext_resource type="Script" path="res://Game.gd" id="1_s53r2"]
 [ext_resource type="Script" path="res://CameraPivot.gd" id="2_t2ckv"]
@@ -58,14 +58,10 @@ fog_density = 0.0
 fog_sky_affect = 0.0
 fog_height_density = 0.6
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_t44t4"]
-viewport_path = NodePath("Viewport/Viewport3D/CameraPivot/FloorDisplay")
-
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_rqbvh"]
 resource_local_to_scene = true
 render_priority = 0
 shader = ExtResource("3_auwix")
-shader_parameter/screen_texture = SubResource("ViewportTexture_t44t4")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_utrlp"]
 size = Vector2(100, 260)
@@ -183,9 +179,6 @@ height = 600
 seamless = true
 noise = SubResource("FastNoiseLite_qyedm")
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_cswc1"]
-viewport_path = NodePath("Viewport/Viewport3D/CameraPivot/SubViewport")
-
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_274w3"]
 fractal_type = 2
 fractal_octaves = 7
@@ -253,7 +246,6 @@ shader_parameter/cameraSize = 100.0
 shader_parameter/epsilon = 0.1
 shader_parameter/outposts = PackedVector2Array()
 shader_parameter/outpostsLength = 0
-shader_parameter/screen_texture = SubResource("ViewportTexture_cswc1")
 shader_parameter/ridges = SubResource("NoiseTexture2D_ygns3")
 shader_parameter/erosion = SubResource("NoiseTexture2D_pylon")
 shader_parameter/texturing = SubResource("NoiseTexture2D_7tw3d")

@@ -44,6 +44,11 @@ func _process(delta):
 		position.x += momentum.x * 0.9
 		position.z += momentum.y * 0.9
 		
+		while position.x > game.getWidth()/2: position.x -= game.getWidth()
+		while position.x <= -game.getWidth()/2: position.x += game.getWidth()
+		while position.z > game.getHeight()/2: position.z -= game.getHeight()
+		while position.z <= -game.getHeight()/2: position.z += game.getHeight()
+		
 		if(momentum != Vector2(0, 0)):
 			updatePos()
 		
