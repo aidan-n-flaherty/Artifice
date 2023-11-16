@@ -21,7 +21,7 @@ func init(p1, playerID:int, message:String, p1Color, p2Color):
 	else:
 		$HBoxContainer2/LSpacer.show()
 		$HBoxContainer2/Control/Panel.bg_color = p2Color
-	$HBoxContainer2/Control/Panel.modulate = Color(0,0,0,100)
+	$HBoxContainer2/Control/Panel.modulate = Color(0,0,0,200)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
