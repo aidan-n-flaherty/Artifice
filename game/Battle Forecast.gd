@@ -14,35 +14,31 @@ func init(gameID:int, objectID:int):
 	var battleMessages
 	
 	game = GameData.getGame(gameID)
-	
-	print("Hello!")
+
 	players = game.getNextBattleUsers(objectID)
-	print("Exactly Here!")
 	if (len(players) == 0):
 		print("None here!")
 		return
-	print("CheckFIRST!")
+
 	p1 = players[0]
 	p2 = players[1]
 	
-	print("Check!")
-	#set names
-	$VBoxContainer/ScrollContainer/VBoxContainer/PlayerDivide/Player1/NameP1.text = p1.getName()
-	$VBoxContainer/ScrollContainer/VBoxContainer/PlayerDivide/Player2/NameP2.text = p2.getName()
+	$HBoxContainer/p1Color.color = p1.getColor()
+	$HBoxContainer/p2Color.color = p2.getColor()
 	
-	print("Check!")
+	#set names
+	$HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/PlayerDivide/Player1/NameP1.text = p1.getName()
+	$HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/PlayerDivide/Player2/NameP2.text = p2.getName()
+	
 	pUnits = game.getNextBattleStartingUnits(objectID)
 	var p1Units = pUnits[p1.getID()]
 	var p2Units = pUnits[p2.getID()]
 	
-	print("Check!")
 	#set starting units
-	$VBoxContainer/ScrollContainer/VBoxContainer/PlayerDivide/Player1/HBoxContainer/UnitsP1.text = str(p1Units)
-	$VBoxContainer/ScrollContainer/VBoxContainer/PlayerDivide/Player2/HBoxContainer/UnitsP2.text = str(p2Units)
+	$HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/PlayerDivide/Player1/HBoxContainer/UnitsP1.text = str(p1Units)
+	$HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/PlayerDivide/Player2/HBoxContainer/UnitsP2.text = str(p2Units)
 	
-	print("Check!")
 	phases = game.getBattlePhases()
-	print("Check!")
 
 	var postPhases = []
 	
@@ -57,8 +53,8 @@ func init(gameID:int, objectID:int):
 		if (len(battleMessages) != 0):
 			var displayPhase
 			displayPhase = preload("res://BattleSpecialistEffects.tscn").instantiate()
-			displayPhase.init(p1.getID(), phase, battleMessages)
-			$VBoxContainer/ScrollContainer/VBoxContainer/Bonuses.add_child(displayPhase)
+			displayPhase.init(p1.getID(), phase, battleMessages, p1.getColor(), p2.getColor())
+			$HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Bonuses.add_child(displayPhase)
 	
 	#whatever to power/final
 	
@@ -66,8 +62,8 @@ func init(gameID:int, objectID:int):
 	print("Check!")
 	#get unit counts
 	
-	$VBoxContainer/ScrollContainer/VBoxContainer/Power/Player1/VBoxContainer/Units/UnitsP1.text = str(p1Units)
-	$VBoxContainer/ScrollContainer/VBoxContainer/Power/Player2/VBoxContainer/Units/UnitsP2.text = str(p2Units)
+	$HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Power/Player1/VBoxContainer/Units/UnitsP1.text = str(p1Units)
+	$HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Power/Player2/VBoxContainer/Units/UnitsP2.text = str(p2Units)
 	
 	#get shield charge (getters not in C++) 
 		#game.getNextBattleShields(objectID)
@@ -77,22 +73,22 @@ func init(gameID:int, objectID:int):
 	var p2ShieldCharge = shieldCharges[p2.getID()]
 	
 	if p1ShieldCharge == 0:
-		$VBoxContainer/ScrollContainer/VBoxContainer/Power/Player1/VBoxContainer/Charge.hide()
+		$HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Power/Player1/VBoxContainer/Charge.hide()
 	else:
-		$VBoxContainer/ScrollContainer/VBoxContainer/Power/Player1/VBoxContainer/Charge/ChargeP1.text = str(p1ShieldCharge)
+		$HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Power/Player1/VBoxContainer/Charge/ChargeP1.text = str(p1ShieldCharge)
 		
 	if p2ShieldCharge == 0:
-		$VBoxContainer/ScrollContainer/VBoxContainer/Power/Player2/VBoxContainer/Charge.hide()
+		$HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Power/Player2/VBoxContainer/Charge.hide()
 	else:
-		$VBoxContainer/ScrollContainer/VBoxContainer/Power/Player2/VBoxContainer/Charge/ChargeP2.text = str(p2ShieldCharge)
+		$HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Power/Player2/VBoxContainer/Charge/ChargeP2.text = str(p2ShieldCharge)
 	
 	#get total power (calculated gdscript side)
 	
 	var p1Power = p1Units + p1ShieldCharge
 	var p2Power = p2Units + p2ShieldCharge
 	
-	$VBoxContainer/ScrollContainer/VBoxContainer/Power/Player1/VBoxContainer/Power/PowerP1.text = str(p1Power)
-	$VBoxContainer/ScrollContainer/VBoxContainer/Power/Player2/VBoxContainer/Power/PowerP2.text = str(p2Power)
+	$HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Power/Player1/VBoxContainer/Power/PowerP1.text = str(p1Power)
+	$HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Power/Player2/VBoxContainer/Power/PowerP2.text = str(p2Power)
 	
 	#final result
 	#get winner (no bind) 
@@ -113,12 +109,12 @@ func init(gameID:int, objectID:int):
 	
 
 	
-	$VBoxContainer/ScrollContainer/VBoxContainer/FinalResult/WinnerStatement/Winner.text = victor.getName()
+	$HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/FinalResult/WinnerStatement/Winner.text = victor.getName()
 	
 	#get remaining units (no bind) getVictorUnits()
-	$VBoxContainer/ScrollContainer/VBoxContainer/FinalResult/RemainingUnits/WinnerUnits.text = str(game.getNextBattleVictorUnits(objectID))
-	$VBoxContainer/ScrollContainer/VBoxContainer/FinalResult/RemainingUnits/WinnerPower.text = str(victorPower)
-	$VBoxContainer/ScrollContainer/VBoxContainer/FinalResult/RemainingUnits/LoserPower.text = str(loserPower)
+	$HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/FinalResult/RemainingUnits/WinnerUnits.text = str(game.getNextBattleVictorUnits(objectID))
+	$HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/FinalResult/RemainingUnits/WinnerPower.text = str(victorPower)
+	$HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/FinalResult/RemainingUnits/LoserPower.text = str(loserPower)
 	
 	#get captures (no getters in C++)
 	var captures = game.getNextBattleCaptures(objectID)
@@ -127,7 +123,7 @@ func init(gameID:int, objectID:int):
 		var captureStatement = Label.new()
 		captureStatement.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
 		captureStatement.text = "Captures " + capture
-		$VBoxContainer/ScrollContainer/VBoxContainer/FinalResult/Captures.add_child(captureStatement)
+		$HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/FinalResult/Captures.add_child(captureStatement)
 	
 	var postBattleMessages
 	for phase in postPhases:
@@ -136,8 +132,8 @@ func init(gameID:int, objectID:int):
 		if (len(postBattleMessages) != 0):
 			var displayPhase
 			displayPhase = preload("res://BattleSpecialistEffects.tscn").instantiate()
-			displayPhase.init(p1.getID(), phase, postBattleMessages)
-			$VBoxContainer/ScrollContainer/VBoxContainer/PostBattle.add_child(displayPhase)
+			displayPhase.init(p1.getID(), phase, postBattleMessages, p1.getColor(), p2.getColor())
+			$HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/PostBattle.add_child(displayPhase)
 	
 	
 

@@ -5,7 +5,7 @@ extends MarginContainer
 func _ready():
 	pass # Replace with function body.
 
-func init(username, units, capacity, resources, largest, win, outposts, factories, generators, mines):
+func init(username, units, capacity, resources, largest, win, outposts, factories, generators, mines, color):
 	$MarginContainer/HBoxContainer/VBoxName/Name.text = str(username)
 	$MarginContainer/HBoxContainer/VBox/HBox1/Units_Capacity.text = str(units)
 	$MarginContainer/HBoxContainer/VBox/HBox1/Outposts.text = str(outposts)
@@ -24,6 +24,7 @@ func init(username, units, capacity, resources, largest, win, outposts, factorie
 
 	$MarginContainer/HBoxContainer/VBox/HBox2/Control/ProgressBar.value = capacity
 	$MarginContainer/HBoxContainer/VBox/HBox2/Control/ProgressBar.max_value = largest
+	$ColorRect.color = color
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):

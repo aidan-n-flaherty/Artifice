@@ -5,12 +5,12 @@ extends MarginContainer
 func _ready():
 	pass # Replace with function body.
 
-func init(p1, phaseName, battleMessages):
+func init(p1, phaseName, battleMessages, p1Color, p2Color):
 	$MarginContainer/VBoxContainer/Title.text = phaseName
 	for message in battleMessages:
 		var displayMessage
 		displayMessage = preload("res://ForecastMessage.tscn").instantiate()
-		displayMessage.init(p1, message[0], message[1])
+		displayMessage.init(p1, message[0], message[1], p1Color, p2Color)
 		$MarginContainer/VBoxContainer/VBoxContainer.add_child(displayMessage)
 		
 
