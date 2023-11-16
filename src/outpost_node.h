@@ -41,8 +41,14 @@ public:
 	bool canProduce() { return outpost->getType() == OutpostType::FACTORY; }
 
 	int getMineCost() { return outpost != nullptr && outpost->getOwner() ? outpost->getOwner()->getMineCost() : -1; }
-	
+
 	bool canMine() { return outpost->getOwner() && outpost->getUnits() >= outpost->getOwner()->getMineCost() && outpost->getType() != OutpostType::MINE; }
+
+	bool isFactory() { return outpost->getType() == OutpostType::FACTORY; }
+
+	bool isGenerator() { return outpost->getType() == OutpostType::GENERATOR; }
+
+	bool isMine() { return outpost->getType() == OutpostType::MINE; }
 };
 
 }

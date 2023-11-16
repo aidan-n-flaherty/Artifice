@@ -48,6 +48,7 @@ private:
     // client-side support for easy time machine usage
     void cacheState();
 
+    bool ended = false;
     bool cacheEnabled = false;
     double startTime = 0.0;
     double stateTime = 0.0;

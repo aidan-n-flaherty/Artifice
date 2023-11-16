@@ -3,6 +3,7 @@
 
 #include <cstdlib>
 #include <cmath>
+#include <iostream>
 #include "../event.h"
 #include "../gameObjects/player.h"
 #include "../gameObjects/outpost.h"

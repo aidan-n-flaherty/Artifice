@@ -23,6 +23,7 @@
 #include "events/reroute_event.h"
 #include "events/outpost_range_event.h"
 #include "events/battle_event.h"
+#include "events/win_condition_event.h"
 #include "events/vessel_outpost_event.h"
 #include "game_settings.h"
 
@@ -35,9 +36,13 @@ Game::Game(GameSettings settings, int simulatorID, double startTime, double endT
 
     this->settings = new GameSettings(settings);
 
+    std::vector<int> playerIDs;
+
     for(int i = 0; i < playerInfo.size(); i++) {
         auto [name, userID, rating] = playerInfo[i];
-        Player* p = new Player(incrementObjCounter(), getSettings(), name, userID, rating);
+        int ID = incrementObjCounter();
+        playerIDs.push_back(ID);
+        Player* p = new Player(ID, getSettings(), name, userID, rating);
         if(userID == simulatorID) this->simulatorID = p->getID();
         addPlayer(p);
     }
@@ -55,23 +60,23 @@ Game::Game(GameSettings settings, int simulatorID, double startTime, double endT
     std::mt19937 gen(seed);
 
     int n = 0;
-    for(auto& pair : players) {
+    for(int id : playerIDs) {
         double angle = 2 * acos(-1) * (n++) / players.size();
 
         std::uniform_real_distribution<> dis(0.0, 1.0);
         Point pos = Point(this->settings, dis(gen) * this->settings->width, dis(gen) * this->settings->height);
         pos.constrain();
 
-        startingPositions.push_back(std::make_pair(pair.first, pos));
+        startingPositions.push_back(std::make_pair(id, pos));
         
         std::vector<OutpostType> types;
-        for(int i = 0; i < getSettings()->outpostsPerPlayer; i++) {
-            if(i < getSettings()->factoryDensity * getSettings()->outpostsPerPlayer) types.push_back(OutpostType::FACTORY);
+        for(int j = 0; j < getSettings()->outpostsPerPlayer; j++) {
+            if(j < getSettings()->factoryDensity * getSettings()->outpostsPerPlayer) types.push_back(OutpostType::FACTORY);
             else types.push_back(OutpostType::GENERATOR);
         }
         std::shuffle(types.begin(), types.end(), std::default_random_engine(seed));
 
-        outpostTypes[pair.first] = types;
+        outpostTypes[id] = types;
     }
 
     for(int i = 0; i < numIterations; i++) {
@@ -172,12 +177,12 @@ Game::Game(GameSettings settings, int simulatorID, double startTime, double endT
         addOutpost(o);
         getPlayer(pair.first)->addOutpost(getOutpost(o->getID()));
 
-        std::cout << pair.first << " has an outpost at " << o->getPosition().getX() << ", " << o->getPosition().getY() << std::endl;
+        std::cout << pair.first << " has an outpost at " << o->getPosition().getX() << ", " << o->getPosition().getY() << " with ID = " << o->getID() << std::endl;
     }
 
     // end map generation
 
-    //addEvent(new OutpostRangeEvent(getTime()));
+    addEvent(new OutpostRangeEvent(getTime()));
 }
 
 Game::Game(const Game& game) : startTime(game.startTime), stateTime(game.stateTime), cacheEnabled(game.cacheEnabled), endTime(game.endTime), referenceID(game.referenceID), simulatorID(game.simulatorID), lastExecutedOrder(game.lastExecutedOrder), nextEndState(game.nextEndState), gameObjCounter(game.gameObjCounter), settings(game.settings) {
@@ -326,7 +331,7 @@ std::list<std::pair<int, int>> Game::run() {
 
     // loops until no events or orders remain.
     // note that events will always be run before orders given the same timestamp.
-    while(!events.empty() || !orders.empty()) {
+    while((!events.empty() || !orders.empty()) && !ended) {
         std::multiset<Event*>::iterator event = events.begin();
 
         /*for(auto it = events.begin(); it != events.end(); it++) {
@@ -370,7 +375,7 @@ std::list<std::pair<int, int>> Game::run() {
 
         events.erase(event);
 
-        //if(dynamic_cast<OutpostRangeEvent*>(e) && vessels.empty()) continue; 
+        if(e->getTimestamp() <= endTime && dynamic_cast<OutpostRangeEvent*>(e) && vessels.empty()) continue; 
 
         nextEndState = e->getTimestamp();
 
@@ -445,6 +450,7 @@ bool Game::hasEnded() const {
 
 void Game::endGame() {
     endTime = stateTime;
+    ended = true;
 }
 
 std::list<std::pair<int, int>> Game::getScores() {
