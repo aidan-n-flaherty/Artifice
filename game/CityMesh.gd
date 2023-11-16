@@ -61,3 +61,10 @@ func _process(delta):
 	shield = get_parent().getShield()
 	selected = get_parent().isSelected()
 	color = get_parent().getColor()
+	
+	if get_parent().isFactory():
+		$factory.show()
+		$generator.hide()
+	elif get_parent().isGenerator():
+		$generator.show()
+		$factory.hide()

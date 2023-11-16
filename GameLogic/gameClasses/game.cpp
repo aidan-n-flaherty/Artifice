@@ -172,12 +172,12 @@ Game::Game(GameSettings settings, int simulatorID, double startTime, double endT
         addOutpost(o);
         getPlayer(pair.first)->addOutpost(getOutpost(o->getID()));
 
-        std::cout << pair.first << " has an outpost at " << o->getPosition().getX() << ", " << o->getPosition().getY() << std::endl;
+        std::cout << pair.first << " has an outpost at " << o->getPosition().getX() << ", " << o->getPosition().getY() << " with ID = " << o->getID() << std::endl;
     }
 
     // end map generation
 
-    //addEvent(new OutpostRangeEvent(getTime()));
+    addEvent(new OutpostRangeEvent(getTime()));
 }
 
 Game::Game(const Game& game) : startTime(game.startTime), stateTime(game.stateTime), cacheEnabled(game.cacheEnabled), endTime(game.endTime), referenceID(game.referenceID), simulatorID(game.simulatorID), lastExecutedOrder(game.lastExecutedOrder), nextEndState(game.nextEndState), gameObjCounter(game.gameObjCounter), settings(game.settings) {
@@ -370,7 +370,7 @@ std::list<std::pair<int, int>> Game::run() {
 
         events.erase(event);
 
-        //if(dynamic_cast<OutpostRangeEvent*>(e) && vessels.empty()) continue; 
+        if(dynamic_cast<OutpostRangeEvent*>(e) && vessels.empty()) continue; 
 
         nextEndState = e->getTimestamp();
 
