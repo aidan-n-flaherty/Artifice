@@ -10,6 +10,8 @@ var numPlayers = 10
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	for child in $MarginContainer/VBoxContainer/ScrollContainer/GridContainer/NumPlayersButtons.get_children():
+		child.toggled.connect(on_players_modified)
 	for child in $MarginContainer/VBoxContainer/ScrollContainer/GridContainer/ActiveHoursRows/ActiveHoursButtons.get_children():
 		child.toggled.connect(on_activeTimes_modified)
 	for child in $MarginContainer/VBoxContainer/ScrollContainer/GridContainer/ActiveHoursRows/ActiveHoursButtons2.get_children():

@@ -35,7 +35,6 @@ func _process(delta):
 			change = target
 		game.setTime(time_start_pos - change)
 		
-		print(abs((time_start_pos - change) - Time.get_unix_time_from_system()))
 		if abs((time_start_pos - change) - Time.get_unix_time_from_system()) < 3600.0 * 2.0 / game.getSimulationSpeed():
 			change = time_start_pos - Time.get_unix_time_from_system() + 0.01
 			target = time_start_pos - Time.get_unix_time_from_system() + 0.01
