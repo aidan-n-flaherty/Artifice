@@ -583,7 +583,9 @@ std::shared_ptr<Game> Game::processOrder(const std::string &type, int ID, int re
 
     std::shared_ptr<Game> game = lastState(timestamp);
 
-    std::cout << orders.size() << std::endl;
+    for(Order* o : orders) {
+        if(o->getID() == ID) return game;
+    }
 
     if(type == "SEND" && argumentIDs.size() >= 3) {
         int numUnits = argumentIDs.front();

@@ -18,16 +18,19 @@ func init(outpost, gameID):
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	if outpost.isFactory():
+		$VBoxContainer/Type.text = "Factory"
 		$VBoxContainer/HBoxContainer/Spacer1.show()
 		$VBoxContainer/HBoxContainer/Jump.show()
 		
 		$VBoxContainer/HBoxContainer2/VBoxContainer/Production.text = "+" + str(outpost.getProductionAmount()) + " in " + Utilities.timeToStr(game.getNextProductionEvent(outpost.getID()) - game.getTime())
 	elif outpost.isMine():
+		$VBoxContainer/Type.text = "Mine"
 		#$VBoxContainer/HBoxContainer/Spacer1.show()
 		#$VBoxContainer/HBoxContainer/Jump.show()
 		
 		$VBoxContainer/HBoxContainer2/VBoxContainer/Production.text = ""
 	elif outpost.isGenerator():
+		$VBoxContainer/Type.text = "Generator"
 		$VBoxContainer/HBoxContainer/Spacer1.hide()
 		$VBoxContainer/HBoxContainer/Jump.hide()
 		

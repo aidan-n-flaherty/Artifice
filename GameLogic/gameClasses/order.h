@@ -61,7 +61,13 @@ public:
     bool operator<(const Order& other) const
     {
         double diff = other.getTimestamp() - getTimestamp();
-        return diff == 0 ? getSenderID() < other.getSenderID() : diff > 0;
+        if(diff == 0) {
+            double diff1 = other.getSenderID() > getSenderID();
+
+            if(diff1 == 0) {
+                return other.getID() - getID();
+            } else return diff1 > 0;
+        } else return diff > 0;
     }
 };
 
