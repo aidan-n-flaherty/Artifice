@@ -22,7 +22,7 @@ func _process(delta):
 		$VBoxContainer/HBoxContainer/Jump.show()
 		
 		$VBoxContainer/HBoxContainer2/VBoxContainer/Production.text = "+" + str(outpost.getProductionAmount()) + " in " + Utilities.timeToStr(game.getNextProductionEvent(outpost.getID()) - game.getTime())
-	if outpost.isFactory():
+	elif outpost.isMine():
 		#$VBoxContainer/HBoxContainer/Spacer1.show()
 		#$VBoxContainer/HBoxContainer/Jump.show()
 		

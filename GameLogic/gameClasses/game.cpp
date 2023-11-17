@@ -57,14 +57,11 @@ Game::Game(GameSettings settings, int simulatorID, double startTime, double endT
 
     std::unordered_map<int, std::vector<OutpostType>> outpostTypes;
 
-    std::mt19937 gen(seed);
-
     int n = 0;
     for(int id : playerIDs) {
         double angle = 2 * acos(-1) * (n++) / players.size();
 
-        std::uniform_real_distribution<> dis(0.0, 1.0);
-        Point pos = Point(this->settings, dis(gen) * this->settings->width, dis(gen) * this->settings->height);
+        Point pos = Point(this->settings, this->settings->width/2 + 10 * cos(angle), this->settings->height/2 + 10 * sin(angle));
         pos.constrain();
 
         startingPositions.push_back(std::make_pair(id, pos));
@@ -74,7 +71,7 @@ Game::Game(GameSettings settings, int simulatorID, double startTime, double endT
             if(j < getSettings()->factoryDensity * getSettings()->outpostsPerPlayer) types.push_back(OutpostType::FACTORY);
             else types.push_back(OutpostType::GENERATOR);
         }
-        std::shuffle(types.begin(), types.end(), std::default_random_engine(seed));
+        //std::shuffle(types.begin(), types.end(), std::default_random_engine(seed));
 
         outpostTypes[id] = types;
     }
