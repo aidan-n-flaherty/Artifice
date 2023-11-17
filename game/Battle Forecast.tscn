@@ -12,14 +12,13 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
-theme_override_constants/margin_left = 50
 theme_override_constants/margin_top = 50
-theme_override_constants/margin_right = 50
 theme_override_constants/margin_bottom = 50
 script = ExtResource("1_44nss")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
+size_flags_horizontal = 3
 
 [node name="Title" type="Label" parent="VBoxContainer"]
 layout_mode = 2
@@ -27,221 +26,243 @@ text = "Based on what you know now..."
 label_settings = SubResource("LabelSettings_jbe78")
 horizontal_alignment = 1
 
+[node name="Spacer" type="Control" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.01
+
 [node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/ScrollContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 50
+
+[node name="p1Color" type="ColorRect" parent="VBoxContainer/ScrollContainer/HBoxContainer"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/ScrollContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="PlayerDivide" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/VBoxContainer"]
+[node name="PlayerDivide" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="Spacer" type="Control" parent="VBoxContainer/ScrollContainer/VBoxContainer/PlayerDivide"]
+[node name="Spacer" type="Control" parent="VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/PlayerDivide"]
 layout_mode = 2
 
-[node name="Player1" type="VBoxContainer" parent="VBoxContainer/ScrollContainer/VBoxContainer/PlayerDivide"]
+[node name="Player1" type="VBoxContainer" parent="VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/PlayerDivide"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="NameP1" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer/PlayerDivide/Player1"]
+[node name="NameP1" type="Label" parent="VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/PlayerDivide/Player1"]
 layout_mode = 2
 text = "Player1"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/VBoxContainer/PlayerDivide/Player1"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/PlayerDivide/Player1"]
 layout_mode = 2
 
-[node name="UnitsP1" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer/PlayerDivide/Player1/HBoxContainer"]
+[node name="UnitsP1" type="Label" parent="VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/PlayerDivide/Player1/HBoxContainer"]
 layout_mode = 2
 text = "0"
 
-[node name="_Units_" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer/PlayerDivide/Player1/HBoxContainer"]
+[node name="_Units_" type="Label" parent="VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/PlayerDivide/Player1/HBoxContainer"]
 layout_mode = 2
 text = "Units
 "
 
-[node name="Player2" type="VBoxContainer" parent="VBoxContainer/ScrollContainer/VBoxContainer/PlayerDivide"]
+[node name="Player2" type="VBoxContainer" parent="VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/PlayerDivide"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="NameP2" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer/PlayerDivide/Player2"]
+[node name="NameP2" type="Label" parent="VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/PlayerDivide/Player2"]
 layout_mode = 2
 text = "Player2"
 horizontal_alignment = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/VBoxContainer/PlayerDivide/Player2"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/PlayerDivide/Player2"]
 layout_mode = 2
 alignment = 2
 
-[node name="UnitsP2" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer/PlayerDivide/Player2/HBoxContainer"]
+[node name="UnitsP2" type="Label" parent="VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/PlayerDivide/Player2/HBoxContainer"]
 layout_mode = 2
 text = "0"
 horizontal_alignment = 2
 
-[node name="_Units_" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer/PlayerDivide/Player2/HBoxContainer"]
+[node name="_Units_" type="Label" parent="VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/PlayerDivide/Player2/HBoxContainer"]
 layout_mode = 2
 text = "Units
 "
 
-[node name="Spacer2" type="Control" parent="VBoxContainer/ScrollContainer/VBoxContainer/PlayerDivide"]
+[node name="Spacer2" type="Control" parent="VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/PlayerDivide"]
 layout_mode = 2
 
-[node name="Bonuses" type="VBoxContainer" parent="VBoxContainer/ScrollContainer/VBoxContainer"]
+[node name="Bonuses" type="VBoxContainer" parent="VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="Power" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/VBoxContainer"]
+[node name="Power" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="Spacer" type="Control" parent="VBoxContainer/ScrollContainer/VBoxContainer/Power"]
+[node name="Spacer" type="Control" parent="VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/Power"]
 layout_mode = 2
 
-[node name="Player1" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/VBoxContainer/Power"]
+[node name="Player1" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/Power"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/ScrollContainer/VBoxContainer/Power/Player1"]
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/Power/Player1"]
 layout_mode = 2
 
-[node name="Units" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/VBoxContainer/Power/Player1/VBoxContainer"]
+[node name="Units" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/Power/Player1/VBoxContainer"]
 layout_mode = 2
 
-[node name="UnitsP1" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer/Power/Player1/VBoxContainer/Units"]
+[node name="UnitsP1" type="Label" parent="VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/Power/Player1/VBoxContainer/Units"]
 layout_mode = 2
 text = "0"
 
-[node name="_Units_" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer/Power/Player1/VBoxContainer/Units"]
+[node name="_Units_" type="Label" parent="VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/Power/Player1/VBoxContainer/Units"]
 layout_mode = 2
 text = "Units
 "
 
-[node name="Charge" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/VBoxContainer/Power/Player1/VBoxContainer"]
+[node name="Charge" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/Power/Player1/VBoxContainer"]
 layout_mode = 2
 
-[node name="+" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer/Power/Player1/VBoxContainer/Charge"]
+[node name="+" type="Label" parent="VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/Power/Player1/VBoxContainer/Charge"]
 layout_mode = 2
 text = "+"
 
-[node name="ChargeP1" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer/Power/Player1/VBoxContainer/Charge"]
+[node name="ChargeP1" type="Label" parent="VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/Power/Player1/VBoxContainer/Charge"]
 layout_mode = 2
 text = "0"
 
-[node name="_Shield_Charge_" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer/Power/Player1/VBoxContainer/Charge"]
+[node name="_Shield_Charge_" type="Label" parent="VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/Power/Player1/VBoxContainer/Charge"]
 layout_mode = 2
 text = "Shield Charge"
 
-[node name="Power" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/VBoxContainer/Power/Player1/VBoxContainer"]
+[node name="Power" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/Power/Player1/VBoxContainer"]
 layout_mode = 2
 
-[node name="=" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer/Power/Player1/VBoxContainer/Power"]
+[node name="=" type="Label" parent="VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/Power/Player1/VBoxContainer/Power"]
 layout_mode = 2
 text = "= "
 
-[node name="PowerP1" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer/Power/Player1/VBoxContainer/Power"]
+[node name="PowerP1" type="Label" parent="VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/Power/Player1/VBoxContainer/Power"]
 layout_mode = 2
 text = "0"
 
-[node name="Player2" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/VBoxContainer/Power"]
+[node name="Player2" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/Power"]
 layout_mode = 2
 size_flags_horizontal = 3
 alignment = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/ScrollContainer/VBoxContainer/Power/Player2"]
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/Power/Player2"]
 layout_mode = 2
 
-[node name="Units" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/VBoxContainer/Power/Player2/VBoxContainer"]
+[node name="Units" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/Power/Player2/VBoxContainer"]
 layout_mode = 2
 alignment = 2
 
-[node name="UnitsP2" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer/Power/Player2/VBoxContainer/Units"]
+[node name="UnitsP2" type="Label" parent="VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/Power/Player2/VBoxContainer/Units"]
 layout_mode = 2
 text = "0"
 horizontal_alignment = 2
 
-[node name="_Units_" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer/Power/Player2/VBoxContainer/Units"]
+[node name="_Units_" type="Label" parent="VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/Power/Player2/VBoxContainer/Units"]
 layout_mode = 2
 text = "Units
 "
 
-[node name="Charge" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/VBoxContainer/Power/Player2/VBoxContainer"]
+[node name="Charge" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/Power/Player2/VBoxContainer"]
 layout_mode = 2
 alignment = 2
 
-[node name="+" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer/Power/Player2/VBoxContainer/Charge"]
+[node name="+" type="Label" parent="VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/Power/Player2/VBoxContainer/Charge"]
 layout_mode = 2
 text = "+"
 
-[node name="ChargeP2" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer/Power/Player2/VBoxContainer/Charge"]
+[node name="ChargeP2" type="Label" parent="VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/Power/Player2/VBoxContainer/Charge"]
 layout_mode = 2
 text = "0"
 
-[node name="_Shield_Charge_" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer/Power/Player2/VBoxContainer/Charge"]
+[node name="_Shield_Charge_" type="Label" parent="VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/Power/Player2/VBoxContainer/Charge"]
 layout_mode = 2
 text = "Shield Charge"
 
-[node name="Power" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/VBoxContainer/Power/Player2/VBoxContainer"]
+[node name="Power" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/Power/Player2/VBoxContainer"]
 layout_mode = 2
 alignment = 2
 
-[node name="=" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer/Power/Player2/VBoxContainer/Power"]
+[node name="=" type="Label" parent="VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/Power/Player2/VBoxContainer/Power"]
 layout_mode = 2
 text = "= "
 
-[node name="PowerP2" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer/Power/Player2/VBoxContainer/Power"]
+[node name="PowerP2" type="Label" parent="VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/Power/Player2/VBoxContainer/Power"]
 layout_mode = 2
 text = "0"
 
-[node name="Spacer2" type="Control" parent="VBoxContainer/ScrollContainer/VBoxContainer/Power"]
+[node name="Spacer2" type="Control" parent="VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/Power"]
 layout_mode = 2
 
-[node name="FinalResult" type="VBoxContainer" parent="VBoxContainer/ScrollContainer/VBoxContainer"]
+[node name="FinalResult" type="VBoxContainer" parent="VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="WinnerStatement" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/VBoxContainer/FinalResult"]
+[node name="WinnerStatement" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/FinalResult"]
 layout_mode = 2
 alignment = 1
 
-[node name="Winner" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer/FinalResult/WinnerStatement"]
+[node name="Winner" type="Label" parent="VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/FinalResult/WinnerStatement"]
 layout_mode = 2
 text = "Player"
 horizontal_alignment = 1
 
-[node name="wins_" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer/FinalResult/WinnerStatement"]
+[node name="wins_" type="Label" parent="VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/FinalResult/WinnerStatement"]
 layout_mode = 2
 text = "wins."
 
-[node name="RemainingUnits" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/VBoxContainer/FinalResult"]
+[node name="RemainingUnits" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/FinalResult"]
 layout_mode = 2
 alignment = 1
 
-[node name="WinnerUnits" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer/FinalResult/RemainingUnits"]
+[node name="WinnerUnits" type="Label" parent="VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/FinalResult/RemainingUnits"]
 layout_mode = 2
 text = "Z"
 horizontal_alignment = 1
 
-[node name="Units_Left_(" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer/FinalResult/RemainingUnits"]
+[node name="Units_Left_(" type="Label" parent="VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/FinalResult/RemainingUnits"]
 layout_mode = 2
 text = "Units Left. ("
 
-[node name="WinnerPower" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer/FinalResult/RemainingUnits"]
+[node name="WinnerPower" type="Label" parent="VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/FinalResult/RemainingUnits"]
 layout_mode = 2
 text = "X"
 
-[node name="-" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer/FinalResult/RemainingUnits"]
+[node name="-" type="Label" parent="VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/FinalResult/RemainingUnits"]
 layout_mode = 2
 text = "-"
 
-[node name="LoserPower" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer/FinalResult/RemainingUnits"]
+[node name="LoserPower" type="Label" parent="VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/FinalResult/RemainingUnits"]
 layout_mode = 2
 text = "Y"
 
-[node name=")" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer/FinalResult/RemainingUnits"]
+[node name=")" type="Label" parent="VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/FinalResult/RemainingUnits"]
 layout_mode = 2
 text = ")"
 
-[node name="Captures" type="VBoxContainer" parent="VBoxContainer/ScrollContainer/VBoxContainer/FinalResult"]
+[node name="Captures" type="VBoxContainer" parent="VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/FinalResult"]
 layout_mode = 2
 alignment = 1
 
-[node name="PostBattle" type="VBoxContainer" parent="VBoxContainer/ScrollContainer/VBoxContainer"]
+[node name="PostBattle" type="VBoxContainer" parent="VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer"]
 layout_mode = 2
+
+[node name="p2Color" type="ColorRect" parent="VBoxContainer/ScrollContainer/HBoxContainer"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+size_flags_horizontal = 8
