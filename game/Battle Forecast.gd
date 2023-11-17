@@ -62,6 +62,11 @@ func init(gameID:int, objectID:int):
 	print("Check!")
 	#get unit counts
 	
+	var postUnits = game.getNextBattlePreVictoryUnits(objectID)
+	
+	p1Units = postUnits[p1.getID()]
+	p2Units = postUnits[p2.getID()]
+	
 	$VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/Power/Player1/VBoxContainer/Units/UnitsP1.text = str(p1Units)
 	$VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/Power/Player2/VBoxContainer/Units/UnitsP2.text = str(p2Units)
 	
@@ -83,11 +88,6 @@ func init(gameID:int, objectID:int):
 		$VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/Power/Player2/VBoxContainer/Charge/ChargeP2.text = str(p2ShieldCharge)
 	
 	#get total power (calculated gdscript side)
-	
-	var postUnits = game.getNextBattlePreVictoryUnits(objectID)
-	
-	p1Units = postUnits[p1.getID()]
-	p2Units = postUnits[p2.getID()]
 	
 	var p1Power = p1Units + p1ShieldCharge
 	var p2Power = p2Units + p2ShieldCharge
