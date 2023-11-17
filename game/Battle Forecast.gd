@@ -84,6 +84,11 @@ func init(gameID:int, objectID:int):
 	
 	#get total power (calculated gdscript side)
 	
+	var postUnits = game.getNextBattlePreVictoryUnits(objectID)
+	
+	p1Units = postUnits[p1.getID()]
+	p2Units = postUnits[p2.getID()]
+	
 	var p1Power = p1Units + p1ShieldCharge
 	var p2Power = p2Units + p2ShieldCharge
 	
