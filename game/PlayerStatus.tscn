@@ -1,9 +1,9 @@
 [gd_scene load_steps=6 format=3 uid="uid://nglncmsgw3a6"]
 
 [ext_resource type="Script" path="res://PlayerStatus.gd" id="1_oj4yj"]
-[ext_resource type="Texture2D" uid="uid://bx5b8fumyeb1m" path="res://resources/icons/FactoryFill.png" id="2_nuxji"]
-[ext_resource type="Texture2D" uid="uid://dqwi4iodnv4ci" path="res://resources/icons/GeneratorFill.png" id="3_yh0ph"]
-[ext_resource type="Texture2D" uid="uid://bcplxjqo34w7y" path="res://resources/icons/MineFill.png" id="4_u2ybd"]
+[ext_resource type="Texture2D" uid="uid://drnqlrdowrk54" path="res://resources/icons/FactoryFillw.png" id="2_6u3fp"]
+[ext_resource type="Texture2D" uid="uid://blkr2ru5vivp4" path="res://resources/icons/GeneratorFillw.png" id="3_tlds2"]
+[ext_resource type="Texture2D" uid="uid://bf3w076tmn81a" path="res://resources/icons/MineFillw.png" id="4_7jvdn"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_clcgh"]
 
@@ -16,6 +16,11 @@ script = ExtResource("1_oj4yj")
 
 [node name="Panel" type="Panel" parent="."]
 layout_mode = 2
+
+[node name="PlayerHighlight" type="ColorRect" parent="."]
+visible = false
+layout_mode = 2
+color = Color(1, 1, 1, 0.0784314)
 
 [node name="ColorRect" type="ColorRect" parent="."]
 custom_minimum_size = Vector2(10, 0)
@@ -70,7 +75,7 @@ horizontal_alignment = 1
 
 [node name="factoryIcon" type="TextureRect" parent="MarginContainer/HBoxContainer/VBox/HBox1"]
 layout_mode = 2
-texture = ExtResource("2_nuxji")
+texture = ExtResource("2_6u3fp")
 expand_mode = 3
 stretch_mode = 4
 
@@ -86,7 +91,7 @@ text = "5"
 
 [node name="gensIcon" type="TextureRect" parent="MarginContainer/HBoxContainer/VBox/HBox1"]
 layout_mode = 2
-texture = ExtResource("3_yh0ph")
+texture = ExtResource("3_tlds2")
 expand_mode = 3
 stretch_mode = 4
 
@@ -102,7 +107,7 @@ text = "0"
 
 [node name="minesIcon" type="TextureRect" parent="MarginContainer/HBoxContainer/VBox/HBox1"]
 layout_mode = 2
-texture = ExtResource("4_u2ybd")
+texture = ExtResource("4_7jvdn")
 expand_mode = 3
 stretch_mode = 4
 

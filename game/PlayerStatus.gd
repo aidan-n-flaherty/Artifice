@@ -1,11 +1,10 @@
 extends MarginContainer
 
-
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	pass # Replace with function body.
 
-func init(username, units, capacity, resources, largest, win, outposts, factories, generators, mines, color):
+func init(game, player, username, units, capacity, resources, largest, win, outposts, factories, generators, mines, color):
 	$MarginContainer/HBoxContainer/VBoxName/Name.text = str(username)
 	$MarginContainer/HBoxContainer/VBox/HBox1/Units_Capacity.text = str(units)
 	$MarginContainer/HBoxContainer/VBox/HBox1/Outposts.text = str(outposts)
@@ -26,6 +25,12 @@ func init(username, units, capacity, resources, largest, win, outposts, factorie
 	$MarginContainer/HBoxContainer/VBox/HBox2/Control/ProgressBar.max_value = largest
 	$ColorRect.color = color
 	
+	$MarginContainer/HBoxContainer/VBox/HBox1/factoryIcon.modulate = color
+	$MarginContainer/HBoxContainer/VBox/HBox1/gensIcon.modulate = color
+	$MarginContainer/HBoxContainer/VBox/HBox1/minesIcon.modulate = color
+	
+	if(game.getUserGameID() == player.getID()):
+		$PlayerHighlight.visible = true
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	pass

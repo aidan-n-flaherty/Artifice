@@ -37,12 +37,12 @@ func update():
 		
 		if playerStatuses.has(p.getUserID()):
 			playerStatus = playerStatuses[p.getUserID()]
-			playerStatus.init(username, units, capacity, resources, largestCapacity, win, outposts, factories, generators, mines, color)
+			playerStatus.init(game, p, username, units, capacity, resources, largestCapacity, win, outposts, factories, generators, mines, color)
 			$MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer.move_child(playerStatus,i)
 	
 		else:
 			playerStatus = preload("res://PlayerStatus.tscn").instantiate()
-			playerStatus.init(username, units, capacity, resources, largestCapacity, win, outposts, factories, generators, mines, color)
+			playerStatus.init(game, p, username, units, capacity, resources, largestCapacity, win, outposts, factories, generators, mines, color)
 			playerStatuses[p.getUserID()] = playerStatus
 			$MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer.add_child(playerStatus)
 		i += 1

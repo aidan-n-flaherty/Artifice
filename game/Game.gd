@@ -44,7 +44,10 @@ func init(gameID):
 func _process(delta):
 	if not game.hasStarted():
 		$Viewport/GameOverlay/Overlay/NotStarted.show()
-		$Viewport/GameOverlay/Overlay/NotStarted/Label.text = "Game starts in " + Utilities.timeToStr(game.getStartTime() - game.getTime())
+		if (game.getStartTime() - game.getTime()) < (2 * 365 * 24 * 60 * 60): #if less than 2 years
+			$Viewport/GameOverlay/Overlay/NotStarted/Label.text = "Game starts in " + Utilities.timeToStr(game.getStartTime() - game.getTime())
+		else:
+			$Viewport/GameOverlay/Overlay/NotStarted/Label.text = "Waiting for players..."
 	else:
 		$Viewport/GameOverlay/Overlay/NotStarted.hide()
 	
@@ -105,8 +108,9 @@ func selectSpecialist(specialist):
 	setDisplay(scene)
 	
 func deselect():
-	$Viewport/GameOverlay/Overlay/UIOverlay/Separator/ElementDisplay/VBoxContainer/Panel/MarginContainer.remove_child(detailDisplay)
-	$Viewport/GameOverlay/Overlay/UIOverlay/Separator/ElementDisplay/VBoxContainer/Panel.hide()
+	if(detailDisplay):
+		$Viewport/GameOverlay/Overlay/UIOverlay/Separator/ElementDisplay/VBoxContainer/Panel/MarginContainer.remove_child(detailDisplay)
+		$Viewport/GameOverlay/Overlay/UIOverlay/Separator/ElementDisplay/VBoxContainer/Panel.hide()
 
 func deselectSpecialist(specialist):
 	if detailDisplay and "specialistID" in detailDisplay and detailDisplay.specialistID == specialist:
