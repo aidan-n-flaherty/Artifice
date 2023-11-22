@@ -92,15 +92,17 @@ void FloorDisplay::_draw() {
             for(const auto& pair : game->getVessels()) {
                 if(p && !p->withinRange(pair.second, getDiff())) continue;
 
-                double x1 = pair.second->getPositionAt(getDiff()).getX();
-                double y1 = pair.second->getPositionAt(getDiff()).getY();
-                double deltaX = pair.second->getTargetPos().getX() - x1;
-                double deltaY = pair.second->getTargetPos().getY() - y1;
+                Point position = pair.second->getPositionAt(getDiff());
+
+                double x1 = position.getX();
+                double y1 = position.getY();
+                double deltaX = position.closest(pair.second->getTargetPos()).getX() - x1;
+                double deltaY = position.closest(pair.second->getTargetPos()).getY() - y1;
                 double deltaMag = sqrt(deltaX * deltaX + deltaY * deltaY);
 
-                if(pair.second->getOrigin()) draw_line(Vector2(x1 - x, y1 - y) * pixels - 8 * Vector2(deltaX / deltaMag, deltaY / deltaMag), Vector2(pair.second->getOrigin()->getPosition().getX() - x, pair.second->getOrigin()->getPosition().getY() - y) * pixels, Color(0.0, 0.0, 0.0, 0.5), 3.0);
+                if(pair.second->getOrigin()) draw_line(Vector2(x1 - x, y1 - y) * pixels - 8 * Vector2(deltaX / deltaMag, deltaY / deltaMag), Vector2(position.closest(pair.second->getOrigin()->getPosition()).getX() - x, position.closest(pair.second->getOrigin()->getPosition()).getY() - y) * pixels, Color(0.0, 0.0, 0.0, 0.5), 3.0);
                 draw_arc(Vector2(x1 - x, y1 - y) * pixels, 8, 0, UtilityFunctions::deg_to_rad(360), 32, Color(0.0, 0.0, 0.0), 3.0, true);
-                draw_line(Vector2(x1 - x, y1 - y) * pixels + 8 * Vector2(deltaX / deltaMag, deltaY / deltaMag), Vector2(pair.second->getTargetPos().getX() - x, pair.second->getTargetPos().getY() - y) * pixels, Color(0.0, 0.0, 0.0), 5.0);
+                draw_line(Vector2(x1 - x, y1 - y) * pixels + 8 * Vector2(deltaX / deltaMag, deltaY / deltaMag), Vector2(position.closest(pair.second->getTargetPos()).getX() - x, position.closest(pair.second->getTargetPos()).getY() - y) * pixels, Color(0.0, 0.0, 0.0), 5.0);
             }
 
             for(const auto& pair : game->getVessels()) {

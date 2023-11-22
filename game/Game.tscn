@@ -1,4 +1,4 @@
-[gd_scene load_steps=90 format=3 uid="uid://dgp4l24s2rulk"]
+[gd_scene load_steps=91 format=3 uid="uid://dgp4l24s2rulk"]
 
 [ext_resource type="Script" path="res://Game.gd" id="1_s53r2"]
 [ext_resource type="Script" path="res://CameraPivot.gd" id="2_t2ckv"]
@@ -56,7 +56,8 @@ fog_enabled = true
 fog_light_energy = 0.0
 fog_density = 0.0
 fog_sky_affect = 0.0
-fog_height_density = 0.6
+fog_height = 2.13163e-14
+fog_height_density = 1.8
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_rqbvh"]
 resource_local_to_scene = true
@@ -86,13 +87,16 @@ seamless = true
 color_ramp = SubResource("Gradient_u3xmn")
 noise = SubResource("FastNoiseLite_8h4h1")
 
+[sub_resource type="Gradient" id="Gradient_4g4ee"]
+offsets = PackedFloat32Array(0.356757, 1)
+
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_3wike"]
-frequency = 0.0152
+noise_type = 2
+frequency = 0.0153
 fractal_octaves = 10
-cellular_distance_function = 3
+cellular_distance_function = 1
 cellular_jitter = 1.0
-cellular_return_type = 4
-domain_warp_enabled = true
+cellular_return_type = 6
 domain_warp_type = 1
 domain_warp_amplitude = 20.0
 
@@ -100,6 +104,7 @@ domain_warp_amplitude = 20.0
 width = 800
 height = 2080
 seamless = true
+color_ramp = SubResource("Gradient_4g4ee")
 noise = SubResource("FastNoiseLite_3wike")
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_qnahw"]
@@ -244,8 +249,10 @@ render_priority = 0
 shader = ExtResource("10_u7afu")
 shader_parameter/cameraSize = 100.0
 shader_parameter/epsilon = 0.1
-shader_parameter/outposts = PackedVector2Array()
+shader_parameter/outposts = PackedVector2Array(2.08165e-12, 2.08165e-12, 28.65, 2.08165e-12)
 shader_parameter/outpostsLength = 0
+shader_parameter/mapWidth = 100.0
+shader_parameter/mapHeight = 100.0
 shader_parameter/ridges = SubResource("NoiseTexture2D_ygns3")
 shader_parameter/erosion = SubResource("NoiseTexture2D_pylon")
 shader_parameter/texturing = SubResource("NoiseTexture2D_7tw3d")
@@ -592,7 +599,7 @@ mesh = SubResource("PlaneMesh_xk06g")
 surface_material_override/0 = SubResource("ShaderMaterial_1fvqb")
 
 [node name="Darkness" type="MeshInstance3D" parent="Viewport/Viewport3D/CameraPivot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -110, -110)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, -105, -110)
 layers = 2
 sorting_offset = -10000.0
 sorting_use_aabb_center = false

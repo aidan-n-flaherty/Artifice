@@ -5,6 +5,7 @@
 #include <cmath>
 #include <list>
 #include <ctime>
+#include <iostream>
 #include "../event.h"
 #include "../game.h"
 #include "../events/promote_event.h"
@@ -28,11 +29,22 @@ public:
         
         Player* player = game->getPlayer(getSenderID());
         
-        if(player->hasLost() || player->getHires() <= 0) return nullptr;
+        if(player->hasLost() || player->getHires() <= 0) {
+            std::cout << "Not enough hires or player has lost" << std::endl;
+            return nullptr;
+        }
+
+        if(!game->hasSpecialist(specialistID)) {
+            std::cout << "Specialist does not exist" << std::endl;
+            return nullptr;
+        }
         
         Specialist* specialist = game->getSpecialist(specialistID);
 
-        if(specialist->getOwnerID() != getSenderID()) return nullptr;
+        if(specialist->getOwnerID() != getSenderID()) {
+            std::cout << "Does not own specialist" << std::endl;
+            return nullptr;
+        }
         
         SpecialistType t;
 

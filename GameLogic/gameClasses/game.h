@@ -140,7 +140,7 @@ public:
 
     int incrementObjCounter() { return gameObjCounter++; }
 
-    int getObjCounter() { return gameObjCounter++; }
+    int getObjCounter() { return gameObjCounter; }
 
     GameSettings* getSettings() { return settings; };
 

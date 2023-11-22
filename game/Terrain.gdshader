@@ -20,6 +20,8 @@ uniform float epsilon;
 
 uniform vec2 outposts[50];
 uniform int outpostsLength = 0;
+uniform float mapWidth;
+uniform float mapHeight;
 
 vec3 normal(vec2 uv, sampler2D texture_norm) {
 	float right = texture(texture_norm, uv + vec2(epsilon, 0)).r;
@@ -44,11 +46,19 @@ void fragment() {
 	float holes = texture(hole, pos).r;
 	
 	for(int i = 0; i < outpostsLength; i++) {
-		float dX = pos.x * 100.0 - outposts[i].x;
-		float dY = pos.y * 260.0 - outposts[i].y;
+		float dX = pos.x * 100.0 + outposts[i].x;
+		float dY = pos.y * 260.0 + outposts[i].y;
+		
+		while(dX > mapWidth/2.0) dX -= mapWidth;
+		while(dX < -mapWidth/2.0) dX += mapWidth;
+		while(dY > mapHeight/2.0) dY -= mapHeight;
+		while(dY < -mapHeight/2.0) dY += mapHeight;
+		
 		float mag = sqrt(dX * dX + dY * dY);
-		if(mag + 5.0 * holes < 10.0) {
-			discard;
+		if(mag < 20.0) {
+			float add = max(0.0, ((10.0 - mag)/10.0)) + holes * (20.0 - mag) / 10.0;
+			ridge += add;
+			if(ridge > 0.9 && add > 0.5) discard;
 		}
 	}
 	

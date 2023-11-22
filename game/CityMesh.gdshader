@@ -21,7 +21,7 @@ void vertex() {
 	VERTEX.y += baseHeight * 2.0;
 	VERTEX.y *= building * street;
 	
-	COLOR.rgb =  vec3(0.0);
+	COLOR.rgb =  vec3(1.0);
 }
 
 void fragment() {
@@ -30,9 +30,9 @@ void fragment() {
 	float dist = 2.0 * sqrt(dot(pos, pos)) - 1.2;
 	float baseHeight = pow(1.0 - dist, 1.5);
 	
-	float building = texture(buildingNoise, pos).r;
+	float building = 1.0 + 0.0 * texture(buildingNoise, pos).r;
 	
-	float street = texture(streetNoise, pos).r;
+	float street = 1.0 + 0.0 * texture(streetNoise, pos).r;
 	
 	float height = texture(heightMap, pos).r;
 	
@@ -40,6 +40,6 @@ void fragment() {
 	
 	if(baseHeight < 0.5 * height) ALPHA = 0.0;
 	
-	METALLIC = 1.0;
+	METALLIC = 0.0;
 	ROUGHNESS = 0.0;
 }

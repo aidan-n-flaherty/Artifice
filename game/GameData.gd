@@ -72,10 +72,10 @@ func _deferred_goto_node(node) -> void:
 	get_tree().set_current_scene(current_scene)
 
 func login():
-	#id = 3
-	#token = 5577006791947779410
-	id = 4
-	token = 8674665223082153551
+	id = 3
+	token = 5577006791947779410
+	#id = 4
+	#token = 8674665223082153551
 	
 	
 func viewGame(id: int):
@@ -181,19 +181,24 @@ func joinGame(id: int, password = ""):
 		"password": password
 	})
 	
-	if not response: return
+	if not response: return false
 	
 	var game = await HTTPManager.getReq("/fetchGameDetails", {
 		"gameID": id
 	})
 	
-	if not game: return
+	if not game: return false
 	
 	addGame(game)
+	
+	return true
 
 func addGame(game):
 	ongoingGameIDs[int(game.gameData.id)] = true
 	gameDetails[int(game.gameData.id)] = game
+	
+	if openGameIDs.has(int(game.gameData.id)):
+		openGameIDs.erase(int(game.gameData.id))
 	
 	emit_signal("gamesChanged")
 
@@ -271,7 +276,11 @@ func verifyEnd(gameID: int):
 	if await HTTPManager.getReq("/verifyGameEnd", {
 		"gameID": gameID
 	}):
-		gameDetails[id].gameData.finished = true
+		gameDetails[gameID].gameData.finished = true
+		if openGameIDs.has(gameID):
+			openGameIDs.erase(gameID)
+		if pastGameIDs.has(gameID):
+			pastGameIDs[gameID] = true
 		return true
 	
 	return false

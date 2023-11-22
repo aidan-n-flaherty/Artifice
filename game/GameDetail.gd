@@ -23,4 +23,5 @@ func _on_back_button_pressed():
 
 
 func _on_button_pressed():
-	GameData.joinGame(gameID)
+	if await GameData.joinGame(gameID):
+		GameData.goto_scene("res://MainMenu.tscn")

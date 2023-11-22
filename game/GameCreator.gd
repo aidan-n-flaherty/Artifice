@@ -55,18 +55,20 @@ func _on_create_pressed():
 	
 	GameData.addGame(await HTTPManager.postReq("/createMatch", data, {}))
 
-func on_players_modified():
+func on_players_modified(button_pressed: bool):
 	for child in $MarginContainer/VBoxContainer/ScrollContainer/GridContainer/NumPlayersButtons.get_children():
-		if child.pressed:
+		if child.button_pressed:
+			print(int(str(child.name)))
 			numPlayers = int(str(child.name))
 
 func on_activeTimes_modified(button_pressed: bool):
-	for child in $MarginContainer/VBoxContainer/ScrollContainer/GridContainer/ActiveHoursRows/ActiveHoursButtons.get_children():
-		if child.pressed:
-			numPlayers = int(str(child.name))
-	for child in $MarginContainer/VBoxContainer/ScrollContainer/GridContainer/ActiveHoursRows/ActiveHoursButtons2.get_children():
-		if child.pressed:
-			numPlayers = int(str(child.name))
+	pass
+	#for child in $MarginContainer/VBoxContainer/ScrollContainer/GridContainer/ActiveHoursRows/ActiveHoursButtons.get_children():
+	#	if child.pressed:
+	#		numPlayers = int(str(child.name))
+	#for child in $MarginContainer/VBoxContainer/ScrollContainer/GridContainer/ActiveHoursRows/ActiveHoursButtons2.get_children():
+	#	if child.pressed:
+	#		numPlayers = int(str(child.name))
 
 func _on_days_toggled(button_pressed):
 	if button_pressed:
