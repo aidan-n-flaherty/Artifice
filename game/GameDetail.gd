@@ -12,6 +12,8 @@ func init(gameID):
 	var details = GameData.getGameDetails(gameID)
 	
 	$MarginContainer/VBoxContainer/Title.text = details.gameSettings.lobbyName
+	
+	$MarginContainer/VBoxContainer/ScrollContainer/GridContainer/LobbyNameText.text = details.gameSettings.lobbyName
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
