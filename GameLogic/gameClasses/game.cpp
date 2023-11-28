@@ -128,7 +128,7 @@ Game::Game(GameSettings settings, int simulatorID, double startTime, double endT
 
                 if(dist > 50) continue;
 
-                a.moveTowards(a.closest(b), -mag/(0.1 * dist + 1));
+                a.moveTowards(a.closest(b), -mag/(0.25 * dist + 1));
             }
 
             for(int k = j + 1; k < outpostPositions.size(); k++) {
@@ -162,8 +162,8 @@ Game::Game(GameSettings settings, int simulatorID, double startTime, double endT
 
         Specialist* s = new Specialist(incrementObjCounter(), getSettings(), SpecialistType::QUEEN);
         addSpecialist(s);
-        getPlayer(pair.first)->getOutposts().front()->addSpecialist(getSpecialist(s->getID()));
         getPlayer(pair.first)->addSpecialist(getSpecialist(s->getID()));
+        getPlayer(pair.first)->getOutposts().front()->addSpecialist(getSpecialist(s->getID()));
     }
 
     for(const std::pair<int, Point>& pair : outpostPositions) {
@@ -351,8 +351,8 @@ std::list<std::pair<int, int>> Game::run() {
             updateState(order->getTimestamp());
 
             // converts a order to an event
-            Event* converted = order->convert(this);
             orders.erase(orderIt);
+            Event* converted = order->convert(this);
 
             if(order->getID() > referenceID && order->getSenderID() != simulatorID) referenceID = order->getID();
             lastExecutedOrder = order->getID();

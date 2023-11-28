@@ -1,6 +1,7 @@
 #include "positional_object.h"
 #include "../game.h"
 #include "../game_settings.h"
+#include <iostream>
 
 void PositionalObject::updatePointers(Game* game) {
     Possessable::updatePointers(game);
@@ -24,6 +25,15 @@ int PositionalObject::removeUnits(int count) {
 void PositionalObject::addSpecialist(Specialist* specialist) {
     specialists.push_back(specialist);
     specialist->setContainer(this);
+
+    if(specialist->getType() == SpecialistType::QUEEN && specialist->hasOwner() && specialist->getOwnerID() != getOwnerID()) {
+        for(Outpost* outpost : specialist->getOwner()->sortedOutposts(this)) {
+            if(outpost->controlsSpecialist(SpecialistType::PRINCESS)) {
+                outpost->getSpecialist(SpecialistType::PRINCESS)->setType(SpecialistType::QUEEN);
+                break;
+            }
+        }
+    }
 }
 
 void PositionalObject::addSpecialists(std::list<Specialist*> specialists) {

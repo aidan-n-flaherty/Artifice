@@ -32,8 +32,8 @@ public:
     Vessel(unsigned int ID, GameSettings* settings, Player* owner, const Point& position, Outpost* origin, 
         PositionalObject* target, int numUnits,
         const std::list<Specialist*> &specialists) :
-        PositionalObject(ID, settings, position, numUnits, specialists),
-        returnOutpost(origin), origin(origin), target(target), gift(false) { owner->addVessel(this); }
+        PositionalObject(ID, settings, position, numUnits),
+        returnOutpost(origin), origin(origin), target(target), gift(false) { owner->addVessel(this); addSpecialists(specialists); }
     void updatePointers(Game* game) override;
 
     void collision(Vessel* vessel, Vessel* other, double timestamp, std::multiset<Event*, EventOrder> &events);
