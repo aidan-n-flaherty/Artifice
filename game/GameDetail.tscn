@@ -1,13 +1,35 @@
-[gd_scene load_steps=6 format=3 uid="uid://bdclkyj3msr2x"]
+[gd_scene load_steps=11 format=3 uid="uid://bdclkyj3msr2x"]
 
 [ext_resource type="Script" path="res://GameDetail.gd" id="1_fslp1"]
 [ext_resource type="Texture2D" uid="uid://cy7ou3wycwjra" path="res://resources/images/back.png" id="2_15oje"]
+[ext_resource type="Theme" uid="uid://c4m6lidwyxgc" path="res://resources/UITheme.tres" id="3_rnfl0"]
 [ext_resource type="Theme" uid="uid://bfwpaonloeco5" path="res://resources/theme.tres" id="3_ygbjp"]
 
 [sub_resource type="Theme" id="Theme_ajhl1"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_eq5ap"]
 font_size = 30
+
+[sub_resource type="ImageTexture" id="ImageTexture_hn5qj"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sangn"]
+content_margin_left = 16.0
+content_margin_top = 16.0
+content_margin_right = 16.0
+content_margin_bottom = 16.0
+bg_color = Color(0.145098, 0.145098, 0.145098, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wy0f1"]
+bg_color = Color(0.733333, 0.733333, 0.733333, 1)
+corner_radius_top_left = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="LabelSettings" id="LabelSettings_4guad"]
+font_color = Color(0.45098, 0.45098, 0.45098, 1)
 
 [node name="GameDetail" type="MarginContainer"]
 anchors_preset = 15
@@ -58,6 +80,514 @@ horizontal_alignment = 1
 [node name="Spacer" type="Control" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
+size_flags_stretch_ratio = 0.01
+
+[node name="Details" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.36
+horizontal_scroll_mode = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="blocker" type="ColorRect" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer"]
+layout_mode = 2
+color = Color(1, 0.168627, 0.486275, 0)
+
+[node name="GridContainer" type="GridContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/h_separation = 20
+theme_override_constants/v_separation = 20
+columns = 2
+
+[node name="Version" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer"]
+layout_mode = 2
+text = "Game Version: "
+
+[node name="VersionText" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer"]
+layout_mode = 2
+text = "0.0.0"
+
+[node name="Creation" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer"]
+layout_mode = 2
+text = "Game was created on: "
+
+[node name="CreationDate" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer"]
+layout_mode = 2
+text = "0000-00-00"
+
+[node name="NumPlayers" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer"]
+layout_mode = 2
+text = "Number of Players"
+
+[node name="NumPlayersButtons" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="2" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/NumPlayersButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("3_rnfl0")
+disabled = true
+toggle_mode = true
+button_pressed = true
+text = "2"
+
+[node name="3" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/NumPlayersButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("3_rnfl0")
+disabled = true
+toggle_mode = true
+button_pressed = true
+text = "3"
+
+[node name="4" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/NumPlayersButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("3_rnfl0")
+disabled = true
+toggle_mode = true
+button_pressed = true
+text = "4"
+
+[node name="5" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/NumPlayersButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("3_rnfl0")
+disabled = true
+toggle_mode = true
+button_pressed = true
+text = "5"
+
+[node name="6" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/NumPlayersButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("3_rnfl0")
+disabled = true
+toggle_mode = true
+button_pressed = true
+text = "6"
+
+[node name="7" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/NumPlayersButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("3_rnfl0")
+disabled = true
+toggle_mode = true
+button_pressed = true
+text = "7"
+
+[node name="8" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/NumPlayersButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("3_rnfl0")
+disabled = true
+toggle_mode = true
+button_pressed = true
+text = "8"
+
+[node name="9" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/NumPlayersButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("3_rnfl0")
+disabled = true
+toggle_mode = true
+button_pressed = true
+text = "9"
+
+[node name="10" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/NumPlayersButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("3_rnfl0")
+disabled = true
+toggle_mode = true
+button_pressed = true
+text = "10"
+
+[node name="SimulationTimescale" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer"]
+layout_mode = 2
+text = "Simulation Timescale"
+
+[node name="SimulationTimescaleButtons" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="days" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/SimulationTimescaleButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("3_rnfl0")
+disabled = true
+toggle_mode = true
+button_pressed = true
+text = "Days"
+
+[node name="hours" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/SimulationTimescaleButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("3_rnfl0")
+disabled = true
+toggle_mode = true
+button_pressed = true
+text = "Hours"
+
+[node name="minutes" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/SimulationTimescaleButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("3_rnfl0")
+disabled = true
+toggle_mode = true
+button_pressed = true
+text = "Minutes"
+
+[node name="ActiveHours" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer"]
+layout_mode = 2
+text = "Active Hours"
+
+[node name="ActiveHoursRows" type="VBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer"]
+layout_mode = 2
+
+[node name="ActiveHoursButtons" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/ActiveHoursRows"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="0" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/ActiveHoursRows/ActiveHoursButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("3_rnfl0")
+disabled = true
+toggle_mode = true
+button_pressed = true
+text = "12 AM"
+
+[node name="1" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/ActiveHoursRows/ActiveHoursButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("3_rnfl0")
+disabled = true
+toggle_mode = true
+button_pressed = true
+text = "1"
+
+[node name="2" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/ActiveHoursRows/ActiveHoursButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("3_rnfl0")
+disabled = true
+toggle_mode = true
+button_pressed = true
+text = "2"
+
+[node name="3" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/ActiveHoursRows/ActiveHoursButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("3_rnfl0")
+disabled = true
+toggle_mode = true
+button_pressed = true
+text = "3"
+
+[node name="4" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/ActiveHoursRows/ActiveHoursButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("3_rnfl0")
+disabled = true
+toggle_mode = true
+button_pressed = true
+text = "4 AM"
+
+[node name="5" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/ActiveHoursRows/ActiveHoursButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("3_rnfl0")
+disabled = true
+toggle_mode = true
+button_pressed = true
+text = "5"
+
+[node name="6" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/ActiveHoursRows/ActiveHoursButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("3_rnfl0")
+disabled = true
+toggle_mode = true
+button_pressed = true
+text = "6"
+
+[node name="7" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/ActiveHoursRows/ActiveHoursButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("3_rnfl0")
+disabled = true
+toggle_mode = true
+button_pressed = true
+text = "7"
+
+[node name="8" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/ActiveHoursRows/ActiveHoursButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("3_rnfl0")
+disabled = true
+toggle_mode = true
+button_pressed = true
+text = "8 AM"
+
+[node name="9" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/ActiveHoursRows/ActiveHoursButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("3_rnfl0")
+disabled = true
+toggle_mode = true
+button_pressed = true
+text = "9"
+
+[node name="10" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/ActiveHoursRows/ActiveHoursButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("3_rnfl0")
+disabled = true
+toggle_mode = true
+button_pressed = true
+text = "10"
+
+[node name="11" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/ActiveHoursRows/ActiveHoursButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("3_rnfl0")
+disabled = true
+toggle_mode = true
+button_pressed = true
+text = "11"
+
+[node name="ActiveHoursButtons2" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/ActiveHoursRows"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="12" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/ActiveHoursRows/ActiveHoursButtons2"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("3_rnfl0")
+disabled = true
+toggle_mode = true
+button_pressed = true
+text = "12 PM"
+
+[node name="13" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/ActiveHoursRows/ActiveHoursButtons2"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("3_rnfl0")
+disabled = true
+toggle_mode = true
+button_pressed = true
+text = "1"
+
+[node name="14" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/ActiveHoursRows/ActiveHoursButtons2"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("3_rnfl0")
+disabled = true
+toggle_mode = true
+button_pressed = true
+text = "2"
+
+[node name="15" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/ActiveHoursRows/ActiveHoursButtons2"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("3_rnfl0")
+disabled = true
+toggle_mode = true
+button_pressed = true
+text = "3"
+
+[node name="16" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/ActiveHoursRows/ActiveHoursButtons2"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("3_rnfl0")
+disabled = true
+toggle_mode = true
+button_pressed = true
+text = "4 PM"
+
+[node name="17" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/ActiveHoursRows/ActiveHoursButtons2"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("3_rnfl0")
+disabled = true
+toggle_mode = true
+button_pressed = true
+text = "5"
+
+[node name="18" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/ActiveHoursRows/ActiveHoursButtons2"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("3_rnfl0")
+disabled = true
+toggle_mode = true
+button_pressed = true
+text = "6"
+
+[node name="19" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/ActiveHoursRows/ActiveHoursButtons2"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("3_rnfl0")
+disabled = true
+toggle_mode = true
+button_pressed = true
+text = "7"
+
+[node name="20" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/ActiveHoursRows/ActiveHoursButtons2"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("3_rnfl0")
+disabled = true
+toggle_mode = true
+button_pressed = true
+text = "8 PM"
+
+[node name="21" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/ActiveHoursRows/ActiveHoursButtons2"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("3_rnfl0")
+disabled = true
+toggle_mode = true
+button_pressed = true
+text = "9"
+
+[node name="22" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/ActiveHoursRows/ActiveHoursButtons2"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("3_rnfl0")
+disabled = true
+toggle_mode = true
+button_pressed = true
+text = "10"
+
+[node name="23" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/ActiveHoursRows/ActiveHoursButtons2"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("3_rnfl0")
+disabled = true
+toggle_mode = true
+button_pressed = true
+text = "11"
+
+[node name="Speed" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer"]
+layout_mode = 2
+text = "Simulation Speed"
+
+[node name="SpeedSlider" type="HSlider" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+theme = ExtResource("3_ygbjp")
+theme_override_icons/grabber = SubResource("ImageTexture_hn5qj")
+theme_override_styles/slider = SubResource("StyleBoxFlat_sangn")
+theme_override_styles/grabber_area = SubResource("StyleBoxFlat_wy0f1")
+min_value = 0.5
+max_value = 2.0
+step = 0.0
+value = 1.0
+exp_edit = true
+editable = false
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/SpeedSlider"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/SpeedSlider/MarginContainer"]
+layout_mode = 2
+
+[node name="Slow" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/SpeedSlider/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Slow (0.5x)"
+label_settings = SubResource("LabelSettings_4guad")
+
+[node name="Fast" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/SpeedSlider/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Fast (2x)"
+label_settings = SubResource("LabelSettings_4guad")
+horizontal_alignment = 2
+
+[node name="Rating" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer"]
+layout_mode = 2
+text = "Minimum Rating"
+
+[node name="RatingSlider" type="HSlider" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("3_ygbjp")
+max_value = 3000.0
+step = 100.0
+editable = false
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/RatingSlider"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/RatingSlider/MarginContainer"]
+layout_mode = 2
+
+[node name="Low" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/RatingSlider/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "500"
+label_settings = SubResource("LabelSettings_4guad")
+
+[node name="High" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/RatingSlider/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "2000"
+label_settings = SubResource("LabelSettings_4guad")
+horizontal_alignment = 2
+
+[node name="Players" type="ScrollContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Players"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Players/MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Players/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Players"
+horizontal_alignment = 1
+
+[node name="Passworded" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 50
+
+[node name="Password" type="Label" parent="MarginContainer/VBoxContainer/Passworded"]
+layout_mode = 2
+text = "Password"
+
+[node name="PasswordText" type="LineEdit" parent="MarginContainer/VBoxContainer/Passworded"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Enter Password Here!"
 
 [node name="Button" type="Button" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2

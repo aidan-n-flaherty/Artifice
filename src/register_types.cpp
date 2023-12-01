@@ -5,6 +5,7 @@
 #include "vessel_node.h"
 #include "outpost_node.h"
 #include "floor_display.h"
+#include "settingsDefault.h"
 
 #include <gdextension_interface.h>
 #include <godot_cpp/core/defs.hpp>
@@ -25,6 +26,7 @@ void initialize_gamelogic_module(ModuleInitializationLevel p_level) {
     ClassDB::register_class<VesselNode>();
     ClassDB::register_class<OutpostNode>();
     ClassDB::register_class<PlayerNode>();
+	ClassDB::register_class<SettingsDefault>();
 }
 
 void uninitialize_gamelogic_module(ModuleInitializationLevel p_level) {
