@@ -43,11 +43,12 @@ double getTimeMillis() {
 void GameInterface::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("select", "id"), &GameInterface::select);
 	ClassDB::bind_method(D_METHOD("unselect"), &GameInterface::unselect);
+	ClassDB::bind_method(D_METHOD("getSelectedUnits"), &GameInterface::getSelectedUnits);
 	ClassDB::bind_method(D_METHOD("getTarget", "x", "y"), &GameInterface::getTarget);
 	ClassDB::bind_method(D_METHOD("projectedTime", "x", "y"), &GameInterface::projectedTime);
 	ClassDB::bind_method(D_METHOD("setMouse", "x", "y"), &GameInterface::setMouse);
 	ClassDB::bind_method(D_METHOD("setDrag", "drag"), &GameInterface::setDrag);
-	ClassDB::bind_method(D_METHOD("init", "gameID", "userID", "startTime", "players", "settingOverrides"), &GameInterface::init);
+	ClassDB::bind_method(D_METHOD("init", "gameID", "userID", "startTime", "playerCap", "players", "settingOverrides"), &GameInterface::init);
 	ClassDB::bind_method(D_METHOD("setTempTime", "t"), &GameInterface::setTempTime);
 	ClassDB::bind_method(D_METHOD("setTime", "t"), &GameInterface::setTime);
 	ClassDB::bind_method(D_METHOD("getTime"), &GameInterface::getTime);
@@ -105,7 +106,23 @@ void GameInterface::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("moveTo", PropertyInfo(Variant::FLOAT, "t")));
 }
 
-void GameInterface::init(int gameID, int userID, int startTime, Dictionary players, Dictionary settingOverrides) {
+void GameInterface::init(int gameID, int userID, int startTime, int playerCap, Dictionary players, Dictionary settingOverrides) {
+	// RESET MEMBER VARIABLES
+	this->completeGame = nullptr;
+	
+	this->game = nullptr;
+	this->currentGame = nullptr;
+	this->simulatedGame = nullptr;
+	
+	this->vessels.clear();
+	this->outposts.clear();
+	this->players.clear();
+
+	this->selected = -1;
+	this->selectedSpecialists.clear();
+	// END RESET
+
+
 	this->gameID = gameID;
 	this->userID = userID;
 
@@ -114,11 +131,9 @@ void GameInterface::init(int gameID, int userID, int startTime, Dictionary playe
 	current = getTimeMillis();
 	
 	std::map<int, std::tuple<std::string, int, int>> playerMap;
-	playerMap[0] = std::make_tuple("Bob", 123456, 467);
-	playerMap[1] = std::make_tuple("Joe", 654321, 752);
-	playerMap[2] = std::make_tuple("Steve", 987654, 567);
-	playerMap[3] = std::make_tuple("Jeff", 314159, 429);
-	playerMap[4] = std::make_tuple("Bill", 765432, 758);
+	for(int i = 0; i < playerCap; i++) {
+		playerMap[i] = std::make_tuple("Unclaimed", -1, 0);
+	}
 
 	Array ids = players.keys();
 	for(int i = 0; i < ids.size(); i++) {
@@ -343,7 +358,7 @@ void GameInterface::select(int id) {
 
 	double timeDiff = current - game->getTime();
 
-	if(getSelected()) {
+	if(getSelected() && getSelected()->getOwnerID() == getUserGameID()) {
 		Vessel* v1 = dynamic_cast<Vessel*>(getSelected());
 		Outpost* o1 = dynamic_cast<Outpost*>(getSelected());
 
@@ -356,7 +371,7 @@ void GameInterface::select(int id) {
 
 			int units = getSelected()->getUnitsAt(timeDiff);
 
-			uint32_t parameters[] = { uint32_t(std::max(selectedSpecialists.empty() ? 1 : 0, int(percent * units))), selected, target->getID() };
+			uint32_t parameters[] = { uint32_t(std::max(selectedSpecialists.empty() ? 1 : 0, int(percent * units))), uint32_t(selected), target->getID() };
 			Array arguments;
 
 			for(int i = 0; i < 3; i++) arguments.push_back(parameters[i]);
@@ -377,7 +392,7 @@ void GameInterface::select(int id) {
 
 			if(v2 && !getSelected()->controlsSpecialist(SpecialistType::PIRATE)) return;
 
-			uint32_t parameters[] = { selected, target->getID() };
+			uint32_t parameters[] = { uint32_t(selected), target->getID() };
 			Array arguments;
 
 			for(int i = 0; i < 2; i++) arguments.push_back(parameters[i]);
@@ -388,7 +403,7 @@ void GameInterface::select(int id) {
 			
 			return;
 		}
-	} else if(target->getOwnerID() != getUserGameID()) return;
+	}
 
 	setSelected(id);
 }
@@ -406,7 +421,12 @@ void GameInterface::setSelected(int id) {
 
 	PositionalNode* obj = getNode(id);
 
-	if(obj) obj->setSelected(true);
+	if(obj) {
+		obj->setSelected(true);
+
+		double timeDiff = current - game->getTime();
+		selectedUnits = obj->getObj()->getUnitsAt(timeDiff);
+	}
 
 	VesselNode* v = dynamic_cast<VesselNode*>(obj);
 	OutpostNode* o = dynamic_cast<OutpostNode*>(obj);
@@ -450,15 +470,17 @@ void GameInterface::setSelectedSpecialist(int id) {
 			else it++;
 		}
 	}
+
+	if(!owned) selectedSpecialists.clear();
 	
 	if(selected) {
-		if(owned) setSelected(containerID);
+		setSelected(containerID);
 		selectedSpecialists.insert(id);
 		emit_signal("selectSpecialist", id);
 	} else {
 		selectedSpecialists.erase(id);
 		emit_signal("deselectSpecialist", id);
-		if(owned) setSelected(containerID);
+		setSelected(containerID);
 	}
 }
 
@@ -559,7 +581,9 @@ PackedVector2Array GameInterface::getOutpostPositions() {
 	PackedVector2Array arr;
 
 	for(auto& pair : outposts) {
-		arr.push_back(Vector2(pair.second->get_position().x, pair.second->get_position().z));
+		if(!pair.second->is_visible()) continue;
+		const Point& p = pair.second->getObj()->getPositionAt(pair.second->getDiff());
+		arr.push_back(Vector2(p.getX(), p.getY()));
 	}
 
 	return arr;

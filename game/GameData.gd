@@ -2,6 +2,8 @@ extends Node
 
 signal gamesChanged
 
+signal gameChanged(gameID)
+
 signal userChanged
 
 signal chatChanged(chatID)
@@ -72,10 +74,10 @@ func _deferred_goto_node(node) -> void:
 	get_tree().set_current_scene(current_scene)
 
 func login():
-	id = 3
-	token = 5577006791947779410
-	#id = 4
-	#token = 8674665223082153551
+	#id = 3
+	#token = 5577006791947779410
+	id = 4
+	token = 8674665223082153551
 	
 	
 func viewGame(id: int):
@@ -218,13 +220,49 @@ func updateOrders(id: int):
 	
 	bulkAddOrders(games[id], orderData)
 
+func getGameUsers(id: int):
+	return await HTTPManager.getReq("/fetchGameUsers", {
+		"gameID": id
+	})
+
+func loadGameUsers(id: int):
+	var users = await getGameUsers(id)
+	
+	if not users:
+		return
+	
+	var details = getGameDetails(id)
+	
+	if games.has(id):
+		games[id].init(id, self.id, details.gameData.startTime, details.gameSettings.playerCap, users, details.gameSettings.settingOverrides)
+
+func loadGameSettings(id: int):
+	var users = await getGameUsers(id)
+	
+	if not users:
+		return
+	
+	var details = await HTTPManager.getReq("/fetchGameDetails", {
+		"gameID": id
+	})
+	
+	if not details:
+		return
+	
+	gameDetails[id] = details
+	
+	if games.has(id):
+		games[id].init(id, self.id, details.gameData.startTime, details.gameSettings.playerCap, users, details.gameSettings.settingOverrides)
+	
 func loadGameState(id: int):
 	var gameState = await HTTPManager.getReq("/fetchGameState", {
 		"gameID": id
 	})
 	
+	var details = getGameDetails(id)
+	
 	games[id] = GameInterface.new()
-	games[id].init(id, self.id, getGameDetails(id).gameData.startTime, gameState.users, getGameDetails(id).gameSettings.settingOverrides)
+	games[id].init(id, self.id, details.gameData.startTime, details.gameSettings.playerCap, gameState.users, details.gameSettings.settingOverrides)
 	
 	bulkAddOrders(games[id], gameState.orders)
 

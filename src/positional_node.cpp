@@ -51,7 +51,7 @@ PositionalNode::PositionalNode(const StringName &file, PositionalObject* obj) {
   		add_child(n);
 	}
 
-	set_visible(false);
+	set_visible(true);
 }
 
 void PositionalNode::_process(double delta) {

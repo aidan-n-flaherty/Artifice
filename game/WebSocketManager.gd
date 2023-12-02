@@ -39,6 +39,18 @@ func processMessage(message: String):
 		var gameID = message.to_int()
 		
 		GameData.updateOrders(gameID)
+	elif message.begins_with("[GAMEUSERSUPDATE]"):
+		message.erase(0, len("[GAMEUSERSUPDATE]"))
+		
+		var gameID = message.to_int()
+		
+		GameData.loadGameUsers(gameID)
+	elif message.begins_with("[GAMESETTINGSUPDATE]"):
+		message.erase(0, len("[GAMESETTINGSUPDATE]"))
+		
+		var gameID = message.to_int()
+		
+		GameData.loadGameSettings(gameID)
 	elif message.begins_with("[CHAT]"):
 		message.erase(0, len("[CHAT]"))
 		

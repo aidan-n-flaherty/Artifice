@@ -34,8 +34,7 @@ func init(gameID):
 	
 	$Viewport/GameOverlay/Overlay/VBoxContainer/Timeline.init(gameID)
 	$Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel/Status.init(gameID)
-	$Viewport/Viewport3D/CameraPivot.game = game
-	$Viewport/Viewport3D/CameraPivot/FloorDisplay.add_child(game.getFloorDisplay())
+	$Viewport/Viewport3D/CameraPivot.init(gameID)
 	
 	$Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel/Shop.init(gameID)
 	$Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel/Chat.init(gameID)
@@ -47,9 +46,12 @@ func _process(delta):
 		if (game.getStartTime() - game.getTime()) < (2 * 365 * 24 * 60 * 60): #if less than 2 years
 			$Viewport/GameOverlay/Overlay/NotStarted/Label.text = "Game starts in " + Utilities.timeToStr(game.getStartTime() - game.getTime())
 		else:
-			$Viewport/GameOverlay/Overlay/NotStarted/Label.text = "Waiting for players..."
+			var details = GameData.getGameDetails(gameID)
+			$Viewport/GameOverlay/Overlay/NotStarted/Label.text = "Waiting for players (" + str(details.gameData.playerCount) + "/" + str(details.gameSettings.playerCap) + ")"
 	else:
 		$Viewport/GameOverlay/Overlay/NotStarted.hide()
+
+	$Viewport/GameOverlay/Overlay/VBoxContainer/HBoxContainer/Control/MarginContainer/MarginContainer/Label.text = str(floor(game.getSelectedUnits() * $Viewport/GameOverlay/Overlay/VBoxContainer/HBoxContainer/Control/PercentBar.value))
 	
 	if game.hasEnded():
 		if not viewingEnd:

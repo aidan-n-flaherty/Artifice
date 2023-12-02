@@ -8,6 +8,7 @@ var dragging = false
 
 var mouseInComponent = false
 
+var userControlled = false
 var change = 0
 var target = 0
 var speed = 0.1
@@ -35,7 +36,7 @@ func _process(delta):
 			change = target
 		game.setTime(time_start_pos - change)
 		
-		if abs((time_start_pos - change) - Time.get_unix_time_from_system()) < 3600.0 * 2.0 / game.getSimulationSpeed():
+		if userControlled and abs((time_start_pos - change) - Time.get_unix_time_from_system()) < 3600.0 * 2.0 / game.getSimulationSpeed():
 			change = time_start_pos - Time.get_unix_time_from_system() + 0.01
 			target = time_start_pos - Time.get_unix_time_from_system() + 0.01
 			game.setTime(Time.get_unix_time_from_system() + 0.01)
@@ -54,8 +55,10 @@ func _input(event):
 			target = 0
 			speed = 0.1
 			cap = -1
+			userControlled = true
 		else:
 			dragging = false
+			userControlled = false
 	elif event is InputEventMouseMotion and dragging:
 		target = 0.5 * 3600.0 / game.getSimulationSpeed() * (event.position.x - mouse_start_pos.x)
 	

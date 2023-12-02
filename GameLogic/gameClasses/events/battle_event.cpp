@@ -158,42 +158,46 @@ void BattleEvent::victorySpecialistPhase(Game* game) {
     if(a->getOwnerID() == getVictor() && a->ownerControlsSpecialist(SpecialistType::ENGINEER)) {
         int lostUnits = startingUnitsA - a->getUnits();
 
-        int engineersInBattle = a->specialistCount(SpecialistType::ENGINEER);
-        int engineersTotal = a->hasOwner() ? a->getOwner()->specialistCount(SpecialistType::ENGINEER) : 0;
+        if(lostUnits > 0) {
+            int engineersInBattle = a->specialistCount(SpecialistType::ENGINEER);
+            int engineersTotal = a->hasOwner() ? a->getOwner()->specialistCount(SpecialistType::ENGINEER) : 0;
 
-        for(int i = 0; i < engineersInBattle; i++) {
-            int restored = int(0.5 * lostUnits);
+            for(int i = 0; i < engineersInBattle; i++) {
+                int restored = int(0.5 * lostUnits);
 
-            a->addUnits(restored);
-            addMessage(a->getOwnerID(), a->getOwner()->getName() + "'s Engineer restores " + std::to_string(restored) + " units");
-        }
+                a->addUnits(restored);
+                addMessage(a->getOwnerID(), a->getOwner()->getName() + "'s Engineer restores " + std::to_string(restored) + " units");
+            }
 
-        for(int i = 0; i < engineersTotal - engineersInBattle; i++) {
-            int restored = int(0.25 * lostUnits);
+            for(int i = 0; i < engineersTotal - engineersInBattle; i++) {
+                int restored = int(0.25 * lostUnits);
 
-            a->addUnits(restored);
-            addMessage(a->getOwnerID(), a->getOwner()->getName() + "'s Engineer restores " + std::to_string(restored) + " units");
+                a->addUnits(restored);
+                addMessage(a->getOwnerID(), a->getOwner()->getName() + "'s Engineer restores " + std::to_string(restored) + " units");
+            }
         }
     }
 
     if(b->getOwnerID() == getVictor() && b->ownerControlsSpecialist(SpecialistType::ENGINEER)) {
         int lostUnits = startingUnitsB - b->getUnits();
 
-        int engineersInBattle = b->specialistCount(SpecialistType::ENGINEER);
-        int engineersTotal = b->hasOwner() ? b->getOwner()->specialistCount(SpecialistType::ENGINEER) : 0;
+        if(lostUnits > 0) {
+            int engineersInBattle = b->specialistCount(SpecialistType::ENGINEER);
+            int engineersTotal = b->hasOwner() ? b->getOwner()->specialistCount(SpecialistType::ENGINEER) : 0;
 
-        for(int i = 0; i < engineersInBattle; i++) {
-            int restored = int(0.5 * lostUnits);
+            for(int i = 0; i < engineersInBattle; i++) {
+                int restored = int(0.5 * lostUnits);
 
-            b->addUnits(restored);
-            addMessage(b->getOwnerID(), b->getOwner()->getName() + "'s Engineer restores " + std::to_string(restored) + " units");
-        }
+                b->addUnits(restored);
+                addMessage(b->getOwnerID(), b->getOwner()->getName() + "'s Engineer restores " + std::to_string(restored) + " units");
+            }
 
-        for(int i = 0; i < engineersTotal - engineersInBattle; i++) {
-            int restored = int(0.25 * lostUnits);
+            for(int i = 0; i < engineersTotal - engineersInBattle; i++) {
+                int restored = int(0.25 * lostUnits);
 
-            b->addUnits(restored);
-            addMessage(b->getOwnerID(), b->getOwner()->getName() + "'s Engineer restores " + std::to_string(restored) + " units");
+                b->addUnits(restored);
+                addMessage(b->getOwnerID(), b->getOwner()->getName() + "'s Engineer restores " + std::to_string(restored) + " units");
+            }
         }
     }
 

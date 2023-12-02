@@ -1,4 +1,4 @@
-[gd_scene load_steps=91 format=3 uid="uid://dgp4l24s2rulk"]
+[gd_scene load_steps=94 format=3 uid="uid://dgp4l24s2rulk"]
 
 [ext_resource type="Script" path="res://Game.gd" id="1_s53r2"]
 [ext_resource type="Script" path="res://CameraPivot.gd" id="2_t2ckv"]
@@ -523,6 +523,27 @@ shader_parameter/texture_normal = SubResource("NoiseTexture2D_4bisk")
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1u3xq"]
 bg_color = Color(0, 0, 0, 0.243137)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3hxi7"]
+bg_color = Color(0.156863, 0.156863, 0.156863, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 100
+corner_radius_top_right = 100
+corner_radius_bottom_right = 100
+corner_radius_bottom_left = 100
+expand_margin_left = 4.0
+expand_margin_top = 4.0
+expand_margin_right = 4.0
+expand_margin_bottom = 4.0
+
+[sub_resource type="ImageTexture" id="ImageTexture_hpqsk"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_td5gg"]
+font_size = 25
+
 [sub_resource type="ButtonGroup" id="ButtonGroup_ocfcu"]
 allow_unpress = true
 
@@ -754,7 +775,10 @@ custom_minimum_size = Vector2(30, 0)
 layout_mode = 2
 mouse_filter = 2
 
-[node name="PercentBar" type="VSlider" parent="Viewport/GameOverlay/Overlay/VBoxContainer/HBoxContainer"]
+[node name="Control" type="MarginContainer" parent="Viewport/GameOverlay/Overlay/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="PercentBar" type="VSlider" parent="Viewport/GameOverlay/Overlay/VBoxContainer/HBoxContainer/Control"]
 custom_minimum_size = Vector2(30, 0)
 layout_mode = 2
 size_flags_vertical = 3
@@ -764,6 +788,29 @@ max_value = 1.0
 step = 0.01
 value = 1.0
 tick_count = 5
+
+[node name="MarginContainer" type="MarginContainer" parent="Viewport/GameOverlay/Overlay/VBoxContainer/HBoxContainer/Control"]
+layout_mode = 2
+size_flags_vertical = 8
+
+[node name="Panel" type="Panel" parent="Viewport/GameOverlay/Overlay/VBoxContainer/HBoxContainer/Control/MarginContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_3hxi7")
+
+[node name="MarginContainer" type="MarginContainer" parent="Viewport/GameOverlay/Overlay/VBoxContainer/HBoxContainer/Control/MarginContainer"]
+layout_mode = 2
+
+[node name="Rect" type="TextureRect" parent="Viewport/GameOverlay/Overlay/VBoxContainer/HBoxContainer/Control/MarginContainer/MarginContainer"]
+layout_mode = 2
+texture = SubResource("ImageTexture_hpqsk")
+expand_mode = 4
+stretch_mode = 4
+
+[node name="Label" type="Label" parent="Viewport/GameOverlay/Overlay/VBoxContainer/HBoxContainer/Control/MarginContainer/MarginContainer"]
+layout_mode = 2
+text = "00"
+label_settings = SubResource("LabelSettings_td5gg")
+horizontal_alignment = 1
 
 [node name="BottomSpacer" type="Control" parent="Viewport/GameOverlay/Overlay/VBoxContainer"]
 layout_mode = 2
@@ -1010,7 +1057,7 @@ size_flags_horizontal = 3
 
 [connection signal="unselect" from="Viewport/Viewport3D/CameraPivot" to="." method="_on_camera_pivot_unselect"]
 [connection signal="pressed" from="Viewport/GameOverlay/Overlay/VBoxContainer/TopSpacer/MarginContainer/BackButton" to="." method="_on_back_button_pressed"]
-[connection signal="value_changed" from="Viewport/GameOverlay/Overlay/VBoxContainer/HBoxContainer/PercentBar" to="." method="_on_percent_bar_value_changed"]
+[connection signal="value_changed" from="Viewport/GameOverlay/Overlay/VBoxContainer/HBoxContainer/Control/PercentBar" to="." method="_on_percent_bar_value_changed"]
 [connection signal="toggled" from="MenuBar/VSplitContainer/Tabs/HBoxContainer/StatusContainer/StatusButton" to="." method="_on_status_button_toggled"]
 [connection signal="toggled" from="MenuBar/VSplitContainer/Tabs/HBoxContainer/ChatContainer/ChatButton" to="." method="_on_chat_button_toggled"]
 [connection signal="toggled" from="MenuBar/VSplitContainer/Tabs/HBoxContainer/ShopContainer/ShopButton" to="." method="_on_shop_button_toggled"]

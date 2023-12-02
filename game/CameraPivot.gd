@@ -27,6 +27,13 @@ var target = null
 
 var targetPos = null
 
+func init(gameID: int):
+	self.game = GameData.getGame(gameID)
+	
+	$FloorDisplay.add_child(game.getFloorDisplay())
+	
+	updatePos()
+
 func updatePos():
 	pos = Vector2(position.x, position.z + 100)
 

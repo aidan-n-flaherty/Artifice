@@ -58,7 +58,9 @@ private:
 
 	int userID = -1, userGameID = -1;
 	
-	unsigned int selected = -1;
+	int selected = -1;
+
+	int selectedUnits = -1;
 	
 	std::set<int> selectedSpecialists;
 	
@@ -88,7 +90,7 @@ public:
 
     ~GameInterface() {}
 
-	void init(int gameID, int userID, int startTime, Dictionary players, Dictionary settingOverrides);
+	void init(int gameID, int userID, int startTime, int playerCap, Dictionary players, Dictionary settingOverrides);
 
 	GameSettings loadSettings();
 		
@@ -124,6 +126,7 @@ public:
 	const Point& getMouse() { return mouse; }
 	void setDrag(bool drag) { this->drag = drag; }
 	bool isDragging() { return drag; }; 
+	int getSelectedUnits() { return selected != -1 ? selectedUnits : -1; }
 	PositionalObject* getSelected() { return getObj(selected); }
 	PositionalObject* getObj(int id) { return simulatedGame->getPosObject(id); }
 	PositionalNode* getNode(int id);

@@ -48,7 +48,6 @@ func _on_create_pressed():
 		"settingOverrides": {
 			"ratingConstraints": $MarginContainer/VBoxContainer/ScrollContainer/GridContainer/RatingSlider.value,
 			"activeHours": hours,
-			"simulationTimescale": simulationTimescale,
 			"simulationSpeed": (1 if simulationTimescale == "day" else 60 if simulationTimescale == "minute" else 60 * 60) * $MarginContainer/VBoxContainer/ScrollContainer/GridContainer/SpeedSlider.value
 		}
 	}
@@ -56,10 +55,11 @@ func _on_create_pressed():
 	GameData.addGame(await HTTPManager.postReq("/createMatch", data, {}))
 
 func on_players_modified(button_pressed: bool):
-	for child in $MarginContainer/VBoxContainer/ScrollContainer/GridContainer/NumPlayersButtons.get_children():
-		if child.button_pressed:
-			print(int(str(child.name)))
-			numPlayers = int(str(child.name))
+	if button_pressed:
+		for child in $MarginContainer/VBoxContainer/ScrollContainer/GridContainer/NumPlayersButtons.get_children():
+			if child.button_pressed:
+				print(int(str(child.name)))
+				numPlayers = int(str(child.name))
 
 func on_activeTimes_modified(button_pressed: bool):
 	pass
