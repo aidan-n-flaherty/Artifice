@@ -72,6 +72,7 @@ func addOrder(type, referenceID, timestamp, arguments):
 func setDisplay(scene):
 	if detailDisplay != null:
 		$Viewport/GameOverlay/Overlay/UIOverlay/Separator/ElementDisplay/VBoxContainer/Panel/MarginContainer.remove_child(detailDisplay)
+		detailDisplay= null
 	detailDisplay = scene
 
 	$Viewport/GameOverlay/Overlay/UIOverlay/Separator/ElementDisplay/VBoxContainer/Panel/MarginContainer.add_child(detailDisplay)
@@ -112,11 +113,13 @@ func selectSpecialist(specialist):
 func deselect():
 	if(detailDisplay):
 		$Viewport/GameOverlay/Overlay/UIOverlay/Separator/ElementDisplay/VBoxContainer/Panel/MarginContainer.remove_child(detailDisplay)
+		detailDisplay= null
 		$Viewport/GameOverlay/Overlay/UIOverlay/Separator/ElementDisplay/VBoxContainer/Panel.hide()
 
 func deselectSpecialist(specialist):
 	if detailDisplay and "specialistID" in detailDisplay and detailDisplay.specialistID == specialist:
 		$Viewport/GameOverlay/Overlay/UIOverlay/Separator/ElementDisplay/VBoxContainer/Panel/MarginContainer.remove_child(detailDisplay)
+		detailDisplay= null
 		$Viewport/GameOverlay/Overlay/UIOverlay/Separator/ElementDisplay/VBoxContainer/Panel.hide()
 
 func _on_percent_bar_value_changed(value):
