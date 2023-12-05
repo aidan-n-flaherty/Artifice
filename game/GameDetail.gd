@@ -1,7 +1,6 @@
 extends MarginContainer
 
 var gameID
-
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	pass # Replace with function body.
@@ -83,8 +82,36 @@ func init(gameID):
 	else:
 		$MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/Rating.visible = false
 		$MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/RatingSlider.visible = false
-	#should not be in settingOverrides
+	#rating should not be in settingOverrides
 	
+	var users = await GameData.getGameUsers(gameID)
+	var userKeys = Array(users.keys())
+	
+	var colors = SettingsDefault.getPlayerColors()
+	
+	var playerView
+	
+	for	i in userKeys:
+		var user = int(i)
+		var color = colors[user]
+		var username = users[i].username
+		
+		playerView = preload("res://Game_PlayerView.tscn").instantiate()
+		playerView.init(username, color)
+		$MarginContainer/VBoxContainer/Players/MarginContainer/PlayerList/GridContainer.add_child(playerView)
+	
+	var remaining = numPlayers - numCurrentPlayers
+	
+	for i in remaining:
+		var color = Color(0,0,0)
+		var username = "Open Slot"
+		
+		playerView = preload("res://Game_PlayerView.tscn").instantiate()
+		playerView.init(username, color)
+		$MarginContainer/VBoxContainer/Players/MarginContainer/PlayerList/GridContainer.add_child(playerView)
+	
+	if !data.hasPassword:
+		$MarginContainer/VBoxContainer/Passworded.visible = false
 	
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -97,5 +124,5 @@ func _on_back_button_pressed():
 
 
 func _on_button_pressed():
-	if await GameData.joinGame(gameID):
+	if await GameData.joinGame(gameID, $MarginContainer/VBoxContainer/Passworded/PasswordText.text):
 		GameData.goto_scene("res://MainMenu.tscn")
