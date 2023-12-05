@@ -51,8 +51,11 @@ func _process(delta):
 	else:
 		$Viewport/GameOverlay/Overlay/NotStarted.hide()
 
-	$Viewport/GameOverlay/Overlay/VBoxContainer/HBoxContainer/Control/MarginContainer/MarginContainer/Label.text = str(floor(game.getSelectedUnits() * $Viewport/GameOverlay/Overlay/VBoxContainer/HBoxContainer/Control/PercentBar.value))
-	
+	if game.getSelectedUnits() >= 0:
+		$Viewport/GameOverlay/Overlay/VBoxContainer/HBoxContainer/Control/MarginContainer/MarginContainer/Label.text = str(floor(game.getSelectedUnits() * $Viewport/GameOverlay/Overlay/VBoxContainer/HBoxContainer/Control/PercentBar.value))
+	else:
+		$Viewport/GameOverlay/Overlay/VBoxContainer/HBoxContainer/Control/MarginContainer/MarginContainer/Label.text = ""
+		
 	if game.hasEnded():
 		if not viewingEnd:
 			viewingEnd = true
@@ -71,11 +74,11 @@ func addOrder(type, referenceID, timestamp, arguments):
 
 func setDisplay(scene):
 	if detailDisplay != null:
-		$Viewport/GameOverlay/Overlay/UIOverlay/Separator/ElementDisplay/VBoxContainer/Panel/MarginContainer.remove_child(detailDisplay)
-		detailDisplay= null
+		$Viewport/GameOverlay/Overlay/UIOverlay/Separator/ElementDisplay/VBoxContainer/Panel/VBoxContainer/MarginContainer.remove_child(detailDisplay)
+	
 	detailDisplay = scene
 
-	$Viewport/GameOverlay/Overlay/UIOverlay/Separator/ElementDisplay/VBoxContainer/Panel/MarginContainer.add_child(detailDisplay)
+	$Viewport/GameOverlay/Overlay/UIOverlay/Separator/ElementDisplay/VBoxContainer/Panel/VBoxContainer/MarginContainer.add_child(detailDisplay)
 	$Viewport/GameOverlay/Overlay/UIOverlay/Separator/ElementDisplay/VBoxContainer/Panel.show()
 
 func selectVessel(vessel):
@@ -112,13 +115,13 @@ func selectSpecialist(specialist):
 	
 func deselect():
 	if(detailDisplay):
-		$Viewport/GameOverlay/Overlay/UIOverlay/Separator/ElementDisplay/VBoxContainer/Panel/MarginContainer.remove_child(detailDisplay)
+		$Viewport/GameOverlay/Overlay/UIOverlay/Separator/ElementDisplay/VBoxContainer/Panel/VBoxContainer/MarginContainer.remove_child(detailDisplay)
 		detailDisplay= null
 		$Viewport/GameOverlay/Overlay/UIOverlay/Separator/ElementDisplay/VBoxContainer/Panel.hide()
 
 func deselectSpecialist(specialist):
 	if detailDisplay and "specialistID" in detailDisplay and detailDisplay.specialistID == specialist:
-		$Viewport/GameOverlay/Overlay/UIOverlay/Separator/ElementDisplay/VBoxContainer/Panel/MarginContainer.remove_child(detailDisplay)
+		$Viewport/GameOverlay/Overlay/UIOverlay/Separator/ElementDisplay/VBoxContainer/Panel/VBoxContainer/MarginContainer.remove_child(detailDisplay)
 		detailDisplay= null
 		$Viewport/GameOverlay/Overlay/UIOverlay/Separator/ElementDisplay/VBoxContainer/Panel.hide()
 

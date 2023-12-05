@@ -14,7 +14,7 @@ func setValue(val):
 	$SubViewport/Label.text = val
 
 func setColor(color):
-	$MeshInstance3D.material_override.albedo_color = Color(color.x, color.y, color.z)
+	$MeshInstance3D.material_override.albedo_color = color
 
 func setSelection(selected):
 	$SubViewport/Label.modulate = Color(1, 1, 1) if not selected else Color(0, 0, 0)

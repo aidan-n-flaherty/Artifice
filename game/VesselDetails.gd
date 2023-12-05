@@ -23,13 +23,18 @@ func init(vessel, gameID):
 func _process(delta):
 	$VBoxContainer/HBoxContainer2/VBoxContainer/Arrival.text = "Arrives in " + Utilities.timeToStr(game.getNextArrivalEvent(vessel.getID()) - game.getTime())
 	
-	if vessel.canUndo():
+	var owns = game.ownsObj(vessel.getID())
+	
+	if owns and vessel.canUndo():
 		$VBoxContainer/HBoxContainer/Cancel.text = "Undo '" + vessel.getOriginatingOrderType() + "'"
 		$VBoxContainer/HBoxContainer/Spacer2.show()
 		$VBoxContainer/HBoxContainer/Cancel.show()
 	else:
 		$VBoxContainer/HBoxContainer/Spacer2.hide()
 		$VBoxContainer/HBoxContainer/Cancel.hide()
+	
+	get_parent().color = vessel.getColor()
+	get_parent().playerName = game.getPlayer(vessel.getOwnerID()).getName()
 
 func _on_cancel_pressed():
 	print(vessel.getOriginatingOrder())

@@ -8,6 +8,7 @@
 #include <godot_cpp/classes/texture_rect.hpp>
 #include <godot_cpp/variant/vector3.hpp>
 #include <godot_cpp/variant/string.hpp>
+#include <godot_cpp/variant/color.hpp>
 #include "../GameLogic/gameClasses/gameObjects/positional_object.h"
 #include "../GameLogic/gameClasses/order.h"
 #include <unordered_set>
@@ -77,7 +78,7 @@ public:
 
 	bool isSelected() { return selected; }
 
-	Vector3 getColor();
+	Color getColor();
 
 	bool canUndo() { return obj && obj->getOriginatingOrder() && obj->getOriginatingOrder()->getTimestamp() > currentTime; }
 

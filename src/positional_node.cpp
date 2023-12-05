@@ -19,6 +19,7 @@
 #include <godot_cpp/variant/callable.hpp>
 #include <godot_cpp/variant/string_name.hpp>
 #include <godot_cpp/classes/label3d.hpp>
+#include <godot_cpp/variant/color.hpp>
 #include <cmath>
 #include <ctime>
 #include <chrono>
@@ -30,6 +31,7 @@ using namespace godot;
 void PositionalNode::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("getID"), &PositionalNode::getID);
 	ClassDB::bind_method(D_METHOD("getUnits"), &PositionalNode::getUnits);
+	ClassDB::bind_method(D_METHOD("getOwnerID"), &PositionalNode::getOwnerID);
 	ClassDB::bind_method(D_METHOD("select"), &PositionalNode::select);
 	ClassDB::bind_method(D_METHOD("isSelected"), &PositionalNode::isSelected);
 	ClassDB::bind_method(D_METHOD("getColor"), &PositionalNode::getColor);
@@ -244,8 +246,8 @@ void PositionalNode::setSelected(bool selected) {
 	}*/
 }
 
-Vector3 PositionalNode::getColor() {
+Color PositionalNode::getColor() {
 	std::tuple<double, double, double> color = obj->hasOwner() ? obj->getSettings()->playerColors[obj->getOwnerID() % obj->getSettings()->playerColors.size()] : std::make_tuple(0.5, 0.5, 0.5);
 
-	return Vector3(std::get<0>(color), std::get<1>(color), std::get<2>(color));
+	return Color(std::get<0>(color), std::get<1>(color), std::get<2>(color));
 }

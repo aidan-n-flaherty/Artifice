@@ -44,6 +44,7 @@ void GameInterface::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("select", "id"), &GameInterface::select);
 	ClassDB::bind_method(D_METHOD("unselect"), &GameInterface::unselect);
 	ClassDB::bind_method(D_METHOD("getSelectedUnits"), &GameInterface::getSelectedUnits);
+	ClassDB::bind_method(D_METHOD("ownsObj"), &GameInterface::ownsObj);
 	ClassDB::bind_method(D_METHOD("getTarget", "x", "y"), &GameInterface::getTarget);
 	ClassDB::bind_method(D_METHOD("projectedTime", "x", "y"), &GameInterface::projectedTime);
 	ClassDB::bind_method(D_METHOD("setMouse", "x", "y"), &GameInterface::setMouse);
@@ -84,6 +85,7 @@ void GameInterface::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("getPromotionOptions"), &GameInterface::getPromotionOptions);
 	ClassDB::bind_method(D_METHOD("getPlayerIDs"), &GameInterface::getPlayerIDs);
 	ClassDB::bind_method(D_METHOD("getPlayers"), &GameInterface::getPlayers);
+	ClassDB::bind_method(D_METHOD("getPlayer"), &GameInterface::getPlayer);
 	ClassDB::bind_method(D_METHOD("getSortedPlayers"), &GameInterface::getSortedPlayers);
 	ClassDB::bind_method(D_METHOD("getCurrentSortedPlayers"), &GameInterface::getCurrentSortedPlayers);
 	ClassDB::bind_method(D_METHOD("getScore", "userID"), &GameInterface::getScore);
@@ -833,6 +835,10 @@ Array GameInterface::getNextBattleCaptures(int objID) {
 	}
 
 	return arr;
+}
+
+PlayerNode* GameInterface::getPlayer(int id) {
+	return players[id];
 }
 
 Color GameInterface::getColor(int userID) {

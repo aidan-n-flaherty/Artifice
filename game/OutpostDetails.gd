@@ -36,12 +36,14 @@ func _process(delta):
 		
 		$VBoxContainer/HBoxContainer2/VBoxContainer/Production.text = "+50 to electrical output"
 	
-	if outpost.canMine():
+	var owns = game.ownsObj(outpost.getID())
+	
+	if owns and outpost.canMine():
 		$VBoxContainer/HBoxContainer/Mine.show()
 	else:
 		$VBoxContainer/HBoxContainer/Mine.hide()
 		
-	if outpost.canUndo():
+	if owns and outpost.canUndo():
 		$VBoxContainer/HBoxContainer/Cancel.text = "Undo '" + outpost.getOriginatingOrderType() + "'"
 		$VBoxContainer/HBoxContainer/Spacer2.show()
 		$VBoxContainer/HBoxContainer/Cancel.show()
@@ -50,6 +52,9 @@ func _process(delta):
 		$VBoxContainer/HBoxContainer/Cancel.hide()
 	
 	$VBoxContainer/HBoxContainer2/Units.text = str(outpost.getUnits())
+	
+	get_parent().color = outpost.getColor()
+	get_parent().playerName = game.getPlayer(outpost.getOwnerID()).getName()
 
 
 func _on_jump_pressed():

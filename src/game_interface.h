@@ -154,6 +154,7 @@ public:
 
 	int getSpecialistType(int specialistID) { return game->getSpecialist(specialistID)->getType(); };
 
+	PlayerNode* getPlayer(int id);
 	String getSpecialistName(int specialistNum);
 	String getSpecialistDescription(int specialistNum);
 	bool canRelease(int specialistID) {
@@ -161,6 +162,7 @@ public:
 				game->getSpecialist(specialistID)->getContainer()->getOwnerID() == userGameID;
 	}
 	bool ownsSpecialist(int specialistID) { return game->getSpecialist(specialistID)->getOwnerID() == userGameID; }
+	bool ownsObj(int objID) { return game->hasPosObject(objID) && game->getPosObject(objID)->getOwnerID() == userGameID; }
 
 	double getNextArrivalEvent(int vesselID);
 	double getNextProductionEvent(int outpostID);
