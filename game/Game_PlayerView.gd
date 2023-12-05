@@ -5,9 +5,13 @@ extends Control
 func _ready():
 	pass # Replace with function body.
 func init(username, color):
-	$MarginContainer/HBoxContainer/Name.text = str(username)
+	$HBoxContainer/Name.text = str(username)
 
-	$MarginContainer/HBoxContainer/PlayerIcon.modulate = color
+	$HBoxContainer/PlayerIcon.modulate = color
+	var slightColor = color
+	slightColor.a = 0.25
+	$Panel.modulate = slightColor
+	
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
