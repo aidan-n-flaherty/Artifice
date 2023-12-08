@@ -36,11 +36,28 @@ func init(gameID):
 	var buttonPlayer = get_node(pButtonPath)
 	buttonPlayer.disabled = false
 	
-	var simT = SettingsDefault.getSimulationTimescale()
+	var simSp = SettingsDefault.getSimulationSpeed()
+	if(settings.settingOverrides.has("simulationSpeed")):
+		simSp = settings.settingOverrides["simulationSpeed"]
 	
-	if (settings.settingOverrides.has("simulationTimescale")):
-		simT = settings.settingOverrides["simulationTimescale"]
+	
+	var simT = SettingsDefault.getSimulationTimescale()
 	simT = simT.to_lower()
+	
+	if(simSp <= 2.0 and simSp >= 0.5):
+		simT = "days"
+	elif (simSp <= 120.0 and simSp >= 30.0):
+		simT = "hours"
+	elif (simSp <= 120.0*60 and simSp >= 30.0*60):
+		simT = "minutes"
+	
+	if (simT == "hours"):
+		simSp /= 60
+	elif (simT == "minutes"):
+		simSp /= 60*60
+	$MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/SpeedSlider.value = simSp
+	
+
 	
 	if (simT != "days"):
 		$MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/ActiveHours.visible = false
@@ -67,13 +84,6 @@ func init(gameID):
 		aButtonPath += str(hour)
 		var buttonAH = get_node(aButtonPath)
 		buttonAH.disabled = false
-	
-		
-	var simSp = SettingsDefault.getSimulationSpeed()
-	if(settings.settingOverrides.has("simulationSpeed")):
-		simSp = settings.settingOverrides["simulationSpeed"]
-	
-	$MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/GridContainer/SpeedSlider.value = simSp
 	
 	var ratings
 	if settings.settingOverrides.has("ratingConstraints"):

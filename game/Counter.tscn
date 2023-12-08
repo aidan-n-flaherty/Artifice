@@ -11,6 +11,7 @@ shading_mode = 0
 albedo_color = Color(0, 0, 0, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_47c2b"]
+resource_local_to_scene = true
 size = Vector3(3.5, 0.1, 3.5)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_06cfc"]
@@ -19,9 +20,11 @@ shading_mode = 0
 albedo_color = Color(0, 0, 0, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_3orpd"]
+resource_local_to_scene = true
 size = Vector3(3, 0.25, 3)
 
 [sub_resource type="BoxMesh" id="BoxMesh_rcfwq"]
+resource_local_to_scene = true
 size = Vector3(4, 0.05, 4)
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_i3e7o"]
