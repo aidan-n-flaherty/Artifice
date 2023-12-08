@@ -21,15 +21,15 @@ class PositionalNode : public Node3D {
 private:
 	PositionalObject* obj = nullptr;
 	
-	double currentTime;
+	double currentTime = 0.0;
 
-	double timeDiff;
+	double timeDiff = 0.0;
 
 	std::unordered_set<int> selectedSpecialists;
 
-	bool selected;
+	bool selected = false;
 
-	double timePassed;
+	double timePassed = 0.0;
 
 protected:
 	static void _bind_methods();

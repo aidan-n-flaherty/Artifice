@@ -525,21 +525,17 @@ shader_parameter/texture_normal = SubResource("NoiseTexture2D_4bisk")
 bg_color = Color(0, 0, 0, 0.243137)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3hxi7"]
-bg_color = Color(0.156863, 0.156863, 0.156863, 1)
-border_width_left = 6
-border_width_top = 6
-border_width_right = 6
-border_width_bottom = 6
-border_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 100
-corner_radius_top_right = 100
-corner_radius_bottom_right = 100
-corner_radius_bottom_left = 100
+bg_color = Color(0, 0, 0, 1)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(0, 0, 0, 0)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
 corner_detail = 16
-expand_margin_left = 4.0
-expand_margin_top = 4.0
-expand_margin_right = 4.0
-expand_margin_bottom = 4.0
 
 [sub_resource type="ImageTexture" id="ImageTexture_hpqsk"]
 
