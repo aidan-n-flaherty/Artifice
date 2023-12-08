@@ -4,7 +4,7 @@ var units = -1
 
 var shield = -1
 
-var selected
+var selected = false
 
 var color
 
