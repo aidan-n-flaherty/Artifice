@@ -5,6 +5,7 @@ func _ready():
 	super()
 	
 func initList():
+	GameData.loadOngoingGames()
 	gameIDs = GameData.getOpenGames()
 	
 func generateButton(id: int):

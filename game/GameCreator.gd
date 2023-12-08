@@ -2,7 +2,7 @@ extends MarginContainer
 
 var days = []
 
-var activeHours = []
+var activeHours = range(0, 24)
 
 var simulationTimescale = "days"
 
@@ -44,11 +44,11 @@ func _on_create_pressed():
 		"lobbyName": $MarginContainer/VBoxContainer/ScrollContainer/GridContainer/LobbyNameText.text,
 		"password": $MarginContainer/VBoxContainer/ScrollContainer/GridContainer/PasswordText.text,
 		"playerCap": numPlayers,
-		"startTimeDisplacement": 24 * 60 * 60 if simulationTimescale == "day" else 60 * 10 if simulationTimescale == "minute" else 30,
+		"startTimeDisplacement": 24 * 60 * 60 if simulationTimescale == "days" else 60 * 10 if simulationTimescale == "minutes" else 30,
 		"settingOverrides": {
 			"ratingConstraints": $MarginContainer/VBoxContainer/ScrollContainer/GridContainer/RatingSlider.value,
 			"activeHours": hours,
-			"simulationSpeed": (1 if simulationTimescale == "day" else 60 if simulationTimescale == "minute" else 60 * 60) * $MarginContainer/VBoxContainer/ScrollContainer/GridContainer/SpeedSlider.value
+			"simulationSpeed": (1 if simulationTimescale == "days" else 60 if simulationTimescale == "minutes" else 60 * 60) * $MarginContainer/VBoxContainer/ScrollContainer/GridContainer/SpeedSlider.value
 		}
 	}
 	
@@ -58,7 +58,6 @@ func on_players_modified(button_pressed: bool):
 	if button_pressed:
 		for child in $MarginContainer/VBoxContainer/ScrollContainer/GridContainer/NumPlayersButtons.get_children():
 			if child.button_pressed:
-				print(int(str(child.name)))
 				numPlayers = int(str(child.name))
 
 func on_activeTimes_modified(button_pressed: bool):

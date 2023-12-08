@@ -74,10 +74,10 @@ func _deferred_goto_node(node) -> void:
 	get_tree().set_current_scene(current_scene)
 
 func login():
-	#id = 3
-	#token = 5577006791947779410
-	id = 4
-	token = 8674665223082153551
+	id = 3
+	token = 5577006791947779410
+	#id = 4
+	#token = 8674665223082153551
 	
 	
 func viewGame(id: int):
@@ -153,14 +153,15 @@ func loadChats(gameID: int):
 		return chatGroup
 	
 	return []
-	
-func loadGames():
+
+func loadOpenGames():
 	var openGames = await HTTPManager.getReq("/fetchGames")
 	
 	for game in openGames: 
 		openGameIDs[int(game.gameData.id)] = true
 		gameDetails[int(game.gameData.id)] = game
-	
+
+func loadOngoingGames():
 	var ongoingGames = await HTTPManager.getReq("/fetchUserGames", {
 		"past": false
 	})
@@ -168,7 +169,8 @@ func loadGames():
 	for game in ongoingGames:
 		ongoingGameIDs[int(game.gameData.id)] = true
 		gameDetails[int(game.gameData.id)] = game
-	
+
+func loadPastGames():
 	var pastGames = await HTTPManager.getReq("/fetchUserGames", {
 		"past": true
 	})
@@ -176,6 +178,13 @@ func loadGames():
 	for game in pastGames:
 		pastGameIDs[int(game.gameData.id)] = true
 		gameDetails[int(game.gameData.id)] = game
+
+func loadGames():
+	loadOpenGames()
+	
+	loadOngoingGames()
+	
+	loadPastGames()
 
 func joinGame(id: int, password = ""):
 	var response = await HTTPManager.postReq("/joinMatch", {}, {

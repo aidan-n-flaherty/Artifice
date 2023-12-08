@@ -19,6 +19,7 @@ font_size = 30
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_bottom = -1624.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_psvyd")
@@ -77,7 +78,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 texture = ExtResource("3_cl3u5")
-expand_mode = 4
+expand_mode = 5
 stretch_mode = 5
 
 [node name="Promote" type="Button" parent="MarginContainer/HBoxContainer/MarginContainer"]
