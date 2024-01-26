@@ -3,6 +3,7 @@
 #include "game.h"
 
 #include <algorithm>
+#include <iostream>
 
 int Order::counter = 0;
 
@@ -17,7 +18,9 @@ void Order::updateOrders(Game* game, const std::multiset<Order*, OrderOrder> &or
         // if the order's reference order has already been run, then this order must have not been seen
         if(std::find_if(orders.begin(), orders.end(), [&order](Order* o) {
             return o->getID() == order->getReferenceID();
-        }) == orders.end() && order->getSenderID() != getSenderID()) order->adjustIDs(game->getObjCounter());
+        }) == orders.end() && order->getReferenceID() != getID() && order->getSenderID() != getSenderID()) {
+            order->adjustIDs(game->getObjCounter());
+        }
     }
 }
 

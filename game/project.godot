@@ -10,9 +10,9 @@ config_version=5
 
 [application]
 
-config/name="SubterfugeClone"
+config/name="Artifice"
 run/main_scene="res://MainScene.tscn"
-config/features=PackedStringArray("4.1", "Mobile")
+config/features=PackedStringArray("4.2", "Mobile")
 run/max_fps=60
 config/icon="res://icon.svg"
 

@@ -78,6 +78,12 @@ private:
 
 	bool drag = false;
 
+	bool dragged = false;
+
+	bool startDrag = false;
+
+	bool justSelect = false;
+
 	Point mouse;
 
 protected:
@@ -116,15 +122,23 @@ public:
 	bool willSendWith(SpecialistType type);
 	void setSelectedSpecialist(int id);
 	void select(int id);
+	void sendTo(int id);
+	void release(int id);
 	void setSelected(int id);
 	void unselect();
+	bool canStartDrag() { return startDrag; }
+	bool justSelected() { return justSelect; }
 	void setMouse(double x, double y) {
 		mouse = Point(game->getSettings(), x, y);
 		if(getSelected()) mouse = getSelected()->getPosition().closest(mouse);
 		else mouse.constrain();
 	}
 	const Point& getMouse() { return mouse; }
-	void setDrag(bool drag) { this->drag = drag; }
+	void setDrag(bool drag) {
+		this->drag = drag;
+		if(drag) this->dragged = true;
+		else this->startDrag = this->justSelect = false;
+	}
 	bool isDragging() { return drag; }; 
 	int getSelectedUnits() { return selected != -1 ? selectedUnits : -1; }
 	PositionalObject* getSelected() { return getObj(selected); }
@@ -155,6 +169,7 @@ public:
 	int getSpecialistType(int specialistID) { return game->getSpecialist(specialistID)->getType(); };
 
 	PlayerNode* getPlayer(int id);
+	PlayerNode* getSpecialistOwner(int specialistID) { return game->hasPlayer(game->getSpecialist(specialistID)->getOwnerID()) ? getPlayer(game->getSpecialist(specialistID)->getOwnerID()) : nullptr; }
 	String getSpecialistName(int specialistNum);
 	String getSpecialistDescription(int specialistNum);
 	bool canRelease(int specialistID) {

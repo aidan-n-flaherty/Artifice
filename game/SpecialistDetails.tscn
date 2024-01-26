@@ -19,21 +19,18 @@ font_size = 30
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_bottom = -1624.0
+offset_bottom = -1753.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_psvyd")
 
 [node name="Background" type="Panel" parent="."]
+visible = false
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_sjq4a")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
-theme_override_constants/margin_left = 50
-theme_override_constants/margin_top = 50
-theme_override_constants/margin_right = 50
-theme_override_constants/margin_bottom = 50
 
 [node name="HBoxContainer" type="HSplitContainer" parent="MarginContainer"]
 layout_mode = 2
@@ -75,10 +72,8 @@ size_flags_stretch_ratio = 0.25
 modulate = Color(0, 0, 0, 1)
 material = ExtResource("2_nlvwq")
 layout_mode = 2
-size_flags_horizontal = 3
 size_flags_vertical = 3
 texture = ExtResource("3_cl3u5")
-expand_mode = 5
 stretch_mode = 5
 
 [node name="Promote" type="Button" parent="MarginContainer/HBoxContainer/MarginContainer"]

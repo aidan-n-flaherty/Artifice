@@ -23,6 +23,12 @@ uniform int outpostsLength = 0;
 uniform float mapWidth;
 uniform float mapHeight;
 
+vec3 getTexture(vec2 pos, sampler2D tex) {
+	ivec2 size = textureSize(tex, 0);
+	
+	return vec3(0.0);
+}
+
 vec3 normal(vec2 uv, sampler2D texture_norm) {
 	float right = texture(texture_norm, uv + vec2(epsilon, 0)).r;
 	float left = texture(texture_norm, uv + vec2(-epsilon, 0)).r;

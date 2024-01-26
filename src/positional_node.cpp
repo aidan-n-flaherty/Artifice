@@ -40,6 +40,7 @@ void PositionalNode::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("getOriginatingOrder"), &PositionalNode::getOriginatingOrder);
 	ClassDB::bind_method(D_METHOD("getOriginatingOrderType"), &PositionalNode::getOriginatingOrderType);
 	ADD_SIGNAL(MethodInfo("selected", PropertyInfo(Variant::INT, "id")));
+	ADD_SIGNAL(MethodInfo("released", PropertyInfo(Variant::INT, "id")));
 }
 
 PositionalNode::PositionalNode(const StringName &file, PositionalObject* obj) {
@@ -69,6 +70,10 @@ void PositionalNode::select(Camera3D *camera, const Ref<InputEvent> &event, cons
 	
 	if(e != nullptr && e->get_button_index() == MouseButton::MOUSE_BUTTON_LEFT && e->is_pressed()) {
 		emit_signal("selected", getID());
+	}
+
+	if(e != nullptr && e->get_button_index() == MouseButton::MOUSE_BUTTON_LEFT && e->is_released()) {
+		emit_signal("released", getID());
 	}
 }
 

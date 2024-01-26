@@ -50,6 +50,12 @@ func _process(delta):
 			$MarginContainer/HBoxContainer/MarginContainer/Release.show()
 		else:
 			$MarginContainer/HBoxContainer/MarginContainer/Release.hide()
+	
+	var player = game.getSpecialistOwner(specialistID)
+	
+	if player:
+		get_parent().color = player.getColor()
+		get_parent().playerName = player.getName()
 
 func _on_promote_pressed():
 	GameData.addOrder(gameID, "PROMOTE", int(game.getReferenceID()), game.getTime(), [int(specialistID), promotionOptions[0]])

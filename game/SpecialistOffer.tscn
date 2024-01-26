@@ -1,11 +1,15 @@
-[gd_scene load_steps=6 format=3 uid="uid://cosy5s2xq3c2w"]
+[gd_scene load_steps=7 format=3 uid="uid://cosy5s2xq3c2w"]
 
 [ext_resource type="Script" path="res://SpecialistOffer.gd" id="1_r0moy"]
 [ext_resource type="Material" uid="uid://ceshq08mjed03" path="res://resources/materials/SpecialistMesh.tres" id="2_jypff"]
 [ext_resource type="Texture2D" uid="uid://b4p1418oo26f6" path="res://resources/specialistIcons/Helmsman.png" id="3_exqho"]
+[ext_resource type="Theme" uid="uid://c4m6lidwyxgc" path="res://resources/UITheme.tres" id="4_orxoy"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5mrol"]
-bg_color = Color(0.117647, 0.117647, 0.117647, 1)
+bg_color = Color(0.0823529, 0.0823529, 0.0823529, 1)
+border_width_left = 8
+border_width_top = 8
+border_width_right = 8
 corner_radius_top_left = 30
 corner_radius_top_right = 30
 corner_radius_bottom_right = 30
@@ -85,6 +89,7 @@ custom_minimum_size = Vector2(150, 50)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 8
+theme = ExtResource("4_orxoy")
 text = "Hire now"
 
 [connection signal="pressed" from="MarginContainer/HBoxContainer/MarginContainer/Button" to="." method="_on_button_pressed"]

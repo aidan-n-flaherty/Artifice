@@ -6,6 +6,8 @@ var game: GameInterface
 
 var vessel: VesselNode
 
+var vesselID: int
+
 signal battleForecastToggle(vessel)
 
 # Called when the node enters the scene tree for the first time.
@@ -14,6 +16,7 @@ func _ready():
 	
 func init(vessel, gameID):
 	self.vessel = vessel
+	self.vesselID = vessel.getID()
 	self.gameID = gameID
 	game = GameData.getGame(gameID)
 	
@@ -21,6 +24,13 @@ func init(vessel, gameID):
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	if not vessel:
+		if game.getNode(vesselID):
+			vessel = game.getNode(vesselID)
+		else:
+			$VBoxContainer/HBoxContainer2/VBoxContainer/Arrival.text = ""
+			return
+	
 	$VBoxContainer/HBoxContainer2/VBoxContainer/Arrival.text = "Arrives in " + Utilities.timeToStr(game.getNextArrivalEvent(vessel.getID()) - game.getTime())
 	
 	var owns = game.ownsObj(vessel.getID())

@@ -52,10 +52,17 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	if units != get_parent().getUnits(): $RotationInvariant/Units.setValue(str(get_parent().getUnits()))
+	if units != get_parent().getUnits(): $SubViewport/OutpostInfo.setUnits(get_parent().getUnits())
 	if shield != get_parent().getShield(): $SubViewport/OutpostInfo.setShield(get_parent().getShield(), get_parent().getMaxShield())
-	if selected != get_parent().isSelected(): $RotationInvariant/Units.setSelection(get_parent().isSelected())
-	if color != get_parent().getColor(): $RotationInvariant/Units.setColor(get_parent().getColor())
+	if selected != get_parent().isSelected():
+		$RotationInvariant/Units.setSelection(get_parent().isSelected())
+		if get_parent().isSelected():
+			$FlagSprite.modulate = Color.WHITE
+		else:
+			color = null
+	if color != get_parent().getColor():
+		$RotationInvariant/Units.setColor(get_parent().getColor())
+		$FlagSprite.modulate = get_parent().getColor()
 	
 	units = get_parent().getUnits()
 	shield = get_parent().getShield()

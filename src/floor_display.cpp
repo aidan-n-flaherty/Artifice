@@ -85,8 +85,14 @@ void FloorDisplay::_draw() {
             if(gameInterface->isDragging() && gameInterface->getSelected()) {
                 double x1 = gameInterface->getSelected()->getPositionAt(getSimulatedDiff()).getX();
                 double y1 = gameInterface->getSelected()->getPositionAt(getSimulatedDiff()).getY();
+                double deltaX = gameInterface->getMouse().getX() - x1;
+                double deltaY = gameInterface->getMouse().getY() - y1;
+                double deltaMag = sqrt(deltaX * deltaX + deltaY * deltaY);
 
-                draw_line(Vector2(x1 - x, y1 - y) * pixels, Vector2(gameInterface->getMouse().getX() - x, gameInterface->getMouse().getY() - y) * pixels, Color(0.0, 0.0, 0.0), 5.0);
+                draw_arc(Vector2(x1 - x, y1 - y) * pixels, 8, 0, UtilityFunctions::deg_to_rad(360), 32, Color(0.0, 0.0, 0.0), 3.0, true);
+                draw_line(Vector2(x1 - x, y1 - y) * pixels + 8 * Vector2(deltaX / deltaMag, deltaY / deltaMag), Vector2(gameInterface->getMouse().getX() - x, gameInterface->getMouse().getY() - y) * pixels, Color(0.0, 0.0, 0.0), 5.0);
+                draw_line(Vector2(gameInterface->getMouse().getX() - x, gameInterface->getMouse().getY() - y) * pixels, Vector2(gameInterface->getMouse().getX() + 1.5 * cos(atan2(deltaY, deltaX) + 3.14159 * 3.0/4.0) - x, gameInterface->getMouse().getY() + 1.5 * sin(atan2(deltaY, deltaX) + 3.14159 * 3.0/4.0) - y) * pixels, Color(0.0, 0.0, 0.0), 5.0);
+                draw_line(Vector2(gameInterface->getMouse().getX() - x, gameInterface->getMouse().getY() - y) * pixels, Vector2(gameInterface->getMouse().getX() + 1.5 * cos(atan2(deltaY, deltaX) - 3.14159 * 3.0/4.0) - x, gameInterface->getMouse().getY() + 1.5 * sin(atan2(deltaY, deltaX) - 3.14159 * 3.0/4.0) - y) * pixels, Color(0.0, 0.0, 0.0), 5.0);
             }
 
             for(const auto& pair : game->getVessels()) {

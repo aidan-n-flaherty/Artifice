@@ -58,6 +58,7 @@ public:
 
         if(!outpost->canRemoveSpecialists(specialistIDs) || !outpost->canRemoveUnits(numUnits)) {
             std::cout << "ORDER ERROR: insufficient specialists or units" << std::endl;
+
             return nullptr;
         }
 

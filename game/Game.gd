@@ -13,7 +13,7 @@ var viewingEnd = false
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	$Viewport/Viewport3D/CameraPivot/FloorSprite.material_override.set_shader_parameter("screen_texture", $Viewport/Viewport3D/CameraPivot/FloorDisplay.get_texture())
-	$Viewport/Viewport3D/CameraPivot/Terrain.get_surface_override_material(0).set_shader_parameter("screen_texture", $Viewport/Viewport3D/CameraPivot/SubViewport.get_texture())
+	#$Viewport/Viewport3D/CameraPivot/Terrain.get_surface_override_material(0).set_shader_parameter("screen_texture", $Viewport/Viewport3D/CameraPivot/SubViewport.get_texture())
 	
 func init(gameID):
 	self.gameID = gameID
@@ -169,8 +169,6 @@ func _on_back_button_pressed():
 
 
 func _on_camera_pivot_unselect():
-	game.unselect()
-	
 	setMenuDisplay(null, false)
 	
 	$MenuBar/VSplitContainer/Tabs/HBoxContainer/StatusContainer/StatusButton.button_pressed = false

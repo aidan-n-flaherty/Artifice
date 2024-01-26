@@ -1,14 +1,27 @@
-[gd_scene load_steps=7 format=3 uid="uid://c80qrqpvv8oji"]
+[gd_scene load_steps=11 format=3 uid="uid://c80qrqpvv8oji"]
 
 [ext_resource type="Script" path="res://AirshipMesh.gd" id="1_yg6xk"]
 [ext_resource type="PackedScene" uid="uid://ksos37w5hi7k" path="res://resources/airship/alternate_airship.blend" id="2_1e350"]
 [ext_resource type="PackedScene" uid="uid://lt6dhhn4o63l" path="res://resources/airship/airship.blend" id="3_bd5ce"]
 [ext_resource type="PackedScene" uid="uid://c3ctitj3875oy" path="res://Counter.tscn" id="3_i6xow"]
 [ext_resource type="PackedScene" uid="uid://bc5oass3i8nm1" path="res://resources/airship/airship3.blend" id="4_67n5x"]
+[ext_resource type="ArrayMesh" uid="uid://d3qsofbw0d26t" path="res://resources/airship/counter.obj" id="6_iwhv4"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_s31l7"]
 radius = 1.0
 height = 9.0
+
+[sub_resource type="FontVariation" id="FontVariation_o1pwa"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_i1pm5"]
+albedo_color = Color(0, 0, 0, 1)
+metallic = 1.0
+roughness = 0.5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5j0p0"]
+resource_local_to_scene = true
+shading_mode = 0
+disable_receive_shadows = true
 
 [node name="AirshipMesh" type="Area3D"]
 monitoring = false
@@ -34,3 +47,21 @@ transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 
 
 [node name="Units" parent="RotationInvariant" instance=ExtResource("3_i6xow")]
 transform = Transform3D(0.75, 0, 0, 0, 0.75, 0, 0, 0, 0.75, 0, 40, -40)
+visible = false
+
+[node name="UnitsLabel" type="Label3D" parent="RotationInvariant"]
+transform = Transform3D(-1, -6.18172e-08, 6.18172e-08, 2.4663e-16, 0.707107, 0.707107, -8.74228e-08, 0.707107, -0.707107, 2.08165e-12, 2, -0.8)
+text = "99"
+font = SubResource("FontVariation_o1pwa")
+font_size = 390
+
+[node name="Counter" type="MeshInstance3D" parent="."]
+transform = Transform3D(1.39, 0, 0, 0, 1.39, 0, 0, 0, 1.39, 0, 1.02743, 0)
+mesh = ExtResource("6_iwhv4")
+surface_material_override/0 = SubResource("StandardMaterial3D_i1pm5")
+
+[node name="Color" type="MeshInstance3D" parent="."]
+transform = Transform3D(1.63, 0, 0, 0, 0.7, 0, 0, 0, 1.63, 2.08165e-12, 0.893262, 2.08165e-12)
+cast_shadow = 0
+mesh = ExtResource("6_iwhv4")
+surface_material_override/0 = SubResource("StandardMaterial3D_5j0p0")

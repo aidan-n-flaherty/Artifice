@@ -44,6 +44,11 @@ func _process(delta):
 	var diff = (Time.get_unix_time_from_system() - game.getTime()) * game.getSimulationSpeed() / 3600.0
 	
 	$ActualTime.position = $CurrentTime.position + Vector2(-40 + 2 * diff, 0)
+	
+	if abs(diff) > 0.01:
+		$Label.text = Utilities.timeToStr(game.getTime() - Time.get_unix_time_from_system())
+	else:
+		$Label.text = ""
 
 func _input(event):
 	if event.is_action("drag"):

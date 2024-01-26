@@ -42,7 +42,11 @@ double getTimeMillis() {
 
 void GameInterface::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("select", "id"), &GameInterface::select);
+	ClassDB::bind_method(D_METHOD("sendTo", "id"), &GameInterface::sendTo);
+	ClassDB::bind_method(D_METHOD("release", "id"), &GameInterface::release);
 	ClassDB::bind_method(D_METHOD("unselect"), &GameInterface::unselect);
+	ClassDB::bind_method(D_METHOD("canStartDrag"), &GameInterface::canStartDrag);
+	ClassDB::bind_method(D_METHOD("justSelected"), &GameInterface::justSelected);
 	ClassDB::bind_method(D_METHOD("getSelectedUnits"), &GameInterface::getSelectedUnits);
 	ClassDB::bind_method(D_METHOD("ownsObj"), &GameInterface::ownsObj);
 	ClassDB::bind_method(D_METHOD("getTarget", "x", "y"), &GameInterface::getTarget);
@@ -63,6 +67,7 @@ void GameInterface::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("canHire"), &GameInterface::canHire);
 	ClassDB::bind_method(D_METHOD("canRelease", "specialistID"), &GameInterface::canRelease);
 	ClassDB::bind_method(D_METHOD("ownsSpecialist", "specialistID"), &GameInterface::ownsSpecialist);
+	ClassDB::bind_method(D_METHOD("getSpecialistOwner", "specialistID"), &GameInterface::getSpecialistOwner);
 	ClassDB::bind_method(D_METHOD("hasStarted"), &GameInterface::hasStarted);
 	ClassDB::bind_method(D_METHOD("hasEnded"), &GameInterface::hasEnded);
 	ClassDB::bind_method(D_METHOD("getUserGameID"), &GameInterface::getUserGameID);
@@ -94,6 +99,7 @@ void GameInterface::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("getSpecialistDescription"), &GameInterface::getSpecialistDescription);
 	ClassDB::bind_method(D_METHOD("getSpecialistType"), &GameInterface::getSpecialistType);
 	ClassDB::bind_method(D_METHOD("getFloorDisplay"), &GameInterface::getFloorDisplay);
+	ClassDB::bind_method(D_METHOD("getNode", "id"), &GameInterface::getNode);
 	ClassDB::bind_method(D_METHOD("shiftToTime", "t"), &GameInterface::shiftToTime);
 	ClassDB::bind_method(D_METHOD("bulkAddOrder", "type", "ID", "referenceID", "timestamp", "senderID", "arguments", "argCount"), &GameInterface::bulkAddOrder);
 	ClassDB::bind_method(D_METHOD("endBulkAdd"), &GameInterface::endBulkAdd);
@@ -285,6 +291,7 @@ void GameInterface::update() {
 				newVessel->setReference(pair.second);
 				vessels[pair.first] = newVessel;
 				newVessel->connect("selected", Callable(this, "select"), Object::CONNECT_DEFERRED);
+				newVessel->connect("released", Callable(this, "release"), Object::CONNECT_DEFERRED);
 				add_child(newVessel);
 			}
 		}
@@ -297,6 +304,7 @@ void GameInterface::update() {
 				newOutpost->setReference(pair.second);
 				outposts[pair.first] = newOutpost;
 				newOutpost->connect("selected", Callable(this, "select"), Object::CONNECT_DEFERRED);
+				newOutpost->connect("released", Callable(this, "release"), Object::CONNECT_DEFERRED);
 				add_child(newOutpost);
 			}
 		}
@@ -332,9 +340,11 @@ PositionalNode* GameInterface::getNode(int id) {
 
 bool GameInterface::willSendWith(SpecialistType type) {
 	if(!getSelected()) return false;
+	
+	Vessel* v = dynamic_cast<Vessel*>(getSelected());
 
 	for(Specialist* s : getSelected()->getSpecialists()) {
-		if(s->getType() == type && s->getOwnerID() == getUserGameID() && selectedSpecialists.find(s->getID()) != selectedSpecialists.end()) {
+		if(s->getType() == type && s->getOwnerID() == getUserGameID() && (v || selectedSpecialists.find(s->getID()) != selectedSpecialists.end())) {
 			return true;
 		}
 	}
@@ -342,20 +352,17 @@ bool GameInterface::willSendWith(SpecialistType type) {
 	return false;
 }
 
-// event propagated from positional nodes, occurs when something is clicked on
-void GameInterface::select(int id) {
-	// selecting the same thing deselects
-	if(getSelected() && id == getSelected()->getID()) {
-		unselect();
-		
+void GameInterface::release(int id) {
+	bool didDrag = dragged;
+	dragged = false;
+	startDrag = false;
+
+	if(didDrag) {
 		return;
 	}
+}
 
-	if(game->hasSpecialist(id)) {
-		setSelectedSpecialist(id);
-		return;
-	}
-
+void GameInterface::sendTo(int id) {
 	PositionalObject* target = getObj(id);
 
 	double timeDiff = current - game->getTime();
@@ -385,8 +392,6 @@ void GameInterface::select(int id) {
 			}
 
 			emit_signal("addOrder", "SEND", game->getReferenceID(), current, arguments);
-
-			unselect();
 			
 			return;
 		} else if(v1) {
@@ -400,14 +405,36 @@ void GameInterface::select(int id) {
 			for(int i = 0; i < 2; i++) arguments.push_back(parameters[i]);
 
 			emit_signal("addOrder", "REROUTE", game->getReferenceID(), current, arguments);
-
-			unselect();
 			
 			return;
 		}
 	}
+}
+
+// event propagated from positional nodes, occurs when something is clicked on
+void GameInterface::select(int id) {
+	justSelect = true;
+
+	if(getSelected() && id == getSelected()->getID()) {
+		Vessel* v1 = dynamic_cast<Vessel*>(getSelected());
+
+		if(v1) startDrag = willSendWith(SpecialistType::NAVIGATOR);
+		else startDrag = true;
+
+		return;
+	}
+
+	if(game->hasSpecialist(id)) {
+		setSelectedSpecialist(id);
+		return;
+	}
+
+	Vessel* v1 = dynamic_cast<Vessel*>(getObj(id));
 
 	setSelected(id);
+	
+	if(v1) startDrag = willSendWith(SpecialistType::NAVIGATOR);
+	else startDrag = true;
 }
 
 void GameInterface::unselect() {
@@ -476,7 +503,7 @@ void GameInterface::setSelectedSpecialist(int id) {
 	if(!owned) selectedSpecialists.clear();
 	
 	if(selected) {
-		setSelected(containerID);
+		select(containerID);
 		selectedSpecialists.insert(id);
 		emit_signal("selectSpecialist", id);
 	} else {
