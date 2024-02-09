@@ -4,7 +4,7 @@ import sys
 import glob
 
 env = SConscript("godot-cpp/SConstruct")
-
+env.Append(CXXFLAGS=["-fexceptions"])
 # For reference:
 # - CCFLAGS are compilation flags shared between C and C++
 # - CFLAGS are for C-specific compilation flags
