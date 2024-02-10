@@ -1,7 +1,70 @@
-[gd_scene load_steps=3 format=3 uid="uid://ck0lv8v544t6x"]
+[gd_scene load_steps=7 format=3 uid="uid://ck0lv8v544t6x"]
 
 [ext_resource type="PackedScene" uid="uid://44oxio5mi3yi" path="res://GameList.tscn" id="1_4qlik"]
 [ext_resource type="Script" path="res://OpenGameList.gd" id="1_j6ila"]
+[ext_resource type="Theme" uid="uid://bfwpaonloeco5" path="res://resources/theme.tres" id="3_ildih"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mjsbn"]
+bg_color = Color(0.4, 0.717647, 0.133333, 1)
+border_width_left = 10
+border_width_top = 10
+border_width_right = 10
+border_width_bottom = 10
+border_color = Color(0.32549, 0.733333, 0.129412, 0.560784)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+corner_detail = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f1nha"]
+bg_color = Color(0.329412, 0.596078, 0.113725, 1)
+border_width_left = 10
+border_width_top = 10
+border_width_right = 10
+border_width_bottom = 10
+border_color = Color(0.239216, 0.545098, 0.0980392, 0.560784)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+corner_detail = 12
+
+[sub_resource type="LabelSettings" id="LabelSettings_w8p7o"]
+font_size = 25
+outline_size = 3
 
 [node name="OpenGameList" instance=ExtResource("1_4qlik")]
 script = ExtResource("1_j6ila")
+
+[node name="RankedQueue" type="MarginContainer" parent="VBoxContainer" index="0"]
+layout_mode = 2
+
+[node name="RankedUnselected" type="Button" parent="VBoxContainer/RankedQueue" index="0"]
+layout_mode = 2
+theme = ExtResource("3_ildih")
+
+[node name="RankedSelected" type="Button" parent="VBoxContainer/RankedQueue" index="1"]
+visible = false
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_mjsbn")
+theme_override_styles/hover = SubResource("StyleBoxFlat_f1nha")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_f1nha")
+
+[node name="Margin" type="MarginContainer" parent="VBoxContainer/RankedQueue" index="2"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 30
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 30
+
+[node name="Title" type="Label" parent="VBoxContainer/RankedQueue/Margin" index="0"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Quick Play (Ranked)"
+label_settings = SubResource("LabelSettings_w8p7o")
+horizontal_alignment = 1
+
+[connection signal="pressed" from="VBoxContainer/RankedQueue/RankedUnselected" to="." method="_on_ranked_unselected_pressed"]
+[connection signal="pressed" from="VBoxContainer/RankedQueue/RankedSelected" to="." method="_on_ranked_selected_pressed"]

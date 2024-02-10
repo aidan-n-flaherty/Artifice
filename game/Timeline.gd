@@ -45,7 +45,7 @@ func _process(delta):
 	
 	$ActualTime.position = $CurrentTime.position + Vector2(-40 + 2 * diff, 0)
 	
-	if abs(diff) > 0.01:
+	if abs(diff) > 0.05:
 		$Label.text = Utilities.timeToStr(game.getTime() - Time.get_unix_time_from_system())
 	else:
 		$Label.text = ""
