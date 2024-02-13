@@ -12,7 +12,7 @@ var timer: float
 func _ready():
 	pass
 
-func init(token: int):
+func init(token: String):
 	socket = WebSocketPeer.new()
 	var err = socket.connect_to_url(websocket_url + "?token=" + str(token))
 	

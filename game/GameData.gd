@@ -8,6 +8,8 @@ signal userChanged
 
 signal chatChanged(chatID)
 
+signal queuesChanged
+
 var Game = preload("res://Game.tscn")
 
 var GameDetail = preload("res://GameDetail.tscn")
@@ -15,6 +17,8 @@ var GameDetail = preload("res://GameDetail.tscn")
 var currentTab = null
 
 var current_scene = null
+
+var queues = {}
 
 var openGameIDs = {}
 
@@ -34,7 +38,7 @@ var chatGroups = {}
 
 var id: int
 
-var token: int
+var token: String
 
 var user
 
@@ -75,10 +79,11 @@ func _deferred_goto_node(node) -> void:
 
 func login():
 	#id = 3
-	#token = 5577006791947779410
-	id = 4
-	token = 8674665223082153551
-	
+	#token = "5577006791947779410"
+	#id = 4
+	#token = "8674665223082153551"
+	id = 5
+	token = "15352856648520921629"
 	
 func viewGame(id: int):
 	if not hasGame(id):
@@ -154,6 +159,17 @@ func loadChats(gameID: int):
 	
 	return []
 
+func loadQueues():
+	var statuses = await HTTPManager.getReq("/fetchQueues")
+	
+	queues = {}
+	
+	if statuses:
+		for status in statuses:
+			queues[status.queueName] = status
+	
+	return queues
+
 func loadOpenGames():
 	var openGames = await HTTPManager.getReq("/fetchGames")
 	
@@ -185,6 +201,18 @@ func loadGames():
 	loadOngoingGames()
 	
 	loadPastGames()
+
+func joinQueue(queueType: String):
+	if await HTTPManager.postReq("/joinQueue", {}, {
+		"queueType": queueType,
+	}):
+		emit_signal("queuesChanged")
+
+func leaveQueue(queueType: String):
+	if await HTTPManager.postReq("/leaveQueue", {}, {
+		"queueType": queueType,
+	}):
+		emit_signal("queuesChanged")
 
 func joinGame(id: int, password = ""):
 	var response = await HTTPManager.postReq("/joinMatch", {}, {
@@ -353,6 +381,9 @@ func getChats(gameID: int):
 	
 func getChat(chatID: int):
 	return chats[chatID]
+
+func getQueue(queueType: String):
+	return queues[queueType]
 
 func getGameDetails(id: int):
 	return gameDetails[id]

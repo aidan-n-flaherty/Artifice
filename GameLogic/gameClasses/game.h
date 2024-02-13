@@ -126,6 +126,7 @@ public:
     void addEvent(Event* e);
 
     std::shared_ptr<Game> removeOrder(int ID);
+    void addOrder(const std::string &type, int ID, int referenceID, double timestamp, int senderID, int argumentIDs[], int argCount);
     std::shared_ptr<Game> processOrder(const std::string &type, int ID, int referenceID, double timestamp, int senderID, int argumentIDs[], int argCount);
     
     void removeVessel(Vessel* v);

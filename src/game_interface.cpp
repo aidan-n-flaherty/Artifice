@@ -161,15 +161,6 @@ void GameInterface::init(int gameID, int userID, int startTime, int playerCap, D
 	settings = loadSettings();
 	completeGame = std::shared_ptr<Game>(new Game(settings, userID, startTime, startTime + simulationBuffer / settings.simulationSpeed, playerMap, 42083, true));
 
-	/*for(int i = 0; i < 30; i++) {
-		std::list<int> specialists;
-		completeGame->addOrder(new SendOrder(current + i * 20, 2, 1, specialists, 7, 5, completeGame->getReferenceID()));
-	}
-	for(int i = 0; i < 30; i++) {
-		std::list<int> specialists;
-		completeGame->addOrder(new SendOrder(current + 10 + i * 20, 2, 1, specialists, 7, 3, completeGame->getReferenceID()));
-	}*/
-
 	completeGame->run();
 	nextEndState = completeGame->getNextEndState();
 

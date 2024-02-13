@@ -48,7 +48,7 @@ int Outpost::getShieldAt(double& fractionalShield, double timeDiff) const {
 
     double shieldCharge = this->shieldCharge;
 
-    if(getOwnerID() == -1) return shieldCharge;
+    if(!hasOwner()) return shieldCharge;
 
     fractionalShield += timeDiff * (getMaxShield() / (48.0 * 60 * 60));
     if(controlsSpecialist(SpecialistType::TINKERER)) fractionalShield -= timeDiff * (3.0 / (60 * 60));
@@ -84,7 +84,11 @@ int Outpost::removeShield(int amount) {
 }
 
 int Outpost::getMaxShield() const {
-    int shield = maxShieldCharge + getOwner()->globalMaxShield();
+    int shield = maxShieldCharge;
+    
+    if(!hasOwner()) return shield;
+    
+    shield += getOwner()->globalMaxShield();
 
     if(controlsSpecialist(SpecialistType::QUEEN)) shield += 20;
 
@@ -102,13 +106,15 @@ int Outpost::getFireRange() const {
 int Outpost::getSonarRange() const {
     int range = getSettings()->defaultSonar;
 
+    if(!hasOwner()) return range;
+
     range = int((getOwner()->globalSonar() + 0.5 * controlsSpecialist(SpecialistType::PRINCESS)) * range);
 
     return range;
 }
 
 int Outpost::getProductionAmount() {
-    if(!getOwner()) return 0;
+    if(!hasOwner()) return 0;
 
     int productionAmount = getOwner()->globalProductionAmount();
     productionAmount += 6 * specialistCount(SpecialistType::FOREMAN);

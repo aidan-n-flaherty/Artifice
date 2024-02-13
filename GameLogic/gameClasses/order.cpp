@@ -16,9 +16,9 @@ int Order::counter = 0;
 void Order::updateOrders(Game* game, const std::multiset<Order*, OrderOrder> &orders) const {
     for(auto &order : orders) {
         // if the order's reference order has already been run, then this order must have not been seen
-        if(std::find_if(orders.begin(), orders.end(), [&order](Order* o) {
+        if(order->getReferenceID() != getID() && order->getSenderID() != getSenderID() && std::find_if(orders.begin(), orders.end(), [&order](Order* o) {
             return o->getID() == order->getReferenceID();
-        }) == orders.end() && order->getReferenceID() != getID() && order->getSenderID() != getSenderID()) {
+        }) == orders.end()) {
             order->adjustIDs(game->getObjCounter());
         }
     }

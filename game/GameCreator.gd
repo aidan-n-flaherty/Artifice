@@ -44,11 +44,11 @@ func _on_create_pressed():
 		"lobbyName": $MarginContainer/VBoxContainer/ScrollContainer/GridContainer/LobbyNameText.text,
 		"password": $MarginContainer/VBoxContainer/ScrollContainer/GridContainer/PasswordText.text,
 		"playerCap": numPlayers,
-		"startTimeDisplacement": 24 * 60 * 60 if simulationTimescale == "days" else 60 * 10 if simulationTimescale == "minutes" else 30,
+		"startTimeDisplacement": 24 * 60 * 60 if simulationTimescale == "days" else 60 * 10 if simulationTimescale == "hours" else 30,
 		"settingOverrides": {
 			"ratingConstraints": $MarginContainer/VBoxContainer/ScrollContainer/GridContainer/RatingSlider.value,
 			"activeHours": hours,
-			"simulationSpeed": (1 if simulationTimescale == "days" else 60 if simulationTimescale == "minutes" else 60 * 60) * $MarginContainer/VBoxContainer/ScrollContainer/GridContainer/SpeedSlider.value
+			"simulationSpeed": (1 if simulationTimescale == "days" else 60 if simulationTimescale == "hours" else 60 * 60) * $MarginContainer/VBoxContainer/ScrollContainer/GridContainer/SpeedSlider.value
 		}
 	}
 	

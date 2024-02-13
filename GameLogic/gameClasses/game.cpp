@@ -575,9 +575,54 @@ std::shared_ptr<Game> Game::removeOrder(int ID) {
     return returnVal;
 }
 
-std::shared_ptr<Game> Game::processOrder(const std::string &type, int ID, int referenceID, double timestamp, int senderID, int arguments[], int argCount) {
+void Game::addOrder(const std::string &type, int ID, int referenceID, double timestamp, int senderID, int arguments[], int argCount) {
     double time = timestamp;
 
+    std::list<int> argumentIDs;
+    for(int i = 0; i < argCount; i++) argumentIDs.push_back(arguments[i]);
+
+    if(type == "SEND" && argumentIDs.size() >= 3) {
+        int numUnits = argumentIDs.front();
+        argumentIDs.pop_front();
+        int originID = argumentIDs.front();
+        argumentIDs.pop_front();
+        int targetID = argumentIDs.front();
+        argumentIDs.pop_front();
+        addOrder(new SendOrder(ID, time, senderID, numUnits, argumentIDs, originID, targetID, referenceID));
+    } else if(type == "HIRE" && argumentIDs.size() >= 1) {
+        int specialistID = argumentIDs.front();
+        argumentIDs.pop_front();
+        addOrder(new HireOrder(ID, time, senderID, specialistID, referenceID));
+    } else if(type == "RELEASE" && argumentIDs.size() >= 1) {
+        int specialistID = argumentIDs.front();
+        argumentIDs.pop_front();
+        addOrder(new ReleaseOrder(ID, time, senderID, specialistID, referenceID));
+    } else if(type == "GIFT" && argumentIDs.size() >= 1) {
+        int vesselID = argumentIDs.front();
+        argumentIDs.pop_front();
+        addOrder(new GiftOrder(ID, time, senderID, vesselID, referenceID));
+    } else if(type == "PROMOTE" && argumentIDs.size() >= 2) {
+        int specialistID = argumentIDs.front();
+        argumentIDs.pop_front();
+        int promoteID = argumentIDs.front();
+        argumentIDs.pop_front();
+        addOrder(new PromoteOrder(ID, time, senderID, specialistID, promoteID, referenceID));
+    } else if(type == "REROUTE" && argumentIDs.size() >= 2) {
+        int vesselID = argumentIDs.front();
+        argumentIDs.pop_front();
+        int targetID = argumentIDs.front();
+        argumentIDs.pop_front();
+        addOrder(new RerouteOrder(ID, time, senderID, vesselID, targetID, referenceID));
+    } else if(type == "MINE" && argumentIDs.size() >= 1) {
+        int outpostID = argumentIDs.front();
+        argumentIDs.pop_front();
+        addOrder(new MineOrder(ID, time, senderID, outpostID, referenceID));
+    }  else {
+        std::cout << "Unknown order type" << std::endl;
+    }
+}
+
+std::shared_ptr<Game> Game::processOrder(const std::string &type, int ID, int referenceID, double timestamp, int senderID, int arguments[], int argCount) {
     std::list<int> argumentIDs;
     for(int i = 0; i < argCount; i++) argumentIDs.push_back(arguments[i]);
 
@@ -587,45 +632,7 @@ std::shared_ptr<Game> Game::processOrder(const std::string &type, int ID, int re
         if(o->getID() == ID) return game;
     }
 
-    if(type == "SEND" && argumentIDs.size() >= 3) {
-        int numUnits = argumentIDs.front();
-        argumentIDs.pop_front();
-        int originID = argumentIDs.front();
-        argumentIDs.pop_front();
-        int targetID = argumentIDs.front();
-        argumentIDs.pop_front();
-        game->addOrder(new SendOrder(ID, time, senderID, numUnits, argumentIDs, originID, targetID, referenceID));
-    } else if(type == "HIRE" && argumentIDs.size() >= 1) {
-        int specialistID = argumentIDs.front();
-        argumentIDs.pop_front();
-        game->addOrder(new HireOrder(ID, time, senderID, specialistID, referenceID));
-    } else if(type == "RELEASE" && argumentIDs.size() >= 1) {
-        int specialistID = argumentIDs.front();
-        argumentIDs.pop_front();
-        game->addOrder(new ReleaseOrder(ID, time, senderID, specialistID, referenceID));
-    } else if(type == "GIFT" && argumentIDs.size() >= 1) {
-        int vesselID = argumentIDs.front();
-        argumentIDs.pop_front();
-        game->addOrder(new GiftOrder(ID, time, senderID, vesselID, referenceID));
-    } else if(type == "PROMOTE" && argumentIDs.size() >= 2) {
-        int specialistID = argumentIDs.front();
-        argumentIDs.pop_front();
-        int promoteID = argumentIDs.front();
-        argumentIDs.pop_front();
-        game->addOrder(new PromoteOrder(ID, time, senderID, specialistID, promoteID, referenceID));
-    } else if(type == "REROUTE" && argumentIDs.size() >= 2) {
-        int vesselID = argumentIDs.front();
-        argumentIDs.pop_front();
-        int targetID = argumentIDs.front();
-        argumentIDs.pop_front();
-        game->addOrder(new RerouteOrder(ID, time, senderID, vesselID, targetID, referenceID));
-    } else if(type == "MINE" && argumentIDs.size() >= 1) {
-        int outpostID = argumentIDs.front();
-        argumentIDs.pop_front();
-        game->addOrder(new MineOrder(ID, time, senderID, outpostID, referenceID));
-    }  else {
-        std::cout << "Unknown order type" << std::endl;
-    }
+    game->addOrder(type, ID, referenceID, timestamp, senderID, arguments, argCount);
 
     return game;
 }
