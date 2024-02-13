@@ -74,10 +74,10 @@ func _deferred_goto_node(node) -> void:
 	get_tree().set_current_scene(current_scene)
 
 func login():
-	id = 3
-	token = 5577006791947779410
-	#id = 4
-	#token = 8674665223082153551
+	#id = 3
+	#token = 5577006791947779410
+	id = 4
+	token = 8674665223082153551
 	
 	
 func viewGame(id: int):
