@@ -27,7 +27,7 @@ void fragment() {
 	
 	vec3 grad = texture(gradient, UV).rgb;
 	
-	ALPHA = pow(grad.r, 4);
+	ALPHA = pow(grad.r, 2);
 	//if(grad.r > 0.5) ALPHA += grad.r - 0.5;
 	//if(grad.r < 0.5) ALPHA -= (0.5 - grad.r) * c.r * c.r;
 	

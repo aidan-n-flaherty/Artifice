@@ -88,6 +88,7 @@ func _unhandled_input(event):
 		else:
 			if selectedNode and event.position == mouse_start_pos and not game.justSelected():
 				game.unselect()
+				emit_signal("unselect")
 			if not selectedNode and event.position == mouse_start_pos and not game.justSelected():
 				emit_signal("unselect")
 			

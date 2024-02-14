@@ -95,10 +95,6 @@ horizontal_scroll_mode = 0
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="blocker" type="ColorRect" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer"]
-layout_mode = 2
-color = Color(1, 0.168627, 0.486275, 0)
-
 [node name="GridContainer" type="GridContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -559,6 +555,10 @@ size_flags_horizontal = 3
 text = "2000"
 label_settings = SubResource("LabelSettings_4guad")
 horizontal_alignment = 2
+
+[node name="blocker" type="ColorRect" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer"]
+layout_mode = 2
+color = Color(1, 0.168627, 0.486275, 0)
 
 [node name="Players" type="ScrollContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2

@@ -7,10 +7,12 @@ func _ready():
 	super()
 	
 func initList():
-	GameData.loadOngoingGames()
+	GameData.loadOpenGames()
 	gameIDs = GameData.getOpenGames()
 	
 	GameData.queuesChanged.connect(updateQueues)
+	
+	setValues()
 	updateQueues()
 	
 func generateButton(id: int):
@@ -24,20 +26,31 @@ func _process(delta):
 	pass
 
 func updateQueues():
-	queues = await GameData.loadQueues()
+	await GameData.loadQueues()
 	
-	$VBoxContainer/RankedQueue/RankedSelected.visible = queues.has("ranked")
-	$VBoxContainer/RankedQueue/RankedUnselected.visible = not queues.has("ranked")
+	setValues()
 	
-	if(queues.has("ranked")):
-		$VBoxContainer/RankedQueue/Margin/Title.text = "Quick Play (Ranked), " + str(queues["ranked"].playerCount) + " out of n"
+func setValues():
+	var quickRanked = GameData.getQueue("quickRanked")
+	
+	$VBoxContainer/RankedQueue/RankedSelected.visible = quickRanked != null
+	$VBoxContainer/RankedQueue/RankedUnselected.visible = quickRanked == null
+	$VBoxContainer/RankedQueue/RankedJoining.visible = false
+	
+	if quickRanked:
+		$VBoxContainer/RankedQueue/Margin/Title.text = "Quick Play (Ranked), " + str(quickRanked.playerCount) + " out of " + str(quickRanked.playerCap)
 	else:
 		$VBoxContainer/RankedQueue/Margin/Title.text = "Quick Play (Ranked)"
 
 
 func _on_ranked_selected_pressed():
-	GameData.leaveQueue("ranked")
+	GameData.leaveQueue("quickRanked")
 
 
 func _on_ranked_unselected_pressed():
-	GameData.joinQueue("ranked")
+	$VBoxContainer/RankedQueue/Margin/Title.text = "Joining Queue..."
+	
+	$VBoxContainer/RankedQueue/RankedUnselected.visible = false
+	$VBoxContainer/RankedQueue/RankedJoining.visible = true
+	
+	GameData.joinQueue("quickRanked")

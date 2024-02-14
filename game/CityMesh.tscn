@@ -10,7 +10,7 @@
 [ext_resource type="PackedScene" uid="uid://cqnguh8jayx14" path="res://resources/outpost/factory.blend" id="4_4y88t"]
 [ext_resource type="PackedScene" uid="uid://c6pmsi0oppnyp" path="res://resources/outpost/generator.blend" id="4_fmwvu"]
 [ext_resource type="Shader" path="res://Shield.gdshader" id="4_od3lx"]
-[ext_resource type="ArrayMesh" uid="uid://dse5e4gp5j6j3" path="res://resources/outpost/shield.obj" id="5_k25pb"]
+[ext_resource type="ArrayMesh" uid="uid://ilkuovqpo5j0" path="res://resources/outpost/shieldAlternate.obj" id="5_3gja1"]
 [ext_resource type="Script" path="res://OutpostInfo.gd" id="7_82d0g"]
 [ext_resource type="Texture2D" uid="uid://c4qhl5pkr6yj0" path="res://resources/images/banner.png" id="12_6c5ig"]
 
@@ -22,11 +22,12 @@ height = 16.0
 radius = 4.0
 
 [sub_resource type="Gradient" id="Gradient_qw4cr"]
+interpolation_mode = 2
 colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_64ntb"]
 gradient = SubResource("Gradient_qw4cr")
-fill_from = Vector2(0.977273, 0.549242)
+fill_from = Vector2(1, 0.762667)
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_j3lpt"]
 frequency = 0.005
@@ -206,7 +207,7 @@ transform = Transform3D(-1, 3.48787e-16, -8.74228e-08, 3.48787e-16, 1, -3.48787e
 [node name="shield" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
 material_override = SubResource("ShaderMaterial_xgba1")
-mesh = ExtResource("5_k25pb")
+mesh = ExtResource("5_3gja1")
 
 [node name="City" type="Node3D" parent="."]
 visible = false

@@ -232,6 +232,15 @@ func joinGame(id: int, password = ""):
 	
 	return true
 
+func openQuickMatch(id: int, password = ""):
+	var game = await HTTPManager.getReq("/fetchGameDetails", {
+		"gameID": id
+	})
+	
+	if game:
+		addGame(game)
+		viewGame(id)
+
 func addGame(game):
 	ongoingGameIDs[int(game.gameData.id)] = true
 	gameDetails[int(game.gameData.id)] = game
@@ -352,17 +361,18 @@ func verifyEnd(gameID: int):
 		"gameID": gameID
 	}):
 		gameDetails[gameID].gameData.finished = true
-		if openGameIDs.has(gameID):
-			openGameIDs.erase(gameID)
-		if pastGameIDs.has(gameID):
-			pastGameIDs[gameID] = true
+		if ongoingGameIDs.has(gameID):
+			ongoingGameIDs.erase(gameID)
+		pastGameIDs[gameID] = true
 		return true
 	
 	return false
 	
 func viewEnd(gameID: int):
 	WebSocketManager.sendMessage("[VIEWGAMEEND]" + str(gameID))
+	
 	emit_signal("gamesChanged")
+	
 	
 func isFinished(gameID: int):
 	return gameDetails[id].gameData.finished
@@ -383,7 +393,7 @@ func getChat(chatID: int):
 	return chats[chatID]
 
 func getQueue(queueType: String):
-	return queues[queueType]
+	return queues[queueType] if queues.has(queueType) else null
 
 func getGameDetails(id: int):
 	return gameDetails[id]
