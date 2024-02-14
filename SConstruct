@@ -16,6 +16,7 @@ env.Append(CXXFLAGS=["-fexceptions"])
 # tweak this if you want to use different folders, or more folders, to store your source code in.
 env.Append(CPPPATH=["src/"])
 env.Append(CCFLAGS=["-w"])
+env.Append(CXXFLAGS=["-fexceptions"])
 sources = Glob("src/*.cpp") + glob.glob('GameLogic/**/*.cpp', recursive=True)
 
 if env["platform"] == "macos":

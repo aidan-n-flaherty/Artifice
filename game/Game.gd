@@ -137,6 +137,7 @@ func setMenuDisplay(scene, select):
 		menuDisplay = scene
 		menuDisplay.show()
 		$Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel.show()
+		$Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel/AnimationPlayer.play("slide_up")
 	else:
 		$Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel.hide()
 
