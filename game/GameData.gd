@@ -107,6 +107,9 @@ func loadSelf():
 	
 	self.user = user
 	
+func editSelf(user):
+	return await HTTPManager.putReq("/editSelf", user, {})
+	
 func loadUser(userID: int):
 	var user = await HTTPManager.getReq("/fetchUser", {
 		"id": userID

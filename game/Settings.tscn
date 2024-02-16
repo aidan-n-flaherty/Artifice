@@ -64,16 +64,6 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "-1"
 
-[node name="Password" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/GridContainer"]
-layout_mode = 2
-text = "Password"
-
-[node name="PasswordText" type="LineEdit" parent="MarginContainer/ScrollContainer/VBoxContainer/GridContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Test"
-secret = true
-
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
@@ -162,3 +152,5 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_u21hr")
 
 [node name="PastGameList" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/VBoxContainer/MarginContainer" instance=ExtResource("2_kldvo")]
 layout_mode = 2
+
+[connection signal="text_changed" from="MarginContainer/ScrollContainer/VBoxContainer/GridContainer/UsernameText" to="." method="_on_username_text_text_changed"]

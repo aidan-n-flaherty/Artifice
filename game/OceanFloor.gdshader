@@ -118,14 +118,7 @@ void fragment() {
 	float x = (UV.x - 0.5) * cameraSize - NODE_POSITION_WORLD.x;
 	float y = (UV.y - 0.5) * cameraSize * meshHeight/meshWidth - NODE_POSITION_WORLD.z;
 	vec2 pos = vec2(x, y);
-	
-	while(x > 10.0) x -= 20.0;
-	while(x < -10.0) x += 20.0;
-	while(y > 10.0) y -= 20.0;
-	while(y < -10.0) y += 20.0;
-	
-	ALBEDO = vec3((x < 0.0 ? 1.0 : -1.0) * (y > 0.0 ? 1.0 : -1.0));
-	
+
 	float rock = getTexture(pos, rockTexture).r;
 	
 	float ridge = getTexture(pos, ridgeTexture).r;
@@ -142,6 +135,9 @@ void fragment() {
 	
 	if(ravine > 0.8) val -= ravine - 0.8;
 	
+	METALLIC = 0.5;
+	ROUGHNESS = 0.75;
+	
 	vec3 normal = 0.5 * (getTexture(pos, detailedNormal).rgb - getTexture(pos, ridgeNormal).rgb) + 0.5 * getTexture(pos, stoneNormal).rgb + 0.5 * getTexture(pos, largeRidgeNormal).rgb;
 	
 	
@@ -156,10 +152,12 @@ void fragment() {
 		while(dY < -mapHeight/2.0) dY += mapHeight;
 		
 		float mag = sqrt(dX * dX + dY * dY);
-		if(mag < 20.0) {
-			normal *= mag/20.0;
-			val *= max(0.0, -1.0 + mag/10.0);
-			METALLIC = 1.0 - max(0.0, -1.0 + mag/10.0);
+		float radius = 20.0;
+		if(mag < radius) {
+			normal *= mag/radius;
+			val *= max(0.0, -1.0 + mag/radius*2.0);
+			ROUGHNESS = max(ROUGHNESS, 1.0 - max(0.0, -1.0 + mag/radius*2.0));
+			METALLIC = max(METALLIC, 1.0 - max(0.0, -1.0 + mag/radius*2.0));
 		}
 	}
 	

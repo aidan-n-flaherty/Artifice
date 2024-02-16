@@ -1,6 +1,7 @@
 shader_type spatial;
 
 render_mode unshaded;
+render_mode cull_disabled;
 
 uniform sampler2D screen_texture;
 
@@ -31,7 +32,8 @@ void fragment() {
 	//if(grad.r > 0.5) ALPHA += grad.r - 0.5;
 	//if(grad.r < 0.5) ALPHA -= (0.5 - grad.r) * c.r * c.r;
 	
-	ALBEDO = vec3(c.r, c.g, c.b) * 0.75 + 1.0 * min(grad.r, 0.0) + vec3(0.25 * mix(displacement - 0.5, displacement - 0.5, 0.5)) * 0.25;
+	ALBEDO = 0.5 + vec3(c.r, c.g, c.b) * 0.5 + 0.5 * min(grad.r, 0.0) + vec3(0.25 * mix(displacement - 0.5, displacement - 0.5, 0.5)) * 0.25;
+	ALPHA *= 0.5 * ALBEDO.r;
 	
 	if(grad.r > 0.75) ALBEDO = vec3(max(ALBEDO.r, (grad.r - 0.75) * 5.0));
 }
