@@ -113,7 +113,7 @@ func init(gameID):
 	var remaining = numPlayers - numCurrentPlayers
 	
 	for i in remaining:
-		var color = Color(0,0,0)
+		var color = Color(0.25, 0.25, 0.25)
 		var username = "Open Slot"
 		
 		playerView = preload("res://Game_PlayerView.tscn").instantiate()

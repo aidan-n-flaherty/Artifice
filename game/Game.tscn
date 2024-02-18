@@ -46,6 +46,7 @@ sky_material = SubResource("PanoramaSkyMaterial_i6rvu")
 
 [sub_resource type="Environment" id="Environment_jfb01"]
 background_mode = 2
+background_energy_multiplier = 0.5
 sky = SubResource("Sky_7srwa")
 sky_custom_fov = 90.0
 sky_rotation = Vector3(-0.785398, 0, 0)
@@ -67,7 +68,13 @@ fog_sky_affect = 0.0
 volumetric_fog_density = 0.5024
 volumetric_fog_albedo = Color(0, 0, 0.403922, 1)
 
-[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_xt512"]
+[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_eiqo6"]
+dof_blur_far_enabled = true
+dof_blur_far_distance = 180.0
+dof_blur_far_transition = 75.0
+dof_blur_near_distance = 100.0
+dof_blur_near_transition = 75.0
+dof_blur_amount = 0.2
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_rqbvh"]
 resource_local_to_scene = true
@@ -1061,15 +1068,15 @@ mouse_filter = 1
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="Viewport/Viewport3D"]
 environment = SubResource("Environment_jfb01")
+camera_attributes = SubResource("CameraAttributesPractical_eiqo6")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="Viewport/Viewport3D"]
 transform = Transform3D(0.846193, -0.336793, -0.41295, 0, -0.774945, 0.632029, -0.532876, -0.534819, -0.655753, 0, 100, 0)
 layers = 3
 light_bake_mode = 1
-shadow_enabled = true
 shadow_bias = 0.01
 shadow_normal_bias = 3.0
-shadow_blur = 2.0
+shadow_blur = 1.5
 directional_shadow_mode = 0
 directional_shadow_max_distance = 200.0
 directional_shadow_pancake_size = 0.0
@@ -1083,7 +1090,6 @@ script = ExtResource("2_t2ckv")
 transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 0, 0)
 keep_aspect = 0
 cull_mask = 3
-attributes = SubResource("CameraAttributesPractical_xt512")
 projection = 1
 current = true
 fov = 170.473
@@ -1414,7 +1420,7 @@ layout_mode = 2
 size_flags_vertical = 3
 mouse_filter = 1
 
-[node name="Panel" type="Control" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay"]
+[node name="Panel" type="MarginContainer" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay"]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -1424,45 +1430,28 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="Background" type="Panel" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_right = 780.0
-offset_bottom = 1112.0
-grow_horizontal = 2
-grow_vertical = 2
+layout_mode = 2
 theme_override_styles/panel = ExtResource("11_uh1qc")
 
 [node name="Shop" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel" instance=ExtResource("12_sa8gc")]
 visible = false
-layout_mode = 1
-offset_right = 780.0
-offset_bottom = 1112.0
+layout_mode = 2
 
 [node name="Status" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel" instance=ExtResource("13_20fpi")]
 visible = false
-layout_mode = 1
-offset_right = 780.0
-offset_bottom = 1112.0
+layout_mode = 2
 
 [node name="Chat" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel" instance=ExtResource("14_xpy25")]
 visible = false
-layout_mode = 1
-offset_right = 780.0
-offset_bottom = 1112.0
+layout_mode = 2
 
 [node name="Logs" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel" instance=ExtResource("15_yfjeb")]
 visible = false
-layout_mode = 1
-offset_right = 780.0
-offset_bottom = 1112.0
+layout_mode = 2
 
 [node name="Battle Forecast" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel" instance=ExtResource("20_x2ppo")]
 visible = false
-layout_mode = 1
-offset_right = 780.0
-offset_bottom = 1112.0
+layout_mode = 2
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel"]
 libraries = {

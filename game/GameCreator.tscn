@@ -5,9 +5,9 @@
 [ext_resource type="Theme" uid="uid://c4m6lidwyxgc" path="res://resources/UITheme.tres" id="2_fgpad"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y31xg"]
-bg_color = Color(0.0588235, 0.0588235, 0.0588235, 1)
-corner_radius_bottom_right = 60
-corner_radius_bottom_left = 60
+bg_color = Color(0.0392157, 0.0392157, 0.0392157, 1)
+corner_radius_bottom_right = 30
+corner_radius_bottom_left = 30
 corner_detail = 16
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_7ve58"]
