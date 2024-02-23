@@ -10,6 +10,7 @@
 #include "../gameObjects/outpost.h"
 #include "../game.h"
 #include "battle_event.h"
+#include "release_event.h"
 
 class VesselOutpostEvent : public BattleEvent
 {
@@ -93,7 +94,23 @@ public:
                 outpost->getOwner()->addSpecialist(s);
             }
         }
-
+        if (outpost->controlsSpecialist(SpecialistType::DIPLOMAT)) {
+            //Releases all captive specialists you own that are being held at an outpost within Diplomat's outpost's sonar range.
+            //Check all outposts
+            for (auto pair : game->getOutposts()) {
+                //if pair in outpost sonar range
+                Outpost* target = pair.second;
+                if ((outpost->distance(target->getPosition()) <= outpost->getSonarRange()) && (target->getOwnerID() != outpost->getOwnerID())) {
+                    //release any "captured" specialists
+                    for (Specialist* s : target->getSpecialists()) {
+                        if (s->getOwnerID() == outpost->getOwnerID()) {
+                           //send a release event at this timestamp
+                            game->addEvent(new ReleaseEvent(nullptr, getTimestamp(), s, target));
+                        }
+                    }
+                }
+            }
+        }
         game->removeVessel(vessel);
     }
 };
