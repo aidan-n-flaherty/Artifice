@@ -5,10 +5,10 @@
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dkyom"]
 bg_color = Color(1, 1, 1, 1)
-corner_radius_top_left = 30
-corner_radius_top_right = 30
-corner_radius_bottom_right = 30
-corner_radius_bottom_left = 30
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
 corner_detail = 16
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hl7n8"]
@@ -35,13 +35,25 @@ corner_radius_bottom_right = 30
 corner_radius_bottom_left = 30
 corner_detail = 16
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8vtvj"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wyw27"]
+bg_color = Color(1, 1, 1, 0)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
 
 [sub_resource type="LabelSettings" id="LabelSettings_kwpe0"]
 font_size = 20
+outline_size = 10
 outline_color = Color(0, 0, 0, 1)
-shadow_size = 6
-shadow_color = Color(0, 0, 0, 1)
+shadow_size = 20
+shadow_color = Color(0, 0, 0, 0.219608)
+shadow_offset = Vector2(2.08165e-12, 2.08165e-12)
 
 [node name="PlayerTag" type="MarginContainer"]
 anchors_preset = 15
@@ -57,8 +69,12 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_dkyom")
 theme_override_styles/hover = SubResource("StyleBoxFlat_hl7n8")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_mlsyb")
 theme_override_styles/disabled = SubResource("StyleBoxFlat_cm8ws")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_8vtvj")
 toggle_mode = true
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_wyw27")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
@@ -68,18 +84,20 @@ theme_override_constants/margin_top = 20
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 20
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
-layout_mode = 2
-mouse_filter = 2
-theme_override_constants/separation = 20
-
-[node name="Label" type="Label" parent="MarginContainer/HBoxContainer"]
+[node name="Label" type="Label" parent="MarginContainer"]
 layout_mode = 2
 text = "Testing"
 label_settings = SubResource("LabelSettings_kwpe0")
 horizontal_alignment = 1
 
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+visible = false
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 20
+
 [node name="TextureRect" type="TextureRect" parent="MarginContainer/HBoxContainer"]
+visible = false
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
 mouse_filter = 2

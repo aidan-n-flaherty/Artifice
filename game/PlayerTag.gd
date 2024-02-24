@@ -20,9 +20,10 @@ func init(player, selected: bool, modifiable: bool):
 	$Button.button_pressed = selected
 	$Button.disabled = not modifiable
 	
-	$MarginContainer/HBoxContainer/Label.text = player.getName()
-	$MarginContainer/HBoxContainer/TextureRect.modulate = color
-	$Button.modulate = color if selected else Color(0.1, 0.1, 0.1)
+	$MarginContainer/Label.text = player.getName()
+	
+	$Button.modulate = color if selected else Color(0.0, 0.0, 0.0)
+	$Panel.modulate = color
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -37,4 +38,4 @@ func getUserID() -> int:
 func _on_button_toggled(button_pressed):
 	selected = button_pressed
 	
-	$Button.modulate = color if selected else Color(0.1, 0.1, 0.1)
+	$Button.modulate = color if selected else Color(0.0, 0.0, 0.0)

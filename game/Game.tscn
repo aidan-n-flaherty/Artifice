@@ -1,4 +1,4 @@
-[gd_scene load_steps=132 format=3 uid="uid://dgp4l24s2rulk"]
+[gd_scene load_steps=133 format=3 uid="uid://dgp4l24s2rulk"]
 
 [ext_resource type="Script" path="res://Game.gd" id="1_s53r2"]
 [ext_resource type="Script" path="res://CameraPivot.gd" id="2_t2ckv"]
@@ -9,6 +9,7 @@
 [ext_resource type="Material" uid="uid://li2d1mgnl1tk" path="res://resources/metal.tres" id="9_j8866"]
 [ext_resource type="Theme" uid="uid://bfwpaonloeco5" path="res://resources/theme.tres" id="9_ttxpu"]
 [ext_resource type="Script" path="res://VirtualCamera3D.gd" id="10_jokxl"]
+[ext_resource type="Texture2D" uid="uid://dlqmq6fklb6q8" path="res://resources/images/back_arrow.png" id="10_n5ogc"]
 [ext_resource type="Shader" path="res://Terrain.gdshader" id="10_u7afu"]
 [ext_resource type="StyleBox" uid="uid://dgq41l16rxlq" path="res://resources/styles/roundRectBlack.tres" id="11_uh1qc"]
 [ext_resource type="Script" path="res://DetailContainer.gd" id="12_7re0q"]
@@ -1266,7 +1267,7 @@ stretch_mode = 4
 [node name="BackButton" type="TextureButton" parent="Viewport/GameOverlay/Overlay/VBoxContainer/TopSpacer/MarginContainer"]
 modulate = Color(0, 0, 0, 1)
 layout_mode = 2
-texture_normal = ExtResource("9_4ris4")
+texture_normal = ExtResource("10_n5ogc")
 ignore_texture_size = true
 stretch_mode = 5
 

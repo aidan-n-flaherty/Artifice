@@ -70,8 +70,8 @@ func _process(delta):
 	color = get_parent().getColor()
 	
 	if get_parent().isFactory():
-		$City/factory.show()
-		$City/generator.hide()
+		$City/factories.show()
+		$City/generators.hide()
 	elif get_parent().isGenerator():
-		$City/generator.show()
-		$City/factory.hide()
+		$City/generators.show()
+		$City/factories.hide()

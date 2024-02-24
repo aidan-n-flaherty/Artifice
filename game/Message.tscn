@@ -3,18 +3,16 @@
 [ext_resource type="Script" path="res://Message.gd" id="1_clcsq"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nk3lw"]
-bg_color = Color(0.207843, 0.470588, 1, 1)
-corner_radius_top_left = 30
-corner_radius_top_right = 30
-corner_radius_bottom_right = 30
-corner_radius_bottom_left = 30
+bg_color = Color(0.247059, 0.521569, 0.968627, 1)
+corner_radius_top_left = 25
+corner_radius_top_right = 25
+corner_radius_bottom_left = 25
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b2bbd"]
-bg_color = Color(0.164706, 0.164706, 0.164706, 1)
-corner_radius_top_left = 30
-corner_radius_top_right = 30
-corner_radius_bottom_right = 30
-corner_radius_bottom_left = 30
+bg_color = Color(0.231373, 0.231373, 0.239216, 1)
+corner_radius_top_left = 25
+corner_radius_top_right = 25
+corner_radius_bottom_right = 25
 
 [node name="Message" type="MarginContainer"]
 anchors_preset = 10
@@ -22,43 +20,63 @@ anchor_right = 1.0
 grow_horizontal = 2
 script = ExtResource("1_clcsq")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="."]
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
 
-[node name="LSpacer" type="Control" parent="HBoxContainer"]
+[node name="NameContainer" type="MarginContainer" parent="VBoxContainer"]
+visible = false
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+
+[node name="Name" type="Label" parent="VBoxContainer/NameContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.784314, 0.784314, 0.784314, 1)
+text = "Message Sender"
+horizontal_alignment = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="LSpacer" type="Control" parent="VBoxContainer/HBoxContainer"]
 visible = false
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 
-[node name="Control" type="MarginContainer" parent="HBoxContainer"]
+[node name="Control" type="MarginContainer" parent="VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="SelfSent" type="Panel" parent="HBoxContainer/Control"]
+[node name="SelfSent" type="Panel" parent="VBoxContainer/HBoxContainer/Control"]
 visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_nk3lw")
 
-[node name="OtherSent" type="Panel" parent="HBoxContainer/Control"]
+[node name="OtherSent" type="Panel" parent="VBoxContainer/HBoxContainer/Control"]
 visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_b2bbd")
 
-[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/Control"]
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/HBoxContainer/Control"]
 layout_mode = 2
-theme_override_constants/margin_left = 30
-theme_override_constants/margin_top = 20
-theme_override_constants/margin_right = 30
-theme_override_constants/margin_bottom = 20
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 10
 
-[node name="Label" type="RichTextLabel" parent="HBoxContainer/Control/MarginContainer"]
+[node name="Label" type="RichTextLabel" parent="VBoxContainer/HBoxContainer/Control/MarginContainer"]
+clip_contents = false
 layout_mode = 2
-text = "Testing"
+focus_mode = 2
+theme_override_colors/default_color = Color(1, 1, 1, 1)
+text = "qpwoeipqwieo pqweoi qpwoe qpwoei qpwoeiq pwoei pqowei pqwoei12pep oiqwpe oiqpweo iqpwoei pqwoe qwe qeqweiqowe iuoqweiu oqwieuoq iweuo iqwueoqiwue oqwieu oqiwueo qiwueo iquwoe iquweo qwuoe iwuqoeioqwieuoqiwueo iqwuoeiq woequoweiu oqwieuo qiwueo qiweu oqwiueo qwiueo qwieu oqwieqwelj qowekj qoweij op qowi"
 fit_content = true
+selection_enabled = true
 
-[node name="RSpacer" type="Control" parent="HBoxContainer"]
+[node name="RSpacer" type="Control" parent="VBoxContainer/HBoxContainer"]
 visible = false
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
