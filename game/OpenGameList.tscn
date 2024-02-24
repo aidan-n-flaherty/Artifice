@@ -1,8 +1,21 @@
-[gd_scene load_steps=7 format=3 uid="uid://ck0lv8v544t6x"]
+[gd_scene load_steps=8 format=3 uid="uid://ck0lv8v544t6x"]
 
 [ext_resource type="PackedScene" uid="uid://44oxio5mi3yi" path="res://GameList.tscn" id="1_4qlik"]
 [ext_resource type="Script" path="res://OpenGameList.gd" id="1_j6ila"]
 [ext_resource type="Theme" uid="uid://bfwpaonloeco5" path="res://resources/theme.tres" id="3_ildih"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ty02b"]
+bg_color = Color(0.321569, 0.682353, 0.0823529, 0.513726)
+border_width_left = 10
+border_width_top = 10
+border_width_right = 10
+border_width_bottom = 10
+border_color = Color(0.211765, 0.631373, 0, 0.345098)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+corner_detail = 12
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mjsbn"]
 bg_color = Color(0.4, 0.717647, 0.133333, 1)
@@ -44,14 +57,19 @@ layout_mode = 2
 layout_mode = 2
 theme = ExtResource("3_ildih")
 
-[node name="RankedSelected" type="Button" parent="VBoxContainer/RankedQueue" index="1"]
+[node name="RankedJoining" type="Button" parent="VBoxContainer/RankedQueue" index="1"]
+visible = false
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_ty02b")
+
+[node name="RankedSelected" type="Button" parent="VBoxContainer/RankedQueue" index="2"]
 visible = false
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxFlat_mjsbn")
 theme_override_styles/hover = SubResource("StyleBoxFlat_f1nha")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_f1nha")
 
-[node name="Margin" type="MarginContainer" parent="VBoxContainer/RankedQueue" index="2"]
+[node name="Margin" type="MarginContainer" parent="VBoxContainer/RankedQueue" index="3"]
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/margin_left = 30

@@ -1,10 +1,11 @@
-[gd_scene load_steps=11 format=3 uid="uid://c80qrqpvv8oji"]
+[gd_scene load_steps=12 format=3 uid="uid://c80qrqpvv8oji"]
 
 [ext_resource type="Script" path="res://AirshipMesh.gd" id="1_yg6xk"]
 [ext_resource type="PackedScene" uid="uid://ksos37w5hi7k" path="res://resources/airship/alternate_airship.blend" id="2_1e350"]
 [ext_resource type="PackedScene" uid="uid://lt6dhhn4o63l" path="res://resources/airship/airship.blend" id="3_bd5ce"]
 [ext_resource type="PackedScene" uid="uid://c3ctitj3875oy" path="res://Counter.tscn" id="3_i6xow"]
 [ext_resource type="PackedScene" uid="uid://bc5oass3i8nm1" path="res://resources/airship/airship3.blend" id="4_67n5x"]
+[ext_resource type="PackedScene" uid="uid://bx72dwns5kvru" path="res://resources/airship/airshipAlternate.blend" id="5_pmko4"]
 [ext_resource type="ArrayMesh" uid="uid://d3qsofbw0d26t" path="res://resources/airship/counter.obj" id="6_iwhv4"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_s31l7"]
@@ -42,6 +43,10 @@ visible = false
 
 [node name="airship3" parent="." instance=ExtResource("4_67n5x")]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
+visible = false
+
+[node name="airshipAlternate" parent="." instance=ExtResource("5_pmko4")]
+transform = Transform3D(-4.37114e-08, 3.48787e-16, 1, 3.48787e-16, 1, -3.48787e-16, -1, 3.48787e-16, -4.37114e-08, 0, 0, 0)
 
 [node name="RotationInvariant" type="Node3D" parent="."]
 

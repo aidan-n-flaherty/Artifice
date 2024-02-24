@@ -51,6 +51,12 @@ func processMessage(message: String):
 		var gameID = message.to_int()
 		
 		GameData.loadGameSettings(gameID)
+	elif message.begins_with("[QUEUEMATCH]"):
+		message.erase(0, len("[GAMESETTINGSUPDATE]"))
+		
+		var gameID = message.to_int()
+		
+		GameData.openQuickMatch(gameID)
 	elif message.begins_with("[CHAT]"):
 		message.erase(0, len("[CHAT]"))
 		

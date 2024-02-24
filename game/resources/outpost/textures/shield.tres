@@ -1,0 +1,64 @@
+[gd_resource type="ShaderMaterial" load_steps=13 format=3 uid="uid://b64sjm6vvbj6x"]
+
+[ext_resource type="Shader" path="res://Shield.gdshader" id="1_tvxhm"]
+
+[sub_resource type="Gradient" id="Gradient_qw4cr"]
+interpolation_mode = 2
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_64ntb"]
+gradient = SubResource("Gradient_qw4cr")
+fill_from = Vector2(1, 1)
+fill_to = Vector2(1, 0.132576)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_j3lpt"]
+frequency = 0.005
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_syoi1"]
+width = 1024
+height = 1024
+seamless = true
+noise = SubResource("FastNoiseLite_j3lpt")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_gknn5"]
+frequency = 0.005
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_grejy"]
+width = 1024
+height = 1024
+seamless = true
+noise = SubResource("FastNoiseLite_gknn5")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_l8f6o"]
+frequency = 0.005
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_cg2j2"]
+width = 1024
+height = 1024
+seamless = true
+noise = SubResource("FastNoiseLite_l8f6o")
+
+[sub_resource type="Gradient" id="Gradient_5dqiy"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_i0n36"]
+noise_type = 0
+frequency = 0.005
+cellular_return_type = 6
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_wh87w"]
+width = 1024
+height = 1024
+seamless = true
+normalize = false
+color_ramp = SubResource("Gradient_5dqiy")
+noise = SubResource("FastNoiseLite_i0n36")
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_tvxhm")
+shader_parameter/speed = 0.02
+shader_parameter/screen_texture = SubResource("NoiseTexture2D_wh87w")
+shader_parameter/noise = SubResource("NoiseTexture2D_syoi1")
+shader_parameter/noise2 = SubResource("NoiseTexture2D_grejy")
+shader_parameter/noise3 = SubResource("NoiseTexture2D_cg2j2")
+shader_parameter/gradient = SubResource("GradientTexture2D_64ntb")

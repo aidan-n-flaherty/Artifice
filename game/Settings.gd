@@ -1,5 +1,7 @@
 extends MarginContainer
 
+var user
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	GameData.userChanged.connect(loadSelf)
@@ -7,7 +9,7 @@ func _ready():
 	loadSelf()
 	
 func loadSelf():
-	var user = GameData.getSelf()
+	user = GameData.getSelf()
 	if(!user): return
 	
 	$MarginContainer/ScrollContainer/VBoxContainer/GridContainer/UsernameText.text = user.username
@@ -20,6 +22,7 @@ func loadSelf():
 func _process(delta):
 	pass
 
-
-func _on_username_text_changed():
-	pass # Replace with function body.
+func _on_username_text_text_changed(new_text):
+	user.username = new_text
+	
+	GameData.editSelf(user)

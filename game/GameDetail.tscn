@@ -1,9 +1,19 @@
-[gd_scene load_steps=11 format=3 uid="uid://bdclkyj3msr2x"]
+[gd_scene load_steps=14 format=3 uid="uid://bdclkyj3msr2x"]
 
 [ext_resource type="Script" path="res://GameDetail.gd" id="1_fslp1"]
 [ext_resource type="Texture2D" uid="uid://cy7ou3wycwjra" path="res://resources/images/back.png" id="2_15oje"]
 [ext_resource type="Theme" uid="uid://c4m6lidwyxgc" path="res://resources/UITheme.tres" id="3_rnfl0"]
 [ext_resource type="Theme" uid="uid://bfwpaonloeco5" path="res://resources/theme.tres" id="3_ygbjp"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dw6xd"]
+bg_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_81kmy"]
+bg_color = Color(0.0392157, 0.0392157, 0.0392157, 1)
+corner_radius_top_left = 30
+corner_radius_top_right = 30
+corner_radius_bottom_right = 30
+corner_radius_bottom_left = 30
 
 [sub_resource type="Theme" id="Theme_ajhl1"]
 
@@ -31,6 +41,10 @@ corner_radius_bottom_left = 5
 [sub_resource type="LabelSettings" id="LabelSettings_4guad"]
 font_color = Color(0.45098, 0.45098, 0.45098, 1)
 
+[sub_resource type="FontVariation" id="FontVariation_kt3fu"]
+spacing_top = 6
+spacing_bottom = 6
+
 [node name="GameDetail" type="MarginContainer"]
 anchors_preset = 15
 anchor_right = 1.0
@@ -41,6 +55,18 @@ script = ExtResource("1_fslp1")
 
 [node name="Panel" type="Panel" parent="."]
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_dw6xd")
+
+[node name="MarginContainer2" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 50
+
+[node name="Panel" type="Panel" parent="MarginContainer2"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_81kmy")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
@@ -94,10 +120,6 @@ horizontal_scroll_mode = 0
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-
-[node name="blocker" type="ColorRect" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer"]
-layout_mode = 2
-color = Color(1, 0.168627, 0.486275, 0)
 
 [node name="GridContainer" type="GridContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer"]
 layout_mode = 2
@@ -560,6 +582,10 @@ text = "2000"
 label_settings = SubResource("LabelSettings_4guad")
 horizontal_alignment = 2
 
+[node name="blocker" type="ColorRect" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer"]
+layout_mode = 2
+color = Color(1, 0.168627, 0.486275, 0)
+
 [node name="Players" type="ScrollContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
@@ -596,7 +622,9 @@ placeholder_text = "Enter Password Here!"
 
 [node name="Button" type="Button" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-theme = ExtResource("3_ygbjp")
+theme = ExtResource("3_rnfl0")
+theme_override_fonts/font = SubResource("FontVariation_kt3fu")
+theme_override_font_sizes/font_size = 25
 text = "Join"
 
 [connection signal="pressed" from="MarginContainer/VBoxContainer/MarginContainer/BackButton" to="." method="_on_back_button_pressed"]
