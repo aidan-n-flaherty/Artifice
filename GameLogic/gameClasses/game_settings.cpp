@@ -26,7 +26,7 @@ void GameSettings::loadDefaults() {
         { ADMIRAL, "Increases speed of all your subs that aren't carrying specialists by 50%. Admiral travels 2x faster than ordinary subs." },
         { NAVIGATOR, "Owner may change course of sub carrying Navigator.\nPromotes to: Admiral" },
         { ASSASSIN, "Kills all enemy specialists present when participating in combat." },
-        { INFILTRATOR, "Drains 20 from the shield charge of any outpost it attacks." },
+        { INFILTRATOR, "Drains all shield charge from any outpost it attacks." },
         { LIEUTENANT, "Destroys 5 enemy drillers when participating in combat, travels 50% faster than ordinary subs." },
         { THIEF, "Converts 15% of enemy's drillers (rounded up) to your side when attacking an outpost, or in sub to sub combat." },
         { DOUBLE_AGENT, "When participating in sub-to-sub combat, drillers on both subs are destroyed, subs swap ownership along with any specialists aboard, and combat ends." },

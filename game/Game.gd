@@ -130,15 +130,20 @@ func _on_percent_bar_value_changed(value):
 
 func setMenuDisplay(scene, select):
 	if menuDisplay != null:
+		#$Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel/AnimationPlayer.play("menu_close")
+		#await get_tree().create_timer(0.4).timeout
 		menuDisplay.hide()
 		menuDisplay = null
 	
 	if select:
 		menuDisplay = scene
+		#await get_tree().create_timer(0.4).timeout
 		menuDisplay.show()
 		$Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel.show()
 		$Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel/AnimationPlayer.play("slide_up")
 	else:
+		#$Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel/AnimationPlayer.play("menu_close")
+		#await get_tree().create_timer(0.4).timeout
 		$Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel.hide()
 
 func _on_status_button_toggled(button_pressed):

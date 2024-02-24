@@ -4,3 +4,5 @@ godot-cpp/
 *.os
 *.template_debug
 *.dblite
+game/bin/~libgdgamelogic.windows.template_debug.x86_64.dll
+game/bin/libgdgamelogic.windows.template_debug.x86_64.dll
