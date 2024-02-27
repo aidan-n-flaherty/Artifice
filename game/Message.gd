@@ -21,10 +21,16 @@ func init(message):
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	pass
+	if $VBoxContainer/MarginContainer/VBoxContainer/TimeContainer/Time.text != str(Utilities.timeToDateStr(message.timestamp)):
+		$VBoxContainer/MarginContainer/VBoxContainer/TimeContainer/Time.text = str(Utilities.timeToDateStr(message.timestamp))
 
 func displayName():
-	$VBoxContainer/NameContainer/Name.text = (await GameData.getUser(message.senderID)).username
+	$VBoxContainer/MarginContainer/VBoxContainer/Name.text = (await GameData.getUser(message.senderID)).username
 	if message.senderID != GameData.getID():
-		$VBoxContainer/NameContainer/Name.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-	$VBoxContainer/NameContainer.show()
+		$VBoxContainer/MarginContainer/VBoxContainer/Name.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	$VBoxContainer/MarginContainer.show()
+	$VBoxContainer/MarginContainer/VBoxContainer/Name.show()
+
+func displayTime():
+	$VBoxContainer/MarginContainer.show()
+	$VBoxContainer/MarginContainer/VBoxContainer/TimeContainer.show()

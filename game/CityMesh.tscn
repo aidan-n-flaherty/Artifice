@@ -9,7 +9,7 @@
 [ext_resource type="Shader" path="res://CityMesh.gdshader" id="4_2n1x1"]
 [ext_resource type="PackedScene" uid="uid://cqnguh8jayx14" path="res://resources/outpost/factory.blend" id="4_4y88t"]
 [ext_resource type="PackedScene" uid="uid://c6pmsi0oppnyp" path="res://resources/outpost/generator.blend" id="4_fmwvu"]
-[ext_resource type="Material" uid="uid://b3507cingsed8" path="res://resources/outpost/textures/shield.tres" id="5_1p8q0"]
+[ext_resource type="Material" uid="uid://b64sjm6vvbj6x" path="res://resources/outpost/textures/shield.tres" id="5_1p8q0"]
 [ext_resource type="ArrayMesh" uid="uid://ilkuovqpo5j0" path="res://resources/outpost/shieldAlternate.obj" id="5_3gja1"]
 [ext_resource type="PackedScene" uid="uid://npdtst62np04" path="res://resources/outpost/shieldRoots.blend" id="6_j5bxo"]
 [ext_resource type="Script" path="res://OutpostInfo.gd" id="7_82d0g"]

@@ -25,6 +25,11 @@ func init(gameID, chatID):
 	self.chatID = chatID
 	chat = GameData.getChat(chatID)
 	
+	var lastMessage = chat.messages[len(chat.messages) - 1] if len(chat.messages) > 0 else null
+	
+	if lastMessage:
+		$MarginContainer/VBoxContainer/LastMessage.text = (await GameData.getUser(lastMessage.senderID)).username + ": " + lastMessage.content
+	
 	participants = []
 	
 	$MarginContainer/VBoxContainer/Participants.text = ""

@@ -48,6 +48,14 @@ func updatePos():
 func selected(node):
 	selectedNode = node
 
+func normalize(vec):
+	while vec.x > game.getWidth()/2: vec.x -= game.getWidth()
+	while vec.x <= -game.getWidth()/2: vec.x += game.getWidth()
+	while vec.y > game.getHeight()/2: vec.y -= game.getHeight()
+	while vec.y <= -game.getHeight()/2: vec.y += game.getHeight()
+	
+	return vec
+
 func _process(delta):
 	if not dragging:
 		position.x += momentum.x * 0.9
@@ -64,6 +72,20 @@ func _process(delta):
 		momentum *= 0.9
 	
 	if game.canStartDrag() and dragging and selectedNode and targetPos:
+		if abs(lastDiff.x) > 0.75:
+			position.x -= sign(lastDiff.x) * pow(8.0 * (lastDiff.x - sign(lastDiff.x) * 0.75), 2)
+			targetPos.x -= sign(lastDiff.x) * pow(8.0 * (lastDiff.x - sign(lastDiff.x) * 0.75), 2)
+		if abs(lastDiff.y) > 0.75:
+			position.z -= sign(lastDiff.y) * pow(8.0 * (lastDiff.y - sign(lastDiff.y) * 0.75), 2)
+			targetPos.y -= sign(lastDiff.y) * pow(8.0 * (lastDiff.y - sign(lastDiff.y) * 0.75), 2)
+		
+		position.x = normalize(Vector2(position.x, position.z)).x
+		position.z = normalize(Vector2(position.x, position.z)).y
+		
+		targetPos = normalize(targetPos)
+		
+		updatePos()
+		
 		target = game.getTarget(targetPos.x, targetPos.y)
 		
 		var mousePos = targetPos
@@ -105,6 +127,8 @@ func _unhandled_input(event):
 		
 		diff.x -= get_viewport().get_visible_rect().size.x/2.0
 		diff.y -= get_viewport().get_visible_rect().size.y/2.0
+		
+		lastDiff = diff / (get_viewport().get_visible_rect().size / 2.0)
 		
 		diff.x *= $Camera3D.size / 1.0 / get_viewport().get_visible_rect().size.x
 		diff.y *= $Camera3D.size / 1.0 / get_viewport().get_visible_rect().size.x * sqrt(2)

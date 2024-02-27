@@ -17,6 +17,7 @@
 #include "orders/reroute_order.h"
 #include "orders/promote_order.h"
 #include "orders/release_order.h"
+#include "orders/surrender_order.h"
 #include "orders/mine_order.h"
 #include "helpers/point.h"
 #include "events/send_event.h"
@@ -617,7 +618,9 @@ void Game::addOrder(const std::string &type, int ID, int referenceID, double tim
         int outpostID = argumentIDs.front();
         argumentIDs.pop_front();
         addOrder(new MineOrder(ID, time, senderID, outpostID, referenceID));
-    }  else {
+    } else if(type == "SURRENDER") {
+        addOrder(new SurrenderOrder(ID, time, senderID, referenceID));
+    } else {
         std::cout << "Unknown order type" << std::endl;
     }
 }

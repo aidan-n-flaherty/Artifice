@@ -196,6 +196,7 @@ public:
 	bool canHire() { return game->getPlayer(userGameID)->getHiresAt(current) >= 0; }
 	bool hasStarted() { return current >= game->getStartTime(); }
 	bool hasEnded() { return game->hasEnded() && currentGame->hasEnded(); }
+	bool hasLost() { return game->getPlayer(userGameID)->hasLost() && currentGame->getPlayer(userGameID)->hasLost(); }
 
 	double getStartTime() { return game->getStartTime(); }
 	int getReferenceID() { return game->getReferenceID(); }

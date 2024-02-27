@@ -66,6 +66,7 @@ func refresh(messageList):
 	messageList.sort_custom(func(a, b): return a.timestamp < b.timestamp)
 	
 	var lastSenderID = -1
+	var lastTimestamp = -1
 	
 	for index in len(messageList):
 		var message = messageList[index]
@@ -81,6 +82,12 @@ func refresh(messageList):
 			if lastSenderID != message.senderID:
 				lastSenderID = message.senderID
 				messageNode.displayName()
+			
+			if message.timestamp > lastTimestamp + 10 * 60:
+				messageNode.displayTime()
+				messageNode.displayName()
+			
+			lastTimestamp = message.timestamp
 			
 			messages[message.id] = messageNode
 			

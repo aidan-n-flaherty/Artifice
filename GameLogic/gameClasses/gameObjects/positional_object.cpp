@@ -43,7 +43,7 @@ void PositionalObject::addSpecialists(std::list<Specialist*> specialists) {
 bool PositionalObject::canRemoveSpecialists(std::list<int> specialistIDs) const {
     int contains = 0;
     for(Specialist* a : this->specialists) for(int id : specialistIDs) {
-        if(a->getID() == id) {
+        if(a->getID() == id && a->getOwnerID() == getOwnerID()) {
             contains++;
             break;
         }

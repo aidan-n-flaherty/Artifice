@@ -80,10 +80,10 @@ func _deferred_goto_node(node) -> void:
 func login():
 	#id = 3
 	#token = "5577006791947779410"
-	id = 4
-	token = "8674665223082153551"
-	#id = 5
-	#token = "15352856648520921629"
+	#id = 4
+	#token = "8674665223082153551"
+	id = 5
+	token = "15352856648520921629"
 	
 func viewGame(id: int):
 	if not hasGame(id):

@@ -69,3 +69,7 @@ func init(gameID):
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	update()
+
+
+func _on_surrender_button_pressed():
+	GameData.addOrder(gameID, "SURRENDER", int(game.getReferenceID()), game.getTime(), [])
