@@ -20,7 +20,7 @@ func init(player, selected: bool, modifiable: bool):
 	$Button.button_pressed = selected
 	$Button.disabled = not modifiable
 	
-	$MarginContainer/Label.text = player.getName()
+	$MarginContainer/HBoxContainer/Label.text = player.getName()
 	
 	$Button.modulate = color if selected else Color(0.0, 0.0, 0.0)
 	$Panel.modulate = color
@@ -39,3 +39,8 @@ func _on_button_toggled(button_pressed):
 	selected = button_pressed
 	
 	$Button.modulate = color if selected else Color(0.0, 0.0, 0.0)
+
+
+func _on_report_pressed():
+	if await GameData.reportUser(userID, "unspecified"):
+		$MarginContainer/HBoxContainer/Report.visible = false

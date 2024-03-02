@@ -1,7 +1,7 @@
 [gd_scene load_steps=9 format=3 uid="uid://dcji62ofxfmw2"]
 
 [ext_resource type="Script" path="res://PlayerTag.gd" id="1_j33fx"]
-[ext_resource type="Texture2D" uid="uid://c1f04o6gimvxl" path="res://resources/images/whiteCircle.png" id="2_uqb2n"]
+[ext_resource type="Texture2D" uid="uid://b5vdodthk832g" path="res://resources/images/flag.png" id="2_y3icm"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dkyom"]
 bg_color = Color(1, 1, 1, 1)
@@ -84,25 +84,24 @@ theme_override_constants/margin_top = 20
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 20
 
-[node name="Label" type="Label" parent="MarginContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 20
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer"]
 layout_mode = 2
 text = "Testing"
 label_settings = SubResource("LabelSettings_kwpe0")
 horizontal_alignment = 1
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
-visible = false
-layout_mode = 2
-mouse_filter = 2
-theme_override_constants/separation = 20
-
-[node name="TextureRect" type="TextureRect" parent="MarginContainer/HBoxContainer"]
-visible = false
+[node name="Report" type="TextureButton" parent="MarginContainer/HBoxContainer"]
+modulate = Color(0, 0, 0, 1)
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
-mouse_filter = 2
-texture = ExtResource("2_uqb2n")
-expand_mode = 1
+texture_normal = ExtResource("2_y3icm")
+ignore_texture_size = true
 stretch_mode = 5
 
 [connection signal="toggled" from="Button" to="." method="_on_button_toggled"]
+[connection signal="pressed" from="MarginContainer/HBoxContainer/Report" to="." method="_on_report_pressed"]
