@@ -64,6 +64,7 @@ void GameInterface::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("getSimulationSpeed"), &GameInterface::getSimulationSpeed);
 	ClassDB::bind_method(D_METHOD("getHires"), &GameInterface::getHires);
 	ClassDB::bind_method(D_METHOD("getStartTime"), &GameInterface::getStartTime);
+	ClassDB::bind_method(D_METHOD("hasLost"), &GameInterface::hasLost);
 	ClassDB::bind_method(D_METHOD("canHire"), &GameInterface::canHire);
 	ClassDB::bind_method(D_METHOD("canRelease", "specialistID"), &GameInterface::canRelease);
 	ClassDB::bind_method(D_METHOD("ownsSpecialist", "specialistID"), &GameInterface::ownsSpecialist);
@@ -384,8 +385,10 @@ void GameInterface::sendTo(int id) {
 			for(int i = 0; i < 3; i++) arguments.push_back(parameters[i]);
 
 			while(!selectedSpecialists.empty()) {
-				arguments.push_back(*selectedSpecialists.begin());
-				if(getNode(selected)) getNode(selected)->setSpecialistSelected(*selectedSpecialists.begin(), false);
+				if(game->getSpecialist(*selectedSpecialists.begin())->getOwnerID() == userGameID) {
+					arguments.push_back(*selectedSpecialists.begin());
+					if(getNode(selected)) getNode(selected)->setSpecialistSelected(*selectedSpecialists.begin(), false);
+				}
 				selectedSpecialists.erase(selectedSpecialists.begin());
 			}
 

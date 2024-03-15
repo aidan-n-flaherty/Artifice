@@ -32,6 +32,6 @@ text = "Test, test, and test"
 [node name="LastMessage" type="Label" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 0.780392)
-text = "Test"
+text_overrun_behavior = 3
 
 [connection signal="pressed" from="Button" to="." method="_on_button_pressed"]

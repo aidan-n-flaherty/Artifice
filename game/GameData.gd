@@ -111,6 +111,7 @@ func editSelf(user):
 	return await HTTPManager.putReq("/editSelf", user, {})
 	
 func loadUser(userID: int):
+	print("Loading " + str(userID))
 	var user = await HTTPManager.getReq("/fetchUser", {
 		"id": userID
 	})
@@ -359,6 +360,12 @@ func addMessage(message):
 	
 	emit_signal("chatChanged", int(message.chatID))
 
+func reportUser(userID: int, reason: String) -> bool:
+	return await HTTPManager.postReq("/reportUser", {}, {
+		"userID": userID,
+		"reason": reason
+	})
+
 func verifyEnd(gameID: int):
 	if await HTTPManager.getReq("/verifyGameEnd", {
 		"gameID": gameID
@@ -375,7 +382,7 @@ func viewEnd(gameID: int):
 	WebSocketManager.sendMessage("[VIEWGAMEEND]" + str(gameID))
 	
 	emit_signal("gamesChanged")
-	
+
 	
 func isFinished(gameID: int):
 	return gameDetails[id].gameData.finished

@@ -10,6 +10,8 @@ var detailDisplay
 
 var viewingEnd = false
 
+var hasLost = false
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	$Viewport/Viewport3D/CameraPivot/FloorSprite.material_override.set_shader_parameter("screen_texture", $Viewport/Viewport3D/CameraPivot/FloorDisplay.get_texture())
@@ -55,7 +57,13 @@ func _process(delta):
 		$Viewport/GameOverlay/Overlay/VBoxContainer/HBoxContainer/Control/MarginContainer/MarginContainer/Label.text = str(floor(game.getSelectedUnits() * $Viewport/GameOverlay/Overlay/VBoxContainer/HBoxContainer/Control/PercentBar.value))
 	else:
 		$Viewport/GameOverlay/Overlay/VBoxContainer/HBoxContainer/Control/MarginContainer/MarginContainer/Label.text = ""
-		
+	
+	if game.hasLost():
+		if not hasLost:
+			hasLost = true
+			
+			await GameData.viewEnd(gameID)
+	
 	if game.hasEnded():
 		if not viewingEnd:
 			viewingEnd = true
@@ -130,15 +138,20 @@ func _on_percent_bar_value_changed(value):
 
 func setMenuDisplay(scene, select):
 	if menuDisplay != null:
+		#$Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel/AnimationPlayer.play("menu_close")
+		#await get_tree().create_timer(0.4).timeout
 		menuDisplay.hide()
 		menuDisplay = null
 	
 	if select:
 		menuDisplay = scene
+		#await get_tree().create_timer(0.4).timeout
 		menuDisplay.show()
 		$Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel.show()
 		$Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel/AnimationPlayer.play("slide_up")
 	else:
+		#$Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel/AnimationPlayer.play("menu_close")
+		#await get_tree().create_timer(0.4).timeout
 		$Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel.hide()
 
 func _on_status_button_toggled(button_pressed):
