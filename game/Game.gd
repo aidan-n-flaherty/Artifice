@@ -119,6 +119,7 @@ func selectOutpost(outpost):
 func selectSpecialist(specialist):
 	var scene = preload("res://SpecialistDetails.tscn").instantiate()
 	scene.init(specialist, gameID)
+	scene.openShop.connect(_on_shop_button_toggled.bind(true))
 	setDisplay(scene)
 	
 func deselect():

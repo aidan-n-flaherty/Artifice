@@ -100,18 +100,21 @@ func _process(delta):
 		
 		game.setMouse(mousePos.x, mousePos.y)
 
+var a = 0
 func _unhandled_input(event):
-	if event.is_action("drag"):
+	if event is InputEventMouseButton:
+		print(a)
+		a += 1
 		if event.is_pressed():
 			mouse_start_pos = event.position
 			lastDiff = Vector2(0, 0)
 			screen_start_position = Vector2(position.x, position.z)
 			dragging = true
 		else:
-			if selectedNode and event.position == mouse_start_pos and not game.justSelected():
+			if selectedNode and (not mouse_start_pos or event.position.distance_to(mouse_start_pos) < 1) and not game.justSelected():
 				game.unselect()
 				emit_signal("unselect")
-			if not selectedNode and event.position == mouse_start_pos and not game.justSelected():
+			if not selectedNode and (not mouse_start_pos or event.position.distance_to(mouse_start_pos) < 1) and not game.justSelected():
 				emit_signal("unselect")
 			
 			dragging = false

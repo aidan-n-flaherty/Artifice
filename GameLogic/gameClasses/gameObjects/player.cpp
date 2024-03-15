@@ -305,7 +305,7 @@ std::unordered_map<int, int> Player::calculateUnitsAt(double& fractionalProducti
     timeDiff *= getSettings()->simulationSpeed;
         
     std::list<Outpost*> tmp = outposts;
-    tmp.sort([]( const Outpost* a, const Outpost* b ) { return a->getID() > b->getID(); } );
+    tmp.sort([]( const Outpost* a, const Outpost* b ) { return a->getUnits() == b->getUnits() ? a->getID() < b->getID() : a->getUnits() < b->getUnits(); } );
 
     std::unordered_map<int, int> units;
 

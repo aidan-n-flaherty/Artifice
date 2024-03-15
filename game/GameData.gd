@@ -10,6 +10,8 @@ signal chatChanged(chatID)
 
 signal queuesChanged
 
+signal menuSwitched(menu)
+
 var Game = preload("res://Game.tscn")
 
 var GameDetail = preload("res://GameDetail.tscn")
