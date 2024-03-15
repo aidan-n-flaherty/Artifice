@@ -95,20 +95,35 @@ public:
             }
         }
         if (outpost->controlsSpecialist(SpecialistType::DIPLOMAT)) {
-            //Releases all captive specialists you own that are being held at an outpost within Diplomat's outpost's sonar range.
-            //Check all outposts
             for (auto pair : game->getOutposts()) {
-                //if pair in outpost sonar range
                 Outpost* target = pair.second;
                 if ((outpost->distance(target->getPosition()) <= outpost->getSonarRange()) && (target->getOwnerID() != outpost->getOwnerID())) {
-                    //release any "captured" specialists
+                    //double stagger = 0;
                     for (Specialist* s : target->getSpecialists()) {
                         if (s->getOwnerID() == outpost->getOwnerID()) {
-                           //send a release event at this timestamp
-                            game->addEvent(new ReleaseEvent(nullptr, getTimestamp(), s, target));
+                            std::cout << "diplomat event added" << std::endl;
+                            game->addEvent(new ReleaseEvent(nullptr, getTimestamp()/* + stagger*/, s, target));
+                            //stagger++;
                         }
                     }
                 }
+            }
+        }
+        //
+        for(Specialist* s : outpost->getSpecialists()){
+            if(s->getOwnerID() != outpost->getOwnerID()){
+               //double stagger = 0;
+               for (auto pair : game->getOutposts()) {
+                 //...
+                  Outpost* target = pair.second;
+                  if (target->controlsSpecialist(SpecialistType::DIPLOMAT)&&s->getOwnerID()==target->getOwnerID()) {
+                     //...
+                     std::cout << "diplomat event added" << std::endl;
+                     game->addEvent(new ReleaseEvent(nullptr, getTimestamp()/* + stagger */ , s, outpost));
+                     //stagger++;
+                     break;
+                  }
+               }
             }
         }
         game->removeVessel(vessel);
