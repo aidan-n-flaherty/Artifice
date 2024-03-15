@@ -116,6 +116,11 @@ void GameInterface::_bind_methods() {
 }
 
 void GameInterface::init(int gameID, int userID, int startTime, int playerCap, Dictionary players, Dictionary settingOverrides) {
+	std::cout << "started init function" << std::endl;
+	//crash testing
+	//set_debug_enabled ( true );
+	/*int* crashtest = nullptr;
+	*crashtest = 10;*/
 	// RESET MEMBER VARIABLES
 	this->completeGame = nullptr;
 	
@@ -169,15 +174,17 @@ void GameInterface::init(int gameID, int userID, int startTime, int playerCap, D
 
 	current = getTimeMillis();
 	update();
+	std::cout << "finished init function" << std::endl;
 }
 
 GameSettings GameInterface::loadSettings() {
+	std::cout << "loading settings..." << std::endl;
 	GameSettings settings;
 
 	if(settingOverrides.has("simulationSpeed") && Variant::can_convert(settingOverrides["simulationSpeed"].get_type(), Variant::FLOAT)) {
 		settings.simulationSpeed = double(settingOverrides["simulationSpeed"]);
 	}
-
+	std::cout << "finished loading settings." << std::endl;
 	return settings;
 }
 
@@ -515,7 +522,9 @@ void GameInterface::bulkAddOrder(const String &type, uint32_t ID, int32_t refere
 }
 
 void GameInterface::endBulkAdd() {
+	std::cout << "About to enter game..." << std::endl;
 	completeGame->run();
+	std::cout << "game->run() completed..." << std::endl;
 	game = nullptr;
 	simulatedGame = nullptr;
 	currentGame = nullptr;
@@ -523,6 +532,7 @@ void GameInterface::endBulkAdd() {
 	current += epsilon;
 	
 	update();
+	std::cout << "Entered game!" << std::endl;
 }
 
 void GameInterface::addOrder(const String &type, uint32_t ID, int32_t referenceID, double timestamp, uint32_t senderID, PackedInt32Array arguments, uint32_t argCount) {
