@@ -64,6 +64,7 @@ void GameInterface::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("getSimulationSpeed"), &GameInterface::getSimulationSpeed);
 	ClassDB::bind_method(D_METHOD("getHires"), &GameInterface::getHires);
 	ClassDB::bind_method(D_METHOD("getStartTime"), &GameInterface::getStartTime);
+	ClassDB::bind_method(D_METHOD("hasLost"), &GameInterface::hasLost);
 	ClassDB::bind_method(D_METHOD("canHire"), &GameInterface::canHire);
 	ClassDB::bind_method(D_METHOD("canRelease", "specialistID"), &GameInterface::canRelease);
 	ClassDB::bind_method(D_METHOD("ownsSpecialist", "specialistID"), &GameInterface::ownsSpecialist);
@@ -78,7 +79,7 @@ void GameInterface::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("getBattlePhases"), &GameInterface::getBattlePhases);
 	ClassDB::bind_method(D_METHOD("getNextBattleMessages", "objID", "phase"), &GameInterface::getNextBattleMessages);
 	ClassDB::bind_method(D_METHOD("getNextBattleStartingUnits", "objID"), &GameInterface::getNextBattleStartingUnits);
-	ClassDB::bind_method(D_METHOD("getNextBattleUnits", "objID", "phase"), &GameInterface::getNextBattleUnits);
+	ClassDB::bind_method(D_METHOD("getNextBattleUnits", "obfjID", "phase"), &GameInterface::getNextBattleUnits);
 	ClassDB::bind_method(D_METHOD("getNextBattleUsers", "objID"), &GameInterface::getNextBattleUsers);
 	ClassDB::bind_method(D_METHOD("getNextBattlePreVictoryUnits", "objID"), &GameInterface::getNextBattlePreVictoryUnits);
 	ClassDB::bind_method(D_METHOD("getNextBattleShields", "objID"), &GameInterface::getNextBattleShields);
@@ -115,6 +116,11 @@ void GameInterface::_bind_methods() {
 }
 
 void GameInterface::init(int gameID, int userID, int startTime, int playerCap, Dictionary players, Dictionary settingOverrides) {
+	std::cout << "started init function" << std::endl;
+	//crash testing
+	//set_debug_enabled ( true );
+	/*int* crashtest = nullptr;
+	*crashtest = 10;*/
 	// RESET MEMBER VARIABLES
 	this->completeGame = nullptr;
 	
@@ -168,15 +174,17 @@ void GameInterface::init(int gameID, int userID, int startTime, int playerCap, D
 
 	current = getTimeMillis();
 	update();
+	std::cout << "finished init function" << std::endl;
 }
 
 GameSettings GameInterface::loadSettings() {
+	std::cout << "loading settings..." << std::endl;
 	GameSettings settings;
 
 	if(settingOverrides.has("simulationSpeed") && Variant::can_convert(settingOverrides["simulationSpeed"].get_type(), Variant::FLOAT)) {
 		settings.simulationSpeed = double(settingOverrides["simulationSpeed"]);
 	}
-
+	std::cout << "finished loading settings." << std::endl;
 	return settings;
 }
 
@@ -377,8 +385,10 @@ void GameInterface::sendTo(int id) {
 			for(int i = 0; i < 3; i++) arguments.push_back(parameters[i]);
 
 			while(!selectedSpecialists.empty()) {
-				arguments.push_back(*selectedSpecialists.begin());
-				if(getNode(selected)) getNode(selected)->setSpecialistSelected(*selectedSpecialists.begin(), false);
+				if(game->getSpecialist(*selectedSpecialists.begin())->getOwnerID() == userGameID) {
+					arguments.push_back(*selectedSpecialists.begin());
+					if(getNode(selected)) getNode(selected)->setSpecialistSelected(*selectedSpecialists.begin(), false);
+				}
 				selectedSpecialists.erase(selectedSpecialists.begin());
 			}
 
@@ -512,7 +522,9 @@ void GameInterface::bulkAddOrder(const String &type, uint32_t ID, int32_t refere
 }
 
 void GameInterface::endBulkAdd() {
+	std::cout << "About to enter game..." << std::endl;
 	completeGame->run();
+	std::cout << "game->run() completed..." << std::endl;
 	game = nullptr;
 	simulatedGame = nullptr;
 	currentGame = nullptr;
@@ -520,6 +532,7 @@ void GameInterface::endBulkAdd() {
 	current += epsilon;
 	
 	update();
+	std::cout << "Entered game!" << std::endl;
 }
 
 void GameInterface::addOrder(const String &type, uint32_t ID, int32_t referenceID, double timestamp, uint32_t senderID, PackedInt32Array arguments, uint32_t argCount) {

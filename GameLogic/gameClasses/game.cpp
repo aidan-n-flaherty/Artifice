@@ -17,6 +17,7 @@
 #include "orders/reroute_order.h"
 #include "orders/promote_order.h"
 #include "orders/release_order.h"
+#include "orders/surrender_order.h"
 #include "orders/mine_order.h"
 #include "helpers/point.h"
 #include "events/send_event.h"
@@ -329,6 +330,7 @@ std::list<std::pair<int, int>> Game::run() {
     // loops until no events or orders remain.
     // note that events will always be run before orders given the same timestamp.
     while((!events.empty() || !orders.empty()) && !ended) {
+        std::cout<<events.size()<<" events and "<<orders.size()<<" orders remain to be tracked..."<<std::endl;
         std::multiset<Event*>::iterator event = events.begin();
 
         /*for(auto it = events.begin(); it != events.end(); it++) {
@@ -337,6 +339,7 @@ std::list<std::pair<int, int>> Game::run() {
         std::cout << std::endl;*/
         // check if the next chronological event occurs after the next chronological order, and if so,
         // run the order instead of the event
+
         while(!orders.empty() && (events.empty() || (*event)->getTimestamp() > (*orders.begin())->getTimestamp())) {
             std::multiset<Order*>::iterator orderIt = orders.begin();
             Order* order = *orderIt;
@@ -362,6 +365,7 @@ std::list<std::pair<int, int>> Game::run() {
             } else {
                 event = events.insert(converted);
                 break;
+                std::cout << "Something might be wrong with the code..."<<std::endl;
             }
         }
 
@@ -388,7 +392,7 @@ std::list<std::pair<int, int>> Game::run() {
 
         updateEvents();
     }
-
+    std::cout<<"no more events remain to be tracked."<<std::endl;
     if(!ranOutOfTime) nextEndState = std::numeric_limits<double>::max();
 
     return getScores();
@@ -617,7 +621,9 @@ void Game::addOrder(const std::string &type, int ID, int referenceID, double tim
         int outpostID = argumentIDs.front();
         argumentIDs.pop_front();
         addOrder(new MineOrder(ID, time, senderID, outpostID, referenceID));
-    }  else {
+    } else if(type == "SURRENDER") {
+        addOrder(new SurrenderOrder(ID, time, senderID, referenceID));
+    } else {
         std::cout << "Unknown order type" << std::endl;
     }
 }

@@ -1,5 +1,7 @@
 extends MarginContainer
 
+signal openShop
+
 var specialistID: int
 
 var specialistNum: int
@@ -38,6 +40,11 @@ func _process(delta):
 	if game.getSpecialistType(specialistID) != specialistNum:
 		init(specialistID, gameID)
 	
+	if game.canHire() and specialistName == "Queen":
+		$MarginContainer/HBoxContainer/MarginContainer/Hire.show()
+	else:
+		$MarginContainer/HBoxContainer/MarginContainer/Hire.hide()
+	
 	if game.ownsSpecialist(specialistID):
 		$MarginContainer/HBoxContainer/MarginContainer/Release.hide()
 		if promotionOptions[0] == 0 or not game.canHire():
@@ -62,3 +69,6 @@ func _on_promote_pressed():
 
 func _on_release_pressed():
 	GameData.addOrder(gameID, "RELEASE", int(game.getReferenceID()), game.getTime(), [int(specialistID)])
+
+func _on_hire_pressed():
+	emit_signal("openShop")

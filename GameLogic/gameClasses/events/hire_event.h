@@ -8,6 +8,7 @@
 #include "../gameObjects/player.h"
 #include "../gameObjects/specialist.h"
 #include "../game.h"
+#include "release_event.h"
 
 class HireEvent : public Event
 {
@@ -34,7 +35,22 @@ public:
         owner->removeHire();
 
         PositionalObject* spawn = owner->getSpawnLocation();
-        if(spawn) spawn->addSpecialist(specialist);       
+        if(spawn) spawn->addSpecialist(specialist);
+        Outpost* outpost = dynamic_cast<Outpost*>(spawn);
+        if (outpost && specialist->getType() == SpecialistType::DIPLOMAT) {
+            for (auto pair : game->getOutposts()) {
+                Outpost* target = pair.second;
+                if ((outpost->distance(target->getPosition()) <= outpost->getSonarRange()) && (target->getOwnerID() != outpost->getOwnerID())) {
+                    //double stagger = 0;
+                    for (Specialist* s : target->getSpecialists()) {
+                        if (s->getOwnerID() == outpost->getOwnerID()) {
+                            game->addEvent(new ReleaseEvent(nullptr, getTimestamp()/* + stagger */ , s, target));
+                            //stagger += 1;
+                        }
+                    }
+                }
+            }
+        }
     }
 };
 

@@ -17,6 +17,8 @@ func _ready():
 	current = ResourceLoader.load(GameData.currentTab).instantiate()
 	
 	$VSplitContainer/Content.add_child(current)
+	
+	GameData.menuSwitched.connect(switch_to)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):

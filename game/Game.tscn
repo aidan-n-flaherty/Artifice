@@ -1,4 +1,4 @@
-[gd_scene load_steps=132 format=3 uid="uid://dgp4l24s2rulk"]
+[gd_scene load_steps=133 format=3 uid="uid://dgp4l24s2rulk"]
 
 [ext_resource type="Script" path="res://Game.gd" id="1_s53r2"]
 [ext_resource type="Script" path="res://CameraPivot.gd" id="2_t2ckv"]
@@ -9,6 +9,7 @@
 [ext_resource type="Material" uid="uid://li2d1mgnl1tk" path="res://resources/metal.tres" id="9_j8866"]
 [ext_resource type="Theme" uid="uid://bfwpaonloeco5" path="res://resources/theme.tres" id="9_ttxpu"]
 [ext_resource type="Script" path="res://VirtualCamera3D.gd" id="10_jokxl"]
+[ext_resource type="Texture2D" uid="uid://dlqmq6fklb6q8" path="res://resources/images/back_arrow.png" id="10_n5ogc"]
 [ext_resource type="Shader" path="res://Terrain.gdshader" id="10_u7afu"]
 [ext_resource type="StyleBox" uid="uid://dgq41l16rxlq" path="res://resources/styles/roundRectBlack.tres" id="11_uh1qc"]
 [ext_resource type="Script" path="res://DetailContainer.gd" id="12_7re0q"]
@@ -46,6 +47,7 @@ sky_material = SubResource("PanoramaSkyMaterial_i6rvu")
 
 [sub_resource type="Environment" id="Environment_jfb01"]
 background_mode = 2
+background_energy_multiplier = 0.5
 sky = SubResource("Sky_7srwa")
 sky_custom_fov = 90.0
 sky_rotation = Vector3(-0.785398, 0, 0)
@@ -66,6 +68,14 @@ fog_density = 0.001
 fog_sky_affect = 0.0
 volumetric_fog_density = 0.5024
 volumetric_fog_albedo = Color(0, 0, 0.403922, 1)
+
+[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_eiqo6"]
+dof_blur_far_enabled = true
+dof_blur_far_distance = 180.0
+dof_blur_far_transition = 75.0
+dof_blur_near_distance = 100.0
+dof_blur_near_transition = 75.0
+dof_blur_amount = 0.2
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_rqbvh"]
 resource_local_to_scene = true
@@ -1177,7 +1187,6 @@ tracks/11/keys = {
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_m75d7"]
 _data = {
 "RESET": SubResource("Animation_n3pi6"),
-"menu_close": SubResource("Animation_h0t3p"),
 "slide_up": SubResource("Animation_e0ywt")
 }
 
@@ -1208,15 +1217,15 @@ mouse_filter = 1
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="Viewport/Viewport3D"]
 environment = SubResource("Environment_jfb01")
+camera_attributes = SubResource("CameraAttributesPractical_eiqo6")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="Viewport/Viewport3D"]
 transform = Transform3D(0.846193, -0.336793, -0.41295, 0, -0.774945, 0.632029, -0.532876, -0.534819, -0.655753, 0, 100, 0)
 layers = 3
 light_bake_mode = 1
-shadow_enabled = true
 shadow_bias = 0.01
 shadow_normal_bias = 3.0
-shadow_blur = 2.0
+shadow_blur = 1.5
 directional_shadow_mode = 0
 directional_shadow_max_distance = 200.0
 directional_shadow_pancake_size = 0.0
@@ -1241,14 +1250,14 @@ transparent_bg = true
 size = Vector2i(1000, 2600)
 
 [node name="FloorSprite" type="MeshInstance3D" parent="Viewport/Viewport3D/CameraPivot"]
-transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 2.08165e-12, -100, -100)
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 1.81899e-12, -100, -100)
 sorting_offset = 1000.0
 sorting_use_aabb_center = false
 material_override = SubResource("ShaderMaterial_rqbvh")
 mesh = SubResource("PlaneMesh_utrlp")
 
 [node name="Terrain" type="MeshInstance3D" parent="Viewport/Viewport3D/CameraPivot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, -100.1, -100.293)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.81899e-12, -100.1, -100.293)
 material_override = SubResource("ShaderMaterial_wmxwp")
 cast_shadow = 0
 mesh = SubResource("PlaneMesh_oid74")
@@ -1406,7 +1415,7 @@ stretch_mode = 4
 [node name="BackButton" type="TextureButton" parent="Viewport/GameOverlay/Overlay/VBoxContainer/TopSpacer/MarginContainer"]
 modulate = Color(0, 0, 0, 1)
 layout_mode = 2
-texture_normal = ExtResource("9_4ris4")
+texture_normal = ExtResource("10_n5ogc")
 ignore_texture_size = true
 stretch_mode = 5
 
@@ -1568,6 +1577,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 0
 
 [node name="Background" type="Panel" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel"]
 layout_mode = 2

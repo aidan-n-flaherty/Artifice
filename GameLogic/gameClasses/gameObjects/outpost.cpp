@@ -56,12 +56,22 @@ int Outpost::getShieldAt(double& fractionalShield, double timeDiff) const {
         fractionalShield -= 1;
         
         shieldCharge++;
+
+        if(shieldCharge > getMaxShield()) {
+            fractionalShield -= int(fractionalShield);
+            break;
+        }
     }
 
     while(fractionalShield <= -1) {
         fractionalShield += 1;
         
         shieldCharge--;
+
+        if(shieldCharge < 0) {
+            fractionalShield -= int(fractionalShield);
+            break;
+        }
     }
 
     shieldCharge = std::fmax(0, std::fmin(shieldCharge, getMaxShield()));

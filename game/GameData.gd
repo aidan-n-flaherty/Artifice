@@ -10,6 +10,8 @@ signal chatChanged(chatID)
 
 signal queuesChanged
 
+signal menuSwitched(menu)
+
 var Game = preload("res://Game.tscn")
 
 var GameDetail = preload("res://GameDetail.tscn")
@@ -78,10 +80,10 @@ func _deferred_goto_node(node) -> void:
 	get_tree().set_current_scene(current_scene)
 
 func login():
-	#id = 3
-	#token = "5577006791947779410"
-	id = 4
-	token = "8674665223082153551"
+	id = 3
+	token = "5577006791947779410"
+	#id = 4
+	#token = "8674665223082153551"
 	#id = 5
 	#token = "15352856648520921629"
 	
@@ -115,6 +117,7 @@ func editSelf(user):
 	return await HTTPManager.putReq("/editSelf", user, {})
 	
 func loadUser(userID: int):
+	print("Loading " + str(userID))
 	var user = await HTTPManager.getReq("/fetchUser", {
 		"id": userID
 	})
@@ -363,6 +366,12 @@ func addMessage(message):
 	
 	emit_signal("chatChanged", int(message.chatID))
 
+func reportUser(userID: int, reason: String) -> bool:
+	return await HTTPManager.postReq("/reportUser", {}, {
+		"userID": userID,
+		"reason": reason
+	})
+
 func verifyEnd(gameID: int):
 	if await HTTPManager.getReq("/verifyGameEnd", {
 		"gameID": gameID
@@ -379,7 +388,7 @@ func viewEnd(gameID: int):
 	WebSocketManager.sendMessage("[VIEWGAMEEND]" + str(gameID))
 	
 	emit_signal("gamesChanged")
-	
+
 	
 func isFinished(gameID: int):
 	return gameDetails[id].gameData.finished

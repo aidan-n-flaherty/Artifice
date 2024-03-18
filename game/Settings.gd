@@ -2,6 +2,8 @@ extends MarginContainer
 
 var user
 
+var update = -1
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	GameData.userChanged.connect(loadSelf)
@@ -20,9 +22,24 @@ func loadSelf():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	pass
+	if update > 0:
+		update -= delta
+		
+		if update <= 0:
+			GameData.editSelf(user)
+	
 
 func _on_username_text_text_changed(new_text):
+	if len(new_text) < 3:
+		$MarginContainer/ScrollContainer/VBoxContainer/GridContainer/UsernameText["theme_override_colors/font_color"] = Color.FIREBRICK
+		return
+	else:
+		$MarginContainer/ScrollContainer/VBoxContainer/GridContainer/UsernameText["theme_override_colors/font_color"] = Color.WHITE
 	user.username = new_text
 	
-	GameData.editSelf(user)
+	update = 1
+
+func _exit_tree():
+	if update > 0:
+		update = -1
+		GameData.editSelf(user)
