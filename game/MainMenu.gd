@@ -26,6 +26,7 @@ func switch_to(scene):
 	$VSplitContainer/Content.remove_child(current)
 	
 	GameData.currentTab = scene
+	
 	current = ResourceLoader.load(GameData.currentTab).instantiate()
 	
 	$VSplitContainer/Content.add_child(current)

@@ -86,6 +86,10 @@ func login():
 	#token = "15352856648520921629"
 	
 func viewGame(id: int):
+	
+	var loading_screen = preload("res://loading_screen.tscn").instantiate()
+	goto_node(loading_screen)
+	
 	if not hasGame(id):
 		await loadGameState(id)
 	
