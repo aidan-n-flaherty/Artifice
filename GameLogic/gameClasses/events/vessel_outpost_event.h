@@ -118,7 +118,7 @@ public:
                for (auto pair : game->getOutposts()) {
                  //...
                   Outpost* other = pair.second;
-                  if (other->controlsSpecialist(SpecialistType::DIPLOMAT)&&s->getOwnerID()== other->getOwnerID()) {
+                  if (other->controlsSpecialist(SpecialistType::DIPLOMAT)&&s->getOwnerID()== other->getOwnerID()&& (outpost->distance(other->getPosition()) <= other->getSonarRange())) {
                      //...
                      specialist_groups[s->getOwnerID()].push_front(s);
                      break;
