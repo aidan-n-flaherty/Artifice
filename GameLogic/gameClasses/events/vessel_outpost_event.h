@@ -34,6 +34,32 @@ public:
         outpost = game->getOutpost(outpost->getID());
     }
 
+    //checks to see if the players whose ids are provided are on the same team
+    bool same_team(Outpost* outpost_to_check, Vessel* vessel_to_check){
+
+        //checks to make sure that both players exist.
+        //(getOwnerID() returns -1 if players[ID] points to a null ptr)
+
+        int outpostID = outpost_to_check->getOwnerID();
+        int vessel_playerID = vessel_to_check->getOwnerID();
+
+        if((outpostID == -1) || (vessel_playerID == -1)){
+            return false;
+        }
+        //both players exist
+        else{
+
+            //if both players belong to the same team, return true
+            if( (outpost_to_check->getOwner()->get_team() ) == (vessel_to_check->getOwner()->get_team() )){
+                return true;
+            }
+            //otherwise return false
+            else{
+                return false;
+            }
+        }
+    }
+
     //bool referencesObject(int id) const override { return vID == id; }
 
     void run(Game* game) override {
@@ -42,7 +68,7 @@ public:
         std::cout << "Vessel-Outpost combat: " << game->getTime() << ", " << (vessel->hasOwner() ? vessel->getOwner()->getName() : "none") << ", " << (outpost->hasOwner() ? outpost->getOwner()->getName() : "none") << std::endl;
         std::cout << outpost->getPosition().getX() << ", " << outpost->getPosition().getY() << std::endl;
 
-        if(outpost->getOwnerID() == vessel->getOwnerID() || vessel->isGift()) {
+        if(outpost->getOwnerID() == vessel->getOwnerID() || vessel->isGift() || (((game->getSettings())->number_of_teams > 1) && same_team(outpost, vessel))) {
             outpost->addUnits(vessel->getUnits());
             if(vessel->isGift()) outpost->getOwner()->addSpecialists(vessel->getSpecialists());
 

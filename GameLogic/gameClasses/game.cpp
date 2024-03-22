@@ -48,6 +48,28 @@ Game::Game(GameSettings settings, int simulatorID, double startTime, double endT
         addPlayer(p);
     }
 
+    //check if the current GameSettings has number_of_teams initialized to some value that is not -1
+    if(this->settings->number_of_teams > 1){
+        
+        //counter used to track the team the current player will be added to
+        int curr_team_to_assign = 1;
+
+        //iterates through unordered map "players" and updates the team_id value of each player
+        for(int i = 0; i < players.size(); i++){
+
+            players[i]->set_team(curr_team_to_assign); //setting the current player's team
+
+            curr_team_to_assign += 1;
+
+            if(curr_team_to_assign > this->settings->number_of_teams){
+                //resetting team if the counter exceeds the number of teams
+                curr_team_to_assign = 1;
+            }
+        }
+
+
+    }
+
     // start map generation
 
     int numIterations = 100;

@@ -18,6 +18,7 @@ void GameSettings::loadDefaults() {
     GameSettings::outpostsPerPlayer = 5;
     GameSettings::width = 200;
     GameSettings::height = 200;
+    GameSettings::number_of_teams = -1;
 
     GameSettings::specialistDescriptions = {
         { QUEEN, "Adds 20 to her outpost's maximum shield charge. If you acquire another Queen, she becomes a Princess. Queen may periodically hire specialists."},

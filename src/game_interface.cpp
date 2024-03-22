@@ -184,6 +184,9 @@ GameSettings GameInterface::loadSettings() {
 	if(settingOverrides.has("simulationSpeed") && Variant::can_convert(settingOverrides["simulationSpeed"].get_type(), Variant::FLOAT)) {
 		settings.simulationSpeed = double(settingOverrides["simulationSpeed"]);
 	}
+	if(settingOverrides.has("number_of_teams") && Variant::can_convert(settingOverrides["number_of_teams"].get_type(), Variant::INT)) {
+		settings.number_of_teams = int(settingOverrides["number_of_teams"]);
+	}
 	std::cout << "finished loading settings." << std::endl;
 	return settings;
 }

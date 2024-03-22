@@ -35,6 +35,7 @@ public:
     int height;
     std::unordered_map<SpecialistType, std::string> specialistDescriptions;
     std::vector<std::tuple<double, double, double>> playerColors;
+    int number_of_teams;
 
     void loadDefaults();
 
