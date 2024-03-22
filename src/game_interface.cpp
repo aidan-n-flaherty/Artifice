@@ -181,9 +181,52 @@ GameSettings GameInterface::loadSettings() {
 	std::cout << "loading settings..." << std::endl;
 	GameSettings settings;
 
-	if(settingOverrides.has("simulationSpeed") && Variant::can_convert(settingOverrides["simulationSpeed"].get_type(), Variant::FLOAT)) {
+	Array keys = settingOverrides.keys();
+
+	for(int i = 0; i < keys.size(); i++) {
+		const void* value;
+
+		if(Variant::can_convert(settingOverrides[keys[i]].get_type(), Variant::FLOAT)) value = new double(settingOverrides[keys[i]]);
+		else if(Variant::can_convert(settingOverrides[keys[i]].get_type(), Variant::STRING)) value = String(settingOverrides[keys[i]]).utf8().get_data();
+		else value = nullptr;
+
+		if(Variant::can_convert(keys[i].get_type(), Variant::STRING)) settings.addSetting(String(keys[i]).utf8().get_data(), value);
+	}
+
+	/*if(settingOverrides.has("simulationSpeed") && Variant::can_convert(settingOverrides["simulationSpeed"].get_type(), Variant::FLOAT)) {
 		settings.simulationSpeed = double(settingOverrides["simulationSpeed"]);
 	}
+	if(settingOverrides.has("fireRate") && Variant::can_convert(settingOverrides["fireRate"].get_type(), Variant::FLOAT)) {
+		settings.fireRate *= double(settingOverrides["fireRate"]);
+	}
+	if(settingOverrides.has("fireRange") && Variant::can_convert(settingOverrides["fireRange"].get_type(), Variant::FLOAT)) {
+		settings.fireRange *= double(settingOverrides["fireRange"]);
+	}
+	if(settingOverrides.has("factoryDensity") && Variant::can_convert(settingOverrides["factoryDensity"].get_type(), Variant::FLOAT)) {
+		settings.factoryDensity = double(settingOverrides["factoryDensity"]);
+	}
+	if(settingOverrides.has("resourcesToWin") && Variant::can_convert(settingOverrides["resourcesToWin"].get_type(), Variant::INT)) {
+		settings.resourcesToWin = int(settingOverrides["resourcesToWin"]);
+	}
+	if(settingOverrides.has("gameMode")) {
+		settings.gameMode = std::string(String(settingOverrides["gameMode"]).utf8().get_data()) == "CONQUEST" ? Mode.CONQUEST : Mode.MINING;
+	}
+	if(settingOverrides.has("resourcesToWin") && Variant::can_convert(settingOverrides["resourcesToWin"].get_type(), Variant::INT)) {
+		settings.resourcesToWin = int(settingOverrides["resourcesToWin"]);
+	}
+	if(settingOverrides.has("defaultSonar") && Variant::can_convert(settingOverrides["defaultSonar"].get_type(), Variant::INT)) {
+		settings.defaultSonar = int(settingOverrides["defaultSonar"]);
+	}
+	if(settingOverrides.has("defaultMaxShield") && Variant::can_convert(settingOverrides["defaultMaxShield"].get_type(), Variant::INT)) {
+		settings.defaultMaxShield = int(settingOverrides["defaultMaxShield"]);
+	}
+	if(settingOverrides.has("costPerMine") && Variant::can_convert(settingOverrides["costPerMine"].get_type(), Variant::INT)) {
+		settings.costPerMine = int(settingOverrides["costPerMine"]);
+	}
+	if(settingOverrides.has("outpostsPerPlayer") && Variant::can_convert(settingOverrides["outpostsPerPlayer"].get_type(), Variant::INT)) {
+		settings.outpostsPerPlayer = int(settingOverrides["outpostsPerPlayer"]);
+	}*/
+	
 	std::cout << "finished loading settings." << std::endl;
 	return settings;
 }

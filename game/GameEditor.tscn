@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://biekuv7dddk3m"]
+[gd_scene load_steps=14 format=3 uid="uid://biekuv7dddk3m"]
 
 [ext_resource type="Script" path="res://GameEditor.gd" id="1_xc5ik"]
 [ext_resource type="Theme" uid="uid://c4m6lidwyxgc" path="res://resources/UITheme.tres" id="2_clsah"]
@@ -11,6 +11,8 @@ corner_radius_bottom_left = 30
 corner_detail = 16
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_ktqn5"]
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_e8065"]
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_fv0u6"]
 
@@ -63,6 +65,7 @@ theme_override_constants/margin_bottom = 50
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
+theme_override_constants/separation = 30
 
 [node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -205,6 +208,31 @@ toggle_mode = true
 button_pressed = true
 button_group = SubResource("ButtonGroup_ktqn5")
 text = "10"
+
+[node name="GameMode" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid"]
+layout_mode = 2
+text = "Game Mode"
+
+[node name="GameModeButtons" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="conquest" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/GameModeButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("2_clsah")
+toggle_mode = true
+button_pressed = true
+button_group = SubResource("ButtonGroup_e8065")
+text = "Conquest"
+
+[node name="koh" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/GameModeButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("2_clsah")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_e8065")
+text = "King-of-the-Hill"
 
 [node name="SimulationTimescale" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid"]
 layout_mode = 2
@@ -538,7 +566,6 @@ theme = ExtResource("3_jw58j")
 text = "Advanced"
 
 [node name="Advanced" type="MarginContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer"]
-visible = false
 layout_mode = 2
 
 [node name="Grid" type="GridContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced"]
@@ -559,11 +586,9 @@ theme = ExtResource("3_jw58j")
 theme_override_icons/grabber = SubResource("ImageTexture_vsyyl")
 theme_override_styles/slider = SubResource("StyleBoxFlat_exhwh")
 theme_override_styles/grabber_area = SubResource("StyleBoxFlat_tv32c")
-min_value = 0.5
-max_value = 2.0
+max_value = 1.0
 step = 0.0
-value = 1.0
-exp_edit = true
+value = 0.5
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/DensitySlider"]
 layout_mode = 1
@@ -603,11 +628,10 @@ theme = ExtResource("3_jw58j")
 theme_override_icons/grabber = SubResource("ImageTexture_vsyyl")
 theme_override_styles/slider = SubResource("StyleBoxFlat_exhwh")
 theme_override_styles/grabber_area = SubResource("StyleBoxFlat_tv32c")
-min_value = 0.5
-max_value = 2.0
+min_value = 0.2
+max_value = 0.8
 step = 0.0
-value = 1.0
-exp_edit = true
+value = 0.5
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/FactorySlider"]
 layout_mode = 1
@@ -635,14 +659,323 @@ text = "80%"
 label_settings = SubResource("LabelSettings_ychv2")
 horizontal_alignment = 2
 
+[node name="Fire Range" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
+layout_mode = 2
+text = "Fire Radius"
+
+[node name="FireRangeSlider" type="HSlider" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+theme = ExtResource("3_jw58j")
+theme_override_icons/grabber = SubResource("ImageTexture_vsyyl")
+theme_override_styles/slider = SubResource("StyleBoxFlat_exhwh")
+theme_override_styles/grabber_area = SubResource("StyleBoxFlat_tv32c")
+min_value = 0.25
+max_value = 1.0
+step = 0.0
+value = 0.5
+exp_edit = true
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/FireRangeSlider"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/FireRangeSlider/MarginContainer"]
+layout_mode = 2
+
+[node name="Low" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/FireRangeSlider/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "50%"
+label_settings = SubResource("LabelSettings_ychv2")
+
+[node name="High" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/FireRangeSlider/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "200%"
+label_settings = SubResource("LabelSettings_ychv2")
+horizontal_alignment = 2
+
+[node name="Fire Rate" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
+layout_mode = 2
+text = "Fire Rate"
+
+[node name="FireRateSlider" type="HSlider" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+theme = ExtResource("3_jw58j")
+theme_override_icons/grabber = SubResource("ImageTexture_vsyyl")
+theme_override_styles/slider = SubResource("StyleBoxFlat_exhwh")
+theme_override_styles/grabber_area = SubResource("StyleBoxFlat_tv32c")
+min_value = 0.5
+max_value = 2.0
+step = 0.0
+value = 1.0
+exp_edit = true
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/FireRateSlider"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/FireRateSlider/MarginContainer"]
+layout_mode = 2
+
+[node name="Low" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/FireRateSlider/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "50%"
+label_settings = SubResource("LabelSettings_ychv2")
+
+[node name="High" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/FireRateSlider/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "200%"
+label_settings = SubResource("LabelSettings_ychv2")
+horizontal_alignment = 2
+
+[node name="Base Shield" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
+layout_mode = 2
+text = "Base Shield"
+
+[node name="BaseShieldSlider" type="HSlider" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+theme = ExtResource("3_jw58j")
+theme_override_icons/grabber = SubResource("ImageTexture_vsyyl")
+theme_override_styles/slider = SubResource("StyleBoxFlat_exhwh")
+theme_override_styles/grabber_area = SubResource("StyleBoxFlat_tv32c")
+min_value = 10.0
+max_value = 40.0
+step = 0.0
+value = 20.0
+exp_edit = true
+rounded = true
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/BaseShieldSlider"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/BaseShieldSlider/MarginContainer"]
+layout_mode = 2
+
+[node name="Low" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/BaseShieldSlider/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "10"
+label_settings = SubResource("LabelSettings_ychv2")
+
+[node name="High" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/BaseShieldSlider/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "30"
+label_settings = SubResource("LabelSettings_ychv2")
+horizontal_alignment = 2
+
+[node name="Mine Cost" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
+layout_mode = 2
+text = "Mine Cost"
+
+[node name="MineCostSlider" type="HSlider" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+theme = ExtResource("3_jw58j")
+theme_override_icons/grabber = SubResource("ImageTexture_vsyyl")
+theme_override_styles/slider = SubResource("StyleBoxFlat_exhwh")
+theme_override_styles/grabber_area = SubResource("StyleBoxFlat_tv32c")
+min_value = 25.0
+step = 0.0
+value = 50.0
+exp_edit = true
+rounded = true
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/MineCostSlider"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/MineCostSlider/MarginContainer"]
+layout_mode = 2
+
+[node name="Low" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/MineCostSlider/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "25"
+label_settings = SubResource("LabelSettings_ychv2")
+
+[node name="High" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/MineCostSlider/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "100"
+label_settings = SubResource("LabelSettings_ychv2")
+horizontal_alignment = 2
+
+[node name="Victory Amount" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
+layout_mode = 2
+text = "Victory Amount"
+
+[node name="VictoryAmountSlider" type="HSlider" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+theme = ExtResource("3_jw58j")
+theme_override_icons/grabber = SubResource("ImageTexture_vsyyl")
+theme_override_styles/slider = SubResource("StyleBoxFlat_exhwh")
+theme_override_styles/grabber_area = SubResource("StyleBoxFlat_tv32c")
+min_value = 100.0
+max_value = 400.0
+step = 0.0
+value = 200.0
+exp_edit = true
+rounded = true
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/VictoryAmountSlider"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/VictoryAmountSlider/MarginContainer"]
+layout_mode = 2
+
+[node name="Low" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/VictoryAmountSlider/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "100"
+label_settings = SubResource("LabelSettings_ychv2")
+
+[node name="High" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/VictoryAmountSlider/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "400"
+label_settings = SubResource("LabelSettings_ychv2")
+horizontal_alignment = 2
+
+[node name="OutpostsPerPlayer" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
+layout_mode = 2
+text = "Outposts Per Player"
+
+[node name="OutpostCountSlider" type="HSlider" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+theme = ExtResource("3_jw58j")
+theme_override_icons/grabber = SubResource("ImageTexture_vsyyl")
+theme_override_styles/slider = SubResource("StyleBoxFlat_exhwh")
+theme_override_styles/grabber_area = SubResource("StyleBoxFlat_tv32c")
+min_value = 5.0
+max_value = 15.0
+step = 0.0
+value = 10.0
+rounded = true
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/OutpostCountSlider"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/OutpostCountSlider/MarginContainer"]
+layout_mode = 2
+
+[node name="Low" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/OutpostCountSlider/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "25"
+label_settings = SubResource("LabelSettings_ychv2")
+
+[node name="High" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/OutpostCountSlider/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "100"
+label_settings = SubResource("LabelSettings_ychv2")
+horizontal_alignment = 2
+
+[node name="Sonar Range" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
+layout_mode = 2
+text = "Sonar Radius"
+
+[node name="SonarSlider" type="HSlider" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+theme = ExtResource("3_jw58j")
+theme_override_icons/grabber = SubResource("ImageTexture_vsyyl")
+theme_override_styles/slider = SubResource("StyleBoxFlat_exhwh")
+theme_override_styles/grabber_area = SubResource("StyleBoxFlat_tv32c")
+min_value = 25.0
+step = 0.0
+value = 50.0
+exp_edit = true
+rounded = true
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/SonarSlider"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/SonarSlider/MarginContainer"]
+layout_mode = 2
+
+[node name="Low" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/SonarSlider/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "50%"
+label_settings = SubResource("LabelSettings_ychv2")
+
+[node name="High" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/SonarSlider/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "200%"
+label_settings = SubResource("LabelSettings_ychv2")
+horizontal_alignment = 2
+
 [node name="Editable" type="Panel" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced"]
 visible = false
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_61g4f")
 
-[node name="Players" type="ScrollContainer" parent="MarginContainer/VBoxContainer"]
+[node name="Players" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-size_flags_vertical = 3
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Players"]
 layout_mode = 2
@@ -682,4 +1015,4 @@ theme_override_font_sizes/font_size = 25
 text = "Create"
 
 [connection signal="pressed" from="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/AdvancedButton" to="." method="_on_advanced_button_pressed"]
-[connection signal="toggled" from="MarginContainer/VBoxContainer/Create" to="." method="_on_create_toggled"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/Create" to="." method="serialize"]

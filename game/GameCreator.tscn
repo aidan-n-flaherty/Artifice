@@ -1,9 +1,11 @@
-[gd_scene load_steps=5 format=3 uid="uid://bol6bslwfs8ec"]
+[gd_scene load_steps=6 format=3 uid="uid://bol6bslwfs8ec"]
 
 [ext_resource type="Script" path="res://GameCreator.gd" id="1_5sudp"]
 [ext_resource type="PackedScene" uid="uid://biekuv7dddk3m" path="res://GameEditor.tscn" id="1_subu8"]
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_lt36i"]
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_chi3o"]
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_8w41e"]
 
@@ -39,6 +41,12 @@ button_group = SubResource("ButtonGroup_lt36i")
 
 [node name="10" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons" index="8"]
 button_group = SubResource("ButtonGroup_lt36i")
+
+[node name="conquest" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/GameModeButtons" index="0"]
+button_group = SubResource("ButtonGroup_chi3o")
+
+[node name="koh" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/GameModeButtons" index="1"]
+button_group = SubResource("ButtonGroup_chi3o")
 
 [node name="days" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/SimulationTimescaleButtons" index="0"]
 button_group = SubResource("ButtonGroup_8w41e")

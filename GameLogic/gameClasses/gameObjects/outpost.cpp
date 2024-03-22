@@ -110,7 +110,7 @@ int Outpost::getMaxShield() const {
 }
 
 int Outpost::getFireRange() const {
-    return getSonarRange()/2;
+    return getSonarRange() * getSettings()->fireRange;
 }
 
 int Outpost::getSonarRange() const {

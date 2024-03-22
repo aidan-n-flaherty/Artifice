@@ -3,6 +3,10 @@
 #include "unordered_map"
 #include <tuple>
 #include <vector>
+#include <cstring>
+#include <cstdlib>
+#include <iostream>
+#include <algorithm>
 #include "gameObjects/specialist.h"
 
 void GameSettings::loadDefaults() {
@@ -13,7 +17,9 @@ void GameSettings::loadDefaults() {
     GameSettings::eloKValue = 32;
     GameSettings::defaultSonar = 50;
     GameSettings::defaultMaxShield = 20;
-    GameSettings::fireRate = 2 * 60 * 60;
+    GameSettings::baseFireRate = 2 * 60 * 60;
+    GameSettings::fireRate = 1.0;
+    GameSettings::fireRange = 0.5;
     GameSettings::costPerMine = 50;
     GameSettings::outpostsPerPlayer = 5;
     GameSettings::width = 200;
@@ -63,4 +69,19 @@ void GameSettings::loadDefaults() {
         { 0/255.0, 128/255.0, 128/255.0},
         { 220/255.0, 190/255.0, 255/255.0}
     };
+}
+
+void GameSettings::addSetting(const char* type, const void* value){
+    if(value == nullptr) return;
+
+    if(strcmp(type, "simulationSpeed") == 0) simulationSpeed = std::min(7200.0, std::max(1.0, *(double*)value));
+    if(strcmp(type, "fireRate") == 0) fireRate = std::min(2.0, std::max(0.5, *(double*)value));
+    if(strcmp(type, "fireRange") == 0) fireRange = std::min(1.0, std::max(0.25, *(double*)value));
+    if(strcmp(type, "factoryDensity") == 0) factoryDensity = std::min(0.8, std::max(0.2, *(double*)value));
+    if(strcmp(type, "resourcesToWin") == 0) resourcesToWin = std::min(400, std::max(50, int(std::lround(*(double*)value))));
+    if(strcmp(type, "gameMode") == 0) gameMode = strcmp((char*)value, "CONQUEST") == 0 ? Mode::CONQUEST : Mode::MINING;
+    if(strcmp(type, "defaultSonar") == 0) defaultSonar = std::min(100, std::max(25, int(std::lround(*(double*)value))));
+    if(strcmp(type, "defaultMaxShield") == 0) defaultMaxShield = std::min(40, std::max(10, int(std::lround(*(double*)value))));
+    if(strcmp(type, "costPerMine") == 0) costPerMine = std::min(100, std::max(25, int(std::lround(*(double*)value))));
+    if(strcmp(type, "outpostsPerPlayer") == 0) outpostsPerPlayer = std::min(20, std::max(5, int(std::lround(*(double*)value))));
 }

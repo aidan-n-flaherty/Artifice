@@ -28,16 +28,19 @@ public:
     int eloKValue;
     int defaultSonar;
     int defaultMaxShield;
-    int fireRate;
+    int baseFireRate; // immutable
+    double fireRange;
+    double fireRate;
     int costPerMine;
     int outpostsPerPlayer;
-    int width;
-    int height;
+    int width; // immutable
+    int height; // immutable
     std::unordered_map<SpecialistType, std::string> specialistDescriptions;
     std::vector<std::tuple<double, double, double>> playerColors;
 
     void loadDefaults();
 
+    void addSetting(const char* type, const void* value);
     /*void reset();
 
     bool reset(int gameID) {

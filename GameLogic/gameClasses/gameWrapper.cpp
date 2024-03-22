@@ -22,10 +22,8 @@ void freeGameSettings(cGameSettings settings) {
 // note that the game will crash if someone inserts a type that the game doesn't expect
 void addGameSetting(cGameSettings settings, char* type, void* value) {
   GameSettings* s = (GameSettings*)settings;
-
-  if(strcmp(type, "simulationSpeed") == 0) {
-	s->simulationSpeed = *(double*)value;
-  }
+  
+  s->addSetting(type, value);
 }
 
 cGame initGame(cGameSettings settings, int simulatorID, double startTime, int* playerInfo, int playerLength, int seed) {

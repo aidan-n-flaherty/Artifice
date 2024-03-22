@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://c4qhl5pkr6yj0" path="res://resources/images/banner.png" id="2_ituxc"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_njarg"]
-bg_color = Color(0.0784314, 0.0784314, 0.0784314, 0.494118)
+bg_color = Color(0.0980392, 0.0980392, 0.0980392, 0.494118)
 corner_radius_top_left = 25
 corner_radius_top_right = 25
 corner_radius_bottom_right = 25

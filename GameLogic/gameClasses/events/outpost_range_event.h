@@ -44,7 +44,7 @@ public:
         }
 
         // schedule the same event to occur again
-        game->addEvent(new OutpostRangeEvent(getTimestamp() + game->getSettings()->fireRate / game->getSettings()->simulationSpeed));
+        game->addEvent(new OutpostRangeEvent(getTimestamp() + game->getSettings()->fireRate * game->getSettings()->baseFireRate / game->getSettings()->simulationSpeed));
     }
 };
 

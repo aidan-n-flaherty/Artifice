@@ -15,13 +15,13 @@ var gameID = -1
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	for child in $MarginContainer/VBoxContainer/ScrollContainer/GridContainer/NumPlayersButtons.get_children():
+	for child in $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons.get_children():
 		child.toggled.connect(on_players_modified)
 	for child in $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/SimulationTimescaleButtons.get_children():
 		child.toggled.connect(on_timescale_modified.bind(child.name.to_lower()))
-	for child in $MarginContainer/VBoxContainer/ScrollContainer/GridContainer/ActiveHoursRows/ActiveHoursButtons.get_children():
+	for child in $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/ActiveHoursButtons.get_children():
 		child.toggled.connect(on_activeTimes_modified)
-	for child in $MarginContainer/VBoxContainer/ScrollContainer/GridContainer/ActiveHoursRows/ActiveHoursButtons2.get_children():
+	for child in $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/ActiveHoursButtons2.get_children():
 		child.toggled.connect(on_activeTimes_modified)
 
 func setEditable(canEdit):
@@ -153,39 +153,48 @@ func serialize():
 		hours.push_back(hour)
 	
 	hours.sort()
-	
+	print("creating game")
 	var data = {
-		"lobbyName": $MarginContainer/VBoxContainer/ScrollContainer/GridContainer/LobbyNameText.text,
-		"password": $MarginContainer/VBoxContainer/ScrollContainer/GridContainer/PasswordText.text,
+		"lobbyName": $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/LobbyNameText.text,
+		"password": $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/PasswordText.text,
 		"playerCap": numPlayers,
 		"startTimeDisplacement": 24 * 60 * 60 if simulationTimescale == "days" else 60 * 10 if simulationTimescale == "hours" else 30,
 		"settingOverrides": {
-			"ratingConstraints": $MarginContainer/VBoxContainer/ScrollContainer/GridContainer/RatingSlider.value,
+			"ratingConstraints": $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/RatingSlider.value,
 			"activeHours": hours,
-			"simulationSpeed": (1 if simulationTimescale == "days" else 60 if simulationTimescale == "hours" else 60 * 60) * $MarginContainer/VBoxContainer/ScrollContainer/GridContainer/SpeedSlider.value
+			"simulationSpeed": (1 if simulationTimescale == "days" else 60 if simulationTimescale == "hours" else 60 * 60) * $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/SpeedSlider.value,
+			"factoryDensity": $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/FactorySlider.value,
+			"resourcesToWin": $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/VictoryAmountSlider.value,
+			"gameMode": "CONQUEST" if $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/GameModeButtons/conquest.button_pressed else "KOH",
+			"defaultSonar": $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/SonarSlider.value,
+			"defaultMaxShield": $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/BaseShieldSlider.value,
+			"fireRate": $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/FireRateSlider.value,
+			"fireRange": $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/FireRangeSlider.value,
+			"costPerMine": $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/MineCostSlider.value,
+			"outpostsPerPlayer": $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/OutpostCountSlider.value,
 		}
 	}
 	
 	var game = await HTTPManager.postReq("/createMatch", data, {})
-	
+	print(game)
 	GameData.addGame(game)
 	
 	return game
 
 func on_players_modified(button_pressed: bool):
 	if button_pressed:
-		for child in $MarginContainer/VBoxContainer/ScrollContainer/GridContainer/NumPlayersButtons.get_children():
+		for child in $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons.get_children():
 			if child.button_pressed:
 				numPlayers = int(str(child.name))
 
 func on_activeTimes_modified(button_pressed: bool):
-	for child in $MarginContainer/VBoxContainer/ScrollContainer/GridContainer/ActiveHoursRows/ActiveHoursButtons.get_children():
+	for child in $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/ActiveHoursButtons.get_children():
 		if child.pressed:
 			if int(child.name) in activeHours:
 				activeHours.erase(int(child.name))
 			else:
 				activeHours.append(int(child.name))
-	for child in $MarginContainer/VBoxContainer/ScrollContainer/GridContainer/ActiveHoursRows/ActiveHoursButtons2.get_children():
+	for child in $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/ActiveHoursButtons2.get_children():
 		if child.pressed:
 			if int(child.name) in activeHours:
 				activeHours.erase(int(child.name))
@@ -196,8 +205,8 @@ func on_timescale_modified(button_pressed: bool, timescale):
 	simulationTimescale = timescale
 	
 	if button_pressed:
-		$MarginContainer/VBoxContainer/ScrollContainer/GridContainer/ActiveHours.visible = simulationTimescale == "days"
-		$MarginContainer/VBoxContainer/ScrollContainer/GridContainer/ActiveHoursRows.visible = simulationTimescale ==" days"
+		$MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/ActiveHoursButtons.visible = simulationTimescale == "days"
+		$MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/ActiveHoursButtons2.visible = simulationTimescale ==" days"
 
 func _on_create_toggled(toggled_on):
 	var game = await serialize()
