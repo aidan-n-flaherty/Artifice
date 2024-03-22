@@ -334,8 +334,11 @@ func addOrder(gameID: int, type, referenceID, timestamp, arguments):
 	}, {
 		"gameID": gameID
 	})
-	
-	print(order)
+	if(order):
+		print(order)
+	else:
+		print("failed to recieve order")
+		;
 
 	if(!order): return;
 	

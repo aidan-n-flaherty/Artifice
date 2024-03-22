@@ -39,15 +39,19 @@ public:
         Outpost* outpost = dynamic_cast<Outpost*>(spawn);
         if (outpost && specialist->getType() == SpecialistType::DIPLOMAT) {
             for (auto pair : game->getOutposts()) {
-                Outpost* target = pair.second;
-                if ((outpost->distance(target->getPosition()) <= outpost->getSonarRange()) && (target->getOwnerID() != outpost->getOwnerID())) {
-                    //double stagger = 0;
-                    for (Specialist* s : target->getSpecialists()) {
+                std::list<Specialist*> specialists;
+                Outpost* other = pair.second;
+                if ((outpost->distance(other->getPosition()) <= outpost->getSonarRange()) && (other->getOwnerID() != outpost->getOwnerID())) {
+                    std::list<Specialist*> specialists;
+                    for (Specialist* s : other->getSpecialists()) {
                         if (s->getOwnerID() == outpost->getOwnerID()) {
-                            game->addEvent(new ReleaseEvent(nullptr, getTimestamp()/* + stagger */ , s, target));
-                            //stagger += 1;
+                            specialists.push_front(s);
                         }
                     }
+                }
+                if (!specialists.empty()) {
+                    std::cout << "diplomat event added" << std::endl;
+                    game->addEvent(new ReleaseEvent(nullptr, getTimestamp(), specialists, other));
                 }
             }
         }

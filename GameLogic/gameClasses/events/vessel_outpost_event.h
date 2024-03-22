@@ -122,35 +122,39 @@ public:
         }
         if (outpost->controlsSpecialist(SpecialistType::DIPLOMAT)) {
             for (auto pair : game->getOutposts()) {
-                Outpost* target = pair.second;
-                if ((outpost->distance(target->getPosition()) <= outpost->getSonarRange()) && (target->getOwnerID() != outpost->getOwnerID())) {
-                    //double stagger = 0;
-                    for (Specialist* s : target->getSpecialists()) {
+                Outpost* other = pair.second;
+                if ((outpost->distance(other->getPosition()) <= outpost->getSonarRange()) && (other->getOwnerID() != outpost->getOwnerID())) {
+                    std::list<Specialist*> specialists;
+                    for (Specialist* s : other->getSpecialists()) {
                         if (s->getOwnerID() == outpost->getOwnerID()) {
-                            std::cout << "diplomat event added" << std::endl;
-                            game->addEvent(new ReleaseEvent(nullptr, getTimestamp()/* + stagger*/, s, target));
-                            //stagger++;
+                            specialists.push_front(s);
                         }
+                    }
+                    if(!specialists.empty()){
+                        std::cout << "diplomat event added" << std::endl;
+                        game->addEvent(new ReleaseEvent(nullptr, getTimestamp(), specialists, other));
                     }
                 }
             }
         }
         //
+        std::unordered_map<unsigned int, std::list<Specialist*>> specialist_groups;
         for(Specialist* s : outpost->getSpecialists()){
             if(s->getOwnerID() != outpost->getOwnerID()){
-               //double stagger = 0;
                for (auto pair : game->getOutposts()) {
                  //...
-                  Outpost* target = pair.second;
-                  if (target->controlsSpecialist(SpecialistType::DIPLOMAT)&&s->getOwnerID()==target->getOwnerID()) {
+                  Outpost* other = pair.second;
+                  if (other->controlsSpecialist(SpecialistType::DIPLOMAT)&&s->getOwnerID()== other->getOwnerID()&& (outpost->distance(other->getPosition()) <= other->getSonarRange())) {
                      //...
-                     std::cout << "diplomat event added" << std::endl;
-                     game->addEvent(new ReleaseEvent(nullptr, getTimestamp()/* + stagger */ , s, outpost));
-                     //stagger++;
+                     specialist_groups[s->getOwnerID()].push_front(s);
                      break;
                   }
                }
             }
+        }
+        for (const auto &p : specialist_groups) {
+            std::cout << "diplomat event added" << std::endl;
+            game->addEvent(new ReleaseEvent(nullptr, getTimestamp(), p.second, outpost));
         }
         game->removeVessel(vessel);
     }
