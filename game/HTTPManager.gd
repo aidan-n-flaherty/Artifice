@@ -79,6 +79,7 @@ func putReq(path, data, params, includeToken=true):
 	remove_child(reqNode)
 	
 	if(response_code < 200 || response_code > 299):
+		print(response)
 		return false
 	
 	var body = JSON.parse_string(response[3].get_string_from_utf8())

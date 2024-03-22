@@ -225,8 +225,11 @@ GameSettings GameInterface::loadSettings() {
 	}
 	if(settingOverrides.has("outpostsPerPlayer") && Variant::can_convert(settingOverrides["outpostsPerPlayer"].get_type(), Variant::INT)) {
 		settings.outpostsPerPlayer = int(settingOverrides["outpostsPerPlayer"]);
+	}
+	if(settingOverrides.has("number_of_teams") && Variant::can_convert(settingOverrides["number_of_teams"].get_type(), Variant::INT)) {
+		settings.number_of_teams = int(settingOverrides["number_of_teams"]);
 	}*/
-	
+
 	std::cout << "finished loading settings." << std::endl;
 	return settings;
 }

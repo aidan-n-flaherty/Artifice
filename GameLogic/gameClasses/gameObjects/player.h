@@ -52,6 +52,8 @@ private:
 
     double fractionalProduction = 0.0;
 
+    int team_id = -1;
+
 public:
     Player(unsigned int ID, GameSettings* settings, std::string name, int userID, int rating) : GameObject(ID, settings), userID(userID), name(name), rating(rating), defeated(false) {}
     
@@ -122,6 +124,9 @@ public:
 
     void addResources(int amount) { resources += amount; }
     void removeResources(int amount) { resources -= amount; }
+
+    void set_team(int assigned_team){ team_id = assigned_team; }
+    int get_team(){ return team_id; }
 };
 
 #endif
