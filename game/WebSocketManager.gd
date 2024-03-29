@@ -45,14 +45,16 @@ func processMessage(message: String):
 		var gameID = message.to_int()
 		
 		GameData.loadGameUsers(gameID)
+		GameData.changeGame(gameID)
 	elif message.begins_with("[GAMESETTINGSUPDATE]"):
 		message.erase(0, len("[GAMESETTINGSUPDATE]"))
 		
 		var gameID = message.to_int()
 		
 		GameData.loadGameSettings(gameID)
+		GameData.changeGame(gameID)
 	elif message.begins_with("[QUEUEMATCH]"):
-		message.erase(0, len("[GAMESETTINGSUPDATE]"))
+		message.erase(0, len("[QUEUEMATCH]"))
 		
 		var gameID = message.to_int()
 		

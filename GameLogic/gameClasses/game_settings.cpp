@@ -76,13 +76,14 @@ void GameSettings::addSetting(const char* type, const void* value){
     if(value == nullptr) return;
 
     if(strcmp(type, "simulationSpeed") == 0) simulationSpeed = std::min(7200.0, std::max(1.0, *(double*)value));
-    if(strcmp(type, "fireRate") == 0) fireRate = std::min(2.0, std::max(0.5, *(double*)value));
-    if(strcmp(type, "fireRange") == 0) fireRange = std::min(1.0, std::max(0.25, *(double*)value));
-    if(strcmp(type, "factoryDensity") == 0) factoryDensity = std::min(0.8, std::max(0.2, *(double*)value));
-    if(strcmp(type, "resourcesToWin") == 0) resourcesToWin = std::min(400, std::max(50, int(std::lround(*(double*)value))));
-    if(strcmp(type, "gameMode") == 0) gameMode = strcmp((char*)value, "CONQUEST") == 0 ? Mode::CONQUEST : Mode::MINING;
-    if(strcmp(type, "defaultSonar") == 0) defaultSonar = std::min(100, std::max(25, int(std::lround(*(double*)value))));
-    if(strcmp(type, "defaultMaxShield") == 0) defaultMaxShield = std::min(40, std::max(10, int(std::lround(*(double*)value))));
-    if(strcmp(type, "costPerMine") == 0) costPerMine = std::min(100, std::max(25, int(std::lround(*(double*)value))));
-    if(strcmp(type, "outpostsPerPlayer") == 0) outpostsPerPlayer = std::min(20, std::max(5, int(std::lround(*(double*)value))));
+    else if(strcmp(type, "fireRate") == 0) fireRate = std::min(2.0, std::max(0.5, *(double*)value));
+    else if(strcmp(type, "fireRange") == 0) fireRange = std::min(1.0, std::max(0.25, *(double*)value));
+    else if(strcmp(type, "factoryDensity") == 0) factoryDensity = std::min(0.8, std::max(0.2, *(double*)value));
+    else if(strcmp(type, "resourcesToWin") == 0) resourcesToWin = std::min(400, std::max(50, int(std::lround(*(double*)value))));
+    else if(strcmp(type, "gameMode") == 0) gameMode = strcmp((char*)value, "CONQUEST") == 0 ? Mode::CONQUEST : Mode::MINING;
+    else if(strcmp(type, "defaultSonar") == 0) defaultSonar = std::min(100, std::max(25, int(std::lround(*(double*)value))));
+    else if(strcmp(type, "defaultMaxShield") == 0) defaultMaxShield = std::min(40, std::max(10, int(std::lround(*(double*)value))));
+    else if(strcmp(type, "costPerMine") == 0) costPerMine = std::min(100, std::max(25, int(std::lround(*(double*)value))));
+    else if(strcmp(type, "outpostsPerPlayer") == 0) outpostsPerPlayer = std::min(20, std::max(5, int(std::lround(*(double*)value))));
+    else if(strcmp(type, "number_of_teams") == 0) number_of_teams = int(std::lround(*(double*)value));
 }

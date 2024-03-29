@@ -26,10 +26,14 @@ public:
     }
 
     void run(Game* game) override {
+        int originalTargetOwner = vessel->getTarget()->getOwnerID();
+
         vessel->setOriginatingOrder(getOriginatingOrder());
         vessel->setTarget(target);
         vessel->setOrigin(nullptr);
         vessel->setSpeedModifier(1.0);
+
+        if(vessel->getTarget()->getOwnerID() != originalTargetOwner) game->addNotification(new AttackNotification(getTimestamp(), vessel->getID(), vessel->getTarget()->getOwnerID()));
     }
 };
 

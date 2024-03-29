@@ -10,6 +10,7 @@ extern "C" {
   void freeGame(cGame);
   void addOrder(cGame, char*, int, int, double, int, int[], int);
   int runGame(cGame, int[]);
+  int runGameWithNotifications(cGame, int[], double, int[]);
 #ifdef __cplusplus
 }
 #endif

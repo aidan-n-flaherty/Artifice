@@ -1,4 +1,4 @@
-[gd_scene load_steps=133 format=3 uid="uid://dgp4l24s2rulk"]
+[gd_scene load_steps=135 format=3 uid="uid://dgp4l24s2rulk"]
 
 [ext_resource type="Script" path="res://Game.gd" id="1_s53r2"]
 [ext_resource type="Script" path="res://CameraPivot.gd" id="2_t2ckv"]
@@ -21,8 +21,10 @@
 [ext_resource type="PackedScene" uid="uid://c7rmgavx0p0po" path="res://Chat.tscn" id="14_xpy25"]
 [ext_resource type="Texture2D" uid="uid://ddtmrm6d6rl0c" path="res://resources/gameMenuIcons/chatIcon.png" id="15_lpw6h"]
 [ext_resource type="PackedScene" uid="uid://8bjal0hti5cr" path="res://Logs.tscn" id="15_yfjeb"]
+[ext_resource type="PackedScene" uid="uid://cji0ca8swtaxi" path="res://GameModifier.tscn" id="19_efwav"]
 [ext_resource type="PackedScene" uid="uid://c0o7lbwqyauwq" path="res://Battle Forecast.tscn" id="20_x2ppo"]
 [ext_resource type="Texture2D" uid="uid://br2xninxoa36u" path="res://resources/gameMenuIcons/hireIconBeamDown (Proto 3).png" id="21_lwlj7"]
+[ext_resource type="Texture2D" uid="uid://df304hwlkhr6p" path="res://resources/gameMenuIcons/editIcon.png" id="24_7o8jj"]
 
 [sub_resource type="Gradient" id="Gradient_3xapi"]
 offsets = PackedFloat32Array(0.155462, 0.84874)
@@ -1451,6 +1453,10 @@ layout_mode = 2
 visible = false
 layout_mode = 2
 
+[node name="GameEditor" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel" instance=ExtResource("19_efwav")]
+visible = false
+layout_mode = 2
+
 [node name="Battle Forecast" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel" instance=ExtResource("20_x2ppo")]
 visible = false
 layout_mode = 2
@@ -1582,6 +1588,22 @@ texture_normal = ExtResource("12_fsvp4")
 ignore_texture_size = true
 stretch_mode = 5
 
+[node name="EditorContainer" type="MarginContainer" parent="MenuBar/VSplitContainer/Tabs/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 30
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 30
+
+[node name="EditorButton" type="TextureButton" parent="MenuBar/VSplitContainer/Tabs/HBoxContainer/EditorContainer"]
+layout_mode = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_ocfcu")
+texture_normal = ExtResource("24_7o8jj")
+ignore_texture_size = true
+stretch_mode = 5
+
 [node name="RSpacer" type="Control" parent="MenuBar/VSplitContainer/Tabs/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -1593,3 +1615,4 @@ size_flags_horizontal = 3
 [connection signal="toggled" from="MenuBar/VSplitContainer/Tabs/HBoxContainer/ChatContainer/ChatButton" to="." method="_on_chat_button_toggled"]
 [connection signal="toggled" from="MenuBar/VSplitContainer/Tabs/HBoxContainer/ShopContainer/ShopButton" to="." method="_on_shop_button_toggled"]
 [connection signal="toggled" from="MenuBar/VSplitContainer/Tabs/HBoxContainer/LogContainer/LogsButton" to="." method="_on_logs_button_toggled"]
+[connection signal="toggled" from="MenuBar/VSplitContainer/Tabs/HBoxContainer/EditorContainer/EditorButton" to="." method="_on_editor_button_toggled"]

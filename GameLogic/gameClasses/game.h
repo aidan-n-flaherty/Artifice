@@ -17,6 +17,7 @@
 #include "gameObjects/specialist.h"
 #include "gameObjects/positional_object.h"
 #include "game_settings.h"
+#include "attack_notification.h"
 #include "order.h"
 #include "event.h"
 
@@ -75,6 +76,8 @@ private:
 
     std::multiset<std::shared_ptr<Game>, GameOrder> cache;
 
+    std::set<AttackNotification*, NotificationOrder> notifications;
+
     GameSettings* settings;
 
 public:
@@ -110,6 +113,7 @@ public:
     const std::multiset<Event*, EventOrder>& getEvents() const { return events; }
     const std::multiset<Order*, OrderOrder>& getOrders() const { return orders; }
     const std::list<Order*>& getInvalid() { return invalidOrders; }
+    const std::set<AttackNotification*, NotificationOrder>& getNotifications() { return notifications; };
     
     bool hasPlayer(const int id) const { return players.find(id) != players.end(); }
     bool hasVessel(const int id) const { return vessels.find(id) != vessels.end(); }
@@ -124,6 +128,7 @@ public:
     void addSpecialist(Specialist* o);
     void addOrder(Order* o);
     void addEvent(Event* e);
+    void addNotification(AttackNotification* n);
 
     std::shared_ptr<Game> removeOrder(int ID);
     void addOrder(const std::string &type, int ID, int referenceID, double timestamp, int senderID, int argumentIDs[], int argCount);

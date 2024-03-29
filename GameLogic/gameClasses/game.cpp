@@ -352,13 +352,8 @@ std::list<std::pair<int, int>> Game::run() {
     // loops until no events or orders remain.
     // note that events will always be run before orders given the same timestamp.
     while((!events.empty() || !orders.empty()) && !ended) {
-        std::cout<<events.size()<<" events and "<<orders.size()<<" orders remain to be tracked..."<<std::endl;
         std::multiset<Event*>::iterator event = events.begin();
 
-        /*for(auto it = events.begin(); it != events.end(); it++) {
-            std::cout << (*it)->getTimestamp() << ", ";
-        }
-        std::cout << std::endl;*/
         // check if the next chronological event occurs after the next chronological order, and if so,
         // run the order instead of the event
 
@@ -387,7 +382,6 @@ std::list<std::pair<int, int>> Game::run() {
             } else {
                 event = events.insert(converted);
                 break;
-                std::cout << "Something might be wrong with the code..."<<std::endl;
             }
         }
 
@@ -414,7 +408,7 @@ std::list<std::pair<int, int>> Game::run() {
 
         updateEvents();
     }
-    std::cout<<"no more events remain to be tracked."<<std::endl;
+
     if(!ranOutOfTime) nextEndState = std::numeric_limits<double>::max();
 
     return getScores();
@@ -690,6 +684,11 @@ void Game::addOrder(Order* o) {
 void Game::addEvent(Event* e) {
     events.insert(e);
 }
+
+void Game::addNotification(AttackNotification* n) {
+    notifications.insert(n);
+}
+
 
 void Game::removeVessel(Vessel* v) {
     if(v->hasOwner()) v->getOwner()->removeVessel(v);

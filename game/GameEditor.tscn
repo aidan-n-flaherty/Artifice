@@ -527,7 +527,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("3_jw58j")
 max_value = 3000.0
-step = 100.0
+step = 2.08165e-12
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/RatingSlider"]
 layout_mode = 1
@@ -545,13 +545,13 @@ layout_mode = 2
 [node name="Low" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/RatingSlider/MarginContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "500"
+text = "0"
 label_settings = SubResource("LabelSettings_ychv2")
 
 [node name="High" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/RatingSlider/MarginContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "2000"
+text = "3000"
 label_settings = SubResource("LabelSettings_ychv2")
 horizontal_alignment = 2
 
@@ -566,6 +566,7 @@ theme = ExtResource("3_jw58j")
 text = "Advanced"
 
 [node name="Advanced" type="MarginContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer"]
+visible = false
 layout_mode = 2
 
 [node name="Grid" type="GridContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced"]
@@ -574,53 +575,11 @@ theme_override_constants/h_separation = 20
 theme_override_constants/v_separation = 20
 columns = 2
 
-[node name="OutpostDensity" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
+[node name="defaultSonarText" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
 layout_mode = 2
-text = "Outpost Density"
+text = "Sonar Radius"
 
-[node name="DensitySlider" type="HSlider" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 1
-theme = ExtResource("3_jw58j")
-theme_override_icons/grabber = SubResource("ImageTexture_vsyyl")
-theme_override_styles/slider = SubResource("StyleBoxFlat_exhwh")
-theme_override_styles/grabber_area = SubResource("StyleBoxFlat_tv32c")
-max_value = 1.0
-step = 0.0
-value = 0.5
-
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/DensitySlider"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_right = 10
-
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/DensitySlider/MarginContainer"]
-layout_mode = 2
-
-[node name="Low" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/DensitySlider/MarginContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Low"
-label_settings = SubResource("LabelSettings_ychv2")
-
-[node name="High" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/DensitySlider/MarginContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "High"
-label_settings = SubResource("LabelSettings_ychv2")
-horizontal_alignment = 2
-
-[node name="Factory Concentration" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
-layout_mode = 2
-text = "Factory Concentration"
-
-[node name="FactorySlider" type="HSlider" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
+[node name="defaultSonar" type="HSlider" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
@@ -628,56 +587,13 @@ theme = ExtResource("3_jw58j")
 theme_override_icons/grabber = SubResource("ImageTexture_vsyyl")
 theme_override_styles/slider = SubResource("StyleBoxFlat_exhwh")
 theme_override_styles/grabber_area = SubResource("StyleBoxFlat_tv32c")
-min_value = 0.2
-max_value = 0.8
+min_value = 25.0
 step = 0.0
-value = 0.5
-
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/FactorySlider"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_right = 10
-
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/FactorySlider/MarginContainer"]
-layout_mode = 2
-
-[node name="Low" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/FactorySlider/MarginContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "20%"
-label_settings = SubResource("LabelSettings_ychv2")
-
-[node name="High" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/FactorySlider/MarginContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "80%"
-label_settings = SubResource("LabelSettings_ychv2")
-horizontal_alignment = 2
-
-[node name="Fire Range" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
-layout_mode = 2
-text = "Fire Radius"
-
-[node name="FireRangeSlider" type="HSlider" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 1
-theme = ExtResource("3_jw58j")
-theme_override_icons/grabber = SubResource("ImageTexture_vsyyl")
-theme_override_styles/slider = SubResource("StyleBoxFlat_exhwh")
-theme_override_styles/grabber_area = SubResource("StyleBoxFlat_tv32c")
-min_value = 0.25
-max_value = 1.0
-step = 0.0
-value = 0.5
+value = 50.0
 exp_edit = true
+rounded = true
 
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/FireRangeSlider"]
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/defaultSonar"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -687,71 +603,27 @@ grow_vertical = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_right = 10
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/FireRangeSlider/MarginContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/defaultSonar/MarginContainer"]
 layout_mode = 2
 
-[node name="Low" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/FireRangeSlider/MarginContainer/HBoxContainer"]
+[node name="Low" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/defaultSonar/MarginContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "50%"
 label_settings = SubResource("LabelSettings_ychv2")
 
-[node name="High" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/FireRangeSlider/MarginContainer/HBoxContainer"]
+[node name="High" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/defaultSonar/MarginContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "200%"
 label_settings = SubResource("LabelSettings_ychv2")
 horizontal_alignment = 2
 
-[node name="Fire Rate" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
-layout_mode = 2
-text = "Fire Rate"
-
-[node name="FireRateSlider" type="HSlider" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 1
-theme = ExtResource("3_jw58j")
-theme_override_icons/grabber = SubResource("ImageTexture_vsyyl")
-theme_override_styles/slider = SubResource("StyleBoxFlat_exhwh")
-theme_override_styles/grabber_area = SubResource("StyleBoxFlat_tv32c")
-min_value = 0.5
-max_value = 2.0
-step = 0.0
-value = 1.0
-exp_edit = true
-
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/FireRateSlider"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_right = 10
-
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/FireRateSlider/MarginContainer"]
-layout_mode = 2
-
-[node name="Low" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/FireRateSlider/MarginContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "50%"
-label_settings = SubResource("LabelSettings_ychv2")
-
-[node name="High" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/FireRateSlider/MarginContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "200%"
-label_settings = SubResource("LabelSettings_ychv2")
-horizontal_alignment = 2
-
-[node name="Base Shield" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
+[node name="defaultMaxShieldText" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
 layout_mode = 2
 text = "Base Shield"
 
-[node name="BaseShieldSlider" type="HSlider" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
+[node name="defaultMaxShield" type="HSlider" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
@@ -766,7 +638,7 @@ value = 20.0
 exp_edit = true
 rounded = true
 
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/BaseShieldSlider"]
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/defaultMaxShield"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -776,71 +648,27 @@ grow_vertical = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_right = 10
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/BaseShieldSlider/MarginContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/defaultMaxShield/MarginContainer"]
 layout_mode = 2
 
-[node name="Low" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/BaseShieldSlider/MarginContainer/HBoxContainer"]
+[node name="Low" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/defaultMaxShield/MarginContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "10"
 label_settings = SubResource("LabelSettings_ychv2")
 
-[node name="High" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/BaseShieldSlider/MarginContainer/HBoxContainer"]
+[node name="High" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/defaultMaxShield/MarginContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "30"
 label_settings = SubResource("LabelSettings_ychv2")
 horizontal_alignment = 2
 
-[node name="Mine Cost" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
-layout_mode = 2
-text = "Mine Cost"
-
-[node name="MineCostSlider" type="HSlider" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 1
-theme = ExtResource("3_jw58j")
-theme_override_icons/grabber = SubResource("ImageTexture_vsyyl")
-theme_override_styles/slider = SubResource("StyleBoxFlat_exhwh")
-theme_override_styles/grabber_area = SubResource("StyleBoxFlat_tv32c")
-min_value = 25.0
-step = 0.0
-value = 50.0
-exp_edit = true
-rounded = true
-
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/MineCostSlider"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_right = 10
-
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/MineCostSlider/MarginContainer"]
-layout_mode = 2
-
-[node name="Low" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/MineCostSlider/MarginContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "25"
-label_settings = SubResource("LabelSettings_ychv2")
-
-[node name="High" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/MineCostSlider/MarginContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "100"
-label_settings = SubResource("LabelSettings_ychv2")
-horizontal_alignment = 2
-
-[node name="Victory Amount" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
+[node name="resourcesToWinText" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
 layout_mode = 2
 text = "Victory Amount"
 
-[node name="VictoryAmountSlider" type="HSlider" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
+[node name="resourcesToWin" type="HSlider" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
@@ -855,7 +683,7 @@ value = 200.0
 exp_edit = true
 rounded = true
 
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/VictoryAmountSlider"]
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/resourcesToWin"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -865,27 +693,27 @@ grow_vertical = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_right = 10
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/VictoryAmountSlider/MarginContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/resourcesToWin/MarginContainer"]
 layout_mode = 2
 
-[node name="Low" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/VictoryAmountSlider/MarginContainer/HBoxContainer"]
+[node name="Low" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/resourcesToWin/MarginContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "100"
 label_settings = SubResource("LabelSettings_ychv2")
 
-[node name="High" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/VictoryAmountSlider/MarginContainer/HBoxContainer"]
+[node name="High" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/resourcesToWin/MarginContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "400"
 label_settings = SubResource("LabelSettings_ychv2")
 horizontal_alignment = 2
 
-[node name="OutpostsPerPlayer" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
+[node name="factoryDensityText" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
 layout_mode = 2
-text = "Outposts Per Player"
+text = "Factory Concentration"
 
-[node name="OutpostCountSlider" type="HSlider" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
+[node name="factoryDensity" type="HSlider" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
@@ -893,13 +721,12 @@ theme = ExtResource("3_jw58j")
 theme_override_icons/grabber = SubResource("ImageTexture_vsyyl")
 theme_override_styles/slider = SubResource("StyleBoxFlat_exhwh")
 theme_override_styles/grabber_area = SubResource("StyleBoxFlat_tv32c")
-min_value = 5.0
-max_value = 15.0
+min_value = 0.2
+max_value = 0.8
 step = 0.0
-value = 10.0
-rounded = true
+value = 0.5
 
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/OutpostCountSlider"]
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/factoryDensity"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -909,27 +736,115 @@ grow_vertical = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_right = 10
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/OutpostCountSlider/MarginContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/factoryDensity/MarginContainer"]
 layout_mode = 2
 
-[node name="Low" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/OutpostCountSlider/MarginContainer/HBoxContainer"]
+[node name="Low" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/factoryDensity/MarginContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "25"
+text = "20%"
 label_settings = SubResource("LabelSettings_ychv2")
 
-[node name="High" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/OutpostCountSlider/MarginContainer/HBoxContainer"]
+[node name="High" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/factoryDensity/MarginContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "100"
+text = "80%"
 label_settings = SubResource("LabelSettings_ychv2")
 horizontal_alignment = 2
 
-[node name="Sonar Range" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
+[node name="fireRateText" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
 layout_mode = 2
-text = "Sonar Radius"
+text = "Fire Rate"
 
-[node name="SonarSlider" type="HSlider" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
+[node name="fireRate" type="HSlider" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+theme = ExtResource("3_jw58j")
+theme_override_icons/grabber = SubResource("ImageTexture_vsyyl")
+theme_override_styles/slider = SubResource("StyleBoxFlat_exhwh")
+theme_override_styles/grabber_area = SubResource("StyleBoxFlat_tv32c")
+min_value = 0.5
+max_value = 2.0
+step = 0.0
+value = 1.0
+exp_edit = true
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/fireRate"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/fireRate/MarginContainer"]
+layout_mode = 2
+
+[node name="Low" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/fireRate/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "50%"
+label_settings = SubResource("LabelSettings_ychv2")
+
+[node name="High" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/fireRate/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "200%"
+label_settings = SubResource("LabelSettings_ychv2")
+horizontal_alignment = 2
+
+[node name="fireRangeText" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
+layout_mode = 2
+text = "Fire Radius"
+
+[node name="fireRange" type="HSlider" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+theme = ExtResource("3_jw58j")
+theme_override_icons/grabber = SubResource("ImageTexture_vsyyl")
+theme_override_styles/slider = SubResource("StyleBoxFlat_exhwh")
+theme_override_styles/grabber_area = SubResource("StyleBoxFlat_tv32c")
+min_value = 0.25
+max_value = 1.0
+step = 0.0
+value = 0.5
+exp_edit = true
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/fireRange"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/fireRange/MarginContainer"]
+layout_mode = 2
+
+[node name="Low" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/fireRange/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "50%"
+label_settings = SubResource("LabelSettings_ychv2")
+
+[node name="High" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/fireRange/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "200%"
+label_settings = SubResource("LabelSettings_ychv2")
+horizontal_alignment = 2
+
+[node name="costPerMineText" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
+layout_mode = 2
+text = "Mine Cost"
+
+[node name="costPerMine" type="HSlider" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
@@ -943,7 +858,7 @@ value = 50.0
 exp_edit = true
 rounded = true
 
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/SonarSlider"]
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/costPerMine"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -953,19 +868,63 @@ grow_vertical = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_right = 10
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/SonarSlider/MarginContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/costPerMine/MarginContainer"]
 layout_mode = 2
 
-[node name="Low" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/SonarSlider/MarginContainer/HBoxContainer"]
+[node name="Low" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/costPerMine/MarginContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "50%"
+text = "25"
 label_settings = SubResource("LabelSettings_ychv2")
 
-[node name="High" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/SonarSlider/MarginContainer/HBoxContainer"]
+[node name="High" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/costPerMine/MarginContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "200%"
+text = "100"
+label_settings = SubResource("LabelSettings_ychv2")
+horizontal_alignment = 2
+
+[node name="outpostsPerPlayerText" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
+layout_mode = 2
+text = "Outposts Per Player"
+
+[node name="outpostsPerPlayer" type="HSlider" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+theme = ExtResource("3_jw58j")
+theme_override_icons/grabber = SubResource("ImageTexture_vsyyl")
+theme_override_styles/slider = SubResource("StyleBoxFlat_exhwh")
+theme_override_styles/grabber_area = SubResource("StyleBoxFlat_tv32c")
+min_value = 5.0
+max_value = 15.0
+step = 0.0
+value = 10.0
+rounded = true
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/outpostsPerPlayer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/outpostsPerPlayer/MarginContainer"]
+layout_mode = 2
+
+[node name="Low" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/outpostsPerPlayer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "5"
+label_settings = SubResource("LabelSettings_ychv2")
+
+[node name="High" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/outpostsPerPlayer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "15"
 label_settings = SubResource("LabelSettings_ychv2")
 horizontal_alignment = 2
 
@@ -1007,7 +966,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "Enter Password Here!"
 
-[node name="Create" type="Button" parent="MarginContainer/VBoxContainer"]
+[node name="Activate" type="Button" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme = ExtResource("2_clsah")
 theme_override_fonts/font = SubResource("FontVariation_5ifx6")
@@ -1015,4 +974,4 @@ theme_override_font_sizes/font_size = 25
 text = "Create"
 
 [connection signal="pressed" from="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/AdvancedButton" to="." method="_on_advanced_button_pressed"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/Create" to="." method="serialize"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/Activate" to="." method="activate"]
