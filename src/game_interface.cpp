@@ -123,10 +123,24 @@ void GameInterface::init(int gameID, int userID, int startTime, int playerCap, D
 	*crashtest = 10;*/
 	// RESET MEMBER VARIABLES
 	this->completeGame = nullptr;
-	
 	this->game = nullptr;
 	this->currentGame = nullptr;
 	this->simulatedGame = nullptr;
+
+	for(auto it = this->vessels.begin(); it != this->vessels.end(); it++) {
+		it->second->queue_free();
+		remove_child(it->second);
+	}
+
+	for(auto it = this->outposts.begin(); it != this->outposts.end(); it++) {
+		it->second->queue_free();
+		remove_child(it->second);
+	}
+
+	for(auto it = this->players.begin(); it != this->players.end(); it++) {
+		it->second->queue_free();
+		remove_child(it->second);
+	}
 	
 	this->vessels.clear();
 	this->outposts.clear();
@@ -134,8 +148,8 @@ void GameInterface::init(int gameID, int userID, int startTime, int playerCap, D
 
 	this->selected = -1;
 	this->selectedSpecialists.clear();
+	
 	// END RESET
-
 
 	this->gameID = gameID;
 	this->userID = userID;

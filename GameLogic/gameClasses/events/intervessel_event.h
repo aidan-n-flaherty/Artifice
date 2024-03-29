@@ -35,8 +35,6 @@ public:
     void run(Game* game) override {
         BattleEvent::run(game);
 
-        std::cout << "Vessel-Vessel combat: " << game->getTime() << ", " << (vesselA->hasOwner() ? vesselA->getOwner()->getName() : "none") << ", " << (vesselB->hasOwner() ? vesselB->getOwner()->getName() : "none") << std::endl;
-
         if(vesselA->isGift() && vesselB->isGift()) {
             return;
         } else if(vesselA->isGift() && !vesselB->isGift()) {

@@ -40,16 +40,20 @@ func init(gameID):
 	
 	$Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel/Shop.init(gameID)
 	$Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel/Chat.init(gameID)
+	$Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel/GameEditor.init(gameID)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	var details = GameData.getGameDetails(gameID)
+	
 	if not game.hasStarted():
 		$Viewport/GameOverlay/Overlay/NotStarted.show()
 		if (game.getStartTime() - game.getTime()) < (2 * 365 * 24 * 60 * 60): #if less than 2 years
 			$Viewport/GameOverlay/Overlay/NotStarted/Label.text = "Game starts in " + Utilities.timeToStr(game.getStartTime() - game.getTime())
-		else:
-			var details = GameData.getGameDetails(gameID)
+		elif details.gameData.playerCount < details.gameSettings.playerCap:
 			$Viewport/GameOverlay/Overlay/NotStarted/Label.text = "Waiting for players (" + str(details.gameData.playerCount) + "/" + str(details.gameSettings.playerCap) + ")"
+		else: 
+			$Viewport/GameOverlay/Overlay/NotStarted/Label.text = "Waiting for host to finalize settings..."
 	else:
 		$Viewport/GameOverlay/Overlay/NotStarted.hide()
 
@@ -76,6 +80,11 @@ func _process(delta):
 	else:
 		viewingEnd = false
 		$Viewport/GameOverlay/Overlay/EndGame.hide()
+	
+	if details.gameData.hostID == GameData.id and details.gameData.startTime:
+		$MenuBar/VSplitContainer/Tabs/HBoxContainer/EditorContainer.show()
+	else:
+		$MenuBar/VSplitContainer/Tabs/HBoxContainer/EditorContainer.hide()
 		
 func addOrder(type, referenceID, timestamp, arguments):
 	GameData.addOrder(gameID, type, referenceID, timestamp, arguments)
@@ -171,11 +180,13 @@ func _on_shop_button_toggled(button_pressed):
 	setMenuDisplay($Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel/Shop,
 		button_pressed)
 
-
 func _on_logs_button_toggled(button_pressed):
 	setMenuDisplay($Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel/Logs,
 		button_pressed)
 
+func _on_editor_button_toggled(button_pressed):
+	setMenuDisplay($Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel/GameEditor,
+		button_pressed)
 
 func _on_back_button_pressed():
 	$Viewport/Viewport3D.remove_child(game)
@@ -192,3 +203,4 @@ func _on_camera_pivot_unselect():
 	$MenuBar/VSplitContainer/Tabs/HBoxContainer/ChatContainer/ChatButton.button_pressed = false
 	$MenuBar/VSplitContainer/Tabs/HBoxContainer/ShopContainer/ShopButton.button_pressed = false
 	$MenuBar/VSplitContainer/Tabs/HBoxContainer/LogContainer/LogsButton.button_pressed = false
+
