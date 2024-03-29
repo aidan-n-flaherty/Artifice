@@ -66,6 +66,7 @@ void PositionalNode::_process(double delta) {
 }
 
 void PositionalNode::select(Camera3D *camera, const Ref<InputEvent> &event, const Vector3 &position, const Vector3 &normal, int32_t shape_idx) {
+	std::cout<<"select function run"<<std::endl;
 	const InputEventMouseButton* e = Object::cast_to<InputEventMouseButton>(event.ptr());
 	
 	if(e != nullptr && e->get_button_index() == MouseButton::MOUSE_BUTTON_LEFT && e->is_pressed()) {
@@ -75,6 +76,7 @@ void PositionalNode::select(Camera3D *camera, const Ref<InputEvent> &event, cons
 	if(e != nullptr && e->get_button_index() == MouseButton::MOUSE_BUTTON_LEFT && e->is_released()) {
 		emit_signal("released", getID());
 	}
+	std::cout<<"select function finished"<<std::endl;
 }
 
 void PositionalNode::selectSpecialist(Camera3D *camera, const Ref<InputEvent> &event, int32_t id) {
