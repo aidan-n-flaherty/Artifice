@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://biekuv7dddk3m"]
+[gd_scene load_steps=15 format=3 uid="uid://biekuv7dddk3m"]
 
 [ext_resource type="Script" path="res://GameEditor.gd" id="1_xc5ik"]
 [ext_resource type="Theme" uid="uid://c4m6lidwyxgc" path="res://resources/UITheme.tres" id="2_clsah"]
@@ -36,6 +36,8 @@ corner_radius_bottom_left = 5
 
 [sub_resource type="LabelSettings" id="LabelSettings_ychv2"]
 font_color = Color(0.45098, 0.45098, 0.45098, 1)
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_tgd8x"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_61g4f"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
@@ -554,6 +556,56 @@ size_flags_horizontal = 3
 text = "2000"
 label_settings = SubResource("LabelSettings_ychv2")
 horizontal_alignment = 2
+
+[node name="TeamCount" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid"]
+layout_mode = 2
+text = "Number of Teams"
+
+[node name="TeamButtons" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid"]
+layout_mode = 2
+
+[node name="0" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/TeamButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("2_clsah")
+toggle_mode = true
+button_pressed = true
+button_group = SubResource("ButtonGroup_tgd8x")
+text = "No Teams"
+
+[node name="2" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/TeamButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("2_clsah")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_tgd8x")
+text = "2"
+
+[node name="3" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/TeamButtons"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("2_clsah")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_tgd8x")
+text = "3"
+
+[node name="4" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/TeamButtons"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("2_clsah")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_tgd8x")
+text = "4"
+
+[node name="5" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/TeamButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("2_clsah")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_tgd8x")
+text = "5"
 
 [node name="Editable" type="Panel" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic"]
 visible = false
