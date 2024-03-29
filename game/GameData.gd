@@ -50,7 +50,7 @@ func _ready():
 	var root = get_tree().get_root()
 	current_scene = root.get_child(root.get_child_count() - 1)
 	
-	login()
+	await login()
 	loadSelf()
 	loadGames()
 	
@@ -79,14 +79,94 @@ func _deferred_goto_node(node) -> void:
 	get_tree().get_root().add_child(current_scene)
 	get_tree().set_current_scene(current_scene)
 
+func signup():
+	var username = "unnamed"
+	var password = ""
+	
+	var characters = []
+	for i in range(0, 10):
+		characters.append(str(i))
+	
+	for i in range(0, 26):
+		characters.append(str(char(97 + i)))
+	
+	for i in range(0, 64):
+		password += characters[randi() % len(characters)]
+	
+	var response = await HTTPManager.postReq("/signup", {
+		"username": username,
+		"password": password
+	}, {})
+	
+	print(response)
+	
+	if not response: return false
+	
+	id = int(response.id)
+	token = str(response.token)
+	
+	var authObj = {
+		"id": id,
+		"password": password
+	}
+	
+	if OS.get_name() == "iOS" and Engine.has_singleton("ICloud"):
+		var iCloud = Engine.get_singleton("ICloud")
+		
+		iCloud.set_key_values({
+			"auth": authObj
+		})
+	else:
+		var file = FileAccess.open("user://artifice_data.save", FileAccess.WRITE)
+		file.store_string(JSON.stringify(authObj))
+
 func login():
+	print("Logging in...")
+	var auth
+	
+	if OS.get_name() == "iOS" and Engine.has_singleton("ICloud"):
+		var iCloud = Engine.get_singleton("ICloud")
+		
+		auth = iCloud.get_key_value("auth")
+	else:
+		var file = FileAccess.open("user://artifice_data.save", FileAccess.READ)
+		
+		if file:
+			auth = JSON.parse_string(file.get_as_text())
+
+	if auth:
+		id = int(auth.id)
+		var password = str(auth.password)
+		
+		var expBackoff = 1
+		
+		while true:
+			var response = await HTTPManager.postReq("/login", {
+				"id": id,
+				"password": password,
+				"pushToken": ""
+			}, {}, false)
+		
+			if response:
+				token = response.token
+				break
+			
+			await get_tree().create_timer(expBackoff).timeout
+			expBackoff *= 2
+	else:
+		signup()
+	
+	print("Logged in!")
 	#id = 3
 	#token = "5577006791947779410"
-	id = 4
-	token = "8674665223082153551"
+	#id = 4
+	#token = "8674665223082153551"
 	#id = 5
 	#token = "15352856648520921629"
-	
+
+func changeGame(id: int):
+	emit_signal("gameChanged", id)
+
 func viewGame(id: int):
 	
 	var loading_screen = preload("res://loading_screen.tscn").instantiate()
@@ -183,6 +263,9 @@ func loadQueues():
 func loadOpenGames():
 	var openGames = await HTTPManager.getReq("/fetchGames")
 	
+	if not openGames:
+		return
+	
 	for game in openGames: 
 		openGameIDs[int(game.gameData.id)] = true
 		gameDetails[int(game.gameData.id)] = game
@@ -192,6 +275,9 @@ func loadOngoingGames():
 		"past": false
 	})
 	
+	if not ongoingGames:
+		return
+	
 	for game in ongoingGames:
 		ongoingGameIDs[int(game.gameData.id)] = true
 		gameDetails[int(game.gameData.id)] = game
@@ -200,6 +286,9 @@ func loadPastGames():
 	var pastGames = await HTTPManager.getReq("/fetchUserGames", {
 		"past": true
 	})
+	
+	if not pastGames:
+		return
 	
 	for game in pastGames:
 		pastGameIDs[int(game.gameData.id)] = true

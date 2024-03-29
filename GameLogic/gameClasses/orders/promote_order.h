@@ -30,19 +30,19 @@ public:
         Player* player = game->getPlayer(getSenderID());
         
         if(player->hasLost() || player->getHires() <= 0) {
-            std::cout << "Not enough hires or player has lost" << std::endl;
+            std::cout << "ORDER ERROR: not enough hires or player has lost" << std::endl;
             return nullptr;
         }
 
         if(!game->hasSpecialist(specialistID)) {
-            std::cout << "Specialist does not exist" << std::endl;
+            std::cout << "ORDER ERROR: specialist does not exist" << std::endl;
             return nullptr;
         }
         
         Specialist* specialist = game->getSpecialist(specialistID);
 
         if(specialist->getOwnerID() != getSenderID()) {
-            std::cout << "Does not own specialist" << std::endl;
+            std::cout << "ORDER ERROR: does not own specialist" << std::endl;
             return nullptr;
         }
         

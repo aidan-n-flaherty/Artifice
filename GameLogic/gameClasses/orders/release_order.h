@@ -16,8 +16,6 @@ private:
 
 public:
     ReleaseOrder(){};
-    ReleaseOrder(double timestamp, int senderID, int specialistTypeID, int referenceID) :
-        Order(timestamp, senderID, referenceID), specialistID(specialistID) {}
     ReleaseOrder(int id, double timestamp, int senderID, int specialistID, int referenceID) :
         Order(id, timestamp, senderID, referenceID), specialistID(specialistID) {}
 
