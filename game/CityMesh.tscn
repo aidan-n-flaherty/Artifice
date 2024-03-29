@@ -329,6 +329,6 @@ vertical_alignment = 2
 
 [node name="Name" type="Label3D" parent="."]
 transform = Transform3D(-1, 0, 8.74228e-08, 6.18172e-08, 0.707107, 0.707107, -6.18172e-08, 0.707107, -0.707107, 0.396017, 16.1625, 9.83795)
-pixel_size = 0.15
-text = "Hello!"
+pixel_size = 0.1
+text = "Attendance Code"
 font = SubResource("FontVariation_cax2q")
