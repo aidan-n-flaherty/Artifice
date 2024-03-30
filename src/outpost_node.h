@@ -6,6 +6,7 @@
 #include "../GameLogic/gameClasses/gameObjects/outpost.h"
 #include "../GameLogic/gameClasses/gameObjects/player.h"
 #include <godot_cpp/variant/utility_functions.hpp>
+#include <iostream>
 
 namespace godot {
 
