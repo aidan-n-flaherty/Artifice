@@ -17,6 +17,11 @@ var editable = false
 
 var gameID = -1
 
+var number_of_teams = 0
+
+var button_team_num = 0
+
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	GameData.gameChanged.connect(update)
@@ -29,6 +34,10 @@ func _ready():
 		child.toggled.connect(on_activeTimes_modified)
 	for child in $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/ActiveHoursButtons2.get_children():
 		child.toggled.connect(on_activeTimes_modified)
+	for child in $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/TeamButtons.get_children():
+		child.toggled.connect(on_team_number_modified)
+		
+	#add check to highlight the current team count on the button selection
 
 func setEditable(canEdit):
 	editable = canEdit
@@ -180,13 +189,20 @@ func serialize():
 		hours.push_back(hour)
 	
 	hours.sort()
-
+	
+	##Checks to make sure that the current team count is valid. If it isn't automatically sets
+	##number of teams to zero
+	if(!(numPlayers % number_of_teams == 0)):
+		number_of_teams = 0
+	
+	print("creating game")
 	var data = {
 		"lobbyName": $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/LobbyNameText.text,
 		"password": $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/PasswordText.text,
 		"playerCap": numPlayers,
 		"startTimeDisplacement": 24 * 60 * 60 if simulationTimescale == "days" else 60 * 10 if simulationTimescale == "hours" else 30,
 		"settingOverrides": {
+			"number_of_teams": number_of_teams,
 			"ratingConstraints": $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/RatingSlider.value,
 			"activeHours": hours,
 			"simulationSpeed": (1 if simulationTimescale == "days" else 60 if simulationTimescale == "hours" else 60 * 60) * $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/SpeedSlider.value,
@@ -221,7 +237,15 @@ func on_players_modified(button_pressed: bool):
 	if button_pressed:
 		for child in $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons.get_children():
 			if child.button_pressed:
-				numPlayers = child.name.to_int()
+				numPlayers = int(str(child.name))
+				for team_num in $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/TeamButtons.get_children():
+					button_team_num = int(str(team_num.name))
+					if(button_team_num == 0):
+						team_num.visible = true
+					elif( ((numPlayers % button_team_num) == 0) && !(numPlayers == button_team_num)):
+						team_num.visible = true
+					else:
+						team_num.visible = false
 
 func on_activeTimes_modified(button_pressed: bool):
 	for child in $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/ActiveHoursButtons.get_children():
@@ -249,6 +273,11 @@ func _on_create_toggled(toggled_on):
 	
 	if game:
 		GameData.goto_scene("res://OpenGameList.tscn")
+		
+func on_team_number_modified(button_pressed: bool):
+	for child in $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/TeamButtons.get_children():
+		if child.button_pressed:
+			number_of_teams = int(str(child.name))
 
 
 func _on_advanced_button_pressed():

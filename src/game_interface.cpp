@@ -249,6 +249,7 @@ GameSettings GameInterface::loadSettings() {
 }
 
 void GameInterface::_process(double delta) {
+	std::cout << "processing..."<< std::endl;
 	Node::_process(delta);
 	
 	double time = getTimeMillis();
@@ -278,6 +279,7 @@ void GameInterface::_process(double delta) {
 		floorDisplay->setDiff(timeDiff, simulatedDiff);
 		floorDisplay->queue_redraw();
 	}
+	std::cout << "done" << std::endl;
 }
 
 void GameInterface::shiftToTime(double t) {
@@ -474,6 +476,7 @@ void GameInterface::sendTo(int id) {
 
 // event propagated from positional nodes, occurs when something is clicked on
 void GameInterface::select(int id) {
+	std::cout<<"started selection"<<std::endl;
 	justSelect = true;
 
 	if(getSelected() && id == getSelected()->getID()) {
@@ -481,12 +484,13 @@ void GameInterface::select(int id) {
 
 		if(v1) startDrag = willSendWith(SpecialistType::NAVIGATOR);
 		else startDrag = true;
-
+		std::cout<<"finished selection with starting drag"<<std::endl;
 		return;
 	}
 
 	if(game->hasSpecialist(id)) {
 		setSelectedSpecialist(id);
+		std::cout<<"finished selection with specialist selected"<<std::endl;
 		return;
 	}
 
@@ -496,17 +500,22 @@ void GameInterface::select(int id) {
 	
 	if(v1) startDrag = willSendWith(SpecialistType::NAVIGATOR);
 	else startDrag = true;
+  std::cout<<"finished selection"<<std::endl;
 }
 
 void GameInterface::unselect() {
+	std::cout<<"started deselection"<<std::endl;
 	setSelected(-1);
 
 	emit_signal("deselect");
 
 	while(!selectedSpecialists.empty()) setSelectedSpecialist(*selectedSpecialists.begin());
+
+	std::cout<<"finished deselection"<<std::endl;
 }
 
 void GameInterface::setSelected(int id) {
+	std::cout<<"started setting selection"<<std::endl;
 	if(getSelected() && getNode(selected)) getNode(selected)->setSelected(false);
 
 	PositionalNode* obj = getNode(id);
@@ -524,6 +533,7 @@ void GameInterface::setSelected(int id) {
 	if(o) emit_signal("selectOutpost", o);
 
 	selected = id;
+	std::cout<<"finished setting selection"<<std::endl;
 }
 
 void GameInterface::setSelectedSpecialist(int id) {

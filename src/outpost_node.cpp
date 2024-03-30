@@ -4,6 +4,7 @@
 #include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/classes/resource_loader.hpp>
 #include <godot_cpp/classes/packed_scene.hpp>
+#include <godot_cpp/variant/string.hpp>
 #include <cmath>
 #include <ctime>
 #include <chrono>
@@ -20,6 +21,7 @@ void OutpostNode::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("isMine"), &OutpostNode::isMine);
 	ClassDB::bind_method(D_METHOD("isFactory"), &OutpostNode::isFactory);
 	ClassDB::bind_method(D_METHOD("isGenerator"), &OutpostNode::isGenerator);
+	ClassDB::bind_method(D_METHOD("getName"), &OutpostNode::getName);
 }
 
 OutpostNode::OutpostNode(Outpost* outpost) : PositionalNode("res://CityMesh.tscn", outpost), outpost(outpost) {
@@ -31,4 +33,11 @@ void OutpostNode::_process(double delta) {
 	if(outpost == nullptr) return;
 		
     set_position(Vector3(outpost->getPositionAt(getDiff()).getX(), 0, outpost->getPositionAt(getDiff()).getY()));
+}
+
+String OutpostNode::getName() {
+	if (outpost == nullptr) return "";
+	//return the name of an outpost (currently based on its ID)
+	std::string outpostStr = outpost->getSettings()->outpostNames[outpost->getID()];
+	return String(outpostStr.c_str());
 }

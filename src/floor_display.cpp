@@ -62,19 +62,25 @@ void FloorDisplay::_draw() {
         }
     }
 
-    /*for(const auto& pair : current->getOutposts()) {
-        double x1 = pair.second->getPositionAt(getDiff()).getX();
-        double y1 = pair.second->getPositionAt(getDiff()).getY();
+    //if an outpost is selected, draw a circle with a different transparnt color around the outpost signifying its sonar range 
+    //need
+    for(int i = -1; i <= 1; i++) {
+        for(int j = -1; j <= 1; j++) {
+            double x = rootX + i * game->getSettings()->width;
+            double y = rootY + j * game->getSettings()->height;
 
-        int shield = pair.second->getShieldAt(getDiff());
-        int maxShield = pair.second->getMaxShield();
+            for(const auto& pair : (gameInterface->simulatingFuture() ? current->getOutposts() : game->getOutposts())) {
+                //if !selected, continue
+                if(!(gameInterface->getSelected())) continue;
+                if(pair.second->getID() != gameInterface->getSelected()->getID()) continue;
 
-        for(int i = 0; i < maxShield; i += 10) {
-            draw_arc(Vector2(x1 - x, y1 - y) * pixels, 300 + i * 3, UtilityFunctions::deg_to_rad(135), UtilityFunctions::deg_to_rad(135 + 10 * 18), 32, Color(0.0, 0.0, 0.0, 0.2), 20.0, true);
-            draw_arc(Vector2(x1 - x, y1 - y) * pixels, 300 + i * 3, UtilityFunctions::deg_to_rad(135), UtilityFunctions::deg_to_rad(135 + std::max(0, std::min(10, shield - i)) * 18), 32, Color(0.0, 0.0, 0.0), 20.0, true);
+                double x1 = pair.second->getPositionAt(getDiff()).getX();
+                double y1 = pair.second->getPositionAt(getDiff()).getY();
+                //if the outpost is selected, have it semi-transparent
+                draw_arc(Vector2(x1 - x, y1 - y) * pixels, pair.second->getSonarRange() * pixels, 0, UtilityFunctions::deg_to_rad(360), 64, Color(0.5,0.5,0.5),5.0,true);
+            }
         }
-    }*/
-
+    }
     Player* p = gameInterface->simulatingFuture() ? current->getPlayer(gameInterface->getUserGameID()) : game->getPlayer(gameInterface->getUserGameID());
 
     for(int i = -1; i <= 1; i++) {

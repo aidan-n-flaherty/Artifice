@@ -83,5 +83,6 @@ func moveTo(t):
 	self.target = time_start_pos - t
 	speed = 0.5
 	cap = 2.0 * 3600.0 / game.getSimulationSpeed()
-
+#func addMesureLines():
+	#Draw lines based off of game.getSimulationSpeed()
 

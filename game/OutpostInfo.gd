@@ -31,7 +31,6 @@ func setShield(shield: int, maxShield: int):
 func setUnits(units: int):
 	self.units = units
 	$UnitsContainer/Units.text = str(units)
-
 func _draw():
 	var center = Vector2(size.x/2, size.y/2)
 	

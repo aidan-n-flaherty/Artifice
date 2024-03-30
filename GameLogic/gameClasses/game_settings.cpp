@@ -70,6 +70,43 @@ void GameSettings::loadDefaults() {
         { 0/255.0, 128/255.0, 128/255.0},
         { 220/255.0, 190/255.0, 255/255.0}
     };
+    GameSettings::outpostNames = {
+        "Amberg",
+        "Aranorin",
+        "Ararin",
+        "Askersund",
+        "Attendence",
+        "Clarlayna",
+        "Commit",
+        "Copypasta",
+        "Corvid",
+        "Corvidae",
+        "Corvus",
+        "Gomiris",
+        "Ianven",
+        "Ilythyrra",
+        "Khodour",
+        "Lecit",
+        "Lomello",
+        "Magpie",
+        "Mirlenas",
+        "Myre"
+        "Oaktown",
+        "Oeuf",
+        "Orivae",
+        "Raven",
+        "Repository",
+        "Rocs",
+        "Scons",
+        "Senusha",
+        "Slinate",
+        "Sophutria",
+        "Vintgar",
+        "Vim",
+        "Warminster",
+        "Whuqsu",
+        "Woodridge"
+    };
 }
 
 void GameSettings::addSetting(const char* type, const void* value){
