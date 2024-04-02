@@ -21,6 +21,8 @@ var number_of_teams = 0
 
 var button_team_num = 0
 
+var team_button_pressed
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -240,12 +242,20 @@ func on_players_modified(button_pressed: bool):
 				numPlayers = int(str(child.name))
 				for team_num in $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/TeamButtons.get_children():
 					button_team_num = int(str(team_num.name))
+					team_button_pressed = int(str(team_num.name))
 					if(button_team_num == 0):
 						team_num.visible = true
 					elif( ((numPlayers % button_team_num) == 0) && !(numPlayers == button_team_num)):
 						team_num.visible = true
 					else:
 						team_num.visible = false
+
+				if( (number_of_teams != 0) && ((numPlayers % number_of_teams != 0) || (numPlayers == number_of_teams)) ): 
+					$"MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/TeamButtons/0".set_pressed_no_signal(true)
+					get_node("MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons/" + str(numPlayers)).set_pressed_no_signal(false)
+				elif( (number_of_teams != 0) && (numPlayers % number_of_teams == 0) && (numPlayers != number_of_teams)):
+					$"MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/TeamButtons/0".set_pressed_no_signal(false)
+					get_node("MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons/" + str(numPlayers)).set_pressed_no_signal(true)
 
 func on_activeTimes_modified(button_pressed: bool):
 	for child in $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/ActiveHoursButtons.get_children():
