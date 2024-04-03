@@ -21,6 +21,7 @@ theme_override_constants/separation = 20
 [node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
+horizontal_scroll_mode = 0
 
 [node name="Content" type="VBoxContainer" parent="VBoxContainer/ScrollContainer"]
 layout_mode = 2

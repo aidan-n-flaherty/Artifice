@@ -31,7 +31,6 @@ uniform float speed = 0.1;
 uniform float tmp = 0.0;
 
 vec4 getTexture(vec2 pos, sampler2D tex) {
-	
 	if(resolution <= 0.0) return vec4(0.0);
 	
 	vec2 size = vec2(textureSize(tex, 0));

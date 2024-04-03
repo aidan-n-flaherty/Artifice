@@ -27,6 +27,33 @@ var target = null
 
 var targetPos = null
 
+var cameraSize
+
+func _ready():
+	$FloorSprite.material_override.set_shader_parameter("screen_texture", $FloorDisplay.get_texture())
+	get_viewport().connect("size_changed", resize)
+	
+	resize()
+
+func resize():
+	var cameraX = 100.0 * (get_viewport().size.x * 1.0 / GameData.baseResolution.x) * ((minZoom + maxZoom)/2.0 + tanh(zoom) * (maxZoom - minZoom) / PI)
+	var cameraY = 100.0 * (get_viewport().size.y * 2.6 / GameData.baseResolution.y)  * ((minZoom + maxZoom)/2.0 + tanh(zoom) * (maxZoom - minZoom) / PI)
+	
+	$Camera3D.size = cameraX
+	$SubViewport/VirtualCamera3D.size = cameraX
+	$FloorDisplay.size = Vector2(10 * cameraX, 10 * cameraY)
+	$FloorSprite.scale.z = cameraY/100.0
+	$FloorSprite.scale.x = cameraX/100.0
+	$Terrain.material_override.set_shader_parameter("cameraSize", cameraX)
+	$Terrain.material_override.set_shader_parameter("meshHeight", cameraY)
+	$Terrain.material_override.set_shader_parameter("meshWidth", cameraX)
+	$Terrain.scale.z = cameraY/100.0
+	$Terrain.scale.x = cameraX/100.0
+	$Darkness.scale.z = cameraY/100.0
+	$Darkness.scale.x = cameraX/100.0
+	
+	get_parent().get_node("WorldEnvironment").camera_attributes.dof_blur_far_distance = 180 * max(1.0, sqrt($Camera3D.size/100.0))
+
 func init(gameID: int):
 	self.game = GameData.getGame(gameID)
 	
@@ -164,15 +191,4 @@ func _unhandled_input(event):
 		if(zoom > 3.0): zoom = 3.0
 		elif(zoom < -3.0): zoom = -3.0
 		
-		$Camera3D.size = 100 * ((minZoom + maxZoom)/2.0 + tanh(zoom) * (maxZoom - minZoom) / PI)
-		$SubViewport/VirtualCamera3D.size = $Camera3D.size
-		$FloorDisplay.size = Vector2($Camera3D.size * 10, $Camera3D.size * 26)
-		$FloorSprite.scale.z = $Camera3D.size/100.0
-		$FloorSprite.scale.x = $Camera3D.size/100.0
-		$Terrain.material_override.set_shader_parameter("cameraSize", $Camera3D.size)
-		$Terrain.scale.z = $Camera3D.size/100.0
-		$Terrain.scale.x = $Camera3D.size/100.0
-		$Darkness.scale.z = $Camera3D.size/100.0
-		$Darkness.scale.x = $Camera3D.size/100.0
-		
-		get_parent().get_node("WorldEnvironment").camera_attributes.dof_blur_far_distance = 180 * max(1.0, sqrt($Camera3D.size/100.0))
+		resize()

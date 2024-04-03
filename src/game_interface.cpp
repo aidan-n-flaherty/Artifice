@@ -249,7 +249,6 @@ GameSettings GameInterface::loadSettings() {
 }
 
 void GameInterface::_process(double delta) {
-	std::cout << "processing..."<< std::endl;
 	Node::_process(delta);
 	
 	double time = getTimeMillis();
@@ -279,7 +278,6 @@ void GameInterface::_process(double delta) {
 		floorDisplay->setDiff(timeDiff, simulatedDiff);
 		floorDisplay->queue_redraw();
 	}
-	std::cout << "done" << std::endl;
 }
 
 void GameInterface::shiftToTime(double t) {

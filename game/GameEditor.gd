@@ -36,8 +36,6 @@ func _ready():
 		child.toggled.connect(on_activeTimes_modified)
 	for child in $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/TeamButtons.get_children():
 		child.toggled.connect(on_team_number_modified)
-		
-	#add check to highlight the current team count on the button selection
 
 func setEditable(canEdit):
 	editable = canEdit
@@ -48,7 +46,12 @@ func setEditable(canEdit):
 		$MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/System.hide()
 		$MarginContainer/VBoxContainer/Passworded.hide()
 		$MarginContainer/VBoxContainer/Players.hide()
+		$MarginContainer/VBoxContainer/Activate.show()
+		$MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/Password.show()
+		$MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/PasswordText.show()
 	else:
+		$MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/System.show()
+		$MarginContainer/VBoxContainer/Players.show()
 		$MarginContainer/VBoxContainer/Activate.hide()
 		$MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/Password.hide()
 		$MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/PasswordText.hide()
@@ -91,7 +94,11 @@ func deserialize(gameID):
 	var numCurrentPlayers = data["playerCount"]
 	numPlayers = settings["playerCap"]
 	
+	for i in range(2, numCurrentPlayers):
+		get_node("MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons/" + str(i)).disabled = true
+	
 	get_node("MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons/" + str(numPlayers)).button_pressed = true
+	on_players_modified(true)
 	
 	var simSp = SettingsDefault.getSimulationSpeed()
 	if(settings.settingOverrides.has("simulationSpeed")):
@@ -111,6 +118,11 @@ func deserialize(gameID):
 		$MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows.visible = false
 	
 	get_node("MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/SimulationTimescaleButtons/" + simulationTimescale).button_pressed = true
+	
+	if settings.settingOverrides.has("number_of_teams"):
+		number_of_teams = int(settings.settingOverrides["number_of_teams"])
+		
+		get_node("MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/TeamButtons/" + str(number_of_teams)).button_pressed = true
 	
 	if (settings.settingOverrides.has("activeHours")):
 		activeHours = settings.settingOverrides["activeHours"]
@@ -141,7 +153,10 @@ func deserialize(gameID):
 				defaultText.show()
 				
 				hasAdvanced = true
-		else:
+			elif not editable:
+				default.hide()
+				defaultText.hide()
+		elif not editable:
 			default.hide()
 			defaultText.hide()
 		
@@ -192,7 +207,7 @@ func serialize():
 	
 	##Checks to make sure that the current team count is valid. If it isn't automatically sets
 	##number of teams to zero
-	if(!(numPlayers % number_of_teams == 0)):
+	if number_of_teams != 0 and numPlayers % number_of_teams != 0:
 		number_of_teams = 0
 	
 	print("creating game")
