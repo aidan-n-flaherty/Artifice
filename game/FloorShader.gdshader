@@ -9,7 +9,10 @@ void fragment() {
 	
 	if(ALPHA == 1.0) {
 		ALPHA = max(max(1.0 - color.r, 1.0 - color.g), 1.0 - color.b);
-		ALBEDO = vec3(1.0);
+		float highest =  max(max(color.r, color.g), color.b);
+		
+		if(highest > 0.0) ALBEDO = 1.0/highest * color.rgb;
+		else ALBEDO = vec3(1.0);
 	} else {
 		ALBEDO = vec3(0.0);
 	}

@@ -8,6 +8,7 @@
 #include <cmath>
 #include "../GameLogic/gameClasses/game.h"
 #include "../GameLogic/gameClasses/events/battle_event.h"
+#include "../GameLogic/gameClasses/gameObjects/outpost.h"
 
 using namespace godot;
 
@@ -62,7 +63,7 @@ void FloorDisplay::_draw() {
         }
     }
 
-    //if an outpost is selected, draw a circle with a different transparnt color around the outpost signifying its sonar range 
+    //if an outpost is selected, draw a circle with a different transparent color around the outpost signifying its sonar range 
     //need
     for(int i = -1; i <= 1; i++) {
         for(int j = -1; j <= 1; j++) {
@@ -77,7 +78,23 @@ void FloorDisplay::_draw() {
                 double x1 = pair.second->getPositionAt(getDiff()).getX();
                 double y1 = pair.second->getPositionAt(getDiff()).getY();
                 //if the outpost is selected, have it semi-transparent
-                draw_arc(Vector2(x1 - x, y1 - y) * pixels, pair.second->getSonarRange() * pixels, 0, UtilityFunctions::deg_to_rad(360), 64, Color(0.5,0.5,0.5),5.0,true);
+                draw_arc(Vector2(x1 - x, y1 - y) * pixels, pair.second->getSonarRange() * pixels, 0, UtilityFunctions::deg_to_rad(360), 64, Color(0.25,0.25,0.25),5.0,true);
+            }
+        }
+    }
+
+    for(int i = -1; i <= 1; i++) {
+        for(int j = -1; j <= 1; j++) {
+            double x = rootX + i * game->getSettings()->width;
+            double y = rootY + j * game->getSettings()->height;
+
+            for(const auto& pair : (gameInterface->simulatingFuture() ? current->getOutposts() : game->getOutposts())) {
+                if(!pair.second->controlsSpecialist(SpecialistType::SENTRY)) continue;
+
+                double x1 = pair.second->getPositionAt(getDiff()).getX();
+                double y1 = pair.second->getPositionAt(getDiff()).getY();
+                //if the outpost is selected, have it semi-transparent
+                draw_arc(Vector2(x1 - x, y1 - y) * pixels, pair.second->getFireRange() * pixels, 0, UtilityFunctions::deg_to_rad(360), 64, Color(0.25,0.0,0.0),3.0,true);
             }
         }
     }

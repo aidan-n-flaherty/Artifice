@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://bwsmo21vmyk76"]
+[gd_scene load_steps=13 format=3 uid="uid://bwsmo21vmyk76"]
 
 [ext_resource type="Script" path="res://GameDetail.gd" id="1_fslp1"]
 [ext_resource type="PackedScene" uid="uid://biekuv7dddk3m" path="res://GameEditor.tscn" id="1_nn7qw"]
@@ -20,6 +20,8 @@ corner_detail = 16
 [sub_resource type="ButtonGroup" id="ButtonGroup_4le1r"]
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_ve084"]
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_gk6oe"]
 
 [sub_resource type="FontVariation" id="FontVariation_wauh6"]
 spacing_top = 6
@@ -108,6 +110,21 @@ button_group = SubResource("ButtonGroup_ve084")
 
 [node name="minutes" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/SimulationTimescaleButtons" index="2"]
 button_group = SubResource("ButtonGroup_ve084")
+
+[node name="0" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/TeamButtons" index="0"]
+button_group = SubResource("ButtonGroup_gk6oe")
+
+[node name="2" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/TeamButtons" index="1"]
+button_group = SubResource("ButtonGroup_gk6oe")
+
+[node name="3" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/TeamButtons" index="2"]
+button_group = SubResource("ButtonGroup_gk6oe")
+
+[node name="4" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/TeamButtons" index="3"]
+button_group = SubResource("ButtonGroup_gk6oe")
+
+[node name="5" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/TeamButtons" index="4"]
+button_group = SubResource("ButtonGroup_gk6oe")
 
 [node name="Join" type="Button" parent="MarginContainer/VBoxContainer" index="4"]
 layout_mode = 2

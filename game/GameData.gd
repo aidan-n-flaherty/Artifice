@@ -46,6 +46,8 @@ var user
 
 var users = {}
 
+var baseResolution = Vector2i(1080, 1920)
+
 func _ready():
 	var root = get_tree().get_root()
 	current_scene = root.get_child(root.get_child_count() - 1)
@@ -403,6 +405,9 @@ func loadGameState(id: int):
 	var gameState = await HTTPManager.getReq("/fetchGameState", {
 		"gameID": id
 	})
+	
+	if not gameState:
+		return
 	
 	var details = getGameDetails(id)
 	

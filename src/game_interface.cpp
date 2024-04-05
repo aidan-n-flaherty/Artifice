@@ -67,6 +67,7 @@ void GameInterface::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("hasLost"), &GameInterface::hasLost);
 	ClassDB::bind_method(D_METHOD("canHire"), &GameInterface::canHire);
 	ClassDB::bind_method(D_METHOD("canRelease", "specialistID"), &GameInterface::canRelease);
+	ClassDB::bind_method(D_METHOD("isPaused"), &GameInterface::isPaused);
 	ClassDB::bind_method(D_METHOD("ownsSpecialist", "specialistID"), &GameInterface::ownsSpecialist);
 	ClassDB::bind_method(D_METHOD("getSpecialistOwner", "specialistID"), &GameInterface::getSpecialistOwner);
 	ClassDB::bind_method(D_METHOD("hasStarted"), &GameInterface::hasStarted);
@@ -179,7 +180,8 @@ void GameInterface::init(int gameID, int userID, int startTime, int playerCap, D
 	}
 	
 	settings = loadSettings();
-	completeGame = std::shared_ptr<Game>(new Game(settings, userID, startTime, startTime + simulationBuffer / settings.simulationSpeed, playerMap, 42083, true));
+	settings.startTime = startTime;
+	completeGame = std::shared_ptr<Game>(new Game(settings, userID, startTime, settings.clientToGameTime(startTime + simulationBuffer / settings.simulationSpeed), playerMap, 42083, true));
 
 	completeGame->run();
 	nextEndState = completeGame->getNextEndState();
@@ -198,58 +200,43 @@ GameSettings GameInterface::loadSettings() {
 	Array keys = settingOverrides.keys();
 
 	for(int i = 0; i < keys.size(); i++) {
-		const void* value;
+		bool allocated = false;
 
-		if(Variant::can_convert(settingOverrides[keys[i]].get_type(), Variant::FLOAT)) value = new double(settingOverrides[keys[i]]);
-		else if(Variant::can_convert(settingOverrides[keys[i]].get_type(), Variant::STRING)) value = String(settingOverrides[keys[i]]).utf8().get_data();
-		else value = nullptr;
+		const void* value;
+		std::string str = "";
+
+		std::cout << std::string(String(keys[i]).utf8().get_data()) << std::endl;
+		if(Variant::can_convert(settingOverrides[keys[i]].get_type(), Variant::FLOAT)) {
+			value = new double(settingOverrides[keys[i]]);
+			allocated = true;
+		} else if(Variant::can_convert(settingOverrides[keys[i]].get_type(), Variant::ARRAY)) {
+			Array arr = Array(settingOverrides[keys[i]]);
+
+			for(int j = 0; j < arr.size(); j++) {
+				if(!Variant::can_convert(arr[j].get_type(), Variant::FLOAT)) continue;
+
+				if(j > 0) str += ",";
+				str += std::to_string(int(std::round(double(arr[j]))));
+			}
+
+			value = str.c_str();
+		} else if(Variant::can_convert(settingOverrides[keys[i]].get_type(), Variant::STRING)) {
+			value = String(settingOverrides[keys[i]]).utf8().get_data();
+		} else {
+			std::cout << "Could not convert " << std::string(String(keys[i]).utf8().get_data()) << std::endl;
+			value = nullptr;
+		}
 
 		if(Variant::can_convert(keys[i].get_type(), Variant::STRING)) settings.addSetting(String(keys[i]).utf8().get_data(), value);
-	}
 
-	/*if(settingOverrides.has("simulationSpeed") && Variant::can_convert(settingOverrides["simulationSpeed"].get_type(), Variant::FLOAT)) {
-		settings.simulationSpeed = double(settingOverrides["simulationSpeed"]);
+		if(allocated) delete value;
 	}
-	if(settingOverrides.has("fireRate") && Variant::can_convert(settingOverrides["fireRate"].get_type(), Variant::FLOAT)) {
-		settings.fireRate *= double(settingOverrides["fireRate"]);
-	}
-	if(settingOverrides.has("fireRange") && Variant::can_convert(settingOverrides["fireRange"].get_type(), Variant::FLOAT)) {
-		settings.fireRange *= double(settingOverrides["fireRange"]);
-	}
-	if(settingOverrides.has("factoryDensity") && Variant::can_convert(settingOverrides["factoryDensity"].get_type(), Variant::FLOAT)) {
-		settings.factoryDensity = double(settingOverrides["factoryDensity"]);
-	}
-	if(settingOverrides.has("resourcesToWin") && Variant::can_convert(settingOverrides["resourcesToWin"].get_type(), Variant::INT)) {
-		settings.resourcesToWin = int(settingOverrides["resourcesToWin"]);
-	}
-	if(settingOverrides.has("gameMode")) {
-		settings.gameMode = std::string(String(settingOverrides["gameMode"]).utf8().get_data()) == "CONQUEST" ? Mode.CONQUEST : Mode.MINING;
-	}
-	if(settingOverrides.has("resourcesToWin") && Variant::can_convert(settingOverrides["resourcesToWin"].get_type(), Variant::INT)) {
-		settings.resourcesToWin = int(settingOverrides["resourcesToWin"]);
-	}
-	if(settingOverrides.has("defaultSonar") && Variant::can_convert(settingOverrides["defaultSonar"].get_type(), Variant::INT)) {
-		settings.defaultSonar = int(settingOverrides["defaultSonar"]);
-	}
-	if(settingOverrides.has("defaultMaxShield") && Variant::can_convert(settingOverrides["defaultMaxShield"].get_type(), Variant::INT)) {
-		settings.defaultMaxShield = int(settingOverrides["defaultMaxShield"]);
-	}
-	if(settingOverrides.has("costPerMine") && Variant::can_convert(settingOverrides["costPerMine"].get_type(), Variant::INT)) {
-		settings.costPerMine = int(settingOverrides["costPerMine"]);
-	}
-	if(settingOverrides.has("outpostsPerPlayer") && Variant::can_convert(settingOverrides["outpostsPerPlayer"].get_type(), Variant::INT)) {
-		settings.outpostsPerPlayer = int(settingOverrides["outpostsPerPlayer"]);
-	}
-	if(settingOverrides.has("number_of_teams") && Variant::can_convert(settingOverrides["number_of_teams"].get_type(), Variant::INT)) {
-		settings.number_of_teams = int(settingOverrides["number_of_teams"]);
-	}*/
 
 	std::cout << "finished loading settings." << std::endl;
 	return settings;
 }
 
 void GameInterface::_process(double delta) {
-	std::cout << "processing..."<< std::endl;
 	Node::_process(delta);
 	
 	double time = getTimeMillis();
@@ -258,9 +245,9 @@ void GameInterface::_process(double delta) {
 	update();
 	
 	if(game != nullptr && currentGame != nullptr) {
-		double timeDiff = getTime() - game->getTime();
+		double timeDiff = settings.clientToGameTime(getTime()) - game->getTime();
 
-		double simulatedDiff = getCurrent() - simulatedGame->getTime();
+		double simulatedDiff = settings.clientToGameTime(getCurrent()) - simulatedGame->getTime();
 
 		Player* p = future ? currentGame->getPlayer(getUserGameID()) : game->getPlayer(getUserGameID());
 		
@@ -279,7 +266,6 @@ void GameInterface::_process(double delta) {
 		floorDisplay->setDiff(timeDiff, simulatedDiff);
 		floorDisplay->queue_redraw();
 	}
-	std::cout << "done" << std::endl;
 }
 
 void GameInterface::shiftToTime(double t) {
@@ -294,8 +280,12 @@ void GameInterface::setTime(double t) {
 }
 
 void GameInterface::update() {
-	if(game == nullptr || getTime() + simulationBuffer / settings.simulationSpeed > nextEndState) {
-		if(getTime() > nextEndState) game = nullptr;
+	double time = settings.clientToGameTime(getTime());
+	double currentTime = settings.clientToGameTime(getCurrent());
+	double timeMillis = settings.clientToGameTime(getTimeMillis());
+
+	if(game == nullptr || time + simulationBuffer / settings.simulationSpeed > nextEndState) {
+		if(time > nextEndState) game = nullptr;
 
 		completeGame = completeGame->lastState(nextEndState);
 		completeGame->setEndTime(nextEndState);
@@ -303,21 +293,21 @@ void GameInterface::update() {
 		nextEndState = completeGame->getNextEndState();
 	}
 
-	if(currentGame == nullptr || getTimeMillis() >= nextCurrentState) {
-		currentGame = completeGame->lastState(getTimeMillis());
-		nextCurrentState = completeGame->nextState(getTimeMillis());
+	if(currentGame == nullptr || timeMillis >= nextCurrentState) {
+		currentGame = completeGame->lastState(timeMillis);
+		nextCurrentState = completeGame->nextState(timeMillis);
 	}
 
-	if(simulatedGame == nullptr || getCurrent() < simulatedGame->getTime() || getCurrent() >= nextSimulatedState) {
-		simulatedGame = completeGame->lastState(getCurrent());
-		nextSimulatedState = completeGame->nextState(getCurrent());
+	if(simulatedGame == nullptr || currentTime < simulatedGame->getTime() || currentTime >= nextSimulatedState) {
+		simulatedGame = completeGame->lastState(currentTime);
+		nextSimulatedState = completeGame->nextState(currentTime);
 
 		if(selected >= 0 && !getSelected()) unselect();
 	}
 
-	if(game == nullptr || getTime() < game->getTime() || getTime() >= nextState) {
-		game = completeGame->lastState(getTime());
-		nextState = completeGame->nextState(getTime());
+	if(game == nullptr || time < game->getTime() || time >= nextState) {
+		game = completeGame->lastState(time);
+		nextState = completeGame->nextState(time);
 		nextEndState = completeGame->getNextEndState();
 		
 		for(auto it = vessels.begin(); it != vessels.end();) {
@@ -426,7 +416,7 @@ void GameInterface::release(int id) {
 void GameInterface::sendTo(int id) {
 	PositionalObject* target = getObj(id);
 
-	double timeDiff = current - game->getTime();
+	double timeDiff = settings.clientToGameTime(getCurrent()) - game->getTime();
 
 	if(getSelected() && getSelected()->getOwnerID() == getUserGameID()) {
 		Vessel* v1 = dynamic_cast<Vessel*>(getSelected());
@@ -588,7 +578,7 @@ void GameInterface::bulkAddOrder(const String &type, uint32_t ID, int32_t refere
 	int arr[argCount];
 	for(int i = 0; i < argCount; i++) arr[i] = arguments[i];
 
-	completeGame = completeGame->processOrder(std::string(type.utf8().get_data()), ID, referenceID, timestamp, senderID, arr, argCount);
+	completeGame = completeGame->processOrder(std::string(type.utf8().get_data()), ID, referenceID, settings.clientToGameTime(timestamp), senderID, arr, argCount);
 }
 
 void GameInterface::endBulkAdd() {
@@ -609,7 +599,7 @@ void GameInterface::addOrder(const String &type, uint32_t ID, int32_t referenceI
 	int arr[argCount];
 	for(int i = 0; i < argCount; i++) arr[i] = arguments[i];
 
-	completeGame = completeGame->processOrder(std::string(type.utf8().get_data()), ID, referenceID, timestamp, senderID, arr, argCount);
+	completeGame = completeGame->processOrder(std::string(type.utf8().get_data()), ID, referenceID, settings.clientToGameTime(timestamp), senderID, arr, argCount);
 	completeGame->run();
 	game = nullptr;
 	simulatedGame = nullptr;
@@ -666,7 +656,7 @@ PositionalNode* GameInterface::getTarget(double x, double y) {
 double GameInterface::projectedTime(double x, double y) {
 	if(!getSelected()) return -1;
 
-	double timeDiff = getCurrent() - simulatedGame->getTime();
+	double timeDiff = settings.clientToGameTime(getCurrent()) - simulatedGame->getTime();
 
 	Point p = Point(game->getSettings(), x, y);
 	p = getSelected()->getPositionAt(timeDiff).closest(p);
@@ -677,7 +667,7 @@ double GameInterface::projectedTime(double x, double y) {
 
 	double mag = (target ? target->getObj()->getPositionAt(target->getDiff()) : p).closestDistance(getSelected()->getPositionAt(timeDiff));
 
-	return mag/speed;
+	return settings.gameToClientTime(settings.clientToGameTime(getCurrent()) + mag/speed) - getCurrent();
 }
 
 PackedVector2Array GameInterface::getOutpostPositions() {
@@ -776,7 +766,7 @@ String GameInterface::getSpecialistDescription(int specialistNum) {
 double GameInterface::getNextArrivalEvent(int vesselID) {
 	const VesselOutpostEvent* e = completeGame->nextArrival(vesselID, getTime());
 
-	return e ? e->getTimestamp() : -1;
+	return e ? settings.gameToClientTime(e->getTimestamp()) : -1;
 }
 
 double GameInterface::getNextProductionEvent(int outpostID) {
@@ -792,13 +782,13 @@ double GameInterface::getNextProductionEvent(int outpostID) {
 		next = completeGame->nextState(time);
 	}
 
-	return time + curr->getOutpost(outpostID)->nextProductionEvent(getTime() - time) + epsilon;
+	return settings.gameToClientTime(time + curr->getOutpost(outpostID)->nextProductionEvent(getTime() - time) + epsilon);
 }
 
 double GameInterface::getNextBattleEvent(int objID) {
 	const BattleEvent* e = completeGame->nextBattle(objID, getTime());
 
-	return e ? e->getTimestamp() : -1;
+	return e ? settings.gameToClientTime(e->getTimestamp()) : -1;
 }
 
 Array GameInterface::getBattlePhases() {

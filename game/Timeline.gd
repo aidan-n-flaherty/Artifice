@@ -23,6 +23,14 @@ func init(gameID):
 	game = GameData.getGame(gameID)
 	game.connect("moveTo", moveTo)
 
+func setVertical():
+	$Vertical.show()
+	$Horizontal.hide()
+
+func setHorizontal():
+	$Horizontal.show()
+	$Vertical.hide()
+
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	if change != target:
@@ -43,12 +51,15 @@ func _process(delta):
 	
 	var diff = (Time.get_unix_time_from_system() - game.getTime()) * game.getSimulationSpeed() / 3600.0
 	
-	$ActualTime.position = $CurrentTime.position + Vector2(-40 + 2 * diff, 0)
+	$Vertical/TimeIndicators/ActualTime.size.y = size.y
+
+	$Horizontal/TimeIndicators/CurrentTime.position.x = size.x/2 - 40 + 2 * diff
+	$Vertical/TimeIndicators/CurrentTime.position.y = size.y/2 - 2 * diff
 	
 	if abs(diff) > 0.05:
-		$Label.text = Utilities.timeToStr(game.getTime() - Time.get_unix_time_from_system())
+		$Horizontal/Measurement/Label.text = Utilities.timeToStr(game.getTime() - Time.get_unix_time_from_system())
 	else:
-		$Label.text = ""
+		$Horizontal/Measurement/Label.text = ""
 
 func _input(event):
 	if event.is_action("drag"):
@@ -65,7 +76,10 @@ func _input(event):
 			dragging = false
 			userControlled = false
 	elif event is InputEventMouseMotion and dragging:
-		target = 0.5 * 3600.0 / game.getSimulationSpeed() * (event.position.x - mouse_start_pos.x)
+		if $Horizontal.visible:
+			target = 0.5 * 3600.0 / game.getSimulationSpeed() * (event.position.x - mouse_start_pos.x)
+		else:
+			target = 0.5 * 3600.0 / game.getSimulationSpeed() * -(event.position.y - mouse_start_pos.y)
 	
 	if dragging:
 		accept_event()
