@@ -14,7 +14,7 @@
 [node name="GameCreator" instance=ExtResource("1_subu8")]
 theme_override_constants/margin_left = 50
 theme_override_constants/margin_right = 50
-theme_override_constants/margin_bottom = 50
+theme_override_constants/margin_bottom = 0
 script = ExtResource("1_5sudp")
 
 [node name="2" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons" index="0"]

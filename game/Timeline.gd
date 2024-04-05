@@ -52,7 +52,7 @@ func _process(delta):
 	var diff = (Time.get_unix_time_from_system() - game.getTime()) * game.getSimulationSpeed() / 3600.0
 	
 	$Vertical/TimeIndicators/ActualTime.size.y = size.y
-	print($Vertical/TimeIndicators/ActualTime.size)
+
 	$Horizontal/TimeIndicators/CurrentTime.position.x = size.x/2 - 40 + 2 * diff
 	$Vertical/TimeIndicators/CurrentTime.position.y = size.y/2 - 2 * diff
 	

@@ -25,6 +25,8 @@ void GameSettings::loadDefaults() {
     GameSettings::width = 200;
     GameSettings::height = 200;
     GameSettings::number_of_teams = -1;
+    GameSettings::startTime = -1;
+    for(int i = 0; i < 24; i++) GameSettings::activeHours.insert(i);
 
     GameSettings::specialistDescriptions = {
         { QUEEN, "Adds 20 to her outpost's maximum shield charge. If you acquire another Queen, she becomes a Princess. Queen may periodically hire specialists."},
@@ -123,4 +125,89 @@ void GameSettings::addSetting(const char* type, const void* value){
     else if(strcmp(type, "costPerMine") == 0) costPerMine = std::min(100, std::max(25, int(std::lround(*(double*)value))));
     else if(strcmp(type, "outpostsPerPlayer") == 0) outpostsPerPlayer = std::min(20, std::max(5, int(std::lround(*(double*)value))));
     else if(strcmp(type, "number_of_teams") == 0) number_of_teams = int(std::lround(*(double*)value));
+    else if(strcmp(type, "activeHours") == 0) {
+        std::string s((char*)value);
+
+        if(s != "") {
+            activeHours.clear();
+
+            size_t pos = 0;
+            while ((pos = s.find(",")) != std::string::npos) {
+                activeHours.insert(abs(std::stoi(s.substr(0, pos))) % 24);
+
+                s.erase(0, pos + 1);
+            }
+        }
+    }
+}
+
+double GameSettings::gameToClientTime(double timestamp) const {
+    if(activeHours.size() == 0 || activeHours.size() == 24 || startTime <= 0 || timestamp < startTime) return timestamp;
+
+    double skippedTime = 0;
+
+    int startHour = int(startTime / 3600.0);
+    
+    if(activeHours.find(startHour % 24) == activeHours.end()) {
+        timestamp += (startHour + 1) * 3600 - startTime;
+        startHour++;
+    }
+    
+    int endHour = int(timestamp / 3600.0);
+    
+    int count = (endHour - startHour)/activeHours.size();
+    
+    for(int i = 0; i < count; i++) {
+        skippedTime += 3600 * (24 - activeHours.size());
+        endHour += (24 - activeHours.size());
+    }
+
+    int latestHour = startHour + ((endHour - startHour)/24) * 24;
+
+    while(latestHour <= endHour) {
+        if(activeHours.find(latestHour % 24) == activeHours.end()) {
+            skippedTime += 3600;
+            endHour++;
+        }
+
+        latestHour++;
+    }
+
+    return timestamp + skippedTime;
+}
+
+double GameSettings::clientToGameTime(double timestamp) const {
+    if(activeHours.size() == 0 || activeHours.size() == 24 || startTime <= 0 || timestamp < startTime) return timestamp;
+
+    double skippedTime = 0;
+
+    int startHour = int(startTime / 3600.0);
+    int endHour = int(timestamp / 3600.0);
+
+    for(int i = 0; i < (endHour - startHour)/24; i++) skippedTime += 3600 * (24 - activeHours.size());
+
+    int latestHour = startHour + ((endHour - startHour)/24) * 24;
+
+    while(latestHour <= endHour) {
+        if(activeHours.find(latestHour % 24) == activeHours.end()) {
+            skippedTime += 3600;
+        }
+
+        latestHour++;
+    }
+
+    if(activeHours.find(startHour % 24) == activeHours.end()) {
+        skippedTime -= startTime - startHour * 3600;
+    }
+
+    if(activeHours.find(endHour % 24) == activeHours.end()) {
+        skippedTime -= (endHour + 1) * 3600 - timestamp;
+    }
+
+    return timestamp - skippedTime;
+}
+bool GameSettings::clientIsPaused(double timestamp) const {
+    if(activeHours.size() == 0 || activeHours.size() == 24 || startTime <= 0 || timestamp < startTime) return false;
+
+    return activeHours.find(int(timestamp / 3600.0) % 24) == activeHours.end();
 }

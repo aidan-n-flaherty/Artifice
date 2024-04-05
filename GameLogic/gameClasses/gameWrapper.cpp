@@ -28,6 +28,7 @@ void addGameSetting(cGameSettings settings, char* type, void* value) {
 
 cGame initGame(cGameSettings settings, int simulatorID, double startTime, int* playerInfo, int playerLength, int seed) {
 	GameSettings* s = (GameSettings*)settings;
+  s->startTime = startTime;
 
 	auto now = std::chrono::system_clock::now();
 	auto seconds = std::chrono::time_point_cast<std::chrono::seconds>(now);
@@ -41,7 +42,7 @@ cGame initGame(cGameSettings settings, int simulatorID, double startTime, int* p
 		players[playerInfo[i * 3]] = std::make_tuple("Unnamed", playerInfo[i * 3 + 1], playerInfo[i * 3 + 2]);
 	}
 
-	Game* game = new Game(*s, simulatorID, startTime, endTime, players, seed, false);
+	Game* game = new Game(*s, simulatorID, startTime, s->clientToGameTime(endTime), players, seed, false);
 	return (void*)game;
 }
 

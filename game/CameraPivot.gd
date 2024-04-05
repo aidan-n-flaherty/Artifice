@@ -137,7 +137,7 @@ func _unhandled_input(event):
 			lastDiff = Vector2(0, 0)
 			screen_start_position = Vector2(position.x, position.z)
 			dragging = true
-		else:
+		elif dragging:
 			if selectedNode and (not mouse_start_pos or event.position.distance_to(mouse_start_pos) < 1) and not game.justSelected():
 				game.unselect()
 				emit_signal("unselect")

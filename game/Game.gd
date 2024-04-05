@@ -20,7 +20,6 @@ func _ready():
 		$Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer/StatusContainer/StatusButton,
 		$Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer/ChatContainer/ChatButton,
 		$Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer/ShopContainer/ShopButton,
-		$Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer/LogContainer/LogsButton,
 		$Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer/EditorContainer/EditorButton
 	]
 	
@@ -35,29 +34,29 @@ func resize():
 		element.get_parent().remove_child(element)
 		tab.get_parent().remove_child(tab)
 		
-		$Viewport/GameOverlay/HBoxContainer/Overlay/UIOverlay/HSeparator.add_child(element)
-		$Viewport/GameOverlay/HBoxContainer/Overlay/UIOverlay/HSeparator.add_child(tab)
+		$Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/HSeparator.add_child(element)
+		$Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/HSeparator.add_child(tab)
 	else:
 		element.get_parent().remove_child(element)
 		tab.get_parent().remove_child(tab)
 		
-		$Viewport/GameOverlay/HBoxContainer/Overlay/UIOverlay/VSeparator.add_child(element)
-		$Viewport/GameOverlay/HBoxContainer/Overlay/UIOverlay/VSeparator.add_child(tab)
+		$Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/VSeparator.add_child(element)
+		$Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/VSeparator.add_child(tab)
 
 	if get_viewport().size.x > get_viewport().size.y:
-		if $Viewport/GameOverlay/VTimeline.get_child_count() > 0:
-			var timeline = $Viewport/GameOverlay/VTimeline.get_child(0)
+		if $Viewport/GameOverlay/MarginContainer/VTimeline.get_child_count() > 0:
+			var timeline = $Viewport/GameOverlay/MarginContainer/VTimeline.get_child(0)
 			timeline.setVertical()
 			
-			$Viewport/GameOverlay/VTimeline.remove_child(timeline)
-			$Viewport/GameOverlay/HBoxContainer/HTimeline.add_child(timeline)
+			$Viewport/GameOverlay/MarginContainer/VTimeline.remove_child(timeline)
+			$Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/HTimeline.add_child(timeline)
 	else:
-		if $Viewport/GameOverlay/HBoxContainer/HTimeline.get_child_count() > 0:
-			var timeline = $Viewport/GameOverlay/HBoxContainer/HTimeline.get_child(0)
+		if $Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/HTimeline.get_child_count() > 0:
+			var timeline = $Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/HTimeline.get_child(0)
 			timeline.setHorizontal()
 			
-			$Viewport/GameOverlay/HBoxContainer/HTimeline.remove_child(timeline)
-			$Viewport/GameOverlay/VTimeline.add_child(timeline)
+			$Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/HTimeline.remove_child(timeline)
+			$Viewport/GameOverlay/MarginContainer/VTimeline.add_child(timeline)
 	
 	if get_viewport().size.x > get_viewport().size.y:
 		if $Viewport/GameOverlay/VMenuBar.get_child_count() > 0:
@@ -68,24 +67,24 @@ func resize():
 				tabs.get_node("VBoxContainer").add_child(child)
 			
 			$Viewport/GameOverlay/VMenuBar.remove_child(tabs)
-			$Viewport/GameOverlay/HBoxContainer/HMenuBar.add_child(tabs)
+			$Viewport/GameOverlay/MarginContainer/HBoxContainer/HMenuBar.add_child(tabs)
 	else:
-		if $Viewport/GameOverlay/HBoxContainer/HMenuBar.get_child_count() > 0:
-			var tabs = $Viewport/GameOverlay/HBoxContainer/HMenuBar.get_child(0)
+		if $Viewport/GameOverlay/MarginContainer/HBoxContainer/HMenuBar.get_child_count() > 0:
+			var tabs = $Viewport/GameOverlay/MarginContainer/HBoxContainer/HMenuBar.get_child(0)
 			
 			for child in tabs.get_node("VBoxContainer").get_children():
 				tabs.get_node("VBoxContainer").remove_child(child)
 				tabs.get_node("HBoxContainer").add_child(child)
 				
-			$Viewport/GameOverlay/HBoxContainer/HMenuBar.remove_child(tabs)
+			$Viewport/GameOverlay/MarginContainer/HBoxContainer/HMenuBar.remove_child(tabs)
 			$Viewport/GameOverlay/VMenuBar.add_child(tabs)
 	
 
 func elementDisplay():
-	return get_node("Viewport/GameOverlay/HBoxContainer/Overlay/UIOverlay/HSeparator/ElementDisplay") if get_node_or_null("Viewport/GameOverlay/HBoxContainer/Overlay/UIOverlay/HSeparator/ElementDisplay") else get_node("Viewport/GameOverlay/HBoxContainer/Overlay/UIOverlay/VSeparator/ElementDisplay")
+	return get_node("Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/HSeparator/ElementDisplay") if get_node_or_null("Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/HSeparator/ElementDisplay") else get_node("Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/VSeparator/ElementDisplay")
 
 func tabDisplay():
-	return get_node("Viewport/GameOverlay/HBoxContainer/Overlay/UIOverlay/HSeparator/TabDisplay") if get_node_or_null("Viewport/GameOverlay/HBoxContainer/Overlay/UIOverlay/HSeparator/TabDisplay") else get_node("Viewport/GameOverlay/HBoxContainer/Overlay/UIOverlay/VSeparator/TabDisplay")
+	return get_node("Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/HSeparator/TabDisplay") if get_node_or_null("Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/HSeparator/TabDisplay") else get_node("Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/VSeparator/TabDisplay")
 
 func init(gameID):
 	self.gameID = gameID
@@ -104,7 +103,7 @@ func init(gameID):
 	
 	$Viewport/Viewport3D.add_child(game)
 	
-	$Viewport/GameOverlay/VTimeline/Timeline.init(gameID)
+	$Viewport/GameOverlay/MarginContainer/VTimeline/Timeline.init(gameID)
 	tabDisplay().get_node("Panel/Status").init(gameID)
 	$Viewport/Viewport3D/CameraManager.init(gameID)
 	
@@ -120,21 +119,23 @@ func init(gameID):
 func _process(delta):
 	var details = GameData.getGameDetails(gameID)
 	
-	if not game.hasStarted():
-		$Viewport/GameOverlay/HBoxContainer/Overlay/NotStarted.show()
-		if (game.getStartTime() - game.getTime()) < (2 * 365 * 24 * 60 * 60): #if less than 2 years
-			$Viewport/GameOverlay/HBoxContainer/Overlay/NotStarted/Label.text = "Game starts in " + Utilities.timeToStr(game.getStartTime() - game.getTime())
+	if not game.hasStarted() or game.isPaused():
+		$Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/NotStarted.show()
+		if game.isPaused():
+			$Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/NotStarted/Label.text = "Game is paused"
+		elif (game.getStartTime() - game.getTime()) < (2 * 365 * 24 * 60 * 60): #if less than 2 years
+			$Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/NotStarted/Label.text = "Game starts in " + Utilities.timeToStr(game.getStartTime() - game.getTime())
 		elif details.gameData.playerCount < details.gameSettings.playerCap:
-			$Viewport/GameOverlay/HBoxContainer/Overlay/NotStarted/Label.text = "Waiting for players (" + str(details.gameData.playerCount) + "/" + str(details.gameSettings.playerCap) + ")"
+			$Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/NotStarted/Label.text = "Waiting for players (" + str(details.gameData.playerCount) + "/" + str(details.gameSettings.playerCap) + ")"
 		else: 
-			$Viewport/GameOverlay/HBoxContainer/Overlay/NotStarted/Label.text = "Waiting for host to finalize settings..."
+			$Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/NotStarted/Label.text = "Waiting for host to finalize settings..."
 	else:
-		$Viewport/GameOverlay/HBoxContainer/Overlay/NotStarted.hide()
+		$Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/NotStarted.hide()
 
 	if game.getSelectedUnits() >= 0:
-		$Viewport/GameOverlay/HBoxContainer/Overlay/VBoxContainer/HBoxContainer/Control/MarginContainer/MarginContainer/Label.text = str(floor(game.getSelectedUnits() * $Viewport/GameOverlay/HBoxContainer/Overlay/VBoxContainer/HBoxContainer/Control/PercentBar.value))
+		$Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/VBoxContainer/HBoxContainer/Control/MarginContainer/MarginContainer/Label.text = str(floor(game.getSelectedUnits() * $Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/VBoxContainer/HBoxContainer/Control/PercentBar.value))
 	else:
-		$Viewport/GameOverlay/HBoxContainer/Overlay/VBoxContainer/HBoxContainer/Control/MarginContainer/MarginContainer/Label.text = ""
+		$Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/VBoxContainer/HBoxContainer/Control/MarginContainer/MarginContainer/Label.text = ""
 	
 	if game.hasLost():
 		if not hasLost:
@@ -149,11 +150,11 @@ func _process(delta):
 			if not GameData.isFinished(gameID):
 				if await GameData.verifyEnd(gameID):
 					await GameData.viewEnd(gameID)
-					$Viewport/GameOverlay/HBoxContainer/Overlay/EndGame.init(gameID)
-					$Viewport/GameOverlay/HBoxContainer/Overlay/EndGame.show()
+					$Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/EndGame.init(gameID)
+					$Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/EndGame.show()
 	else:
 		viewingEnd = false
-		$Viewport/GameOverlay/HBoxContainer/Overlay/EndGame.hide()
+		$Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/EndGame.hide()
 	
 	if details.gameData.hostID == GameData.id and details.gameData.startTime > Time.get_unix_time_from_system() + 2 * 365 * 24 * 60 * 60:
 		tabDisplay().get_node("Panel/GameEditor").setEditable(true)
@@ -165,12 +166,12 @@ func addOrder(type, referenceID, timestamp, arguments):
 
 func setDisplay(scene):
 	if detailDisplay != null:
-		elementDisplay().get_node("VBoxContainer/Panel/VBoxContainer/MarginContainer").remove_child(detailDisplay)
+		elementDisplay().get_node("Panel/VBoxContainer/MarginContainer").remove_child(detailDisplay)
 	
 	detailDisplay = scene
 
-	elementDisplay().get_node("VBoxContainer/Panel/VBoxContainer/MarginContainer").add_child(detailDisplay)
-	elementDisplay().get_node("VBoxContainer/Panel").show()
+	elementDisplay().get_node("Panel/VBoxContainer/MarginContainer").add_child(detailDisplay)
+	elementDisplay().get_node("Panel").show()
 
 func selectVessel(vessel):
 	var scene = preload("res://VesselDetails.tscn").instantiate()
@@ -209,15 +210,15 @@ func selectSpecialist(specialist):
 	
 func deselect():
 	if(detailDisplay):
-		elementDisplay().get_node("VBoxContainer/Panel/VBoxContainer/MarginContainer").remove_child(detailDisplay)
+		elementDisplay().get_node("Panel/VBoxContainer/MarginContainer").remove_child(detailDisplay)
 		detailDisplay= null
-		elementDisplay().get_node("VBoxContainer/Panel").hide()
+		elementDisplay().get_node("Panel").hide()
 
 func deselectSpecialist(specialist):
 	if detailDisplay and "specialistID" in detailDisplay and detailDisplay.specialistID == specialist:
-		elementDisplay().get_node("VBoxContainer/Panel/VBoxContainer/MarginContainer").remove_child(detailDisplay)
+		elementDisplay().get_node("Panel/VBoxContainer/MarginContainer").remove_child(detailDisplay)
 		detailDisplay= null
-		elementDisplay().get_node("VBoxContainer/Panel").hide()
+		elementDisplay().get_node("Panel").hide()
 
 func _on_percent_bar_value_changed(value):
 	game.setPercent(value)
@@ -268,11 +269,6 @@ func _on_back_button_pressed():
 
 func _on_camera_manager_unselect():
 	setMenuDisplay(null, false)
-	
-	#$GameOverlay/MenuBar/Tabs/HBoxContainer/StatusContainer/StatusButton.button_pressed = false
-	#$GameOverlay/MenuBar/Tabs/HBoxContainer/ChatContainer/ChatButton.button_pressed = false
-	#$GameOverlay/MenuBar/Tabs/HBoxContainer/ShopContainer/ShopButton.button_pressed = false
-	#$GameOverlay/MenuBar/Tabs/HBoxContainer/LogContainer/LogsButton.button_pressed = false
 	
 	for button in menuButtons:
 		button.button_pressed = false

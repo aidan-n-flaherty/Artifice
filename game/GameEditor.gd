@@ -124,8 +124,21 @@ func deserialize(gameID):
 		
 		get_node("MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/TeamButtons/" + str(number_of_teams)).button_pressed = true
 	
+	var bias = int(Time.get_time_zone_from_system().bias/60)
+	
 	if (settings.settingOverrides.has("activeHours")):
-		activeHours = settings.settingOverrides["activeHours"]
+		activeHours = []
+		for hour in settings.settingOverrides["activeHours"]:
+			hour = int(hour)
+			hour -= bias
+		
+			while hour >= 24:
+				hour -= 24
+			while hour < 0:
+				hour += 24
+			activeHours.push_back(hour)
+	
+		activeHours.sort()
 	else:
 		activeHours = range(24)
 	
@@ -263,18 +276,15 @@ func on_players_modified(button_pressed: bool):
 						team_num.visible = false
 
 func on_activeTimes_modified(button_pressed: bool):
+	activeHours.clear()
 	for child in $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/ActiveHoursButtons.get_children():
 		if child.button_pressed:
-			if child.name.to_int() in activeHours:
-				activeHours.erase(child.name.to_int())
-			else:
-				activeHours.append(child.name.to_int())
+			activeHours.append(child.name.to_int())
 	for child in $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/ActiveHoursButtons2.get_children():
 		if child.button_pressed:
-			if child.name.to_int() in activeHours:
-				activeHours.erase(child.name.to_int())
-			else:
-				activeHours.append(child.name.to_int())
+			activeHours.append(child.name.to_int())
+	activeHours.sort()
+	print(activeHours)
 
 func on_timescale_modified(button_pressed: bool, timescale):
 	simulationTimescale = timescale
