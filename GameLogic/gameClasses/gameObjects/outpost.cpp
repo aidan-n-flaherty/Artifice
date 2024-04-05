@@ -124,7 +124,7 @@ int Outpost::getSonarRange() const {
 }
 
 int Outpost::getProductionAmount() {
-    if(!hasOwner()) return 0;
+    if(!hasOwner() || type != OutpostType::FACTORY) return 0;
 
     int productionAmount = getOwner()->globalProductionAmount();
     productionAmount += 6 * specialistCount(SpecialistType::FOREMAN);

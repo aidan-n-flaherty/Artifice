@@ -10,7 +10,7 @@ class Game;
 class GameObject
 {
 private:
-    Order* originatingOrder;
+    Order* originatingOrder = nullptr;
 
     GameSettings* settings;
 

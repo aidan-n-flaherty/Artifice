@@ -21,10 +21,10 @@ func _process(delta):
 		$VBoxContainer/Type.text = "Factory"
 		$VBoxContainer/HBoxContainer/Spacer1.show()
 		$VBoxContainer/HBoxContainer/Jump.show()
-		
 		$VBoxContainer/HBoxContainer2/VBoxContainer/Production.text = "+" + str(outpost.getProductionAmount()) + " in " + Utilities.timeToStr(game.getNextProductionEvent(outpost.getID()) - game.getTime())
 	elif outpost.isMine():
 		$VBoxContainer/Type.text = "Mine"
+		print($VBoxContainer/Type.text)
 		#$VBoxContainer/HBoxContainer/Spacer1.show()
 		#$VBoxContainer/HBoxContainer/Jump.show()
 		
@@ -33,16 +33,13 @@ func _process(delta):
 		$VBoxContainer/Type.text = "Generator"
 		$VBoxContainer/HBoxContainer/Spacer1.hide()
 		$VBoxContainer/HBoxContainer/Jump.hide()
-		
+		print($VBoxContainer/Type.text)
 		$VBoxContainer/HBoxContainer2/VBoxContainer/Production.text = "+50 to electrical output"
-	
 	var owns = game.ownsObj(outpost.getID())
-	
 	if owns and outpost.canMine():
 		$VBoxContainer/HBoxContainer/Mine.show()
 	else:
 		$VBoxContainer/HBoxContainer/Mine.hide()
-		
 	if owns and outpost.canUndo():
 		$VBoxContainer/HBoxContainer/Cancel.text = "Undo '" + outpost.getOriginatingOrderType() + "'"
 		$VBoxContainer/HBoxContainer/Spacer2.show()
@@ -50,9 +47,7 @@ func _process(delta):
 	else:
 		$VBoxContainer/HBoxContainer/Spacer2.hide()
 		$VBoxContainer/HBoxContainer/Cancel.hide()
-	
 	$VBoxContainer/HBoxContainer2/Units.text = str(outpost.getUnits())
-	
 	get_parent().color = outpost.getColor()
 	get_parent().playerName = game.getPlayer(outpost.getOwnerID()).getName()
 

@@ -4,6 +4,7 @@
 #include "../game.h"
 #include "../events/win_condition_event.h"
 #include "../game_settings.h"
+#include <iostream>
 
 void Player::updatePointers(Game* game) {
     for(Specialist* &s : this->specialists) s = game->getSpecialist(s->getID());
@@ -141,7 +142,7 @@ int Player::globalProductionAmount() const {
 
     amount -= specialistCount(SpecialistType::MINISTER_OF_ENERGY);
 
-    return amount;
+    return std::max(0, amount);
 }
 
 double Player::globalProductionSpeed() const {
@@ -303,22 +304,52 @@ int Player::getUnitsAt(double timeDiff) const {
 
 std::unordered_map<int, int> Player::calculateUnitsAt(double& fractionalProduction, double timeDiff) const {
     timeDiff *= getSettings()->simulationSpeed;
-        
-    std::list<Outpost*> tmp = outposts;
-    tmp.sort([]( const Outpost* a, const Outpost* b ) { return a->getUnits() == b->getUnits() ? a->getID() < b->getID() : a->getUnits() < b->getUnits(); } );
 
     std::unordered_map<int, int> units;
+
+    int totalProductionRate = 0;
+
+    std::list<Outpost*> tmp;
+    for(Outpost* o : outposts) {
+        if(o->getProductionAmount() > 0 && o->getType() == OutpostType::FACTORY) {
+            tmp.push_back(o);
+            totalProductionRate += o->getProductionAmount();
+        }
+        units[o->getID()] = 0;
+    }
+    tmp.sort([]( const Outpost* a, const Outpost* b ) { return a->getID() < b->getID(); } );
 
     int totalUnits = getUnits();
 
     fractionalProduction += timeDiff * globalProductionSpeed() * (1.0 / (8.0 * 60 * 60));
-    while(fractionalProduction >= 1) {
+
+    int productionCycles = int(fractionalProduction);
+
+    int totalProduction = std::min(std::max(0, getCapacity() - totalUnits), productionCycles * totalProductionRate);
+
+    int remaining = totalProduction;
+
+    for(Outpost* o : tmp) {
+        units[o->getID()] = int((o->getProductionAmount() * 1.0 / totalProductionRate) * totalProduction);
+        remaining -= units[o->getID()];
+    }
+
+    while(remaining > 0) {
+        for(Outpost* o : tmp) {
+            units[o->getID()]++;
+            remaining--;
+
+            if(remaining <= 0) break;
+        }
+    }
+
+    fractionalProduction -= productionCycles;
+    /*while(fractionalProduction >= 1) {
         fractionalProduction -= 1;
 
+
         for(Outpost* o : tmp) {
-            if(o->getType() != OutpostType::FACTORY) continue;
-            
-            int n = std::fmin(std::fmax(0, getCapacity() - totalUnits), o->getProductionAmount());
+            int n = std::min(std::max(0, getCapacity() - totalUnits), o->getProductionAmount());
 
             if(getCapacity() - totalUnits <= 0) break;
 
@@ -326,8 +357,8 @@ std::unordered_map<int, int> Player::calculateUnitsAt(double& fractionalProducti
             totalUnits += n;
         }
 
-        if(getCapacity() - totalUnits <= 0) fractionalProduction -= int(fractionalProduction);
-    }
+        if(totalUnits >= getCapacity()) fractionalProduction -= int(fractionalProduction);
+    }*/
 
     return units;
 }

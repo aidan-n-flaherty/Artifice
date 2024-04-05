@@ -120,10 +120,12 @@ func vesselBattleForecast(vessel):
 	
 
 func selectOutpost(outpost):
+	print("Debug: got to the selectOutpost() function")
 	var scene = preload("res://OutpostDetails.tscn").instantiate()
 	scene.init(outpost, gameID)
 	$Viewport/Viewport3D/CameraPivot.selected(outpost)
 	setDisplay(scene)
+	print("Debug: finished the selectOutpost() function")
 	
 func selectSpecialist(specialist):
 	var scene = preload("res://SpecialistDetails.tscn").instantiate()

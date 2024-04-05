@@ -6,6 +6,7 @@
 #include "../GameLogic/gameClasses/gameObjects/outpost.h"
 #include "../GameLogic/gameClasses/gameObjects/player.h"
 #include <godot_cpp/variant/utility_functions.hpp>
+#include <godot_cpp/variant/string.hpp>
 
 namespace godot {
 
@@ -47,6 +48,8 @@ public:
 	bool isGenerator() { return outpost->getType() == OutpostType::GENERATOR; }
 
 	bool isMine() { return outpost->getType() == OutpostType::MINE; }
+
+	String getName();
 };
 
 }

@@ -8,6 +8,8 @@ var selected = false
 
 var color
 
+var outpostName
+
 # Called when the node enters the scene tree for the first time.
 func _ready():	
 	$FloorSprite.texture = $SubViewport.get_texture()
@@ -54,6 +56,7 @@ func _ready():
 func _process(delta):
 	if units != get_parent().getUnits(): $SubViewport/OutpostInfo.setUnits(get_parent().getUnits())
 	if shield != get_parent().getShield(): $SubViewport/OutpostInfo.setShield(get_parent().getShield(), get_parent().getMaxShield())
+	if outpostName != get_parent().getName(): $Name.text = get_parent().getName()
 	if selected != get_parent().isSelected():
 		$RotationInvariant/Units.setSelection(get_parent().isSelected())
 		if get_parent().isSelected():
@@ -68,7 +71,7 @@ func _process(delta):
 	shield = get_parent().getShield()
 	selected = get_parent().isSelected()
 	color = get_parent().getColor()
-	
+	outpostName = get_parent().getName()
 	if get_parent().isFactory():
 		$City/factories.show()
 		$City/generators.hide()

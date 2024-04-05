@@ -1,4 +1,4 @@
-[gd_scene load_steps=41 format=3 uid="uid://b16kytc1dy61a"]
+[gd_scene load_steps=42 format=3 uid="uid://b16kytc1dy61a"]
 
 [ext_resource type="Script" path="res://CityMesh.gd" id="1_cq8ip"]
 [ext_resource type="PackedScene" uid="uid://bhc7yq0ltpg5m" path="res://resources/outpost/outpostAlternate.blend" id="2_kae4w"]
@@ -127,6 +127,8 @@ variation_embolden = 1.04
 line_spacing = 2.08165e-12
 font = SubResource("FontVariation_it38n")
 font_size = 24
+
+[sub_resource type="FontVariation" id="FontVariation_cax2q"]
 
 [node name="CityMesh" type="Area3D"]
 monitoring = false
@@ -324,3 +326,9 @@ size_flags_vertical = 1
 text = "00"
 label_settings = SubResource("LabelSettings_l1ine")
 vertical_alignment = 2
+
+[node name="Name" type="Label3D" parent="."]
+transform = Transform3D(-1, 0, 8.74228e-08, 6.18172e-08, 0.707107, 0.707107, -6.18172e-08, 0.707107, -0.707107, 0.396017, 16.1625, 9.83795)
+pixel_size = 0.1
+text = "Attendance Code"
+font = SubResource("FontVariation_cax2q")
