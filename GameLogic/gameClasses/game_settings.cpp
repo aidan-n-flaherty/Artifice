@@ -26,6 +26,7 @@ void GameSettings::loadDefaults() {
     GameSettings::height = 200;
     GameSettings::number_of_teams = -1;
     GameSettings::startTime = -1;
+    GameSettings::activeHours.clear();
     for(int i = 0; i < 24; i++) GameSettings::activeHours.insert(i);
 
     GameSettings::specialistDescriptions = {
