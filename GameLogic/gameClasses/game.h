@@ -150,7 +150,7 @@ public:
 
     GameSettings* getSettings() { return settings; };
 
-    // These functions are strictly for client side rendering
+    // The functions below should only be used by the client
     std::shared_ptr<Game> lastState(double timestamp);
     double nextState(double timestamp);
     double getNextEndState() const { return nextEndState; }

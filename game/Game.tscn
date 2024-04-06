@@ -1,19 +1,13 @@
-[gd_scene load_steps=135 format=3 uid="uid://dgp4l24s2rulk"]
+[gd_scene load_steps=36 format=3 uid="uid://cfaaort7dldjk"]
 
 [ext_resource type="Script" path="res://Game.gd" id="1_s53r2"]
-[ext_resource type="Script" path="res://CameraPivot.gd" id="2_t2ckv"]
-[ext_resource type="Shader" path="res://FloorShader.gdshader" id="3_auwix"]
+[ext_resource type="PackedScene" uid="uid://br2r5ds75s4n0" path="res://CameraManager.tscn" id="2_vm3rp"]
 [ext_resource type="PackedScene" uid="uid://n0lobms04k46" path="res://Timeline.tscn" id="3_jhu7k"]
-[ext_resource type="Shader" path="res://OceanFloor.gdshader" id="4_nkydq"]
 [ext_resource type="Texture2D" uid="uid://cy7ou3wycwjra" path="res://resources/images/back.png" id="9_4ris4"]
-[ext_resource type="Material" uid="uid://li2d1mgnl1tk" path="res://resources/metal.tres" id="9_j8866"]
 [ext_resource type="Theme" uid="uid://bfwpaonloeco5" path="res://resources/theme.tres" id="9_ttxpu"]
-[ext_resource type="Script" path="res://VirtualCamera3D.gd" id="10_jokxl"]
 [ext_resource type="Texture2D" uid="uid://dlqmq6fklb6q8" path="res://resources/images/back_arrow.png" id="10_n5ogc"]
-[ext_resource type="Shader" path="res://Terrain.gdshader" id="10_u7afu"]
 [ext_resource type="StyleBox" uid="uid://dgq41l16rxlq" path="res://resources/styles/roundRectBlack.tres" id="11_uh1qc"]
 [ext_resource type="Script" path="res://DetailContainer.gd" id="12_7re0q"]
-[ext_resource type="Texture2D" uid="uid://c0beg3px50da4" path="res://resources/gameMenuIcons/logsIcon.png" id="12_fsvp4"]
 [ext_resource type="PackedScene" uid="uid://cqdpj2uw0cloc" path="res://Shop.tscn" id="12_sa8gc"]
 [ext_resource type="PackedScene" uid="uid://symsrj5sm6dt" path="res://Status.tscn" id="13_20fpi"]
 [ext_resource type="PackedScene" uid="uid://clqpri4b5a2y0" path="res://EndGame.tscn" id="13_iadse"]
@@ -26,10 +20,10 @@
 [ext_resource type="Texture2D" uid="uid://br2xninxoa36u" path="res://resources/gameMenuIcons/hireIconBeamDown (Proto 3).png" id="21_lwlj7"]
 [ext_resource type="Texture2D" uid="uid://df304hwlkhr6p" path="res://resources/gameMenuIcons/editIcon.png" id="24_7o8jj"]
 
-[sub_resource type="Gradient" id="Gradient_3xapi"]
+[sub_resource type="Gradient" id="Gradient_o0x8m"]
 offsets = PackedFloat32Array(0.155462, 0.84874)
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_duiyy"]
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_ufufh"]
 frequency = 0.005
 domain_warp_enabled = true
 
@@ -37,17 +31,17 @@ domain_warp_enabled = true
 width = 1024
 height = 1024
 seamless = true
-color_ramp = SubResource("Gradient_3xapi")
-noise = SubResource("FastNoiseLite_duiyy")
+color_ramp = SubResource("Gradient_o0x8m")
+noise = SubResource("FastNoiseLite_ufufh")
 
-[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_i6rvu"]
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_606rv"]
 panorama = SubResource("NoiseTexture2D_omtys")
 filter = false
 
 [sub_resource type="Sky" id="Sky_7srwa"]
-sky_material = SubResource("PanoramaSkyMaterial_i6rvu")
+sky_material = SubResource("PanoramaSkyMaterial_606rv")
 
-[sub_resource type="Environment" id="Environment_jfb01"]
+[sub_resource type="Environment" id="Environment_4km5k"]
 background_mode = 2
 background_energy_multiplier = 0.5
 sky = SubResource("Sky_7srwa")
@@ -71,7 +65,7 @@ fog_sky_affect = 0.0
 volumetric_fog_density = 0.5024
 volumetric_fog_albedo = Color(0, 0, 0.403922, 1)
 
-[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_eiqo6"]
+[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_itg02"]
 dof_blur_far_enabled = true
 dof_blur_far_distance = 180.0
 dof_blur_far_transition = 75.0
@@ -79,648 +73,10 @@ dof_blur_near_distance = 100.0
 dof_blur_near_transition = 75.0
 dof_blur_amount = 0.2
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_rqbvh"]
-resource_local_to_scene = true
-render_priority = 0
-shader = ExtResource("3_auwix")
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_utrlp"]
-size = Vector2(100, 260)
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_kr7q3"]
-domain_warp_enabled = true
-domain_warp_amplitude = 10.0
-domain_warp_frequency = 0.1
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_lgm3h"]
-width = 1024
-height = 1024
-as_normal_map = true
-bump_strength = 32.0
-noise = SubResource("FastNoiseLite_kr7q3")
-
-[sub_resource type="Gradient" id="Gradient_jcayv"]
-offsets = PackedFloat32Array(0.432796, 0.475806)
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_82q1n"]
-noise_type = 0
-frequency = 0.005
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_a2xk0"]
-width = 1024
-height = 1024
-invert = true
-as_normal_map = true
-bump_strength = 32.0
-color_ramp = SubResource("Gradient_jcayv")
-noise = SubResource("FastNoiseLite_82q1n")
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_v3gkd"]
-frequency = 0.0025
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_f86rc"]
-width = 2048
-height = 2048
-noise = SubResource("FastNoiseLite_v3gkd")
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_8l0dw"]
-seed = 1
-frequency = 0.0025
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_3utgw"]
-width = 2048
-height = 2048
-noise = SubResource("FastNoiseLite_8l0dw")
-
-[sub_resource type="Gradient" id="Gradient_8igvj"]
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_75nqs"]
-noise_type = 2
-frequency = 0.004
-fractal_weighted_strength = 0.5
-cellular_distance_function = 1
-cellular_return_type = 6
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_4lckj"]
-width = 1024
-height = 1024
-as_normal_map = true
-bump_strength = 32.0
-color_ramp = SubResource("Gradient_8igvj")
-noise = SubResource("FastNoiseLite_75nqs")
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_qvucd"]
-noise_type = 2
-frequency = 0.004
-cellular_distance_function = 1
-cellular_return_type = 6
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_nhqkd"]
-width = 1024
-height = 1024
-color_ramp = SubResource("Gradient_8igvj")
-noise = SubResource("FastNoiseLite_qvucd")
-
-[sub_resource type="Gradient" id="Gradient_i5dtu"]
-offsets = PackedFloat32Array(0, 0.667568)
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_xgkig"]
-noise_type = 2
-cellular_distance_function = 1
-cellular_return_type = 6
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_hrrny"]
-width = 1024
-height = 1024
-as_normal_map = true
-bump_strength = 16.0
-color_ramp = SubResource("Gradient_i5dtu")
-noise = SubResource("FastNoiseLite_xgkig")
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_d4ti6"]
-noise_type = 2
-cellular_distance_function = 1
-cellular_return_type = 6
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_l1axq"]
-width = 1024
-height = 1024
-noise = SubResource("FastNoiseLite_d4ti6")
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_oav4l"]
-frequency = 0.0143
-domain_warp_enabled = true
-domain_warp_type = 1
-domain_warp_amplitude = 8.25
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_0p5ys"]
-width = 1024
-height = 1024
-noise = SubResource("FastNoiseLite_oav4l")
-
-[sub_resource type="Gradient" id="Gradient_6nlxh"]
-offsets = PackedFloat32Array(0, 0.32973)
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_vofvb"]
-noise_type = 2
-frequency = 0.02
-cellular_return_type = 4
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_bde0h"]
-width = 1024
-height = 1024
-as_normal_map = true
-bump_strength = 32.0
-color_ramp = SubResource("Gradient_6nlxh")
-noise = SubResource("FastNoiseLite_vofvb")
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_vhyvg"]
-width = 1024
-height = 1024
-color_ramp = SubResource("Gradient_6nlxh")
-noise = SubResource("FastNoiseLite_vofvb")
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_ymof5"]
-noise_type = 2
-frequency = 0.02
-fractal_octaves = 2
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ryqbk"]
-width = 1024
-height = 1024
-noise = SubResource("FastNoiseLite_ymof5")
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_px0p0"]
-noise_type = 2
-seed = 1
-frequency = 0.02
-fractal_octaves = 2
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_sbgyu"]
-width = 1024
-height = 1024
-noise = SubResource("FastNoiseLite_px0p0")
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_wmxwp"]
-resource_local_to_scene = true
-render_priority = 0
-shader = ExtResource("4_nkydq")
-shader_parameter/cameraSize = 100.0
-shader_parameter/mapWidth = 200.0
-shader_parameter/mapHeight = 200.0
-shader_parameter/meshWidth = 100.0
-shader_parameter/meshHeight = 260.0
-shader_parameter/resolution = 0.1
-shader_parameter/outposts = PackedVector2Array(0, 0)
-shader_parameter/outpostsLength = 1
-shader_parameter/speed = 2.0
-shader_parameter/tmp = 2.08165e-12
-shader_parameter/rockTexture = SubResource("NoiseTexture2D_0p5ys")
-shader_parameter/ridgeTexture = SubResource("NoiseTexture2D_l1axq")
-shader_parameter/stoneTexture = SubResource("NoiseTexture2D_vhyvg")
-shader_parameter/ravineTexture = SubResource("NoiseTexture2D_nhqkd")
-shader_parameter/detailedNormal = SubResource("NoiseTexture2D_lgm3h")
-shader_parameter/ridgeNormal = SubResource("NoiseTexture2D_hrrny")
-shader_parameter/ravineNormal = SubResource("NoiseTexture2D_4lckj")
-shader_parameter/largeRidgeNormal = SubResource("NoiseTexture2D_a2xk0")
-shader_parameter/stoneNormal = SubResource("NoiseTexture2D_bde0h")
-shader_parameter/sunlightTexture1 = SubResource("NoiseTexture2D_ryqbk")
-shader_parameter/sunlightTexture2 = SubResource("NoiseTexture2D_sbgyu")
-shader_parameter/lightTexture1 = SubResource("NoiseTexture2D_f86rc")
-shader_parameter/lightTexture2 = SubResource("NoiseTexture2D_3utgw")
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_oid74"]
-size = Vector2(100, 260)
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_xk06g"]
-size = Vector2(100, 260)
-
-[sub_resource type="Gradient" id="Gradient_u3xmn"]
-offsets = PackedFloat32Array(0.144201, 0.554859)
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_8h4h1"]
-frequency = 0.0025
-fractal_octaves = 3
-cellular_distance_function = 1
-cellular_return_type = 6
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_pylon"]
-width = 800
-height = 2080
-seamless = true
-color_ramp = SubResource("Gradient_u3xmn")
-noise = SubResource("FastNoiseLite_8h4h1")
-
-[sub_resource type="Gradient" id="Gradient_4g4ee"]
-offsets = PackedFloat32Array(0.356757, 1)
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_3wike"]
-noise_type = 2
-frequency = 0.0153
-fractal_octaves = 10
-cellular_distance_function = 1
-cellular_return_type = 6
-domain_warp_type = 1
-domain_warp_amplitude = 20.0
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_kjdxf"]
-width = 800
-height = 2080
-seamless = true
-color_ramp = SubResource("Gradient_4g4ee")
-noise = SubResource("FastNoiseLite_3wike")
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_qnahw"]
-noise_type = 2
-frequency = 0.005
-fractal_type = 2
-cellular_distance_function = 1
-cellular_return_type = 6
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_a40hr"]
-width = 800
-height = 2080
-seamless = true
-noise = SubResource("FastNoiseLite_qnahw")
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_ilc18"]
-frequency = 0.05
-fractal_type = 2
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_qskt8"]
-width = 800
-height = 2080
-seamless = true
-noise = SubResource("FastNoiseLite_ilc18")
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_lii30"]
-fractal_type = 2
-cellular_distance_function = 1
-cellular_return_type = 6
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_n05uk"]
-width = 800
-height = 2080
-seamless = true
-noise = SubResource("FastNoiseLite_lii30")
-
-[sub_resource type="Gradient" id="Gradient_mhdls"]
-offsets = PackedFloat32Array(0, 0.916216)
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_uns5y"]
-noise_type = 2
-frequency = 0.0051
-fractal_type = 2
-fractal_octaves = 8
-fractal_weighted_strength = 0.27
-cellular_distance_function = 1
-cellular_return_type = 6
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_h2jwo"]
-width = 800
-height = 2080
-seamless = true
-as_normal_map = true
-bump_strength = 32.0
-color_ramp = SubResource("Gradient_mhdls")
-noise = SubResource("FastNoiseLite_uns5y")
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ygns3"]
-width = 800
-height = 2080
-seamless = true
-color_ramp = SubResource("Gradient_mhdls")
-noise = SubResource("FastNoiseLite_uns5y")
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_qyedm"]
-frequency = 0.1
-cellular_distance_function = 3
-cellular_return_type = 4
-domain_warp_enabled = true
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_aa3ug"]
-width = 800
-height = 600
-seamless = true
-noise = SubResource("FastNoiseLite_qyedm")
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_274w3"]
-fractal_type = 2
-fractal_octaves = 7
-cellular_distance_function = 1
-cellular_return_type = 0
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_r1vl3"]
-width = 800
-height = 2080
-seamless = true
-noise = SubResource("FastNoiseLite_274w3")
-
-[sub_resource type="Gradient" id="Gradient_3i4ub"]
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_4cilc"]
-frequency = 0.005
-cellular_distance_function = 1
-cellular_return_type = 6
-domain_warp_enabled = true
-domain_warp_amplitude = 10.0
-domain_warp_frequency = 0.1
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_uke5f"]
-width = 800
-height = 2080
-seamless = true
-as_normal_map = true
-bump_strength = 16.0
-color_ramp = SubResource("Gradient_3i4ub")
-noise = SubResource("FastNoiseLite_4cilc")
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_f80gx"]
-noise_type = 2
-frequency = 0.0153
-fractal_octaves = 6
-cellular_distance_function = 1
-cellular_return_type = 6
-domain_warp_type = 1
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_7tw3d"]
-width = 800
-height = 2080
-seamless = true
-noise = SubResource("FastNoiseLite_f80gx")
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_mro22"]
-frequency = 0.2
-domain_warp_enabled = true
-domain_warp_type = 1
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_r1vxk"]
-width = 800
-height = 2080
-seamless = true
-noise = SubResource("FastNoiseLite_mro22")
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_1fvqb"]
-resource_local_to_scene = true
-render_priority = 0
-shader = ExtResource("10_u7afu")
-shader_parameter/cameraSize = 100.0
-shader_parameter/epsilon = 0.1
-shader_parameter/outposts = PackedVector2Array(2.08165e-12, 2.08165e-12, 28.65, 2.08165e-12)
-shader_parameter/outpostsLength = 0
-shader_parameter/mapWidth = 100.0
-shader_parameter/mapHeight = 100.0
-shader_parameter/ridges = SubResource("NoiseTexture2D_ygns3")
-shader_parameter/erosion = SubResource("NoiseTexture2D_pylon")
-shader_parameter/texturing = SubResource("NoiseTexture2D_7tw3d")
-shader_parameter/texturing2 = SubResource("NoiseTexture2D_r1vxk")
-shader_parameter/rocks = SubResource("NoiseTexture2D_aa3ug")
-shader_parameter/stoneTexture = SubResource("NoiseTexture2D_r1vl3")
-shader_parameter/noise1 = SubResource("NoiseTexture2D_a40hr")
-shader_parameter/noise2 = SubResource("NoiseTexture2D_qskt8")
-shader_parameter/noise3 = SubResource("NoiseTexture2D_n05uk")
-shader_parameter/hole = SubResource("NoiseTexture2D_kjdxf")
-shader_parameter/texture_normal = SubResource("NoiseTexture2D_uke5f")
-shader_parameter/ridge_normal = SubResource("NoiseTexture2D_h2jwo")
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nf48j"]
-albedo_color = Color(0, 0, 0, 1)
-
-[sub_resource type="Environment" id="Environment_auhjg"]
-background_mode = 1
-background_color = Color(1, 1, 1, 1)
-
-[sub_resource type="BoxMesh" id="BoxMesh_j234n"]
-size = Vector3(3, 30, 3)
-
-[sub_resource type="SphereMesh" id="SphereMesh_hma0m"]
-radius = 20.0
-height = 40.0
-
-[sub_resource type="Gradient" id="Gradient_m13na"]
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_cov2k"]
-frequency = 0.2
-domain_warp_enabled = true
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_266ab"]
-color_ramp = SubResource("Gradient_m13na")
-noise = SubResource("FastNoiseLite_cov2k")
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rndo8"]
-metallic = 0.76
-roughness = 0.0
-roughness_texture = SubResource("NoiseTexture2D_266ab")
-
-[sub_resource type="BoxMesh" id="BoxMesh_ic7md"]
-size = Vector3(1, 20, 1)
-subdivide_width = 20
-subdivide_height = 20
-subdivide_depth = 20
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_df7dv"]
-size = Vector2(100, 260)
-
-[sub_resource type="Shader" id="Shader_e6y0e"]
-code = "// NOTE: Shader automatically converted from Godot Engine 4.1.1.stable's StandardMaterial3D.
-
-shader_type spatial;
-render_mode blend_mix,depth_draw_opaque,cull_back,diffuse_burley,specular_schlick_ggx;
-uniform vec4 albedo : source_color;
-uniform sampler2D texture_albedo : source_color,filter_linear_mipmap,repeat_enable;
-uniform float point_size : hint_range(0,128);
-uniform float roughness : hint_range(0,1);
-uniform sampler2D texture_metallic : hint_default_white,filter_linear_mipmap,repeat_enable;
-uniform vec4 metallic_texture_channel;
-uniform sampler2D texture_roughness : hint_roughness_r,filter_linear_mipmap,repeat_enable;
-uniform float specular;
-uniform float metallic;
-uniform sampler2D texture_heightmap : hint_default_black,filter_linear_mipmap,repeat_enable;
-uniform float heightmap_scale;
-uniform int heightmap_min_layers;
-uniform int heightmap_max_layers;
-uniform vec2 heightmap_flip;
-uniform vec3 uv1_scale;
-uniform vec3 uv1_offset;
-uniform vec3 uv2_scale;
-uniform vec3 uv2_offset;
-
-
-void vertex() {
-	UV=UV*uv1_scale.xy+uv1_offset.xy;
-}
-
-
-
-
-
-
-void fragment() {
-	vec2 base_uv = UV;
-	{
-		vec3 view_dir = normalize(normalize(-VERTEX + EYE_OFFSET) * mat3(TANGENT * heightmap_flip.x, -BINORMAL * heightmap_flip.y, NORMAL));
-		float num_layers = mix(float(heightmap_max_layers),float(heightmap_min_layers), abs(dot(vec3(0.0, 0.0, 1.0), view_dir)));
-		float layer_depth = 1.0 / num_layers;
-		float current_layer_depth = 0.0;
-		vec2 P = view_dir.xy * heightmap_scale * 0.01;
-		vec2 delta = P / num_layers;
-		vec2 ofs = base_uv;
-		float depth = 1.0 - texture(texture_heightmap, ofs).r;
-		float current_depth = 0.0;
-		while(current_depth < depth) {
-			ofs -= delta;
-			depth = 1.0 - texture(texture_heightmap, ofs).r;
-			current_depth += layer_depth;
-		}
-		vec2 prev_ofs = ofs + delta;
-		float after_depth  = depth - current_depth;
-		float before_depth = ( 1.0 - texture(texture_heightmap, prev_ofs).r  ) - current_depth + layer_depth;
-		float weight = after_depth / (after_depth - before_depth);
-		ofs = mix(ofs,prev_ofs,weight);
-		base_uv=ofs;
-	}
-	vec4 albedo_tex = texture(texture_albedo,base_uv);
-	ALBEDO = albedo.rgb * albedo_tex.rgb;
-	float metallic_tex = dot(texture(texture_metallic,base_uv),metallic_texture_channel);
-	METALLIC = metallic_tex * metallic;
-	vec4 roughness_texture_channel = vec4(1.0,0.0,0.0,0.0);
-	float roughness_tex = dot(texture(texture_roughness,base_uv),roughness_texture_channel);
-	ROUGHNESS = roughness_tex * roughness;
-	SPECULAR = specular;
-}
-"
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_cea77"]
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_e25qt"]
-width = 400
-height = 1080
-noise = SubResource("FastNoiseLite_cea77")
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_siy2b"]
-fractal_type = 2
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_spmof"]
-width = 400
-height = 1080
-noise = SubResource("FastNoiseLite_siy2b")
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_owqm8"]
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_mbsey"]
-noise = SubResource("FastNoiseLite_owqm8")
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_gb28f"]
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_bm0nq"]
-noise = SubResource("FastNoiseLite_gb28f")
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_k676y"]
-render_priority = 0
-shader = SubResource("Shader_e6y0e")
-shader_parameter/albedo = Color(1, 1, 1, 1)
-shader_parameter/point_size = 1.0
-shader_parameter/roughness = 1.0
-shader_parameter/metallic_texture_channel = null
-shader_parameter/specular = 0.5
-shader_parameter/metallic = 0.0
-shader_parameter/heightmap_scale = -4.0
-shader_parameter/heightmap_min_layers = 16
-shader_parameter/heightmap_max_layers = 32
-shader_parameter/heightmap_flip = Vector2(1, 1)
-shader_parameter/uv1_scale = Vector3(1, 1, 1)
-shader_parameter/uv1_offset = Vector3(0, 0, 0)
-shader_parameter/uv2_scale = Vector3(1, 1, 1)
-shader_parameter/uv2_offset = Vector3(0, 0, 0)
-shader_parameter/texture_albedo = SubResource("NoiseTexture2D_e25qt")
-shader_parameter/texture_metallic = SubResource("NoiseTexture2D_mbsey")
-shader_parameter/texture_roughness = SubResource("NoiseTexture2D_bm0nq")
-shader_parameter/texture_heightmap = SubResource("NoiseTexture2D_spmof")
-
-[sub_resource type="BoxMesh" id="BoxMesh_sqx6p"]
-size = Vector3(1, 50, 1)
-
-[sub_resource type="BoxMesh" id="BoxMesh_imk1r"]
-size = Vector3(50, 50, 50)
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_lmm5n"]
-size = Vector2(50, 50)
-
-[sub_resource type="Gradient" id="Gradient_uqro4"]
-offsets = PackedFloat32Array(0.0247934, 0.0712589)
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_ta04l"]
-noise_type = 2
-frequency = 0.0025
-fractal_type = 2
-fractal_octaves = 1
-cellular_distance_function = 1
-cellular_jitter = 0.7
-cellular_return_type = 4
-domain_warp_enabled = true
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_q4ala"]
-width = 2048
-height = 2048
-color_ramp = SubResource("Gradient_uqro4")
-noise = SubResource("FastNoiseLite_ta04l")
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1yqdi"]
-albedo_texture = SubResource("NoiseTexture2D_q4ala")
-
-[sub_resource type="Shader" id="Shader_cy3ua"]
-code = "// NOTE: Shader automatically converted from Godot Engine 4.1.1.stable's StandardMaterial3D.
-
-shader_type spatial;
-render_mode blend_mix,depth_draw_opaque,cull_back,diffuse_burley,specular_schlick_ggx;
-uniform vec4 albedo : source_color;
-uniform sampler2D texture_albedo : source_color,filter_linear_mipmap,repeat_enable;
-uniform float point_size : hint_range(0,128);
-uniform float roughness : hint_range(0,1);
-uniform sampler2D texture_metallic : hint_default_white,filter_linear_mipmap,repeat_enable;
-uniform vec4 metallic_texture_channel;
-uniform sampler2D texture_roughness : hint_roughness_r,filter_linear_mipmap,repeat_enable;
-uniform float specular;
-uniform float metallic;
-uniform sampler2D texture_normal : hint_roughness_normal,filter_linear_mipmap,repeat_enable;
-uniform float normal_scale : hint_range(-16,16);
-uniform vec3 uv1_scale;
-uniform vec3 uv1_offset;
-uniform vec3 uv2_scale;
-uniform vec3 uv2_offset;
-
-
-void vertex() {
-	UV=UV*uv1_scale.xy+uv1_offset.xy;
-}
-
-
-
-
-
-
-void fragment() {
-	vec2 base_uv = UV;
-	vec4 albedo_tex = texture(texture_albedo,base_uv);
-	ALBEDO = albedo.rgb * albedo_tex.rgb;
-	float metallic_tex = dot(texture(texture_metallic,base_uv),metallic_texture_channel);
-	METALLIC = metallic_tex * metallic;
-	vec4 roughness_texture_channel = vec4(1.0,0.0,0.0,0.0);
-	float roughness_tex = dot(texture(texture_roughness,base_uv),roughness_texture_channel);
-	ROUGHNESS = roughness_tex * roughness;
-	SPECULAR = specular;
-	NORMAL_MAP = texture(texture_normal,base_uv).rgb;
-	NORMAL_MAP_DEPTH = normal_scale;
-}
-"
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_1ubh7"]
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_4bisk"]
-seamless = true
-as_normal_map = true
-noise = SubResource("FastNoiseLite_1ubh7")
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_k071a"]
-render_priority = 0
-shader = SubResource("Shader_cy3ua")
-shader_parameter/albedo = Color(1, 1, 1, 1)
-shader_parameter/point_size = 1.0
-shader_parameter/roughness = 1.0
-shader_parameter/metallic_texture_channel = null
-shader_parameter/specular = 0.5
-shader_parameter/metallic = 0.0
-shader_parameter/normal_scale = 1.0
-shader_parameter/uv1_scale = Vector3(1, 1, 1)
-shader_parameter/uv1_offset = Vector3(0, 0, 0)
-shader_parameter/uv2_scale = Vector3(1, 1, 1)
-shader_parameter/uv2_offset = Vector3(0, 0, 0)
-shader_parameter/texture_normal = SubResource("NoiseTexture2D_4bisk")
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1u3xq"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xn107"]
 bg_color = Color(0, 0, 0, 0.243137)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3hxi7"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0g3pl"]
 bg_color = Color(0, 0, 0, 1)
 border_width_left = 5
 border_width_top = 5
@@ -733,12 +89,12 @@ corner_radius_bottom_right = 20
 corner_radius_bottom_left = 20
 corner_detail = 16
 
-[sub_resource type="ImageTexture" id="ImageTexture_hpqsk"]
+[sub_resource type="ImageTexture" id="ImageTexture_h2dl1"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_td5gg"]
+[sub_resource type="LabelSettings" id="LabelSettings_a1ci6"]
 font_size = 25
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dqj2l"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kv64f"]
 bg_color = Color(1, 1, 1, 1)
 corner_radius_top_left = 30
 corner_radius_top_right = 30
@@ -1044,34 +400,27 @@ _data = {
 "slide_up": SubResource("Animation_e0ywt")
 }
 
-[sub_resource type="ButtonGroup" id="ButtonGroup_ocfcu"]
+[sub_resource type="ButtonGroup" id="ButtonGroup_uj4rd"]
 allow_unpress = true
 
-[node name="Game" type="Control"]
-layout_mode = 3
+[node name="Game" type="MarginContainer"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
-mouse_filter = 1
+size_flags_vertical = 3
 script = ExtResource("1_s53r2")
 
-[node name="Viewport" type="Control" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 1
+[node name="Viewport" type="MarginContainer" parent="."]
+layout_mode = 2
 
 [node name="Viewport3D" type="Node3D" parent="Viewport"]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="Viewport/Viewport3D"]
-environment = SubResource("Environment_jfb01")
-camera_attributes = SubResource("CameraAttributesPractical_eiqo6")
+environment = SubResource("Environment_4km5k")
+camera_attributes = SubResource("CameraAttributesPractical_itg02")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="Viewport/Viewport3D"]
 transform = Transform3D(0.846193, -0.336793, -0.41295, 0, -0.774945, 0.632029, -0.532876, -0.534819, -0.655753, 0, 100, 0)
@@ -1085,144 +434,34 @@ directional_shadow_max_distance = 200.0
 directional_shadow_pancake_size = 0.0
 sky_mode = 1
 
-[node name="CameraPivot" type="Marker3D" parent="Viewport/Viewport3D"]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 100, -100)
-script = ExtResource("2_t2ckv")
+[node name="CameraManager" parent="Viewport/Viewport3D" instance=ExtResource("2_vm3rp")]
 
-[node name="Camera3D" type="Camera3D" parent="Viewport/Viewport3D/CameraPivot"]
-transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 0, 0)
-keep_aspect = 0
-cull_mask = 3
-projection = 1
-current = true
-fov = 170.473
-size = 100.0
-
-[node name="FloorDisplay" type="SubViewport" parent="Viewport/Viewport3D/CameraPivot"]
-disable_3d = true
-transparent_bg = true
-size = Vector2i(1000, 2600)
-
-[node name="FloorSprite" type="MeshInstance3D" parent="Viewport/Viewport3D/CameraPivot"]
-transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 1.81899e-12, -100, -100)
-sorting_offset = 1000.0
-sorting_use_aabb_center = false
-material_override = SubResource("ShaderMaterial_rqbvh")
-mesh = SubResource("PlaneMesh_utrlp")
-
-[node name="Terrain" type="MeshInstance3D" parent="Viewport/Viewport3D/CameraPivot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.81899e-12, -100.1, -100.293)
-material_override = SubResource("ShaderMaterial_wmxwp")
-cast_shadow = 0
-mesh = SubResource("PlaneMesh_oid74")
-
-[node name="Terrain1" type="MeshInstance3D" parent="Viewport/Viewport3D/CameraPivot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -100, -100)
-visible = false
-layers = 2
-sorting_offset = -10000.0
-sorting_use_aabb_center = false
-cast_shadow = 0
-mesh = SubResource("PlaneMesh_xk06g")
-surface_material_override/0 = SubResource("ShaderMaterial_1fvqb")
-
-[node name="Darkness" type="MeshInstance3D" parent="Viewport/Viewport3D/CameraPivot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, -105, -110)
-visible = false
-layers = 2
-sorting_offset = -10000.0
-sorting_use_aabb_center = false
-cast_shadow = 0
-mesh = SubResource("PlaneMesh_xk06g")
-surface_material_override/0 = SubResource("StandardMaterial3D_nf48j")
-
-[node name="SubViewport" type="SubViewport" parent="Viewport/Viewport3D/CameraPivot"]
-transparent_bg = true
-size = Vector2i(1000, 1838)
-
-[node name="VirtualCamera3D" type="Camera3D" parent="Viewport/Viewport3D/CameraPivot/SubViewport"]
-transform = Transform3D(-1, 6.18173e-08, 6.18173e-08, 0, 0.707107, -0.707107, -8.74228e-08, -0.707107, -0.707107, 0, -100, -100)
-keep_aspect = 0
-cull_mask = 5
-environment = SubResource("Environment_auhjg")
-projection = 1
-current = true
-fov = 37.8493
-size = 100.0
-far = 300.0
-script = ExtResource("10_jokxl")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Viewport/Viewport3D"]
-transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 0, 15, 0)
-visible = false
-mesh = SubResource("BoxMesh_j234n")
-surface_material_override/0 = ExtResource("9_j8866")
-
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="Viewport/Viewport3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 26.7581, 35.3855, 0)
-visible = false
-mesh = SubResource("SphereMesh_hma0m")
-surface_material_override/0 = SubResource("StandardMaterial3D_rndo8")
-
-[node name="MeshInstance3D3" type="MeshInstance3D" parent="Viewport/Viewport3D"]
-transform = Transform3D(0.715693, 0, 0.698415, 0, 1, 0, -0.698415, 0, 0.715693, -25.0327, 35.3855, 0)
-visible = false
-mesh = SubResource("BoxMesh_ic7md")
-surface_material_override/0 = SubResource("StandardMaterial3D_rndo8")
-
-[node name="MeshInstance3D4" type="MeshInstance3D" parent="Viewport/Viewport3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 15.7165, 0)
-visible = false
-mesh = SubResource("PlaneMesh_df7dv")
-surface_material_override/0 = SubResource("ShaderMaterial_k676y")
-
-[node name="MeshInstance3D5" type="MeshInstance3D" parent="Viewport/Viewport3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.277729)
-visible = false
-mesh = SubResource("BoxMesh_sqx6p")
-
-[node name="MeshInstance3D6" type="MeshInstance3D" parent="Viewport/Viewport3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 9.81246, 0)
-visible = false
-mesh = SubResource("BoxMesh_imk1r")
-
-[node name="MeshInstance3D7" type="MeshInstance3D" parent="Viewport/Viewport3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.58267, 0)
-visible = false
-mesh = SubResource("PlaneMesh_lmm5n")
-surface_material_override/0 = SubResource("StandardMaterial3D_1yqdi")
-
-[node name="MeshInstance3D8" type="MeshInstance3D" parent="Viewport/Viewport3D"]
-visible = false
-material_override = SubResource("ShaderMaterial_k071a")
-
-[node name="GameOverlay" type="VSplitContainer" parent="Viewport"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+[node name="GameOverlay" type="VBoxContainer" parent="Viewport"]
+layout_mode = 2
+mouse_filter = 2
 theme_override_constants/separation = 0
-dragger_visibility = 2
 
-[node name="Overlay" type="Control" parent="Viewport/GameOverlay"]
+[node name="MarginContainer" type="MarginContainer" parent="Viewport/GameOverlay"]
 layout_mode = 2
 size_flags_vertical = 3
-mouse_filter = 1
 
-[node name="NotStarted" type="Panel" parent="Viewport/GameOverlay/Overlay"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Viewport/GameOverlay/MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 0
+
+[node name="Overlay" type="MarginContainer" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="NotStarted" type="Panel" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay"]
 visible = false
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+layout_mode = 2
 mouse_filter = 1
-theme_override_styles/panel = SubResource("StyleBoxFlat_1u3xq")
+theme_override_styles/panel = SubResource("StyleBoxFlat_xn107")
 
-[node name="Label" type="Label" parent="Viewport/GameOverlay/Overlay/NotStarted"]
+[node name="Label" type="Label" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/NotStarted"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1233,60 +472,56 @@ text = "This game starts in -1 seconds"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="EndGame" parent="Viewport/GameOverlay/Overlay" instance=ExtResource("13_iadse")]
+[node name="EndGame" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay" instance=ExtResource("13_iadse")]
 visible = false
-layout_mode = 1
+layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Viewport/GameOverlay/Overlay"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+[node name="VBoxContainer" type="VBoxContainer" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay"]
+layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/separation = 0
 
-[node name="TopSpacer" type="HBoxContainer" parent="Viewport/GameOverlay/Overlay/VBoxContainer"]
+[node name="TopSpacer" type="HBoxContainer" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 size_flags_stretch_ratio = 0.5
 
-[node name="MarginContainer" type="MarginContainer" parent="Viewport/GameOverlay/Overlay/VBoxContainer/TopSpacer"]
+[node name="MarginContainer" type="MarginContainer" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/VBoxContainer/TopSpacer"]
 layout_mode = 2
 theme_override_constants/margin_left = 30
 theme_override_constants/margin_top = 50
 theme_override_constants/margin_right = 30
 theme_override_constants/margin_bottom = 50
 
-[node name="TextureRect" type="TextureRect" parent="Viewport/GameOverlay/Overlay/VBoxContainer/TopSpacer/MarginContainer"]
+[node name="TextureRect" type="TextureRect" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/VBoxContainer/TopSpacer/MarginContainer"]
 modulate = Color(1, 1, 1, 0)
 layout_mode = 2
 texture = ExtResource("9_4ris4")
 expand_mode = 2
 stretch_mode = 4
 
-[node name="BackButton" type="TextureButton" parent="Viewport/GameOverlay/Overlay/VBoxContainer/TopSpacer/MarginContainer"]
+[node name="BackButton" type="TextureButton" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/VBoxContainer/TopSpacer/MarginContainer"]
 modulate = Color(0, 0, 0, 1)
+custom_minimum_size = Vector2(125, 125)
 layout_mode = 2
 texture_normal = ExtResource("10_n5ogc")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Viewport/GameOverlay/Overlay/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 size_flags_stretch_ratio = 3.0
 
-[node name="Spacer" type="Control" parent="Viewport/GameOverlay/Overlay/VBoxContainer/HBoxContainer"]
+[node name="Spacer" type="Control" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(30, 0)
 layout_mode = 2
 mouse_filter = 2
 
-[node name="Control" type="MarginContainer" parent="Viewport/GameOverlay/Overlay/VBoxContainer/HBoxContainer"]
+[node name="Control" type="MarginContainer" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 
-[node name="PercentBar" type="VSlider" parent="Viewport/GameOverlay/Overlay/VBoxContainer/HBoxContainer/Control"]
+[node name="PercentBar" type="VSlider" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/VBoxContainer/HBoxContainer/Control"]
 custom_minimum_size = Vector2(30, 0)
 layout_mode = 2
 size_flags_vertical = 3
@@ -1297,114 +532,90 @@ step = 0.01
 value = 1.0
 tick_count = 5
 
-[node name="MarginContainer" type="MarginContainer" parent="Viewport/GameOverlay/Overlay/VBoxContainer/HBoxContainer/Control"]
+[node name="MarginContainer" type="MarginContainer" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/VBoxContainer/HBoxContainer/Control"]
 layout_mode = 2
 size_flags_vertical = 8
 
-[node name="Panel" type="Panel" parent="Viewport/GameOverlay/Overlay/VBoxContainer/HBoxContainer/Control/MarginContainer"]
+[node name="Panel" type="Panel" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/VBoxContainer/HBoxContainer/Control/MarginContainer"]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_3hxi7")
+theme_override_styles/panel = SubResource("StyleBoxFlat_0g3pl")
 
-[node name="MarginContainer" type="MarginContainer" parent="Viewport/GameOverlay/Overlay/VBoxContainer/HBoxContainer/Control/MarginContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/VBoxContainer/HBoxContainer/Control/MarginContainer"]
 layout_mode = 2
 
-[node name="Rect" type="TextureRect" parent="Viewport/GameOverlay/Overlay/VBoxContainer/HBoxContainer/Control/MarginContainer/MarginContainer"]
+[node name="Rect" type="TextureRect" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/VBoxContainer/HBoxContainer/Control/MarginContainer/MarginContainer"]
 layout_mode = 2
-texture = SubResource("ImageTexture_hpqsk")
+texture = SubResource("ImageTexture_h2dl1")
 expand_mode = 4
 stretch_mode = 4
 
-[node name="Label" type="Label" parent="Viewport/GameOverlay/Overlay/VBoxContainer/HBoxContainer/Control/MarginContainer/MarginContainer"]
+[node name="Label" type="Label" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/VBoxContainer/HBoxContainer/Control/MarginContainer/MarginContainer"]
 layout_mode = 2
 text = "00"
-label_settings = SubResource("LabelSettings_td5gg")
+label_settings = SubResource("LabelSettings_a1ci6")
 horizontal_alignment = 1
 
-[node name="BottomSpacer" type="Control" parent="Viewport/GameOverlay/Overlay/VBoxContainer"]
+[node name="BottomSpacer" type="Control" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 size_flags_stretch_ratio = 0.5
 mouse_filter = 1
 
-[node name="Timeline" parent="Viewport/GameOverlay/Overlay/VBoxContainer" instance=ExtResource("3_jhu7k")]
-custom_minimum_size = Vector2(0, 80)
+[node name="UIOverlay" type="MarginContainer" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay"]
 layout_mode = 2
-size_flags_vertical = 3
-size_flags_stretch_ratio = 0.05
-
-[node name="UIOverlay" type="MarginContainer" parent="Viewport/GameOverlay/Overlay"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
 mouse_filter = 2
 theme_override_constants/margin_left = 150
 theme_override_constants/margin_top = 150
 theme_override_constants/margin_right = 150
 theme_override_constants/margin_bottom = 150
 
-[node name="Separator" type="VSplitContainer" parent="Viewport/GameOverlay/Overlay/UIOverlay"]
+[node name="VSeparator" type="VBoxContainer" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay"]
 layout_mode = 2
-dragger_visibility = 2
+mouse_filter = 2
+theme_override_constants/separation = 40
 
-[node name="ElementDisplay" type="Control" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator"]
+[node name="ElementDisplay" type="MarginContainer" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/VSeparator"]
+custom_minimum_size = Vector2(2.08165e-12, 2.08165e-12)
 layout_mode = 2
+size_flags_horizontal = 3
 size_flags_vertical = 3
 size_flags_stretch_ratio = 0.3
-mouse_filter = 1
+mouse_filter = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/ElementDisplay"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Panel" type="Control" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/ElementDisplay/VBoxContainer"]
+[node name="Panel" type="MarginContainer" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/VSeparator/ElementDisplay"]
 visible = false
 layout_mode = 2
 size_flags_vertical = 3
+mouse_filter = 0
 
-[node name="Background" type="Panel" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/ElementDisplay/VBoxContainer/Panel"]
+[node name="Background" type="Panel" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/VSeparator/ElementDisplay/Panel"]
 layout_mode = 2
-offset_right = 780.0
-offset_bottom = 279.0
-grow_horizontal = 2
-grow_vertical = 2
 size_flags_vertical = 3
 theme_override_styles/panel = ExtResource("11_uh1qc")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/ElementDisplay/VBoxContainer/Panel"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Header" type="MarginContainer" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/ElementDisplay/VBoxContainer/Panel/VBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/VSeparator/ElementDisplay/Panel"]
 layout_mode = 2
 
-[node name="HeaderColor" type="Panel" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/ElementDisplay/VBoxContainer/Panel/VBoxContainer/Header"]
+[node name="Header" type="MarginContainer" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/VSeparator/ElementDisplay/Panel/VBoxContainer"]
+layout_mode = 2
+
+[node name="HeaderColor" type="Panel" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/VSeparator/ElementDisplay/Panel/VBoxContainer/Header"]
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_dqj2l")
+theme_override_styles/panel = SubResource("StyleBoxFlat_kv64f")
 
-[node name="MarginContainer" type="MarginContainer" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/ElementDisplay/VBoxContainer/Panel/VBoxContainer/Header"]
+[node name="MarginContainer" type="MarginContainer" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/VSeparator/ElementDisplay/Panel/VBoxContainer/Header"]
 layout_mode = 2
 theme_override_constants/margin_left = 20
 theme_override_constants/margin_top = 20
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 10
 
-[node name="Player" type="Label" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/ElementDisplay/VBoxContainer/Panel/VBoxContainer/Header/MarginContainer"]
+[node name="Player" type="Label" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/VSeparator/ElementDisplay/Panel/VBoxContainer/Header/MarginContainer"]
 layout_mode = 2
 text = "Test"
 
-[node name="MarginContainer" type="MarginContainer" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/ElementDisplay/VBoxContainer/Panel/VBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/VSeparator/ElementDisplay/Panel/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/margin_left = 40
@@ -1413,92 +624,89 @@ theme_override_constants/margin_right = 40
 theme_override_constants/margin_bottom = 40
 script = ExtResource("12_7re0q")
 
-[node name="Gap" type="Control" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/ElementDisplay/VBoxContainer"]
-custom_minimum_size = Vector2(0, 50)
+[node name="TabDisplay" type="MarginContainer" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/VSeparator"]
 layout_mode = 2
-mouse_filter = 1
-
-[node name="TabDisplay" type="Control" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator"]
-layout_mode = 2
+size_flags_horizontal = 3
 size_flags_vertical = 3
-mouse_filter = 1
+mouse_filter = 2
 
-[node name="Panel" type="MarginContainer" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay"]
+[node name="Panel" type="MarginContainer" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/VSeparator/TabDisplay"]
 visible = false
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+layout_mode = 2
 mouse_filter = 0
 
-[node name="Background" type="Panel" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel"]
+[node name="Background" type="Panel" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/VSeparator/TabDisplay/Panel"]
 layout_mode = 2
 theme_override_styles/panel = ExtResource("11_uh1qc")
 
-[node name="Shop" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel" instance=ExtResource("12_sa8gc")]
+[node name="Shop" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/VSeparator/TabDisplay/Panel" instance=ExtResource("12_sa8gc")]
 visible = false
 layout_mode = 2
 
-[node name="Status" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel" instance=ExtResource("13_20fpi")]
+[node name="Status" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/VSeparator/TabDisplay/Panel" instance=ExtResource("13_20fpi")]
 visible = false
 layout_mode = 2
 
-[node name="Chat" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel" instance=ExtResource("14_xpy25")]
+[node name="Chat" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/VSeparator/TabDisplay/Panel" instance=ExtResource("14_xpy25")]
 visible = false
 layout_mode = 2
 
-[node name="Logs" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel" instance=ExtResource("15_yfjeb")]
+[node name="Logs" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/VSeparator/TabDisplay/Panel" instance=ExtResource("15_yfjeb")]
 visible = false
 layout_mode = 2
 
-[node name="GameEditor" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel" instance=ExtResource("19_efwav")]
+[node name="GameEditor" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/VSeparator/TabDisplay/Panel" instance=ExtResource("19_efwav")]
 visible = false
 layout_mode = 2
 
-[node name="Battle Forecast" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel" instance=ExtResource("20_x2ppo")]
+[node name="Battle Forecast" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/VSeparator/TabDisplay/Panel" instance=ExtResource("20_x2ppo")]
 visible = false
 layout_mode = 2
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel"]
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/VSeparator/TabDisplay/Panel"]
 libraries = {
 "": SubResource("AnimationLibrary_m75d7")
 }
 
-[node name="Spacer" type="Control" parent="Viewport/GameOverlay"]
+[node name="HSeparator" type="HBoxContainer" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay"]
 layout_mode = 2
-size_flags_vertical = 3
-size_flags_stretch_ratio = 0.1
-mouse_filter = 1
-
-[node name="MenuBar" type="Control" parent="."]
-top_level = true
-anchors_preset = 0
-offset_right = 1080.0
-offset_bottom = 1920.0
 mouse_filter = 2
+theme_override_constants/separation = 40
 
-[node name="VSplitContainer" type="VSplitContainer" parent="MenuBar"]
-layout_mode = 1
-anchors_preset = -1
-anchor_right = 1.0
-anchor_bottom = 1.0
+[node name="HTimeline" type="MarginContainer" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay"]
+custom_minimum_size = Vector2(2.08165e-12, 2.08165e-12)
+layout_mode = 2
+size_flags_horizontal = 8
+
+[node name="HMenuBar" type="VBoxContainer" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
 mouse_filter = 2
 theme_override_constants/separation = 0
-dragger_visibility = 2
 
-[node name="Spacer" type="Control" parent="MenuBar/VSplitContainer"]
+[node name="Spacer" type="Control" parent="Viewport/GameOverlay/MarginContainer"]
+visible = false
+custom_minimum_size = Vector2(2.08165e-12, 175)
+layout_mode = 2
+mouse_filter = 1
+
+[node name="VTimeline" type="MarginContainer" parent="Viewport/GameOverlay/MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 8
+
+[node name="Timeline" parent="Viewport/GameOverlay/MarginContainer/VTimeline" instance=ExtResource("3_jhu7k")]
+custom_minimum_size = Vector2(80, 80)
+layout_mode = 2
+
+[node name="VMenuBar" type="VBoxContainer" parent="Viewport/GameOverlay"]
+layout_mode = 2
+
+[node name="Tabs" type="Control" parent="Viewport/GameOverlay/VMenuBar"]
+custom_minimum_size = Vector2(175, 175)
 layout_mode = 2
 size_flags_vertical = 3
-mouse_filter = 2
 
-[node name="Tabs" type="Control" parent="MenuBar/VSplitContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-size_flags_stretch_ratio = 0.1
-
-[node name="Background" type="ColorRect" parent="MenuBar/VSplitContainer/Tabs"]
+[node name="Background" type="ColorRect" parent="Viewport/GameOverlay/VMenuBar/Tabs"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1509,7 +717,7 @@ size_flags_vertical = 3
 size_flags_stretch_ratio = 0.1
 color = Color(0, 0, 0, 1)
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MenuBar/VSplitContainer/Tabs"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Viewport/GameOverlay/VMenuBar/Tabs"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1518,13 +726,14 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_vertical = 3
 size_flags_stretch_ratio = 0.1
-mouse_filter = 0
+mouse_filter = 2
 
-[node name="LSpacer" type="Control" parent="MenuBar/VSplitContainer/Tabs/HBoxContainer"]
+[node name="LSpacer" type="Control" parent="Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_vertical = 3
 
-[node name="StatusContainer" type="MarginContainer" parent="MenuBar/VSplitContainer/Tabs/HBoxContainer"]
+[node name="StatusContainer" type="MarginContainer" parent="Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/margin_left = 30
@@ -1532,15 +741,16 @@ theme_override_constants/margin_top = 30
 theme_override_constants/margin_right = 30
 theme_override_constants/margin_bottom = 30
 
-[node name="StatusButton" type="TextureButton" parent="MenuBar/VSplitContainer/Tabs/HBoxContainer/StatusContainer"]
+[node name="StatusButton" type="TextureButton" parent="Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer/StatusContainer"]
+custom_minimum_size = Vector2(80, 80)
 layout_mode = 2
 toggle_mode = true
-button_group = SubResource("ButtonGroup_ocfcu")
+button_group = SubResource("ButtonGroup_uj4rd")
 texture_normal = ExtResource("14_cfqet")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="ChatContainer" type="MarginContainer" parent="MenuBar/VSplitContainer/Tabs/HBoxContainer"]
+[node name="ChatContainer" type="MarginContainer" parent="Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/margin_left = 30
@@ -1548,15 +758,16 @@ theme_override_constants/margin_top = 30
 theme_override_constants/margin_right = 30
 theme_override_constants/margin_bottom = 30
 
-[node name="ChatButton" type="TextureButton" parent="MenuBar/VSplitContainer/Tabs/HBoxContainer/ChatContainer"]
+[node name="ChatButton" type="TextureButton" parent="Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer/ChatContainer"]
+custom_minimum_size = Vector2(80, 80)
 layout_mode = 2
 toggle_mode = true
-button_group = SubResource("ButtonGroup_ocfcu")
+button_group = SubResource("ButtonGroup_uj4rd")
 texture_normal = ExtResource("15_lpw6h")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="ShopContainer" type="MarginContainer" parent="MenuBar/VSplitContainer/Tabs/HBoxContainer"]
+[node name="ShopContainer" type="MarginContainer" parent="Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/margin_left = 30
@@ -1564,15 +775,16 @@ theme_override_constants/margin_top = 30
 theme_override_constants/margin_right = 30
 theme_override_constants/margin_bottom = 30
 
-[node name="ShopButton" type="TextureButton" parent="MenuBar/VSplitContainer/Tabs/HBoxContainer/ShopContainer"]
+[node name="ShopButton" type="TextureButton" parent="Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer/ShopContainer"]
+custom_minimum_size = Vector2(80, 80)
 layout_mode = 2
 toggle_mode = true
-button_group = SubResource("ButtonGroup_ocfcu")
+button_group = SubResource("ButtonGroup_uj4rd")
 texture_normal = ExtResource("21_lwlj7")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="LogContainer" type="MarginContainer" parent="MenuBar/VSplitContainer/Tabs/HBoxContainer"]
+[node name="EditorContainer" type="MarginContainer" parent="Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/margin_left = 30
@@ -1580,39 +792,41 @@ theme_override_constants/margin_top = 30
 theme_override_constants/margin_right = 30
 theme_override_constants/margin_bottom = 30
 
-[node name="LogsButton" type="TextureButton" parent="MenuBar/VSplitContainer/Tabs/HBoxContainer/LogContainer"]
+[node name="EditorButton" type="TextureButton" parent="Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer/EditorContainer"]
+custom_minimum_size = Vector2(80, 80)
 layout_mode = 2
 toggle_mode = true
-button_group = SubResource("ButtonGroup_ocfcu")
-texture_normal = ExtResource("12_fsvp4")
-ignore_texture_size = true
-stretch_mode = 5
-
-[node name="EditorContainer" type="MarginContainer" parent="MenuBar/VSplitContainer/Tabs/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/margin_left = 30
-theme_override_constants/margin_top = 30
-theme_override_constants/margin_right = 30
-theme_override_constants/margin_bottom = 30
-
-[node name="EditorButton" type="TextureButton" parent="MenuBar/VSplitContainer/Tabs/HBoxContainer/EditorContainer"]
-layout_mode = 2
-toggle_mode = true
-button_group = SubResource("ButtonGroup_ocfcu")
+button_group = SubResource("ButtonGroup_uj4rd")
 texture_normal = ExtResource("24_7o8jj")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="RSpacer" type="Control" parent="MenuBar/VSplitContainer/Tabs/HBoxContainer"]
+[node name="RSpacer" type="Control" parent="Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_vertical = 3
 
-[connection signal="unselect" from="Viewport/Viewport3D/CameraPivot" to="." method="_on_camera_pivot_unselect"]
-[connection signal="pressed" from="Viewport/GameOverlay/Overlay/VBoxContainer/TopSpacer/MarginContainer/BackButton" to="." method="_on_back_button_pressed"]
-[connection signal="value_changed" from="Viewport/GameOverlay/Overlay/VBoxContainer/HBoxContainer/Control/PercentBar" to="." method="_on_percent_bar_value_changed"]
-[connection signal="toggled" from="MenuBar/VSplitContainer/Tabs/HBoxContainer/StatusContainer/StatusButton" to="." method="_on_status_button_toggled"]
-[connection signal="toggled" from="MenuBar/VSplitContainer/Tabs/HBoxContainer/ChatContainer/ChatButton" to="." method="_on_chat_button_toggled"]
-[connection signal="toggled" from="MenuBar/VSplitContainer/Tabs/HBoxContainer/ShopContainer/ShopButton" to="." method="_on_shop_button_toggled"]
-[connection signal="toggled" from="MenuBar/VSplitContainer/Tabs/HBoxContainer/LogContainer/LogsButton" to="." method="_on_logs_button_toggled"]
-[connection signal="toggled" from="MenuBar/VSplitContainer/Tabs/HBoxContainer/EditorContainer/EditorButton" to="." method="_on_editor_button_toggled"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Viewport/GameOverlay/VMenuBar/Tabs"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="MenuBar" type="MarginContainer" parent="."]
+visible = false
+layout_mode = 2
+mouse_filter = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MenuBar"]
+layout_mode = 2
+
+[connection signal="unselect" from="Viewport/Viewport3D/CameraManager" to="." method="_on_camera_manager_unselect"]
+[connection signal="pressed" from="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/VBoxContainer/TopSpacer/MarginContainer/BackButton" to="." method="_on_back_button_pressed"]
+[connection signal="value_changed" from="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/VBoxContainer/HBoxContainer/Control/PercentBar" to="." method="_on_percent_bar_value_changed"]
+[connection signal="toggled" from="Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer/StatusContainer/StatusButton" to="." method="_on_status_button_toggled"]
+[connection signal="toggled" from="Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer/ChatContainer/ChatButton" to="." method="_on_chat_button_toggled"]
+[connection signal="toggled" from="Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer/ShopContainer/ShopButton" to="." method="_on_shop_button_toggled"]
+[connection signal="toggled" from="Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer/EditorContainer/EditorButton" to="." method="_on_editor_button_toggled"]

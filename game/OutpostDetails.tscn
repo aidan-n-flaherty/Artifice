@@ -52,8 +52,9 @@ text = "-1 in"
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+[node name="HBoxContainer" type="HFlowContainer" parent="VBoxContainer"]
 layout_mode = 2
+theme_override_constants/v_separation = 10
 
 [node name="Label" type="Label" parent="VBoxContainer/HBoxContainer"]
 layout_mode = 2

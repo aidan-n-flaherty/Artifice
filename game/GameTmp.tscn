@@ -1,0 +1,862 @@
+[gd_scene load_steps=37 format=3 uid="uid://dgp4l24s2rulk"]
+
+[ext_resource type="Script" path="res://Game.gd" id="1_7qtwd"]
+[ext_resource type="PackedScene" uid="uid://br2r5ds75s4n0" path="res://CameraManager.tscn" id="2_0h657"]
+[ext_resource type="PackedScene" uid="uid://clqpri4b5a2y0" path="res://EndGame.tscn" id="3_srhq2"]
+[ext_resource type="Texture2D" uid="uid://cy7ou3wycwjra" path="res://resources/images/back.png" id="4_l6lfy"]
+[ext_resource type="Texture2D" uid="uid://dlqmq6fklb6q8" path="res://resources/images/back_arrow.png" id="5_cux5x"]
+[ext_resource type="Theme" uid="uid://bfwpaonloeco5" path="res://resources/theme.tres" id="6_rrk0v"]
+[ext_resource type="PackedScene" uid="uid://n0lobms04k46" path="res://Timeline.tscn" id="7_5tgcv"]
+[ext_resource type="StyleBox" uid="uid://dgq41l16rxlq" path="res://resources/styles/roundRectBlack.tres" id="8_eqp8y"]
+[ext_resource type="Script" path="res://DetailContainer.gd" id="9_s4ugv"]
+[ext_resource type="PackedScene" uid="uid://cqdpj2uw0cloc" path="res://Shop.tscn" id="10_2lsok"]
+[ext_resource type="PackedScene" uid="uid://symsrj5sm6dt" path="res://Status.tscn" id="11_p8oo6"]
+[ext_resource type="PackedScene" uid="uid://c7rmgavx0p0po" path="res://Chat.tscn" id="12_hiyet"]
+[ext_resource type="PackedScene" uid="uid://8bjal0hti5cr" path="res://Logs.tscn" id="13_noosh"]
+[ext_resource type="PackedScene" uid="uid://cji0ca8swtaxi" path="res://GameModifier.tscn" id="14_ghekp"]
+[ext_resource type="PackedScene" uid="uid://c0o7lbwqyauwq" path="res://Battle Forecast.tscn" id="15_vhxuf"]
+[ext_resource type="Texture2D" uid="uid://5rc0hts7wgcj" path="res://resources/gameMenuIcons/chartIcon.png" id="16_c8wj6"]
+[ext_resource type="Texture2D" uid="uid://ddtmrm6d6rl0c" path="res://resources/gameMenuIcons/chatIcon.png" id="17_64oni"]
+[ext_resource type="Texture2D" uid="uid://br2xninxoa36u" path="res://resources/gameMenuIcons/hireIconBeamDown (Proto 3).png" id="18_tfsmf"]
+[ext_resource type="Texture2D" uid="uid://c0beg3px50da4" path="res://resources/gameMenuIcons/logsIcon.png" id="19_rb5cl"]
+[ext_resource type="Texture2D" uid="uid://df304hwlkhr6p" path="res://resources/gameMenuIcons/editIcon.png" id="20_y0vtu"]
+
+[sub_resource type="Gradient" id="Gradient_3xapi"]
+offsets = PackedFloat32Array(0.155462, 0.84874)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_duiyy"]
+frequency = 0.005
+domain_warp_enabled = true
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_b74dy"]
+width = 1024
+height = 1024
+seamless = true
+color_ramp = SubResource("Gradient_3xapi")
+noise = SubResource("FastNoiseLite_duiyy")
+
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_i6rvu"]
+panorama = SubResource("NoiseTexture2D_b74dy")
+filter = false
+
+[sub_resource type="Sky" id="Sky_x0rsk"]
+sky_material = SubResource("PanoramaSkyMaterial_i6rvu")
+
+[sub_resource type="Environment" id="Environment_jfb01"]
+background_mode = 2
+background_energy_multiplier = 0.5
+sky = SubResource("Sky_x0rsk")
+sky_custom_fov = 90.0
+sky_rotation = Vector3(-0.785398, 0, 0)
+ambient_light_sky_contribution = 0.5
+reflected_light_source = 2
+glow_enabled = true
+glow_levels/2 = 1.0
+glow_levels/5 = 0.0
+glow_normalized = true
+glow_intensity = 0.5
+glow_strength = 0.8
+glow_bloom = 1.0
+glow_blend_mode = 0
+fog_enabled = true
+fog_light_color = Color(0, 0.713726, 0.8, 1)
+fog_light_energy = 0.1
+fog_density = 0.001
+fog_sky_affect = 0.0
+volumetric_fog_density = 0.5024
+volumetric_fog_albedo = Color(0, 0, 0.403922, 1)
+
+[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_eiqo6"]
+dof_blur_far_enabled = true
+dof_blur_far_distance = 180.0
+dof_blur_far_transition = 75.0
+dof_blur_near_distance = 100.0
+dof_blur_near_transition = 75.0
+dof_blur_amount = 0.2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1u3xq"]
+bg_color = Color(0, 0, 0, 0.243137)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3hxi7"]
+bg_color = Color(0, 0, 0, 1)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(0, 0, 0, 0)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+corner_detail = 16
+
+[sub_resource type="ImageTexture" id="ImageTexture_hpqsk"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_td5gg"]
+font_size = 25
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dqj2l"]
+bg_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 30
+corner_radius_top_right = 30
+
+[sub_resource type="Animation" id="Animation_n3pi6"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Background:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Shop:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Status:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Chat:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("Logs:position")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("Battle Forecast:position")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("Background:modulate")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("Shop:modulate")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+tracks/8/type = "value"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("Status:modulate")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+tracks/9/type = "value"
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/path = NodePath("Chat:modulate")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+tracks/10/type = "value"
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/path = NodePath("Logs:modulate")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+tracks/11/type = "value"
+tracks/11/imported = false
+tracks/11/enabled = true
+tracks/11/path = NodePath("Battle Forecast:modulate")
+tracks/11/interp = 1
+tracks/11/loop_wrap = true
+tracks/11/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_e0ywt"]
+resource_name = "slide_up"
+length = 0.6
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Background:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(0, 500), Vector2(0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Shop:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(0, 500), Vector2(0, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Status:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(0, 500), Vector2(0, 0)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Chat:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(0, 500), Vector2(0, 0)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("Logs:position")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(0, 500), Vector2(0, 0)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("Battle Forecast:position")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(0, 500), Vector2(0, 0)]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("Background:modulate")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0.1, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("Shop:modulate")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0.1, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+tracks/8/type = "value"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("Status:modulate")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = {
+"times": PackedFloat32Array(0.1, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+tracks/9/type = "value"
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/path = NodePath("Chat:modulate")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/keys = {
+"times": PackedFloat32Array(0.1, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+tracks/10/type = "value"
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/path = NodePath("Logs:modulate")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/keys = {
+"times": PackedFloat32Array(0.1, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+tracks/11/type = "value"
+tracks/11/imported = false
+tracks/11/enabled = true
+tracks/11/path = NodePath("Battle Forecast:modulate")
+tracks/11/interp = 1
+tracks/11/loop_wrap = true
+tracks/11/keys = {
+"times": PackedFloat32Array(0.1, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_m75d7"]
+_data = {
+"RESET": SubResource("Animation_n3pi6"),
+"slide_up": SubResource("Animation_e0ywt")
+}
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_ocfcu"]
+allow_unpress = true
+
+[node name="Game" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+mouse_filter = 1
+script = ExtResource("1_7qtwd")
+
+[node name="Viewport" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+
+[node name="Viewport3D" type="Node3D" parent="Viewport"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="Viewport/Viewport3D"]
+environment = SubResource("Environment_jfb01")
+camera_attributes = SubResource("CameraAttributesPractical_eiqo6")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Viewport/Viewport3D"]
+transform = Transform3D(0.846193, -0.336793, -0.41295, 0, -0.774945, 0.632029, -0.532876, -0.534819, -0.655753, 0, 100, 0)
+layers = 3
+light_bake_mode = 1
+shadow_bias = 0.01
+shadow_normal_bias = 3.0
+shadow_blur = 1.5
+directional_shadow_mode = 0
+directional_shadow_max_distance = 200.0
+directional_shadow_pancake_size = 0.0
+sky_mode = 1
+
+[node name="CameraManager" parent="Viewport/Viewport3D" instance=ExtResource("2_0h657")]
+
+[node name="GameOverlay" type="VBoxContainer" parent="Viewport"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Overlay" type="Control" parent="Viewport/GameOverlay"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 1
+
+[node name="NotStarted" type="Panel" parent="Viewport/GameOverlay/Overlay"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+theme_override_styles/panel = SubResource("StyleBoxFlat_1u3xq")
+
+[node name="Label" type="Label" parent="Viewport/GameOverlay/Overlay/NotStarted"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "This game starts in -1 seconds"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="EndGame" parent="Viewport/GameOverlay/Overlay" instance=ExtResource("3_srhq2")]
+visible = false
+layout_mode = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Viewport/GameOverlay/Overlay"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 0
+
+[node name="TopSpacer" type="HBoxContainer" parent="Viewport/GameOverlay/Overlay/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.5
+
+[node name="MarginContainer" type="MarginContainer" parent="Viewport/GameOverlay/Overlay/VBoxContainer/TopSpacer"]
+layout_mode = 2
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 50
+
+[node name="TextureRect" type="TextureRect" parent="Viewport/GameOverlay/Overlay/VBoxContainer/TopSpacer/MarginContainer"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 2
+texture = ExtResource("4_l6lfy")
+expand_mode = 2
+stretch_mode = 4
+
+[node name="BackButton" type="TextureButton" parent="Viewport/GameOverlay/Overlay/VBoxContainer/TopSpacer/MarginContainer"]
+modulate = Color(0, 0, 0, 1)
+layout_mode = 2
+texture_normal = ExtResource("5_cux5x")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Viewport/GameOverlay/Overlay/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 3.0
+
+[node name="Spacer" type="Control" parent="Viewport/GameOverlay/Overlay/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Control" type="MarginContainer" parent="Viewport/GameOverlay/Overlay/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="PercentBar" type="VSlider" parent="Viewport/GameOverlay/Overlay/VBoxContainer/HBoxContainer/Control"]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 3.0
+theme = ExtResource("6_rrk0v")
+max_value = 1.0
+step = 0.01
+value = 1.0
+tick_count = 5
+
+[node name="MarginContainer" type="MarginContainer" parent="Viewport/GameOverlay/Overlay/VBoxContainer/HBoxContainer/Control"]
+layout_mode = 2
+size_flags_vertical = 8
+
+[node name="Panel" type="Panel" parent="Viewport/GameOverlay/Overlay/VBoxContainer/HBoxContainer/Control/MarginContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_3hxi7")
+
+[node name="MarginContainer" type="MarginContainer" parent="Viewport/GameOverlay/Overlay/VBoxContainer/HBoxContainer/Control/MarginContainer"]
+layout_mode = 2
+
+[node name="Rect" type="TextureRect" parent="Viewport/GameOverlay/Overlay/VBoxContainer/HBoxContainer/Control/MarginContainer/MarginContainer"]
+layout_mode = 2
+texture = SubResource("ImageTexture_hpqsk")
+expand_mode = 4
+stretch_mode = 4
+
+[node name="Label" type="Label" parent="Viewport/GameOverlay/Overlay/VBoxContainer/HBoxContainer/Control/MarginContainer/MarginContainer"]
+layout_mode = 2
+text = "00"
+label_settings = SubResource("LabelSettings_td5gg")
+horizontal_alignment = 1
+
+[node name="BottomSpacer" type="Control" parent="Viewport/GameOverlay/Overlay/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.5
+mouse_filter = 1
+
+[node name="Timeline" parent="Viewport/GameOverlay/Overlay/VBoxContainer" instance=ExtResource("7_5tgcv")]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.05
+
+[node name="UIOverlay" type="MarginContainer" parent="Viewport/GameOverlay/Overlay"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 150
+theme_override_constants/margin_top = 150
+theme_override_constants/margin_right = 150
+theme_override_constants/margin_bottom = 150
+
+[node name="Separator" type="VSplitContainer" parent="Viewport/GameOverlay/Overlay/UIOverlay"]
+layout_mode = 2
+dragger_visibility = 2
+
+[node name="ElementDisplay" type="Control" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.3
+mouse_filter = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/ElementDisplay"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="Control" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/ElementDisplay/VBoxContainer"]
+visible = false
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Background" type="Panel" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/ElementDisplay/VBoxContainer/Panel"]
+layout_mode = 2
+offset_right = 780.0
+offset_bottom = 279.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 3
+theme_override_styles/panel = ExtResource("8_eqp8y")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/ElementDisplay/VBoxContainer/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Header" type="MarginContainer" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/ElementDisplay/VBoxContainer/Panel/VBoxContainer"]
+layout_mode = 2
+
+[node name="HeaderColor" type="Panel" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/ElementDisplay/VBoxContainer/Panel/VBoxContainer/Header"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_dqj2l")
+
+[node name="MarginContainer" type="MarginContainer" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/ElementDisplay/VBoxContainer/Panel/VBoxContainer/Header"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 10
+
+[node name="Player" type="Label" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/ElementDisplay/VBoxContainer/Panel/VBoxContainer/Header/MarginContainer"]
+layout_mode = 2
+text = "Test"
+
+[node name="MarginContainer" type="MarginContainer" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/ElementDisplay/VBoxContainer/Panel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 40
+script = ExtResource("9_s4ugv")
+
+[node name="Gap" type="Control" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/ElementDisplay/VBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+mouse_filter = 1
+
+[node name="TabDisplay" type="Control" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 1
+
+[node name="Panel" type="MarginContainer" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+
+[node name="Background" type="Panel" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel"]
+layout_mode = 2
+theme_override_styles/panel = ExtResource("8_eqp8y")
+
+[node name="Shop" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel" instance=ExtResource("10_2lsok")]
+visible = false
+layout_mode = 2
+
+[node name="Status" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel" instance=ExtResource("11_p8oo6")]
+visible = false
+layout_mode = 2
+
+[node name="Chat" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel" instance=ExtResource("12_hiyet")]
+visible = false
+layout_mode = 2
+
+[node name="Logs" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel" instance=ExtResource("13_noosh")]
+visible = false
+layout_mode = 2
+
+[node name="GameEditor" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel" instance=ExtResource("14_ghekp")]
+visible = false
+layout_mode = 2
+
+[node name="Battle Forecast" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel" instance=ExtResource("15_vhxuf")]
+visible = false
+layout_mode = 2
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel"]
+libraries = {
+"": SubResource("AnimationLibrary_m75d7")
+}
+
+[node name="Spacer" type="Control" parent="Viewport/GameOverlay"]
+custom_minimum_size = Vector2(2.08165e-12, 175)
+layout_mode = 2
+mouse_filter = 1
+
+[node name="MenuBar" type="Control" parent="."]
+top_level = true
+anchors_preset = 0
+offset_right = 1080.0
+offset_bottom = 1920.0
+mouse_filter = 2
+
+[node name="VSplitContainer" type="VSplitContainer" parent="MenuBar"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+theme_override_constants/separation = 0
+dragger_visibility = 2
+
+[node name="Spacer" type="Control" parent="MenuBar/VSplitContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="Tabs" type="Control" parent="MenuBar/VSplitContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.1
+
+[node name="Background" type="ColorRect" parent="MenuBar/VSplitContainer/Tabs"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.1
+color = Color(0, 0, 0, 1)
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MenuBar/VSplitContainer/Tabs"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.1
+mouse_filter = 0
+
+[node name="LSpacer" type="Control" parent="MenuBar/VSplitContainer/Tabs/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="StatusContainer" type="MarginContainer" parent="MenuBar/VSplitContainer/Tabs/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 30
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 30
+
+[node name="StatusButton" type="TextureButton" parent="MenuBar/VSplitContainer/Tabs/HBoxContainer/StatusContainer"]
+layout_mode = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_ocfcu")
+texture_normal = ExtResource("16_c8wj6")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="ChatContainer" type="MarginContainer" parent="MenuBar/VSplitContainer/Tabs/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 30
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 30
+
+[node name="ChatButton" type="TextureButton" parent="MenuBar/VSplitContainer/Tabs/HBoxContainer/ChatContainer"]
+layout_mode = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_ocfcu")
+texture_normal = ExtResource("17_64oni")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="ShopContainer" type="MarginContainer" parent="MenuBar/VSplitContainer/Tabs/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 30
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 30
+
+[node name="ShopButton" type="TextureButton" parent="MenuBar/VSplitContainer/Tabs/HBoxContainer/ShopContainer"]
+layout_mode = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_ocfcu")
+texture_normal = ExtResource("18_tfsmf")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="LogContainer" type="MarginContainer" parent="MenuBar/VSplitContainer/Tabs/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 30
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 30
+
+[node name="LogsButton" type="TextureButton" parent="MenuBar/VSplitContainer/Tabs/HBoxContainer/LogContainer"]
+layout_mode = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_ocfcu")
+texture_normal = ExtResource("19_rb5cl")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="EditorContainer" type="MarginContainer" parent="MenuBar/VSplitContainer/Tabs/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 30
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 30
+
+[node name="EditorButton" type="TextureButton" parent="MenuBar/VSplitContainer/Tabs/HBoxContainer/EditorContainer"]
+layout_mode = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_ocfcu")
+texture_normal = ExtResource("20_y0vtu")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="RSpacer" type="Control" parent="MenuBar/VSplitContainer/Tabs/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[connection signal="pressed" from="Viewport/GameOverlay/Overlay/VBoxContainer/TopSpacer/MarginContainer/BackButton" to="." method="_on_back_button_pressed"]
+[connection signal="value_changed" from="Viewport/GameOverlay/Overlay/VBoxContainer/HBoxContainer/Control/PercentBar" to="." method="_on_percent_bar_value_changed"]
+[connection signal="toggled" from="MenuBar/VSplitContainer/Tabs/HBoxContainer/StatusContainer/StatusButton" to="." method="_on_status_button_toggled"]
+[connection signal="toggled" from="MenuBar/VSplitContainer/Tabs/HBoxContainer/ChatContainer/ChatButton" to="." method="_on_chat_button_toggled"]
+[connection signal="toggled" from="MenuBar/VSplitContainer/Tabs/HBoxContainer/ShopContainer/ShopButton" to="." method="_on_shop_button_toggled"]
+[connection signal="toggled" from="MenuBar/VSplitContainer/Tabs/HBoxContainer/LogContainer/LogsButton" to="." method="_on_logs_button_toggled"]
+[connection signal="toggled" from="MenuBar/VSplitContainer/Tabs/HBoxContainer/EditorContainer/EditorButton" to="." method="_on_editor_button_toggled"]

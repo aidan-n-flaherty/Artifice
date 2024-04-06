@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://cji0ca8swtaxi"]
+[gd_scene load_steps=7 format=3 uid="uid://cji0ca8swtaxi"]
 
 [ext_resource type="PackedScene" uid="uid://biekuv7dddk3m" path="res://GameEditor.tscn" id="1_2tq6g"]
 [ext_resource type="Script" path="res://GameModifier.gd" id="2_ah1p0"]
@@ -8,6 +8,8 @@
 [sub_resource type="ButtonGroup" id="ButtonGroup_kvf6b"]
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_hnxii"]
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_xhxv3"]
 
 [node name="GameModifier" instance=ExtResource("1_2tq6g")]
 script = ExtResource("2_ah1p0")
@@ -53,6 +55,21 @@ button_group = SubResource("ButtonGroup_hnxii")
 
 [node name="minutes" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/SimulationTimescaleButtons" index="2"]
 button_group = SubResource("ButtonGroup_hnxii")
+
+[node name="0" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/TeamButtons" index="0"]
+button_group = SubResource("ButtonGroup_xhxv3")
+
+[node name="2" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/TeamButtons" index="1"]
+button_group = SubResource("ButtonGroup_xhxv3")
+
+[node name="3" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/TeamButtons" index="2"]
+button_group = SubResource("ButtonGroup_xhxv3")
+
+[node name="4" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/TeamButtons" index="3"]
+button_group = SubResource("ButtonGroup_xhxv3")
+
+[node name="5" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/TeamButtons" index="4"]
+button_group = SubResource("ButtonGroup_xhxv3")
 
 [node name="Activate" parent="MarginContainer/VBoxContainer" index="3"]
 text = "Save"

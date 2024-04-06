@@ -9,7 +9,6 @@ func _ready():
 	super._ready()
 
 func init(gameID):
-	setEditable(true)
 	deserialize(gameID)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

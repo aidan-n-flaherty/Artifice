@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <vector>
 #include <tuple>
+#include <unordered_set>
 
 #ifndef _GAME_SETTINGS_H_
 #define _GAME_SETTINGS_H_
@@ -35,14 +36,22 @@ public:
     int outpostsPerPlayer;
     int width; // immutable
     int height; // immutable
+    double startTime; // immutable
     std::unordered_map<SpecialistType, std::string> specialistDescriptions;
     std::vector<std::tuple<double, double, double>> playerColors;
     std::vector<std::string> outpostNames;
+    std::unordered_set<int> activeHours;
     int number_of_teams;
 
     void loadDefaults();
 
     void addSetting(const char* type, const void* value);
+
+    double gameToClientTime(double timestamp) const;
+
+    double clientToGameTime(double timestamp) const;
+
+    bool clientIsPaused(double timestamp) const;
     /*void reset();
 
     bool reset(int gameID) {
