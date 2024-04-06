@@ -48,7 +48,7 @@ Game::Game(GameSettings settings, int simulatorID, double startTime, double endT
         addPlayer(p);
     }
 
-    //check if the current GameSettings has number_of_teams initialized to some value that is not -1
+    //check if the current GameSettings has number_of_teams initialized to some value that is > 1
     if(this->settings->number_of_teams > 1){
         
         //counter used to track the team the current player will be added to
@@ -73,7 +73,7 @@ Game::Game(GameSettings settings, int simulatorID, double startTime, double endT
     // start map generation
 
     int numIterations = 100;
-    double epsilon = 0.0001;
+    double epsilon = 0.0001; //small distance used to check if bases are on top of each other. prevents divide by 0 errors.
 
     std::vector<std::pair<int, Point>> startingPositions;
     std::vector<std::pair<int, Point>> outpostPositions;
@@ -81,6 +81,7 @@ Game::Game(GameSettings settings, int simulatorID, double startTime, double endT
     std::unordered_map<int, std::vector<OutpostType>> outpostTypes;
 
     int n = 0;
+    //going through a assigning each player a starting position
     for(int id : playerIDs) {
         double angle = 2 * acos(-1) * (n++) / players.size();
 
@@ -90,6 +91,9 @@ Game::Game(GameSettings settings, int simulatorID, double startTime, double endT
         startingPositions.push_back(std::make_pair(id, pos));
         
         std::vector<OutpostType> types;
+
+        //assigns (factoryDensity * OutpostsPerPlayer) factories to each player, and fills the rest of their outposts with
+        //generators
         for(int j = 0; j < getSettings()->outpostsPerPlayer; j++) {
             if(j < getSettings()->factoryDensity * getSettings()->outpostsPerPlayer) types.push_back(OutpostType::FACTORY);
             else types.push_back(OutpostType::GENERATOR);
@@ -99,22 +103,27 @@ Game::Game(GameSettings settings, int simulatorID, double startTime, double endT
         outpostTypes[id] = types;
     }
 
+
+    //goes through the current starting positions for each player and makes sure that they
+    //are in equilibrium
     for(int i = 0; i < numIterations; i++) {
         double mag = 10.0 - (10.0 * i) / numIterations;
         for(int j = 0; j < startingPositions.size(); j++) {
             for(int k = j + 1; k < startingPositions.size(); k++) {
-                if(j == k) continue;
+                if(j == k) continue; //checks to see if the two starting positions are the same
 
                 Point& a = startingPositions[j].second;
                 Point& b = startingPositions[k].second;
 
                 double dist = a.closestDistance(b);
 
-                if(dist < epsilon) {
-                    double angle = atan2(cos(i + j), sin(i + j));
+                if(dist < epsilon) { //if distance is such that the bases are basically overlapping,
+                                     //add epsilon * cos(angle) to the x coordinate of a's starting point and vice versa
+                    double angle = atan2(cos(i + j), sin(i + j)); 
                     a.set(a.getX() + epsilon * cos(angle), a.getY() + epsilon * sin(angle));
                 }
 
+                //moves the points away from each other
                 Point newA = a.movedTowards(a.closest(b), -mag/(0.01 * dist + 1));
                 Point newB = b.movedTowards(b.closest(a), -mag/(0.01 * dist + 1));
 
@@ -124,6 +133,7 @@ Game::Game(GameSettings settings, int simulatorID, double startTime, double endT
         }
     }
 
+    //creates the positions for each player's outposts, this is likely one of the things to be modified
     for(auto& pair : startingPositions) {
         for(int i = 0; i < getSettings()->outpostsPerPlayer; i++) {
             double angle = 2 * acos(-1) * i / getSettings()->outpostsPerPlayer;
@@ -135,10 +145,12 @@ Game::Game(GameSettings settings, int simulatorID, double startTime, double endT
         }
     }
 
+    //iterates through the outposts of each player
     for(int i = 0; i < numIterations; i++) {
         double mag = 10.0 - (10.0 * i) / numIterations;
         for(int j = 0; j < outpostPositions.size(); j++) {
             for(int k = 0; k < startingPositions.size(); k++) {
+                //moves the starting positions
                 Point& a = outpostPositions[j].second;
                 const Point& b = startingPositions[k].second;
 
@@ -153,7 +165,7 @@ Game::Game(GameSettings settings, int simulatorID, double startTime, double endT
 
                 a.moveTowards(a.closest(b), -mag/(0.25 * dist + 1));
             }
-
+            //starting positions are now fixed
             for(int k = j + 1; k < outpostPositions.size(); k++) {
                 if(j == k) continue;
 
@@ -178,6 +190,9 @@ Game::Game(GameSettings settings, int simulatorID, double startTime, double endT
         }
     }
 
+    //Don't have to worry past this point in regards to randomizing outpost positions
+
+    //initializes the starter outposts as objects and assigns them the queen specialist
     for(const std::pair<int, Point>& pair : startingPositions) {
         Outpost* o = new Outpost(incrementObjCounter(), getSettings(), OutpostType::FACTORY, 20, pair.second.getX(), pair.second.getY());
         addOutpost(o);
@@ -189,6 +204,8 @@ Game::Game(GameSettings settings, int simulatorID, double startTime, double endT
         getPlayer(pair.first)->getOutposts().front()->addSpecialist(getSpecialist(s->getID()));
     }
 
+    //iterates through the rest of outpost positions and outpost types and initializes all other outposts as objects
+    //and their specialists
     for(const std::pair<int, Point>& pair : outpostPositions) {
         OutpostType type = outpostTypes[pair.first].front();
         outpostTypes[pair.first].erase(outpostTypes[pair.first].begin());
