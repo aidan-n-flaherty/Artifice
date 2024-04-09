@@ -103,6 +103,7 @@ Game::Game(GameSettings settings, int simulatorID, double startTime, double endT
         outpostTypes[id] = types;
     }
 
+    //------------------------------------------------------------------------------------
 
     //goes through the current starting positions for each player and makes sure that they
     //are in equilibrium
@@ -138,6 +139,7 @@ Game::Game(GameSettings settings, int simulatorID, double startTime, double endT
         for(int i = 0; i < getSettings()->outpostsPerPlayer; i++) {
             double angle = 2 * acos(-1) * i / getSettings()->outpostsPerPlayer;
 
+            //here could be a place to introduce some element of randomness
             Point pos = Point(getSettings(), pair.second.getX() + 20 * cos(angle), pair.second.getY() + 20 * sin(angle));
             pos.constrain();
 
