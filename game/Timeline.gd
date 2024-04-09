@@ -58,8 +58,10 @@ func _process(delta):
 	
 	if abs(diff) > 0.05:
 		$Horizontal/Measurement/Label.text = Utilities.timeToDateStr(game.getTime())
+		$Vertical/TimeIndicators/ActualTime/ActualTime/Label.text = Utilities.timeToDateStr(game.getTime())
 	else:
 		$Horizontal/Measurement/Label.text = ""
+		$Vertical/TimeIndicators/ActualTime/ActualTime/Label.text = ""
 
 func _input(event):
 	if event.is_action("drag"):
