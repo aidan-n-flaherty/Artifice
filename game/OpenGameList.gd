@@ -17,8 +17,8 @@ func initList():
 	
 func generateButton(id: int):
 	var gameDetails = GameData.getGameDetails(id)
-	var button = preload("res://JoinButton.tscn").instantiate()
-	button.init(id)
+	var button = preload("res://GameButton.tscn").instantiate()
+	button.init(id, false)
 	return button
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -33,14 +33,14 @@ func updateQueues():
 func setValues():
 	var quickRanked = GameData.getQueue("quickRanked")
 	
-	$VBoxContainer/RankedQueue/RankedSelected.visible = quickRanked != null
-	$VBoxContainer/RankedQueue/RankedUnselected.visible = quickRanked == null
-	$VBoxContainer/RankedQueue/RankedJoining.visible = false
+	$MarginContainer/VBoxContainer/RankedQueue/RankedSelected.visible = quickRanked != null
+	$MarginContainer/VBoxContainer/RankedQueue/RankedUnselected.visible = quickRanked == null
+	$MarginContainer/VBoxContainer/RankedQueue/RankedJoining.visible = false
 	
 	if quickRanked:
-		$VBoxContainer/RankedQueue/Margin/Title.text = "Quick Play (Ranked), " + str(quickRanked.playerCount) + " out of " + str(quickRanked.playerCap)
+		$MarginContainer/VBoxContainer/RankedQueue/Margin/Title.text = "Quick Play (Ranked), " + str(quickRanked.playerCount) + " out of " + str(quickRanked.playerCap)
 	else:
-		$VBoxContainer/RankedQueue/Margin/Title.text = "Quick Play (Ranked)"
+		$MarginContainer/VBoxContainer/RankedQueue/Margin/Title.text = "Quick Play (Ranked)"
 
 
 func _on_ranked_selected_pressed():
@@ -48,9 +48,9 @@ func _on_ranked_selected_pressed():
 
 
 func _on_ranked_unselected_pressed():
-	$VBoxContainer/RankedQueue/Margin/Title.text = "Joining Queue..."
+	$MarginContainer/VBoxContainer/RankedQueue/Margin/Title.text = "Joining Queue..."
 	
-	$VBoxContainer/RankedQueue/RankedUnselected.visible = false
-	$VBoxContainer/RankedQueue/RankedJoining.visible = true
+	$MarginContainer/VBoxContainer/RankedQueue/RankedUnselected.visible = false
+	$MarginContainer/VBoxContainer/RankedQueue/RankedJoining.visible = true
 	
 	GameData.joinQueue("quickRanked")

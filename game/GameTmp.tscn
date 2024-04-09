@@ -702,6 +702,7 @@ layout_mode = 2
 [node name="GameEditor" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel" instance=ExtResource("14_ghekp")]
 visible = false
 layout_mode = 2
+theme = null
 
 [node name="Battle Forecast" parent="Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel" instance=ExtResource("15_vhxuf")]
 visible = false

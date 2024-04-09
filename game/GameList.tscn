@@ -1,6 +1,16 @@
-[gd_scene load_steps=2 format=3 uid="uid://44oxio5mi3yi"]
+[gd_scene load_steps=5 format=3 uid="uid://44oxio5mi3yi"]
 
 [ext_resource type="Script" path="res://GameList.gd" id="1_3i7b2"]
+[ext_resource type="Shader" path="res://FrostedGlass.gdshader" id="2_274wm"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ipm24"]
+shader = ExtResource("2_274wm")
+shader_parameter/lod = 4.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qhjyu"]
+bg_color = Color(0, 0, 0, 1)
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
 
 [node name="GameList" type="MarginContainer"]
 anchors_preset = 15
@@ -9,20 +19,33 @@ anchor_bottom = 1.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/margin_left = 50
-theme_override_constants/margin_top = 50
+theme_override_constants/margin_top = 0
 theme_override_constants/margin_right = 50
 theme_override_constants/margin_bottom = 0
 script = ExtResource("1_3i7b2")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="Panel" type="Panel" parent="."]
+material = SubResource("ShaderMaterial_ipm24")
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_qhjyu")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 50
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 horizontal_scroll_mode = 0
 
-[node name="Content" type="VBoxContainer" parent="VBoxContainer/ScrollContainer"]
+[node name="Content" type="VBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_constants/separation = 10

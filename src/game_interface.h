@@ -114,7 +114,7 @@ public:
 	int getUserGameID() { return userGameID; }
 
 	int getHires() {
-		double timeDiff = current - game->getTime();
+		double timeDiff = settings.clientToGameTime(current) - game->getTime();
 		return game && game->getPlayer(userGameID) ? game->getPlayer(userGameID)->getHiresAt(timeDiff) : -1;
 	}
 	
@@ -150,6 +150,9 @@ public:
 	void setTempTime(double t) { tempTime = t; }
 	double getTime() { return current + tempTime; }
 	double getCurrent() { return current; }
+	double getClientTime() { return settings.gameToClientTime(getTime()); }
+	double clientToGameTime(double t) { return settings.clientToGameTime(t); }
+	double gameToClientTime(double t) { return settings.gameToClientTime(t); }
 
 	void setPercent(double percent) { this->percent = percent; }
 	double getPercent() { return percent; }
@@ -193,7 +196,7 @@ public:
 	int getNextBattleVictorUnits(int objID);
 	Array getNextBattleCaptures(int objID);
 
-	bool canHire() { return game->getPlayer(userGameID)->getHiresAt(current) >= 0; }
+	bool canHire() { return game->getPlayer(userGameID)->getHiresAt(settings.clientToGameTime(current)) >= 0; }
 	bool hasStarted() { return current >= game->getStartTime(); }
 	bool hasEnded() { return game->hasEnded() && currentGame->hasEnded(); }
 	bool hasLost() { return game->getPlayer(userGameID)->hasLost() && currentGame->getPlayer(userGameID)->hasLost(); }

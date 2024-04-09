@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://bahwyljyydg2k"]
 
-[ext_resource type="Theme" uid="uid://bfwpaonloeco5" path="res://resources/theme.tres" id="1_388o6"]
 [ext_resource type="Script" path="res://UserChat.gd" id="1_fna5p"]
+[ext_resource type="Theme" uid="uid://tg7ina762c6q" path="res://resources/themes/UITheme.tres" id="2_i6hew"]
 
 [node name="UserChat" type="MarginContainer"]
 anchors_preset = 10
@@ -11,7 +11,7 @@ script = ExtResource("1_fna5p")
 
 [node name="Button" type="Button" parent="."]
 layout_mode = 2
-theme = ExtResource("1_388o6")
+theme = ExtResource("2_i6hew")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2

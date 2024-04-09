@@ -74,7 +74,7 @@ void Vessel::update(double timeDiff) {
     moveTowards(targetedPos, distance);
 }
 
-double Vessel::getSpeed(double speed, double simulationSpeed, Player* p, std::list<Specialist*> specialists, PositionalObject* target) {
+double Vessel::getSpeed(double speed, double simulationSpeed, Player* p, const std::list<Specialist*> &specialists, PositionalObject* target) {
     if(controlsSpecialist(p, specialists, SpecialistType::GENERAL) || controlsSpecialist(p, specialists, SpecialistType::LIEUTENANT)) speed = fmax(speed, 1.5);
     if(specialists.empty() && p->controlsSpecialist(SpecialistType::ADMIRAL)) speed = fmax(speed, 1.5);
     if(controlsSpecialist(p, specialists, SpecialistType::ADMIRAL)) speed = fmax(speed, 2);
@@ -122,8 +122,7 @@ void Vessel::collision(Vessel* vessel, Vessel* other, double timestamp, std::mul
     }
 
     if(seconds >= 0) {
-        timestamp += seconds;
-        events.insert(new IntervesselEvent(timestamp, vessel, other));
+        events.insert(new IntervesselEvent(timestamp + seconds, vessel, other));
 
         return;
     }
@@ -138,8 +137,7 @@ void Vessel::collision(Vessel* vessel, Outpost* outpost, double timestamp, std::
     }
 
     if(seconds >= 0) {
-        timestamp += seconds;
-        events.insert(new VesselOutpostEvent(timestamp, vessel, outpost));
+        events.insert(new VesselOutpostEvent(timestamp + seconds, vessel, outpost));
 
         return;
     }

@@ -199,6 +199,11 @@ bool Player::controlsSpecialists(std::list<int> specialists) const {
     return false;
 }
 
+void Player::promoteSpecialist(Specialist* specialist, SpecialistType t) {
+    specialist->setType(t);
+    for(Vessel* v : getVessels()) v->setRefresh(true);
+}
+
 void Player::addSpecialist(Specialist* specialist) {
     if(specialist->hasOwner()) specialist->getOwner()->removeSpecialist(specialist);
     if(controlsSpecialist(SpecialistType::QUEEN) && specialist->getType() == SpecialistType::QUEEN) specialist->setType(SpecialistType::PRINCESS);

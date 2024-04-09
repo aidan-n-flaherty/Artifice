@@ -1,8 +1,36 @@
-[gd_scene load_steps=4 format=3 uid="uid://cjk6c8mh5xqbe"]
+[gd_scene load_steps=4 format=3 uid="uid://dwx050l1kq6j6"]
 
-[ext_resource type="Script" path="res://JoinButton.gd" id="1_pkte7"]
 [ext_resource type="Theme" uid="uid://bfwpaonloeco5" path="res://resources/theme.tres" id="2_j8ogl"]
 [ext_resource type="Texture2D" uid="uid://bmf74bvs118ed" path="res://resources/images/locked.png" id="3_yhtdu"]
+
+[sub_resource type="GDScript" id="GDScript_naqxv"]
+script/source = "extends MarginContainer
+
+var gameID
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	pass # Replace with function body.
+
+func init(gameID: int):
+	self.gameID = gameID
+	var gameDetails = GameData.getGameDetails(gameID)
+	
+	$Margin/HBoxContainer/Title.text = gameDetails.gameSettings.lobbyName
+	$Margin/HBoxContainer/Players.text = str(gameDetails.gameData.playerCount) + \"/\" + str(gameDetails.gameSettings.playerCap)
+	if gameDetails.gameData.hasPassword:
+		$Margin/HBoxContainer/Password.show()
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+	pass
+
+
+func _on_button_pressed():
+	var gameDetail = preload(\"res://GameDetail.tscn\").instantiate()
+	gameDetail.init(gameID)
+	
+	GameData.goto_node(gameDetail)
+"
 
 [node name="JoinButton" type="MarginContainer"]
 custom_minimum_size = Vector2(0, 60)
@@ -11,7 +39,7 @@ anchor_right = 1.0
 offset_bottom = 20.0
 grow_horizontal = 2
 size_flags_horizontal = 3
-script = ExtResource("1_pkte7")
+script = SubResource("GDScript_naqxv")
 
 [node name="Button" type="Button" parent="."]
 layout_mode = 2

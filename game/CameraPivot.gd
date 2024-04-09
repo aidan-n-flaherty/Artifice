@@ -36,8 +36,8 @@ func _ready():
 	resize()
 
 func resize():
-	var cameraX = 100.0 * (get_viewport().size.x * 1.0 / GameData.baseResolution.x) * ((minZoom + maxZoom)/2.0 + tanh(zoom) * (maxZoom - minZoom) / PI)
-	var cameraY = 100.0 * (get_viewport().size.y * 2.6 / GameData.baseResolution.y)  * ((minZoom + maxZoom)/2.0 + tanh(zoom) * (maxZoom - minZoom) / PI)
+	var cameraX = 100.0 * (pow(get_viewport().size.x, 0.5) * 1.5 / pow(get_viewport().size.y, 0.5)) * ((minZoom + maxZoom)/2.0 + tanh(zoom) * (maxZoom - minZoom) / PI)
+	var cameraY = 100.0 * (pow(get_viewport().size.y, 0.5) * 3.0 / pow(get_viewport().size.x, 0.5))  * ((minZoom + maxZoom)/2.0 + tanh(zoom) * (maxZoom - minZoom) / PI)
 	
 	$Camera3D.size = cameraX
 	$SubViewport/VirtualCamera3D.size = cameraX

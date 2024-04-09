@@ -78,7 +78,7 @@ void FloorDisplay::_draw() {
                 double x1 = pair.second->getPositionAt(getDiff()).getX();
                 double y1 = pair.second->getPositionAt(getDiff()).getY();
                 //if the outpost is selected, have it semi-transparent
-                draw_arc(Vector2(x1 - x, y1 - y) * pixels, pair.second->getSonarRange() * pixels, 0, UtilityFunctions::deg_to_rad(360), 64, Color(0.25,0.25,0.25),5.0,true);
+                draw_arc(Vector2(x1 - x, y1 - y) * pixels, pair.second->getSonarRange() * pixels, 0, UtilityFunctions::deg_to_rad(360), 64, Color(0.75,0.75,0.75),10.0,true);
             }
         }
     }

@@ -1,9 +1,10 @@
-[gd_scene load_steps=36 format=3 uid="uid://cfaaort7dldjk"]
+[gd_scene load_steps=38 format=3 uid="uid://cfaaort7dldjk"]
 
 [ext_resource type="Script" path="res://Game.gd" id="1_s53r2"]
 [ext_resource type="PackedScene" uid="uid://br2r5ds75s4n0" path="res://CameraManager.tscn" id="2_vm3rp"]
 [ext_resource type="PackedScene" uid="uid://n0lobms04k46" path="res://Timeline.tscn" id="3_jhu7k"]
 [ext_resource type="Texture2D" uid="uid://cy7ou3wycwjra" path="res://resources/images/back.png" id="9_4ris4"]
+[ext_resource type="Shader" path="res://FrostedGlassBlack.gdshader" id="9_5ehda"]
 [ext_resource type="Theme" uid="uid://bfwpaonloeco5" path="res://resources/theme.tres" id="9_ttxpu"]
 [ext_resource type="Texture2D" uid="uid://dlqmq6fklb6q8" path="res://resources/images/back_arrow.png" id="10_n5ogc"]
 [ext_resource type="StyleBox" uid="uid://dgq41l16rxlq" path="res://resources/styles/roundRectBlack.tres" id="11_uh1qc"]
@@ -14,7 +15,6 @@
 [ext_resource type="Texture2D" uid="uid://5rc0hts7wgcj" path="res://resources/gameMenuIcons/chartIcon.png" id="14_cfqet"]
 [ext_resource type="PackedScene" uid="uid://c7rmgavx0p0po" path="res://Chat.tscn" id="14_xpy25"]
 [ext_resource type="Texture2D" uid="uid://ddtmrm6d6rl0c" path="res://resources/gameMenuIcons/chatIcon.png" id="15_lpw6h"]
-[ext_resource type="PackedScene" uid="uid://8bjal0hti5cr" path="res://Logs.tscn" id="15_yfjeb"]
 [ext_resource type="PackedScene" uid="uid://cji0ca8swtaxi" path="res://GameModifier.tscn" id="19_efwav"]
 [ext_resource type="PackedScene" uid="uid://c0o7lbwqyauwq" path="res://Battle Forecast.tscn" id="20_x2ppo"]
 [ext_resource type="Texture2D" uid="uid://br2xninxoa36u" path="res://resources/gameMenuIcons/hireIconBeamDown (Proto 3).png" id="21_lwlj7"]
@@ -58,8 +58,8 @@ glow_strength = 0.8
 glow_bloom = 1.0
 glow_blend_mode = 0
 fog_enabled = true
-fog_light_color = Color(0, 0.713726, 0.8, 1)
-fog_light_energy = 0.1
+fog_light_color = Color(0, 0.403922, 0.647059, 1)
+fog_light_energy = 0.3
 fog_density = 0.001
 fog_sky_affect = 0.0
 volumetric_fog_density = 0.5024
@@ -94,10 +94,18 @@ corner_detail = 16
 [sub_resource type="LabelSettings" id="LabelSettings_a1ci6"]
 font_size = 25
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_w7sgj"]
+shader = ExtResource("9_5ehda")
+shader_parameter/lod = 4.0
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kv64f"]
 bg_color = Color(1, 1, 1, 1)
 corner_radius_top_left = 30
 corner_radius_top_right = 30
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_kf6r0"]
+shader = ExtResource("9_5ehda")
+shader_parameter/lod = 4.0
 
 [sub_resource type="Animation" id="Animation_n3pi6"]
 length = 0.001
@@ -152,7 +160,7 @@ tracks/3/keys = {
 tracks/4/type = "value"
 tracks/4/imported = false
 tracks/4/enabled = true
-tracks/4/path = NodePath("Logs:position")
+tracks/4/path = NodePath("Battle Forecast:position")
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
 tracks/4/keys = {
@@ -164,19 +172,19 @@ tracks/4/keys = {
 tracks/5/type = "value"
 tracks/5/imported = false
 tracks/5/enabled = true
-tracks/5/path = NodePath("Battle Forecast:position")
+tracks/5/path = NodePath("Background:modulate")
 tracks/5/interp = 1
 tracks/5/loop_wrap = true
 tracks/5/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Vector2(0, 0)]
+"values": [Color(1, 1, 1, 1)]
 }
 tracks/6/type = "value"
 tracks/6/imported = false
 tracks/6/enabled = true
-tracks/6/path = NodePath("Background:modulate")
+tracks/6/path = NodePath("Shop:modulate")
 tracks/6/interp = 1
 tracks/6/loop_wrap = true
 tracks/6/keys = {
@@ -188,7 +196,7 @@ tracks/6/keys = {
 tracks/7/type = "value"
 tracks/7/imported = false
 tracks/7/enabled = true
-tracks/7/path = NodePath("Shop:modulate")
+tracks/7/path = NodePath("Status:modulate")
 tracks/7/interp = 1
 tracks/7/loop_wrap = true
 tracks/7/keys = {
@@ -200,7 +208,7 @@ tracks/7/keys = {
 tracks/8/type = "value"
 tracks/8/imported = false
 tracks/8/enabled = true
-tracks/8/path = NodePath("Status:modulate")
+tracks/8/path = NodePath("Chat:modulate")
 tracks/8/interp = 1
 tracks/8/loop_wrap = true
 tracks/8/keys = {
@@ -212,34 +220,10 @@ tracks/8/keys = {
 tracks/9/type = "value"
 tracks/9/imported = false
 tracks/9/enabled = true
-tracks/9/path = NodePath("Chat:modulate")
+tracks/9/path = NodePath("Battle Forecast:modulate")
 tracks/9/interp = 1
 tracks/9/loop_wrap = true
 tracks/9/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Color(1, 1, 1, 1)]
-}
-tracks/10/type = "value"
-tracks/10/imported = false
-tracks/10/enabled = true
-tracks/10/path = NodePath("Logs:modulate")
-tracks/10/interp = 1
-tracks/10/loop_wrap = true
-tracks/10/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Color(1, 1, 1, 1)]
-}
-tracks/11/type = "value"
-tracks/11/imported = false
-tracks/11/enabled = true
-tracks/11/path = NodePath("Battle Forecast:modulate")
-tracks/11/interp = 1
-tracks/11/loop_wrap = true
-tracks/11/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
@@ -300,7 +284,7 @@ tracks/3/keys = {
 tracks/4/type = "value"
 tracks/4/imported = false
 tracks/4/enabled = true
-tracks/4/path = NodePath("Logs:position")
+tracks/4/path = NodePath("Battle Forecast:position")
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
 tracks/4/keys = {
@@ -312,19 +296,19 @@ tracks/4/keys = {
 tracks/5/type = "value"
 tracks/5/imported = false
 tracks/5/enabled = true
-tracks/5/path = NodePath("Battle Forecast:position")
+tracks/5/path = NodePath("Background:modulate")
 tracks/5/interp = 1
 tracks/5/loop_wrap = true
 tracks/5/keys = {
-"times": PackedFloat32Array(0, 0.3),
+"times": PackedFloat32Array(0.1, 0.4),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
-"values": [Vector2(0, 500), Vector2(0, 0)]
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
 }
 tracks/6/type = "value"
 tracks/6/imported = false
 tracks/6/enabled = true
-tracks/6/path = NodePath("Background:modulate")
+tracks/6/path = NodePath("Shop:modulate")
 tracks/6/interp = 1
 tracks/6/loop_wrap = true
 tracks/6/keys = {
@@ -336,7 +320,7 @@ tracks/6/keys = {
 tracks/7/type = "value"
 tracks/7/imported = false
 tracks/7/enabled = true
-tracks/7/path = NodePath("Shop:modulate")
+tracks/7/path = NodePath("Status:modulate")
 tracks/7/interp = 1
 tracks/7/loop_wrap = true
 tracks/7/keys = {
@@ -348,7 +332,7 @@ tracks/7/keys = {
 tracks/8/type = "value"
 tracks/8/imported = false
 tracks/8/enabled = true
-tracks/8/path = NodePath("Status:modulate")
+tracks/8/path = NodePath("Chat:modulate")
 tracks/8/interp = 1
 tracks/8/loop_wrap = true
 tracks/8/keys = {
@@ -360,34 +344,10 @@ tracks/8/keys = {
 tracks/9/type = "value"
 tracks/9/imported = false
 tracks/9/enabled = true
-tracks/9/path = NodePath("Chat:modulate")
+tracks/9/path = NodePath("Battle Forecast:modulate")
 tracks/9/interp = 1
 tracks/9/loop_wrap = true
 tracks/9/keys = {
-"times": PackedFloat32Array(0.1, 0.4),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
-}
-tracks/10/type = "value"
-tracks/10/imported = false
-tracks/10/enabled = true
-tracks/10/path = NodePath("Logs:modulate")
-tracks/10/interp = 1
-tracks/10/loop_wrap = true
-tracks/10/keys = {
-"times": PackedFloat32Array(0.1, 0.4),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
-}
-tracks/11/type = "value"
-tracks/11/imported = false
-tracks/11/enabled = true
-tracks/11/path = NodePath("Battle Forecast:modulate")
-tracks/11/interp = 1
-tracks/11/loop_wrap = true
-tracks/11/keys = {
 "times": PackedFloat32Array(0.1, 0.4),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
@@ -423,7 +383,7 @@ environment = SubResource("Environment_4km5k")
 camera_attributes = SubResource("CameraAttributesPractical_itg02")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="Viewport/Viewport3D"]
-transform = Transform3D(0.846193, -0.336793, -0.41295, 0, -0.774945, 0.632029, -0.532876, -0.534819, -0.655753, 0, 100, 0)
+transform = Transform3D(0.846193, -0.455804, -0.276044, -4.52873e-08, -0.518027, 0.855364, -0.532876, -0.723804, -0.438351, 0, 100, 0)
 layers = 3
 light_bake_mode = 1
 shadow_bias = 0.01
@@ -589,6 +549,7 @@ size_flags_vertical = 3
 mouse_filter = 0
 
 [node name="Background" type="Panel" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/VSeparator/ElementDisplay/Panel"]
+material = SubResource("ShaderMaterial_w7sgj")
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_styles/panel = ExtResource("11_uh1qc")
@@ -636,6 +597,7 @@ layout_mode = 2
 mouse_filter = 0
 
 [node name="Background" type="Panel" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/VSeparator/TabDisplay/Panel"]
+material = SubResource("ShaderMaterial_kf6r0")
 layout_mode = 2
 theme_override_styles/panel = ExtResource("11_uh1qc")
 
@@ -651,13 +613,10 @@ layout_mode = 2
 visible = false
 layout_mode = 2
 
-[node name="Logs" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/VSeparator/TabDisplay/Panel" instance=ExtResource("15_yfjeb")]
-visible = false
-layout_mode = 2
-
 [node name="GameEditor" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/VSeparator/TabDisplay/Panel" instance=ExtResource("19_efwav")]
 visible = false
 layout_mode = 2
+theme = null
 
 [node name="Battle Forecast" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/VSeparator/TabDisplay/Panel" instance=ExtResource("20_x2ppo")]
 visible = false

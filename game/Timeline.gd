@@ -57,7 +57,7 @@ func _process(delta):
 	$Vertical/TimeIndicators/CurrentTime.position.y = size.y/2 - 2 * diff
 	
 	if abs(diff) > 0.05:
-		$Horizontal/Measurement/Label.text = Utilities.timeToStr(game.getTime() - Time.get_unix_time_from_system())
+		$Horizontal/Measurement/Label.text = Utilities.timeToDateStr(game.getTime())
 	else:
 		$Horizontal/Measurement/Label.text = ""
 
@@ -94,7 +94,7 @@ func _on_mouse_entered():
 func moveTo(t):
 	time_start_pos = game.getTime()
 	change = 0
-	self.target = time_start_pos - t
+	self.target = time_start_pos - game.clientToGameTime(t)
 	speed = 0.5
 	cap = 2.0 * 3600.0 / game.getSimulationSpeed()
 #func addMesureLines():

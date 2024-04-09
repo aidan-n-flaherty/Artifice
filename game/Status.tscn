@@ -1,5 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://symsrj5sm6dt"]
+[gd_scene load_steps=4 format=3 uid="uid://symsrj5sm6dt"]
 
+[ext_resource type="Theme" uid="uid://tg7ina762c6q" path="res://resources/themes/UITheme.tres" id="1_iwpn6"]
 [ext_resource type="Script" path="res://Status.gd" id="1_kcfmr"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_mhwgp"]
@@ -12,6 +13,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("1_iwpn6")
 script = ExtResource("1_kcfmr")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
@@ -21,6 +23,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("1_iwpn6")
 theme_override_constants/margin_left = 50
 theme_override_constants/margin_top = 50
 theme_override_constants/margin_right = 50
@@ -28,13 +31,16 @@ theme_override_constants/margin_bottom = 50
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
+theme = ExtResource("1_iwpn6")
 theme_override_constants/separation = 0
 
 [node name="Control" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
+theme = ExtResource("1_iwpn6")
 
 [node name="Title" type="Label" parent="MarginContainer/VBoxContainer/Control"]
 layout_mode = 2
+theme = ExtResource("1_iwpn6")
 text = "Summary"
 label_settings = SubResource("LabelSettings_mhwgp")
 horizontal_alignment = 1
@@ -43,19 +49,23 @@ horizontal_alignment = 1
 layout_direction = 3
 layout_mode = 2
 size_flags_horizontal = 8
+theme = ExtResource("1_iwpn6")
 text = " Surrender "
 
 [node name="Spacer" type="Control" parent="MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
+theme = ExtResource("1_iwpn6")
 
 [node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
+theme = ExtResource("1_iwpn6")
 horizontal_scroll_mode = 0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme = ExtResource("1_iwpn6")
 
 [connection signal="pressed" from="MarginContainer/VBoxContainer/Control/SurrenderButton" to="." method="_on_surrender_button_pressed"]

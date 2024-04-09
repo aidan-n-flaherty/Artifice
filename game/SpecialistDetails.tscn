@@ -101,7 +101,7 @@ custom_minimum_size = Vector2(150, 50)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 8
-text = "Hire"
+text = "Shop"
 
 [connection signal="pressed" from="MarginContainer/HBoxContainer/MarginContainer/Promote" to="." method="_on_promote_pressed"]
 [connection signal="pressed" from="MarginContainer/HBoxContainer/MarginContainer/Release" to="." method="_on_release_pressed"]

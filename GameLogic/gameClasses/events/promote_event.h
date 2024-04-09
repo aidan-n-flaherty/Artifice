@@ -27,7 +27,7 @@ public:
 
     void run(Game* game) override {
         specialist->setOriginatingOrder(getOriginatingOrder());
-        specialist->setType(promotion);
+        specialist->getOwner()->promoteSpecialist(specialist, promotion);
         specialist->getOwner()->removeHire();
     }
 };
