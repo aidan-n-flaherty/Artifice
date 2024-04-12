@@ -57,8 +57,8 @@ func _process(delta):
 	$Vertical/TimeIndicators/CurrentTime.position.y = size.y/2 - 2 * diff
 	
 	if abs(diff) > 0.05:
-		$Horizontal/Measurement/Label.text = Utilities.timeToDateStr(game.getTime())
-		$Vertical/TimeIndicators/ActualTime/ActualTime/Label.text = Utilities.timeToDateStr(game.getTime())
+		$Horizontal/Measurement/Label.text = Utilities.timeToStr(game.getTime()-Time.get_unix_time_from_system())
+		$Vertical/TimeIndicators/ActualTime/ActualTime/Label.text = Utilities.timeToStr(game.getTime()-Time.get_unix_time_from_system())
 	else:
 		$Horizontal/Measurement/Label.text = ""
 		$Vertical/TimeIndicators/ActualTime/ActualTime/Label.text = ""
