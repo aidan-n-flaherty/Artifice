@@ -54,6 +54,7 @@ private:
     double startTime = 0.0;
     double stateTime = 0.0;
     double endTime = 0.0;
+    double gameEndTime = 0.0;
     double nextEndState = 0.0;
 
     // client side variables to determine the most recent order sent by another player to use as a reference for IDs,
@@ -143,6 +144,7 @@ public:
     double getStartTime() const { return startTime; }
     double getTime() const { return stateTime; }
     double getEndTime() const { return endTime; }
+    double getGameEndTime() const { return gameEndTime; }
 
     int incrementObjCounter() { return gameObjCounter++; }
 

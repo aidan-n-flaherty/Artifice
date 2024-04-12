@@ -370,7 +370,7 @@ std::list<std::pair<int, int>> Game::run() {
 
     // loops until no events or orders remain.
     // note that events will always be run before orders given the same timestamp.
-    while((!events.empty() || !orders.empty()) && !ended) {
+    while(!events.empty() || !orders.empty()) {
         std::multiset<Event*>::iterator event = events.begin();
 
         // check if the next chronological event occurs after the next chronological order, and if so,
@@ -485,7 +485,7 @@ bool Game::hasEnded() const {
 }
 
 void Game::endGame() {
-    endTime = stateTime;
+    gameEndTime = stateTime;
     ended = true;
 }
 

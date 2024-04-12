@@ -145,6 +145,7 @@ public:
 	PositionalObject* getObj(int id) { return simulatedGame->getPosObject(id); }
 	PositionalNode* getNode(int id);
 	
+	void startAtEnd() { if(completeGame) setTime(completeGame->getGameEndTime());};
 	void shiftToTime(double t);
 	void setTime(double t);
 	void setTempTime(double t) { tempTime = t; }

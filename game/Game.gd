@@ -152,6 +152,9 @@ func _process(delta):
 					await GameData.viewEnd(gameID)
 					$Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/EndGame.init(gameID)
 					$Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/EndGame.show()
+			else:
+				$Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/EndGame.init(gameID)
+				$Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/EndGame.show()
 	else:
 		viewingEnd = false
 		$Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/EndGame.hide()
