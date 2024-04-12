@@ -1,0 +1,112 @@
+[gd_resource type="Theme" load_steps=21 format=3 uid="uid://tg7ina762c6q"]
+
+[ext_resource type="FontFile" uid="uid://bt7qlnun0cepj" path="res://resources/fonts/nasalization-free/nasalization-rg.otf" id="1_nvpc1"]
+[ext_resource type="FontFile" uid="uid://dx6ui122q4nlo" path="res://resources/fonts/astonpoliz/Astonpoliz.otf" id="2_7bam3"]
+[ext_resource type="StyleBox" uid="uid://eumwqqqm3xf5" path="res://resources/themes/VSlider/SliderGrabber.tres" id="3_n8chl"]
+[ext_resource type="StyleBox" uid="uid://d2ba8dokdt8od" path="res://resources/themes/VSlider/SliderBackground.tres" id="4_4v1uy"]
+
+[sub_resource type="FontVariation" id="FontVariation_7m5i6"]
+base_font = ExtResource("1_nvpc1")
+spacing_top = 3
+spacing_bottom = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vugve"]
+bg_color = Color(0, 0, 0, 0.560784)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kjkmy"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4eak3"]
+bg_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_d5sxm"]
+bg_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_scwkr"]
+bg_color = Color(0.901961, 0.901961, 0.901961, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+shadow_color = Color(1, 1, 1, 0.6)
+shadow_size = 5
+
+[sub_resource type="ImageTexture" id="ImageTexture_o73ma"]
+
+[sub_resource type="ImageTexture" id="ImageTexture_wgccs"]
+
+[sub_resource type="ImageTexture" id="ImageTexture_r4qux"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2okau"]
+bg_color = Color(0.901961, 0.901961, 0.901961, 1)
+corner_radius_top_left = 5
+corner_radius_bottom_left = 5
+shadow_color = Color(1, 1, 1, 0.6)
+shadow_size = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4vy1j"]
+bg_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 5
+corner_radius_bottom_left = 5
+shadow_color = Color(1, 1, 1, 0.6)
+shadow_size = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5jqh0"]
+content_margin_left = 16.0
+content_margin_top = 16.0
+content_margin_right = 16.0
+content_margin_bottom = 16.0
+bg_color = Color(0.145098, 0.145098, 0.145098, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="FontVariation" id="FontVariation_unt1h"]
+base_font = ExtResource("2_7bam3")
+variation_embolden = 4.16334e-17
+spacing_space = 3
+spacing_bottom = -3
+
+[sub_resource type="ImageTexture" id="ImageTexture_8nsvy"]
+
+[sub_resource type="ImageTexture" id="ImageTexture_d13s6"]
+
+[sub_resource type="ImageTexture" id="ImageTexture_v25u4"]
+
+[resource]
+Button/colors/font_pressed_color = Color(0, 0, 0, 1)
+Button/fonts/font = SubResource("FontVariation_7m5i6")
+Button/styles/disabled = SubResource("StyleBoxFlat_vugve")
+Button/styles/focus = SubResource("StyleBoxFlat_kjkmy")
+Button/styles/hover = SubResource("StyleBoxFlat_4eak3")
+Button/styles/normal = SubResource("StyleBoxFlat_d5sxm")
+Button/styles/pressed = SubResource("StyleBoxFlat_scwkr")
+HSlider/icons/grabber = SubResource("ImageTexture_o73ma")
+HSlider/icons/grabber_disabled = SubResource("ImageTexture_wgccs")
+HSlider/icons/grabber_highlight = SubResource("ImageTexture_r4qux")
+HSlider/styles/grabber_area = SubResource("StyleBoxFlat_2okau")
+HSlider/styles/grabber_area_highlight = SubResource("StyleBoxFlat_4vy1j")
+HSlider/styles/slider = SubResource("StyleBoxFlat_5jqh0")
+Label/font_sizes/font_size = 22
+Label/fonts/font = SubResource("FontVariation_unt1h")
+LineEdit/fonts/font = ExtResource("1_nvpc1")
+TextEdit/fonts/font = ExtResource("1_nvpc1")
+VSlider/icons/grabber = SubResource("ImageTexture_8nsvy")
+VSlider/icons/grabber_disabled = SubResource("ImageTexture_d13s6")
+VSlider/icons/grabber_highlight = SubResource("ImageTexture_v25u4")
+VSlider/styles/grabber_area = ExtResource("3_n8chl")
+VSlider/styles/grabber_area_highlight = ExtResource("3_n8chl")
+VSlider/styles/slider = ExtResource("4_4v1uy")

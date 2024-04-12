@@ -17,7 +17,7 @@ func initList():
 func init():
 	initList()
 	
-	var node = $VBoxContainer/ScrollContainer/Content
+	var node = $MarginContainer/VBoxContainer/ScrollContainer/Content
 	
 	var ids = buttons.keys()
 	for id in ids:

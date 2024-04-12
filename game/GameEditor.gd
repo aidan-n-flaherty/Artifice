@@ -106,9 +106,6 @@ func deserialize(gameID):
 	if(settings.settingOverrides.has("simulationSpeed")):
 		simSp = settings.settingOverrides["simulationSpeed"]
 	
-	simulationTimescale = SettingsDefault.getSimulationTimescale()
-	simulationTimescale = simulationTimescale.to_lower()
-	
 	simulationTimescale = "days" if simSp <= 2.0 and simSp >= 0.5 else "hours" if (simSp <= 120.0 and simSp >= 30.0) else "minutes" if (simSp <= 120.0*60 and simSp >= 30.0*60) else "days"
 	
 	simSp /= 1 if simulationTimescale == "days" else 60 if simulationTimescale == "hours" else 60*60
@@ -127,12 +124,12 @@ func deserialize(gameID):
 		get_node("MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/TeamButtons/" + str(number_of_teams)).button_pressed = true
 	
 	var bias = int(Time.get_time_zone_from_system().bias/60)
-	
+
 	if (settings.settingOverrides.has("activeHours")):
 		activeHours = []
 		for hour in settings.settingOverrides["activeHours"]:
 			hour = int(hour)
-			hour -= bias
+			hour += bias
 		
 			while hour >= 24:
 				hour -= 24
@@ -209,7 +206,7 @@ func serialize():
 	var hours = []
 	
 	for hour in activeHours:
-		hour += bias
+		hour -= bias
 		
 		while hour >= 24:
 			hour -= 24

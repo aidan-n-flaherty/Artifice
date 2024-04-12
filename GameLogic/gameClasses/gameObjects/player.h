@@ -45,7 +45,7 @@ private:
     int resources = 0;
     double fractionalResProduction = 0.0;
 
-    int hires = 10; // should be 1 in the future
+    int hires = 1;
     double fractionalHires = 0.0;
 
     int minesDrilled = 0;
@@ -86,6 +86,7 @@ public:
     PositionalObject* getSpawnLocation();
 
     std::list<Specialist*> getSpecialists() const { return specialists; }
+    void promoteSpecialist(Specialist* specialist, SpecialistType t);
     void addSpecialist(Specialist* specialist);
     void addSpecialists(std::list<Specialist*> specialist);
     void removeSpecialist(Specialist* specialist);

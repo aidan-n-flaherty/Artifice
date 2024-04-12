@@ -52,11 +52,17 @@ func _ready():
 	var root = get_tree().get_root()
 	current_scene = root.get_child(root.get_child_count() - 1)
 	
+	get_viewport().connect("size_changed", resize)
+	resize()
+	
 	await login()
 	loadSelf()
 	loadGames()
 	
 	WebSocketManager.init(token)
+
+func resize():
+	get_tree().get_root().content_scale_factor = max(0.5, min(2.0, get_viewport().size.x * 1.0 / baseResolution.x))
 
 func goto_scene(path):
 	call_deferred("_deferred_goto_scene", path)
@@ -488,7 +494,7 @@ func viewEnd(gameID: int):
 
 	
 func isFinished(gameID: int):
-	return gameDetails[id].gameData.finished
+	return gameDetails[gameID].gameData.finished
 
 func getSelf():
 	return user

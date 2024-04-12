@@ -57,6 +57,9 @@ void GameInterface::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("setTempTime", "t"), &GameInterface::setTempTime);
 	ClassDB::bind_method(D_METHOD("setTime", "t"), &GameInterface::setTime);
 	ClassDB::bind_method(D_METHOD("getTime"), &GameInterface::getTime);
+	ClassDB::bind_method(D_METHOD("getClientTime"), &GameInterface::getTime);
+	ClassDB::bind_method(D_METHOD("clientToGameTime", "t"), &GameInterface::clientToGameTime);
+	ClassDB::bind_method(D_METHOD("gameToClientTime", "t"), &GameInterface::gameToClientTime);
 	ClassDB::bind_method(D_METHOD("setPercent", "percent"), &GameInterface::setPercent);
 	ClassDB::bind_method(D_METHOD("getPercent"), &GameInterface::getPercent);
 	ClassDB::bind_method(D_METHOD("getWidth"), &GameInterface::getWidth);

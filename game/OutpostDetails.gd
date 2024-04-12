@@ -21,7 +21,7 @@ func _process(delta):
 		$VBoxContainer/Type.text = "Factory"
 		$VBoxContainer/HBoxContainer/Spacer1.show()
 		$VBoxContainer/HBoxContainer/Jump.show()
-		$VBoxContainer/HBoxContainer2/VBoxContainer/Production.text = "+" + str(outpost.getProductionAmount()) + " in " + Utilities.timeToStr(game.getNextProductionEvent(outpost.getID()) - game.getTime())
+		$VBoxContainer/HBoxContainer2/VBoxContainer/Production.text = "+" + str(outpost.getProductionAmount()) + " in " + Utilities.timeToStr(game.clientToGameTime(game.getNextProductionEvent(outpost.getID())) - game.getTime())
 	elif outpost.isMine():
 		$VBoxContainer/Type.text = "Mine"
 		print($VBoxContainer/Type.text)

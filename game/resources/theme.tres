@@ -13,12 +13,12 @@
 [sub_resource type="ImageTexture" id="ImageTexture_r4qux"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2okau"]
-bg_color = Color(0.733333, 0.733333, 0.733333, 1)
+bg_color = Color(1, 1, 1, 1)
 corner_radius_top_left = 5
 corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4vy1j"]
-bg_color = Color(0.733333, 0.733333, 0.733333, 1)
+bg_color = Color(1, 1, 1, 1)
 corner_radius_top_left = 5
 corner_radius_bottom_left = 5
 
