@@ -322,6 +322,9 @@ std::unordered_map<int, int> Player::calculateUnitsAt(double& fractionalProducti
         }
         units[o->getID()] = 0;
     }
+
+    if(timeDiff <= 0) return units;
+
     tmp.sort([]( const Outpost* a, const Outpost* b ) { return a->getID() < b->getID(); } );
 
     int totalUnits = getUnits();

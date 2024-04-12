@@ -16,11 +16,11 @@ corner_radius_bottom_left = 60
 corner_detail = 16
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_u21hr"]
-bg_color = Color(0.0980392, 0.0980392, 0.0980392, 1)
-corner_radius_top_left = 20
-corner_radius_top_right = 20
-corner_radius_bottom_right = 20
-corner_radius_bottom_left = 20
+bg_color = Color(0.0980392, 0.0980392, 0.0980392, 0.368627)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
 
 [node name="Settings" type="MarginContainer"]
 anchors_preset = 15
@@ -96,69 +96,97 @@ theme = ExtResource("1_wniec")
 text = "Stats"
 horizontal_alignment = 1
 
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control"]
+[node name="MarginContainer" type="VBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control"]
 layout_mode = 2
 size_flags_vertical = 3
 theme = ExtResource("1_wniec")
 
-[node name="Panel" type="Panel" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer"]
+[node name="RatingContainer" type="MarginContainer" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer"]
+layout_mode = 2
+
+[node name="Panel" type="Panel" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/RatingContainer"]
 layout_mode = 2
 theme = ExtResource("1_wniec")
 theme_override_styles/panel = SubResource("StyleBoxFlat_u21hr")
 
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/RatingContainer"]
 layout_mode = 2
-theme = ExtResource("1_wniec")
 theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 20
+theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 20
+theme_override_constants/margin_bottom = 10
 
-[node name="GridContainer2" type="GridContainer" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/MarginContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/RatingContainer/MarginContainer"]
 layout_mode = 2
-theme = ExtResource("1_wniec")
-theme_override_constants/h_separation = 20
-theme_override_constants/v_separation = 10
-columns = 2
+theme_override_constants/separation = 30
 
-[node name="RatingLabel" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/MarginContainer/GridContainer2"]
+[node name="RatingLabel" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/RatingContainer/MarginContainer/HBoxContainer"]
 layout_mode = 2
+size_flags_horizontal = 3
 theme = ExtResource("1_wniec")
 text = "Rating"
 
-[node name="Rating" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/MarginContainer/GridContainer2"]
+[node name="Rating" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/RatingContainer/MarginContainer/HBoxContainer"]
 layout_mode = 2
 theme = ExtResource("1_wniec")
 text = "-1"
 
-[node name="VictoriesLabel" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/MarginContainer/GridContainer2"]
+[node name="VictoryContainer" type="MarginContainer" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer"]
 layout_mode = 2
+
+[node name="Panel" type="Panel" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/VictoryContainer"]
+layout_mode = 2
+theme = ExtResource("1_wniec")
+theme_override_styles/panel = SubResource("StyleBoxFlat_u21hr")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/VictoryContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/VictoryContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 30
+
+[node name="VictoriesLabel" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/VictoryContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
 theme = ExtResource("1_wniec")
 text = "Victories"
 
-[node name="Victories" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/MarginContainer/GridContainer2"]
+[node name="Victories" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/VictoryContainer/MarginContainer/HBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 3
 theme = ExtResource("1_wniec")
 text = "-1"
 
-[node name="DefeatsLabel" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/MarginContainer/GridContainer2"]
+[node name="DefeatsContainer" type="MarginContainer" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer"]
 layout_mode = 2
+
+[node name="Panel" type="Panel" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/DefeatsContainer"]
+layout_mode = 2
+theme = ExtResource("1_wniec")
+theme_override_styles/panel = SubResource("StyleBoxFlat_u21hr")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/DefeatsContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/DefeatsContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 30
+
+[node name="DefeatsLabel" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/DefeatsContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
 theme = ExtResource("1_wniec")
 text = "Defeats"
 
-[node name="Defeats" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/MarginContainer/GridContainer2"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme = ExtResource("1_wniec")
-text = "-1"
-
-[node name="ForfeitsLabel" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/MarginContainer/GridContainer2"]
-layout_mode = 2
-theme = ExtResource("1_wniec")
-text = "Forfeits"
-
-[node name="Forfeits" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/MarginContainer/GridContainer2"]
+[node name="Defeats" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/DefeatsContainer/MarginContainer/HBoxContainer"]
 layout_mode = 2
 theme = ExtResource("1_wniec")
 text = "-1"
