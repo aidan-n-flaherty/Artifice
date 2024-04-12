@@ -18,9 +18,18 @@ var temporary
 
 var playerTags = []
 
+@onready var container = $MarginContainer/VBoxContainer/ScrollContainer 
+
+var atbottom = false
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	GameData.chatChanged.connect(chatChanged)
+	container.set_deferred("scroll_vertical",9999999)
+func scroll_to_bottom():
+	print("resizing...")
+	container.scroll_vertical=container.get_v_scroll_bar().max_value
+		
+
 
 func initTemp(gameID):
 	temporary = true
@@ -94,7 +103,8 @@ func refresh(messageList):
 			$MarginContainer/VBoxContainer/ScrollContainer/MessageContainer.add_child(messageNode)
 		
 		$MarginContainer/VBoxContainer/ScrollContainer/MessageContainer.move_child(messageNode, index)
-
+	if atbottom:
+		call_deferred("scroll_to_bottom")
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	var canSend = false
@@ -133,3 +143,11 @@ func _on_send_pressed():
 	
 	if await GameData.sendMessage(chatID, $MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/TextEdit.text):
 		$MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/TextEdit.clear()
+
+
+func _on_scroll_container_scroll_ended():
+	#see the new message at the bottom only if the bar is already at the bottom
+	
+	atbottom = container.scroll_vertical == container.get_v_scroll_bar().max_value - container.size.y
+	print("scroll_vertical is ",container.scroll_vertical,", Y-size is ",container.size.y)
+	print("debug: atbottom is ", atbottom)
