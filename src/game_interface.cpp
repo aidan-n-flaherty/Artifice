@@ -54,6 +54,7 @@ void GameInterface::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("setMouse", "x", "y"), &GameInterface::setMouse);
 	ClassDB::bind_method(D_METHOD("setDrag", "drag"), &GameInterface::setDrag);
 	ClassDB::bind_method(D_METHOD("init", "gameID", "userID", "startTime", "playerCap", "players", "settingOverrides"), &GameInterface::init);
+	ClassDB::bind_method(D_METHOD("startAtEnd"), &GameInterface::startAtEnd);
 	ClassDB::bind_method(D_METHOD("setTempTime", "t"), &GameInterface::setTempTime);
 	ClassDB::bind_method(D_METHOD("setTime", "t"), &GameInterface::setTime);
 	ClassDB::bind_method(D_METHOD("getTime"), &GameInterface::getTime);

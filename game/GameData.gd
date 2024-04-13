@@ -175,13 +175,16 @@ func login():
 func changeGame(id: int):
 	emit_signal("gameChanged", id)
 
-func viewGame(id: int):
+func viewGame(id: int, past=false):
 	
 	var loading_screen = preload("res://loading_screen.tscn").instantiate()
 	goto_node(loading_screen)
 	
 	if not hasGame(id):
 		await loadGameState(id)
+	
+	if past:
+		games[id].startAtEnd()
 	
 	var node = Game.instantiate()
 	node.init(id)

@@ -20,7 +20,7 @@ func twoDigit(num: int):
 func timeToStr(time: int):
 	if time < 0: return timeToStr(abs(time)) + " ago"
 	#Avoid things like 1:1:1
-	return "%d:%s:%s"%[(time/(60*60)),twoDigit((time/60)%60),twoDigit(time%60)]
+	return "%dh %sm %ss"%[(time/(60*60)),twoDigit((time/60)%60),twoDigit(time%60)]
 
 func timeToDateStr(t: int):
 	var time = Time.get_datetime_dict_from_unix_time(t + 60 * Time.get_time_zone_from_system().bias)

@@ -6,14 +6,17 @@ var gameDetails
 
 var alreadyJoined
 
+var past
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	pass # Replace with function body.
 
-func init(gameID: int, alreadyJoined: bool):
+func init(gameID: int, alreadyJoined: bool, past=false):
 	GameData.gamesChanged.connect(update)
 	
 	self.alreadyJoined = alreadyJoined
+	self.past = past
 	
 	self.gameID = gameID
 	update(self.gameID)
@@ -32,7 +35,7 @@ func update(gameID):
 
 func _on_button_pressed():
 	if alreadyJoined:
-		GameData.viewGame(gameID)
+		await GameData.viewGame(gameID, past)
 	else:
 		var gameDetail = preload("res://GameDetail.tscn").instantiate()
 		gameDetail.init(gameID)

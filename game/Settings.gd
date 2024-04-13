@@ -15,9 +15,9 @@ func loadSelf():
 	if(!user): return
 	
 	$MarginContainer/ScrollContainer/VBoxContainer/GridContainer/UsernameText.text = user.username
-	$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/MarginContainer/GridContainer2/Victories.text = str(user.userStats.gamesWon)
-	$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/MarginContainer/GridContainer2/Defeats.text = str(user.userStats.gamesLost)
-	$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/MarginContainer/GridContainer2/Rating.text = str(user.userStats.rating)
+	$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/VictoryContainer/MarginContainer/HBoxContainer/Victories.text = str(user.userStats.gamesWon)
+	$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/DefeatsContainer/MarginContainer/HBoxContainer/Defeats.text = str(user.userStats.gamesLost)
+	$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/RatingContainer/MarginContainer/HBoxContainer/Rating.text = str(user.userStats.rating)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

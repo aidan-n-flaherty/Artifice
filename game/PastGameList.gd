@@ -9,7 +9,7 @@ func initList():
 	
 func generateButton(id):
 	var button = preload("res://GameButton.tscn").instantiate()
-	button.init(id, true)
+	button.init(id, true, true)
 	return button
 
 

@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=21 format=3 uid="uid://tg7ina762c6q"]
+[gd_resource type="Theme" load_steps=22 format=3 uid="uid://tg7ina762c6q"]
 
 [ext_resource type="FontFile" uid="uid://bt7qlnun0cepj" path="res://resources/fonts/nasalization-free/nasalization-rg.otf" id="1_nvpc1"]
 [ext_resource type="FontFile" uid="uid://dx6ui122q4nlo" path="res://resources/fonts/astonpoliz/Astonpoliz.otf" id="2_7bam3"]
@@ -80,6 +80,12 @@ variation_embolden = 4.16334e-17
 spacing_space = 3
 spacing_bottom = -3
 
+[sub_resource type="FontVariation" id="FontVariation_y4ygb"]
+base_font = ExtResource("2_7bam3")
+variation_embolden = 4.16334e-17
+spacing_space = 3
+spacing_bottom = -3
+
 [sub_resource type="ImageTexture" id="ImageTexture_8nsvy"]
 
 [sub_resource type="ImageTexture" id="ImageTexture_d13s6"]
@@ -103,6 +109,8 @@ HSlider/styles/slider = SubResource("StyleBoxFlat_5jqh0")
 Label/font_sizes/font_size = 22
 Label/fonts/font = SubResource("FontVariation_unt1h")
 LineEdit/fonts/font = ExtResource("1_nvpc1")
+RichTextLabel/font_sizes/normal_font_size = 22
+RichTextLabel/fonts/normal_font = SubResource("FontVariation_y4ygb")
 TextEdit/fonts/font = ExtResource("1_nvpc1")
 VSlider/icons/grabber = SubResource("ImageTexture_8nsvy")
 VSlider/icons/grabber_disabled = SubResource("ImageTexture_d13s6")
