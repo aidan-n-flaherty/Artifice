@@ -121,4 +121,5 @@ stretch_mode = 0
 
 [connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/Back" to="." method="_on_back_pressed"]
 [connection signal="scroll_ended" from="MarginContainer/VBoxContainer/ScrollContainer" to="." method="_on_scroll_container_scroll_ended"]
+[connection signal="resized" from="MarginContainer/VBoxContainer/ScrollContainer/MessageContainer" to="." method="_on_message_container_resized"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/Send" to="." method="_on_send_pressed"]
