@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=3 uid="uid://b16kytc1dy61a"]
+[gd_scene load_steps=29 format=3 uid="uid://b16kytc1dy61a"]
 
 [ext_resource type="Script" path="res://CityMesh.gd" id="1_cq8ip"]
 [ext_resource type="PackedScene" uid="uid://bhc7yq0ltpg5m" path="res://resources/outpost/outpostAlternate.blend" id="2_kae4w"]
@@ -65,6 +65,12 @@ font_size = 24
 
 [sub_resource type="FontVariation" id="FontVariation_cax2q"]
 variation_embolden = -0.34
+
+[sub_resource type="FontVariation" id="FontVariation_ia2a1"]
+variation_embolden = 1.0
+
+[sub_resource type="FontVariation" id="FontVariation_gnbsf"]
+variation_embolden = 1.0
 
 [node name="CityMesh" type="Area3D"]
 monitoring = false
@@ -200,6 +206,7 @@ theme_override_constants/margin_left = 152
 theme_override_constants/margin_bottom = 51
 
 [node name="Shield" type="Label" parent="SubViewport/OutpostInfo/ShieldContainer"]
+visible = false
 layout_mode = 2
 size_flags_vertical = 1
 text = "00"
@@ -217,6 +224,7 @@ theme_override_constants/margin_left = 157
 theme_override_constants/margin_bottom = 71
 
 [node name="Units" type="Label" parent="SubViewport/OutpostInfo/UnitsContainer"]
+visible = false
 layout_mode = 2
 size_flags_vertical = 1
 text = "00"
@@ -224,10 +232,28 @@ label_settings = SubResource("LabelSettings_l1ine")
 vertical_alignment = 2
 
 [node name="Name" type="Label3D" parent="."]
-transform = Transform3D(-1, 8.74228e-08, 3.82137e-15, -1.5246e-23, -4.37114e-08, 1, 8.74228e-08, 1, 4.37114e-08, -8.70985, 2.08165e-12, 1.89123)
+transform = Transform3D(-1, 8.74228e-08, 3.82137e-15, -1.5246e-23, -4.37114e-08, 1, 8.74228e-08, 1, 4.37114e-08, -8.70985, 0.5, 1.89123)
 pixel_size = 0.1
 text = "Attendance Code"
 font = SubResource("FontVariation_cax2q")
 font_size = 23
+outline_size = 0
+horizontal_alignment = 0
+
+[node name="Units" type="Label3D" parent="."]
+transform = Transform3D(-1, 8.74228e-08, 3.82137e-15, -1.5246e-23, -4.37114e-08, 1, 8.74228e-08, 1, 4.37114e-08, -8.70985, 0.5, -1.63355)
+pixel_size = 0.1
+text = "00"
+font = SubResource("FontVariation_ia2a1")
+font_size = 34
+outline_size = 0
+horizontal_alignment = 0
+
+[node name="Shield" type="Label3D" parent="."]
+transform = Transform3D(-1, 8.74228e-08, 3.82137e-15, -1.5246e-23, -4.37114e-08, 1, 8.74228e-08, 1, 4.37114e-08, -7.89058, 0.5, -5.40674)
+pixel_size = 0.1
+text = "00"
+font = SubResource("FontVariation_gnbsf")
+font_size = 26
 outline_size = 0
 horizontal_alignment = 0

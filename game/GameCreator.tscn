@@ -1,12 +1,7 @@
-[gd_scene load_steps=9 format=3 uid="uid://bol6bslwfs8ec"]
+[gd_scene load_steps=7 format=3 uid="uid://bol6bslwfs8ec"]
 
 [ext_resource type="Script" path="res://GameCreator.gd" id="1_5sudp"]
 [ext_resource type="PackedScene" uid="uid://biekuv7dddk3m" path="res://GameEditor.tscn" id="1_subu8"]
-[ext_resource type="Shader" path="res://FrostedGlass.gdshader" id="3_kb7av"]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_d2ls4"]
-shader = ExtResource("3_kb7av")
-shader_parameter/lod = 4.0
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_lt36i"]
 
@@ -21,9 +16,6 @@ theme_override_constants/margin_left = 50
 theme_override_constants/margin_right = 50
 theme_override_constants/margin_bottom = 0
 script = ExtResource("1_5sudp")
-
-[node name="Panel" parent="." index="0"]
-material = SubResource("ShaderMaterial_d2ls4")
 
 [node name="2" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons" index="0"]
 button_group = SubResource("ButtonGroup_lt36i")

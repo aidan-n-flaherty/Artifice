@@ -1,16 +1,11 @@
-[gd_scene load_steps=8 format=3 uid="uid://chwn0jkvlrsvw"]
+[gd_scene load_steps=6 format=3 uid="uid://chwn0jkvlrsvw"]
 
 [ext_resource type="Script" path="res://Settings.gd" id="1_4ep52"]
 [ext_resource type="Theme" uid="uid://tg7ina762c6q" path="res://resources/themes/UITheme.tres" id="1_wniec"]
 [ext_resource type="PackedScene" uid="uid://ca2km7m7ec3av" path="res://PastGameList.tscn" id="2_kldvo"]
-[ext_resource type="Shader" path="res://FrostedGlass.gdshader" id="3_tdw0u"]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_50hpt"]
-shader = ExtResource("3_tdw0u")
-shader_parameter/lod = 4.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b4f1s"]
-bg_color = Color(0.0588235, 0.0588235, 0.0588235, 1)
+bg_color = Color(0, 0, 0, 0.156863)
 corner_radius_bottom_right = 60
 corner_radius_bottom_left = 60
 corner_detail = 16
@@ -35,7 +30,6 @@ theme_override_constants/margin_right = 50
 script = ExtResource("1_4ep52")
 
 [node name="Panel" type="Panel" parent="."]
-material = SubResource("ShaderMaterial_50hpt")
 layout_mode = 2
 theme = ExtResource("1_wniec")
 theme_override_styles/panel = SubResource("StyleBoxFlat_b4f1s")

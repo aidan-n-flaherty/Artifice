@@ -1,15 +1,10 @@
-[gd_scene load_steps=13 format=3 uid="uid://biekuv7dddk3m"]
+[gd_scene load_steps=11 format=3 uid="uid://biekuv7dddk3m"]
 
 [ext_resource type="Theme" uid="uid://tg7ina762c6q" path="res://resources/themes/UITheme.tres" id="1_sjo5m"]
 [ext_resource type="Script" path="res://GameEditor.gd" id="1_xc5ik"]
-[ext_resource type="Shader" path="res://FrostedGlass.gdshader" id="3_s42ty"]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_ocbt6"]
-shader = ExtResource("3_s42ty")
-shader_parameter/lod = 4.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tpxmc"]
-bg_color = Color(0.0392157, 0.0392157, 0.0392157, 1)
+bg_color = Color(0.0392157, 0.0392157, 0.0392157, 0.156863)
 corner_radius_bottom_right = 30
 corner_radius_bottom_left = 30
 corner_detail = 16
@@ -42,7 +37,6 @@ theme = ExtResource("1_sjo5m")
 script = ExtResource("1_xc5ik")
 
 [node name="Panel" type="Panel" parent="."]
-material = SubResource("ShaderMaterial_ocbt6")
 layout_mode = 2
 theme = ExtResource("1_sjo5m")
 theme_override_styles/panel = SubResource("StyleBoxFlat_tpxmc")

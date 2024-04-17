@@ -1,0 +1,66 @@
+[gd_scene load_steps=9 format=3 uid="uid://b14auts774043"]
+
+[ext_resource type="Shader" path="res://FloorShader.gdshader" id="1_4i6tf"]
+[ext_resource type="Shader" path="res://OceanFloor.gdshader" id="2_dww35"]
+[ext_resource type="Shader" path="res://Shield.gdshader" id="3_hhfgu"]
+[ext_resource type="Shader" path="res://Background.gdshader" id="4_pt022"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_n7fq3"]
+render_priority = 0
+shader = ExtResource("1_4i6tf")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_lautm"]
+render_priority = 0
+shader = ExtResource("2_dww35")
+shader_parameter/cameraSize = null
+shader_parameter/mapWidth = null
+shader_parameter/mapHeight = null
+shader_parameter/meshWidth = null
+shader_parameter/meshHeight = null
+shader_parameter/resolution = null
+shader_parameter/outposts = null
+shader_parameter/outpostsLength = 0
+shader_parameter/speed = 0.1
+shader_parameter/tmp = 0.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_llsqg"]
+render_priority = 0
+shader = ExtResource("3_hhfgu")
+shader_parameter/speed = 0.005
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_c6m0r"]
+shader = ExtResource("4_pt022")
+shader_parameter/speed = 0.005
+shader_parameter/screenWidth = 1080.0
+shader_parameter/screenHeight = 1920.0
+
+[node name="Shaders" type="Control"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+
+[node name="Shader1" type="Panel" parent="."]
+material = SubResource("ShaderMaterial_n7fq3")
+custom_minimum_size = Vector2(10, 10)
+layout_mode = 1
+
+[node name="Shader2" type="Panel" parent="."]
+material = SubResource("ShaderMaterial_lautm")
+custom_minimum_size = Vector2(10, 10)
+layout_mode = 1
+
+[node name="Shader3" type="Panel" parent="."]
+material = SubResource("ShaderMaterial_llsqg")
+custom_minimum_size = Vector2(10, 10)
+layout_mode = 1
+
+[node name="Shader4" type="Panel" parent="."]
+material = SubResource("ShaderMaterial_c6m0r")
+custom_minimum_size = Vector2(10, 10)
+layout_mode = 1

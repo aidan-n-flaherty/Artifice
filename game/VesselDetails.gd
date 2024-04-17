@@ -31,7 +31,23 @@ func _process(delta):
 			$VBoxContainer/HBoxContainer2/VBoxContainer/Arrival.text = ""
 			return
 	
-	$VBoxContainer/HBoxContainer2/VBoxContainer/Arrival.text = "Arrives in " + Utilities.timeToStr(game.getNextArrivalEvent(vessel.getID()) - game.getTime())
+	var arrival = game.getNextArrivalEvent(vessel.getID())
+	if arrival >= 0:
+		$VBoxContainer/HBoxContainer2/VBoxContainer/Arrival.text = "Arrives in " + Utilities.timeToStr(game.getNextArrivalEvent(vessel.getID()) - Time.get_unix_time_from_system())
+		$VBoxContainer/HBoxContainer/Spacer1.show()
+		$VBoxContainer/HBoxContainer/Jump.show()
+	else:
+		$VBoxContainer/HBoxContainer/Spacer1.hide()
+		$VBoxContainer/HBoxContainer/Jump.hide()
+		$VBoxContainer/HBoxContainer2/VBoxContainer/Arrival.text = "This vessel will never reach its target"
+	
+	var battle = game.getNextBattleEvent(vessel.getID())
+	if battle:
+		$VBoxContainer/HBoxContainer/Spacer3.show()
+		$VBoxContainer/HBoxContainer/BattleForecast.show()
+	else: 
+		$VBoxContainer/HBoxContainer/Spacer3.hide()
+		$VBoxContainer/HBoxContainer/BattleForecast.hide()
 	
 	var owns = game.ownsObj(vessel.getID())
 	

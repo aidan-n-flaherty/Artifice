@@ -138,7 +138,7 @@ void fragment() {
 	METALLIC = 0.5;
 	ROUGHNESS = 0.75;
 	
-	vec3 normal = 0.5 * (getTexture(pos, detailedNormal).rgb - getTexture(pos, ridgeNormal).rgb) + 0.5 * getTexture(pos, stoneNormal).rgb + 0.5 * getTexture(pos, largeRidgeNormal).rgb;
+	vec3 normal = 0.5 * (getTexture(pos, detailedNormal).rgb - getTexture(pos, ridgeNormal).rgb) + 0.75 * getTexture(pos, stoneNormal).rgb + 0.5 * getTexture(pos, largeRidgeNormal).rgb;
 	
 	for(int i = 0; i < outpostsLength; i++) {
 		float dX = pos.x + outposts[i].x;

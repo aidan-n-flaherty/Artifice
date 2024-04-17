@@ -25,6 +25,7 @@ theme_override_constants/margin_bottom = 0
 script = ExtResource("1_3i7b2")
 
 [node name="Panel" type="Panel" parent="."]
+visible = false
 material = SubResource("ShaderMaterial_ipm24")
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_qhjyu")

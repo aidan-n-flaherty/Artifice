@@ -12,7 +12,9 @@ uniform sampler2D gradient;
 
 uniform float speed = 0.005;
 
-uniform float cameraSize = 100;
+uniform float screenWidth = 1080;
+
+uniform float screenHeight = 1920;
 
 vec2 norm(vec2 pos) {
 	while(pos.x >= 1.0) pos.x -= 1.0;
@@ -24,9 +26,11 @@ vec2 norm(vec2 pos) {
 }
 
 void fragment() {
-	vec2 posA = norm((UV - 0.5) * (cameraSize/100.0) + vec2(-1.0, -1.0) * speed * TIME);
+	vec2 uv = UV * vec2(screenWidth/max(screenWidth, screenHeight), screenHeight/max(screenWidth, screenHeight));
 	
-	vec2 posB = norm((UV - 0.5) * (cameraSize/100.0) + vec2(1.0, -1.0) * speed * TIME);
+	vec2 posA = norm((uv - 0.5) + vec2(-1.0, -1.0) * speed * TIME);
+	
+	vec2 posB = norm((uv - 0.5) + vec2(1.0, -1.0) * speed * TIME);
 	
 	float angle = 2.0 * PI * texture(noise3, posA).r;
 	float mag = 0.3 * texture(noise2, posB).r;
@@ -34,7 +38,7 @@ void fragment() {
 	float dX = mag * cos(angle);
 	float dY = mag * sin(angle);
 	
-	vec2 posC = norm((UV - 0.5) * (cameraSize/100.0) + vec2(0.0, 5.0) * speed * TIME + 0.1 * vec2(dX, dY));
+	vec2 posC = norm((uv - 0.5) + vec2(0.0, 5.0) * speed * TIME + 0.1 * vec2(dX, dY));
 	
 	float displacement = texture(noise, posC).r;
 
@@ -43,5 +47,5 @@ void fragment() {
 	float grad = texture(gradient, UV).r;
 	
 	COLOR.rgb = vec3(grad * mix(displacement - 0.25, displacement - 0.25, 0.5));
-	COLOR.rgb = vec3(COLOR.r, 1.15 * COLOR.g, 1.4 * COLOR.b);
+	COLOR.rgb = vec3(COLOR.r, 1.2 * COLOR.g, 1.5 * COLOR.b);
 }

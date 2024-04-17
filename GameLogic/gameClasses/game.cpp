@@ -201,7 +201,7 @@ Game::Game(GameSettings settings, int simulatorID, double startTime, double endT
 
     //Don't have to worry past this point in regards to randomizing outpost positions
 
-    initializes the starter outposts as objects and assigns them the queen specialist
+    // initializes the starter outposts as objects and assigns them the queen specialist
     for(const std::pair<int, Point>& pair : startingPositions) {
         Outpost* o = new Outpost(incrementObjCounter(), getSettings(), OutpostType::FACTORY, 20, pair.second.getX(), pair.second.getY());
         addOutpost(o);

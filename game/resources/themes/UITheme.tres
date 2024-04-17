@@ -7,6 +7,7 @@
 
 [sub_resource type="FontVariation" id="FontVariation_7m5i6"]
 base_font = ExtResource("1_nvpc1")
+variation_embolden = 0.5
 spacing_top = 3
 spacing_bottom = 3
 
@@ -76,13 +77,13 @@ corner_radius_bottom_left = 5
 
 [sub_resource type="FontVariation" id="FontVariation_unt1h"]
 base_font = ExtResource("2_7bam3")
-variation_embolden = 4.16334e-17
+variation_embolden = 0.5
 spacing_space = 3
 spacing_bottom = -3
 
 [sub_resource type="FontVariation" id="FontVariation_y4ygb"]
 base_font = ExtResource("2_7bam3")
-variation_embolden = 4.16334e-17
+variation_embolden = 0.5
 spacing_space = 3
 spacing_bottom = -3
 

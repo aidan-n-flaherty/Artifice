@@ -181,11 +181,11 @@ func setDisplay(scene):
 func selectVessel(vessel):
 	var scene = preload("res://VesselDetails.tscn").instantiate()
 	scene.init(vessel, gameID)
-	scene.battleForecastToggle.connect(vesselBattleForecast)
+	scene.battleForecastToggle.connect(battleForecast)
 	$Viewport/Viewport3D/CameraManager.selected(vessel)
 	setDisplay(scene)
 
-func vesselBattleForecast(vessel):
+func battleForecast(node):
 	if tabDisplay().get_node("Panel/Battle Forecast").visible:
 		setMenuDisplay(null, false)
 	else:
@@ -194,7 +194,7 @@ func vesselBattleForecast(vessel):
 		tabDisplay().get_node("Panel").remove_child(scene)
 		
 		scene = preload("res://Battle Forecast.tscn").instantiate()
-		scene.init(gameID, vessel.getID())
+		scene.init(gameID, node.getID())
 		tabDisplay().get_node("Panel").add_child(scene)
 		setMenuDisplay(scene, true)
 	
@@ -203,6 +203,7 @@ func selectOutpost(outpost):
 	print("Debug: got to the selectOutpost() function")
 	var scene = preload("res://OutpostDetails.tscn").instantiate()
 	scene.init(outpost, gameID)
+	scene.battleForecastToggle.connect(battleForecast)
 	$Viewport/Viewport3D/CameraManager.selected(outpost)
 	setDisplay(scene)
 	print("Debug: finished the selectOutpost() function")

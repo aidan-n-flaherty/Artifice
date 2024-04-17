@@ -219,7 +219,7 @@ GameSettings GameInterface::loadSettings() {
 			for(int j = 0; j < arr.size(); j++) {
 				if(!Variant::can_convert(arr[j].get_type(), Variant::FLOAT)) continue;
 
-				if(j > 0) str += ",";
+				if(j > 0) str += " ";
 				str += std::to_string(int(std::round(double(arr[j]))));
 			}
 

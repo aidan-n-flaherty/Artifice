@@ -1,7 +1,7 @@
-[gd_scene load_steps=49 format=3 uid="uid://cfaaort7dldjk"]
+[gd_scene load_steps=50 format=3 uid="uid://cfaaort7dldjk"]
 
 [ext_resource type="Script" path="res://Game.gd" id="1_s53r2"]
-[ext_resource type="Shader" path="res://Background.gdshader" id="2_v2kkt"]
+[ext_resource type="PackedScene" uid="uid://b14auts774043" path="res://Shaders.tscn" id="2_qvr2g"]
 [ext_resource type="PackedScene" uid="uid://br2r5ds75s4n0" path="res://CameraManager.tscn" id="2_vm3rp"]
 [ext_resource type="PackedScene" uid="uid://n0lobms04k46" path="res://Timeline.tscn" id="3_jhu7k"]
 [ext_resource type="Shader" path="res://GodRay.gdshader" id="3_w0fl0"]
@@ -23,10 +23,15 @@
 [ext_resource type="Texture2D" uid="uid://br2xninxoa36u" path="res://resources/gameMenuIcons/hireIconBeamDown (Proto 3).png" id="21_lwlj7"]
 [ext_resource type="Texture2D" uid="uid://df304hwlkhr6p" path="res://resources/gameMenuIcons/editIcon.png" id="24_7o8jj"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_irxqf"]
-shader = ExtResource("2_v2kkt")
-shader_parameter/speed = 0.005
-shader_parameter/cameraSize = 100.0
+[sub_resource type="Gradient" id="Gradient_uj453"]
+interpolation_mode = 2
+offsets = PackedFloat32Array(0, 0.566766)
+colors = PackedColorArray(0, 0, 0, 0.596078, 0, 0, 0, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_hsfy0"]
+gradient = SubResource("Gradient_uj453")
+fill_to = Vector2(0.516129, 0)
+repeat = 2
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_xxia2"]
 shader = ExtResource("3_w0fl0")
@@ -255,17 +260,15 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource("1_s53r2")
 
-[node name="Control" type="Control" parent="."]
+[node name="Shaders" parent="." instance=ExtResource("2_qvr2g")]
 layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 0
-
-[node name="Panel" type="Panel" parent="Control"]
-material = SubResource("ShaderMaterial_irxqf")
-layout_mode = 0
 
 [node name="Viewport" type="MarginContainer" parent="."]
 layout_mode = 2
+
+[node name="Panel" type="TextureRect" parent="Viewport"]
+layout_mode = 2
+texture = SubResource("GradientTexture2D_hsfy0")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Viewport"]
 layout_mode = 2

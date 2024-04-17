@@ -1,90 +1,20 @@
-[gd_scene load_steps=30 format=3 uid="uid://byq6mjwxv3tt"]
+[gd_scene load_steps=15 format=3 uid="uid://byq6mjwxv3tt"]
 
 [ext_resource type="Script" path="res://MainMenu.gd" id="1_jslh6"]
-[ext_resource type="Shader" path="res://FloorShader.gdshader" id="2_6lw8g"]
-[ext_resource type="Shader" path="res://Background.gdshader" id="2_j3qni"]
+[ext_resource type="PackedScene" uid="uid://b14auts774043" path="res://Shaders.tscn" id="2_7nq6h"]
 [ext_resource type="Theme" uid="uid://bfwpaonloeco5" path="res://resources/theme.tres" id="2_pk1f5"]
-[ext_resource type="Shader" path="res://Shield.gdshader" id="2_rru4b"]
-[ext_resource type="Shader" path="res://OceanFloor.gdshader" id="3_33fof"]
 [ext_resource type="Texture2D" uid="uid://bv5d2gydbkiq" path="res://resources/images/play.png" id="3_w5suc"]
+[ext_resource type="PackedScene" uid="uid://c04qxpqrgw5cq" path="res://Background.tscn" id="3_x1uu2"]
 [ext_resource type="Texture2D" uid="uid://cwrcutyiv8l8j" path="res://resources/images/search.png" id="4_qhor3"]
 [ext_resource type="Texture2D" uid="uid://b3hhk4u32imks" path="res://resources/images/create.png" id="5_t8i2v"]
 [ext_resource type="Texture2D" uid="uid://dgu1vsouolbs" path="res://resources/images/account.png" id="6_huq68"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_r5sl6"]
-render_priority = 0
-shader = ExtResource("2_6lw8g")
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_8e4sn"]
-render_priority = 0
-shader = ExtResource("3_33fof")
-shader_parameter/cameraSize = null
-shader_parameter/mapWidth = null
-shader_parameter/mapHeight = null
-shader_parameter/meshWidth = null
-shader_parameter/meshHeight = null
-shader_parameter/resolution = null
-shader_parameter/outposts = null
-shader_parameter/outpostsLength = 0
-shader_parameter/speed = 0.1
-shader_parameter/tmp = 0.0
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_6cggy"]
-render_priority = 0
-shader = ExtResource("2_rru4b")
-shader_parameter/speed = 0.005
-
-[sub_resource type="Gradient" id="Gradient_at5e0"]
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_1xfhw"]
-gradient = SubResource("Gradient_at5e0")
-fill_from = Vector2(1, 0.926554)
-
-[sub_resource type="Gradient" id="Gradient_2s0lq"]
-colors = PackedColorArray(0.345946, 0.345946, 0.345946, 1, 0.849621, 0.849621, 0.849621, 1)
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_r4ruq"]
-noise_type = 2
-frequency = 0.0029
-cellular_distance_function = 1
-cellular_return_type = 6
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_tg2tt"]
-width = 1024
-height = 1024
-seamless = true
-color_ramp = SubResource("Gradient_2s0lq")
-noise = SubResource("FastNoiseLite_r4ruq")
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_kceku"]
-fractal_type = 2
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_dv8kp"]
-width = 1024
-height = 1024
-seamless = true
-noise = SubResource("FastNoiseLite_kceku")
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_0algg"]
-domain_warp_enabled = true
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_l0w18"]
-width = 1024
-height = 1024
-seamless = true
-noise = SubResource("FastNoiseLite_0algg")
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_08d0q"]
-shader = ExtResource("2_j3qni")
-shader_parameter/speed = 0.005
-shader_parameter/cameraSize = 100.0
-shader_parameter/noise = SubResource("NoiseTexture2D_tg2tt")
-shader_parameter/noise2 = SubResource("NoiseTexture2D_dv8kp")
-shader_parameter/noise3 = SubResource("NoiseTexture2D_l0w18")
-shader_parameter/gradient = SubResource("GradientTexture2D_1xfhw")
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5fxya"]
-bg_color = Color(0, 0, 0, 1)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_82ple"]
+bg_color = Color(0.0470588, 0.0941176, 0.137255, 1)
+corner_radius_top_left = 100
+corner_radius_top_right = 100
+corner_radius_bottom_right = 100
+corner_radius_bottom_left = 100
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_gxotn"]
 
@@ -143,31 +73,11 @@ searchScreen = "res://OpenGameList.tscn"
 settingsScreen = "res://Settings.tscn"
 createScreen = "res://GameCreator.tscn"
 
-[node name="Control" type="Control" parent="."]
+[node name="Shaders" parent="." instance=ExtResource("2_7nq6h")]
 layout_mode = 2
 
-[node name="Shader1" type="Panel" parent="Control"]
-material = SubResource("ShaderMaterial_r5sl6")
+[node name="Background" parent="." instance=ExtResource("3_x1uu2")]
 layout_mode = 2
-offset_right = 1080.0
-offset_bottom = 1920.0
-
-[node name="Shader2" type="Panel" parent="Control"]
-material = SubResource("ShaderMaterial_8e4sn")
-layout_mode = 2
-offset_right = 1080.0
-offset_bottom = 1920.0
-
-[node name="Shader3" type="Panel" parent="Control"]
-material = SubResource("ShaderMaterial_6cggy")
-layout_mode = 2
-offset_right = 1080.0
-offset_bottom = 1920.0
-
-[node name="Panel" type="Panel" parent="."]
-material = SubResource("ShaderMaterial_08d0q")
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_5fxya")
 
 [node name="VSplitContainer" type="VSplitContainer" parent="."]
 layout_mode = 2
@@ -179,21 +89,36 @@ dragger_visibility = 1
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VSplitContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="VSplitContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.15
+theme_override_constants/margin_left = 100
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 100
+theme_override_constants/margin_bottom = 50
+
+[node name="MarginContainer" type="MarginContainer" parent="VSplitContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="Panel" type="Panel" parent="VSplitContainer/MarginContainer/MarginContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_82ple")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VSplitContainer/MarginContainer/MarginContainer"]
 custom_minimum_size = Vector2(2.08165e-12, 100)
 layout_mode = 2
 size_flags_vertical = 3
-size_flags_stretch_ratio = 0.1
 
-[node name="Play" type="MarginContainer" parent="VSplitContainer/HBoxContainer"]
+[node name="Play" type="MarginContainer" parent="VSplitContainer/MarginContainer/MarginContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/margin_left = 50
-theme_override_constants/margin_top = 0
+theme_override_constants/margin_top = 35
 theme_override_constants/margin_right = 50
-theme_override_constants/margin_bottom = 50
+theme_override_constants/margin_bottom = 35
 
-[node name="Play" type="TextureButton" parent="VSplitContainer/HBoxContainer/Play"]
+[node name="Play" type="TextureButton" parent="VSplitContainer/MarginContainer/MarginContainer/HBoxContainer/Play"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -204,15 +129,15 @@ texture_normal = ExtResource("3_w5suc")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="Search" type="MarginContainer" parent="VSplitContainer/HBoxContainer"]
+[node name="Search" type="MarginContainer" parent="VSplitContainer/MarginContainer/MarginContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/margin_left = 50
-theme_override_constants/margin_top = 0
+theme_override_constants/margin_top = 35
 theme_override_constants/margin_right = 50
-theme_override_constants/margin_bottom = 50
+theme_override_constants/margin_bottom = 35
 
-[node name="Search" type="TextureButton" parent="VSplitContainer/HBoxContainer/Search"]
+[node name="Search" type="TextureButton" parent="VSplitContainer/MarginContainer/MarginContainer/HBoxContainer/Search"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("2_pk1f5")
@@ -222,15 +147,15 @@ texture_normal = ExtResource("4_qhor3")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="Create" type="MarginContainer" parent="VSplitContainer/HBoxContainer"]
+[node name="Create" type="MarginContainer" parent="VSplitContainer/MarginContainer/MarginContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/margin_left = 50
-theme_override_constants/margin_top = 0
+theme_override_constants/margin_top = 35
 theme_override_constants/margin_right = 50
-theme_override_constants/margin_bottom = 50
+theme_override_constants/margin_bottom = 35
 
-[node name="Create" type="TextureButton" parent="VSplitContainer/HBoxContainer/Create"]
+[node name="Create" type="TextureButton" parent="VSplitContainer/MarginContainer/MarginContainer/HBoxContainer/Create"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("2_pk1f5")
@@ -240,15 +165,15 @@ texture_normal = ExtResource("5_t8i2v")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="Settings" type="MarginContainer" parent="VSplitContainer/HBoxContainer"]
+[node name="Settings" type="MarginContainer" parent="VSplitContainer/MarginContainer/MarginContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/margin_left = 50
-theme_override_constants/margin_top = 0
+theme_override_constants/margin_top = 35
 theme_override_constants/margin_right = 50
-theme_override_constants/margin_bottom = 50
+theme_override_constants/margin_bottom = 35
 
-[node name="Settings" type="TextureButton" parent="VSplitContainer/HBoxContainer/Settings"]
+[node name="Settings" type="TextureButton" parent="VSplitContainer/MarginContainer/MarginContainer/HBoxContainer/Settings"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -260,6 +185,7 @@ ignore_texture_size = true
 stretch_mode = 5
 
 [node name="Fade" type="Panel" parent="."]
+modulate = Color(1, 1, 1, 0)
 layout_mode = 2
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_i0dqg")
@@ -269,8 +195,8 @@ libraries = {
 "": SubResource("AnimationLibrary_hho3n")
 }
 
-[connection signal="pressed" from="VSplitContainer/HBoxContainer/Play/Play" to="." method="_on_play_pressed"]
-[connection signal="pressed" from="VSplitContainer/HBoxContainer/Search/Search" to="." method="_on_search_pressed"]
-[connection signal="pressed" from="VSplitContainer/HBoxContainer/Create/Create" to="." method="_on_create_pressed"]
-[connection signal="pressed" from="VSplitContainer/HBoxContainer/Settings/Settings" to="." method="_on_settings_pressed"]
+[connection signal="pressed" from="VSplitContainer/MarginContainer/MarginContainer/HBoxContainer/Play/Play" to="." method="_on_play_pressed"]
+[connection signal="pressed" from="VSplitContainer/MarginContainer/MarginContainer/HBoxContainer/Search/Search" to="." method="_on_search_pressed"]
+[connection signal="pressed" from="VSplitContainer/MarginContainer/MarginContainer/HBoxContainer/Create/Create" to="." method="_on_create_pressed"]
+[connection signal="pressed" from="VSplitContainer/MarginContainer/MarginContainer/HBoxContainer/Settings/Settings" to="." method="_on_settings_pressed"]
 [connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_animation_player_animation_finished"]

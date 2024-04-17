@@ -195,10 +195,6 @@ func viewGame(id: int, past=false):
 	var node = Game.instantiate()
 	node.init(id)
 
-	var elapsed = Time.get_unix_time_from_system() - t
-	if elapsed < 0.3:
-		await get_tree().create_timer(0.3 - elapsed).timeout
-
 	goto_node(node)
 	
 func viewGameDetails(id: int):
