@@ -88,6 +88,11 @@ Game::Game(GameSettings settings, int simulatorID, double startTime, double endT
         Point pos = Point(this->settings, this->settings->width/2 + 10 * cos(angle), this->settings->height/2 + 10 * sin(angle));
         pos.constrain();
 
+        // std::mt19937 gen(seed); // alternate implementation that creates a randomized set of starting points
+        // Point pos = Point(this->settings, std::uniform_int_distribution<> distr(0, (this->settings->width)-1,
+        //                     std::uniform_int_distribution<> distr(0, (this->settings->height) - 1)));
+        // pos.constrain();
+
         startingPositions.push_back(std::make_pair(id, pos));
         
         std::vector<OutpostType> types;
@@ -167,7 +172,7 @@ Game::Game(GameSettings settings, int simulatorID, double startTime, double endT
 
                 a.moveTowards(a.closest(b), -mag/(0.25 * dist + 1));
             }
-            //starting positions are now fixed
+            //starting positions are now fixed, and at equilibrium
             for(int k = j + 1; k < outpostPositions.size(); k++) {
                 if(j == k) continue;
 
@@ -189,12 +194,14 @@ Game::Game(GameSettings settings, int simulatorID, double startTime, double endT
                 a = newA;
                 b = newB;
             }
+            //all of the outpost points are now pushed away from each other. all outposts are
+            //in equilibrium. For now, we are going to assume this acts as a uniform distribution
         }
     }
 
     //Don't have to worry past this point in regards to randomizing outpost positions
 
-    //initializes the starter outposts as objects and assigns them the queen specialist
+    initializes the starter outposts as objects and assigns them the queen specialist
     for(const std::pair<int, Point>& pair : startingPositions) {
         Outpost* o = new Outpost(incrementObjCounter(), getSettings(), OutpostType::FACTORY, 20, pair.second.getX(), pair.second.getY());
         addOutpost(o);
@@ -205,6 +212,39 @@ Game::Game(GameSettings settings, int simulatorID, double startTime, double endT
         getPlayer(pair.first)->addSpecialist(getSpecialist(s->getID()));
         getPlayer(pair.first)->getOutposts().front()->addSpecialist(getSpecialist(s->getID()));
     }
+
+    
+    
+    // int numPlayers = players.size();
+
+    // //implementation of k-mean clustering in order to determine where the starting position of each player should be 
+    // //int key is the ID of the player who each 
+    // //vector value should be read as follows: { number of points in centroid's sector,
+    // //                                          sum of all x coordinates, sum of all y coordinates }
+    // std::unordered_map<int, std::vector<int>> centroid_outpost_counts;
+    // std::unordered_map<int, Point> current_centroids;
+
+    // //initalize the first centroid positions
+    // for(auto pair : startingPositions){
+    //     current_centroids[pair.first] = pair.second;
+    //     std::vector<int> sector_init_values(3, 0); //initializes a vector with 3 elements all initialized to zero
+    //     centroid_outpost_counts[pair.first] = sector_init_values;
+    // }
+
+    // //begin the k-mean clustering
+    // for(int i = 0; i < numIterations; i++){
+    //     /*loop through numIteration times
+
+    //     loop through each outpost location, and compare the minDistance from each centroid.
+    //     for the centroid it is closest to, increment the number of points in centroid's sector,
+    //     sum of all x coordinates, and sum of all y coordinates values in the centroid outpost counts map.
+        
+    //     Use the values currently in the vector of the centroid_outpost_counts to calculate a new centroid
+    //     location using the mean (average x and average y) of all other points.
+
+    //     */
+    // }
+    
 
     //iterates through the rest of outpost positions and outpost types and initializes all other outposts as objects
     //and their specialists
@@ -220,6 +260,16 @@ Game::Game(GameSettings settings, int simulatorID, double startTime, double endT
     }
 
     // end map generation
+
+    /*
+    
+    -generate all outpost points first
+    -each should be on average ~ 0.75x the sonar range away from each other
+    -assign the points that are closest to the calculated starting points to be the starting outposts of each
+    -player
+    
+
+    */
 
     addEvent(new OutpostRangeEvent(getTime()));
 }

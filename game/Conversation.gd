@@ -18,9 +18,18 @@ var temporary
 
 var playerTags = []
 
+@onready var container = $MarginContainer/VBoxContainer/ScrollContainer 
+
+var atbottom = true
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	GameData.chatChanged.connect(chatChanged)
+	container.set_deferred("scroll_vertical",9999999)
+func scroll_to_bottom():
+	print("resizing...")
+	container.set_deferred("scroll_vertical",container.get_v_scroll_bar().max_value)
+		
+
 
 func initTemp(gameID):
 	temporary = true
@@ -63,6 +72,7 @@ func init(gameID, chatID):
 	refresh(chat.messages)
 	
 func refresh(messageList):
+	print("Debug: referesh is called")
 	messageList.sort_custom(func(a, b): return a.timestamp < b.timestamp)
 	
 	var lastSenderID = -1
@@ -73,28 +83,28 @@ func refresh(messageList):
 		
 		var messageNode
 		
+		
 		if messages.has(message.id):
 			messageNode = messages[message.id]
 		else:
 			messageNode = preload("res://Message.tscn").instantiate()
 			messageNode.init(message)
+			$MarginContainer/VBoxContainer/ScrollContainer/MessageContainer.add_child(messageNode)
 			
-			if lastSenderID != message.senderID:
+		if lastSenderID != message.senderID:
 				lastSenderID = message.senderID
 				messageNode.displayName()
 			
-			if message.timestamp > lastTimestamp + 10 * 60:
-				messageNode.displayTime()
-				messageNode.displayName()
+		if message.timestamp > lastTimestamp + 10 * 60:
+			messageNode.displayTime()
+			messageNode.displayName()
+		lastTimestamp = message.timestamp
+		
+		messages[message.id] = messageNode
 			
-			lastTimestamp = message.timestamp
 			
-			messages[message.id] = messageNode
-			
-			$MarginContainer/VBoxContainer/ScrollContainer/MessageContainer.add_child(messageNode)
 		
 		$MarginContainer/VBoxContainer/ScrollContainer/MessageContainer.move_child(messageNode, index)
-
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	var canSend = false
@@ -133,3 +143,17 @@ func _on_send_pressed():
 	
 	if await GameData.sendMessage(chatID, $MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/TextEdit.text):
 		$MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/TextEdit.clear()
+
+
+func _on_scroll_container_scroll_ended():
+	#see the new message at the bottom only if the bar is already at the bottom
+	
+	atbottom = container.scroll_vertical == container.get_v_scroll_bar().max_value - container.size.y
+	print("scroll_vertical is ",container.scroll_vertical,", Y-size is ",container.size.y)
+	print("debug: atbottom is ", atbottom)
+
+
+func _on_message_container_resized():
+	if atbottom:
+		print("Debug: scrolling to the bottom")
+		call_deferred("scroll_to_bottom")
