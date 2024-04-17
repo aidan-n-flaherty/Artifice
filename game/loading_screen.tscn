@@ -50,3 +50,17 @@ layout_mode = 2
 text = "Loading..."
 label_settings = SubResource("LabelSettings_0qjrb")
 horizontal_alignment = 1
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 2
+
+[node name="Panel" type="Panel" parent="Control"]
+custom_minimum_size = Vector2(200, 200)
+layout_mode = 2
+offset_left = 440.0
+offset_top = 860.0
+offset_right = 640.0
+offset_bottom = 1060.0
+pivot_offset = Vector2(100, 100)
+size_flags_horizontal = 4
+size_flags_vertical = 4

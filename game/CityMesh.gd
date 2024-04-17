@@ -58,13 +58,11 @@ func _process(delta):
 	if shield != get_parent().getShield(): $SubViewport/OutpostInfo.setShield(get_parent().getShield(), get_parent().getMaxShield())
 	if outpostName != get_parent().getName(): $Name.text = get_parent().getName()
 	if selected != get_parent().isSelected():
-		$RotationInvariant/Units.setSelection(get_parent().isSelected())
 		if get_parent().isSelected():
 			$FlagSprite.modulate = Color.WHITE
 		else:
 			color = null
 	if color != get_parent().getColor():
-		$RotationInvariant/Units.setColor(get_parent().getColor())
 		$FlagSprite.modulate = get_parent().getColor()
 	
 	units = get_parent().getUnits()

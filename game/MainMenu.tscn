@@ -1,12 +1,38 @@
-[gd_scene load_steps=20 format=3 uid="uid://byq6mjwxv3tt"]
+[gd_scene load_steps=30 format=3 uid="uid://byq6mjwxv3tt"]
 
 [ext_resource type="Script" path="res://MainMenu.gd" id="1_jslh6"]
+[ext_resource type="Shader" path="res://FloorShader.gdshader" id="2_6lw8g"]
 [ext_resource type="Shader" path="res://Background.gdshader" id="2_j3qni"]
 [ext_resource type="Theme" uid="uid://bfwpaonloeco5" path="res://resources/theme.tres" id="2_pk1f5"]
+[ext_resource type="Shader" path="res://Shield.gdshader" id="2_rru4b"]
+[ext_resource type="Shader" path="res://OceanFloor.gdshader" id="3_33fof"]
 [ext_resource type="Texture2D" uid="uid://bv5d2gydbkiq" path="res://resources/images/play.png" id="3_w5suc"]
 [ext_resource type="Texture2D" uid="uid://cwrcutyiv8l8j" path="res://resources/images/search.png" id="4_qhor3"]
 [ext_resource type="Texture2D" uid="uid://b3hhk4u32imks" path="res://resources/images/create.png" id="5_t8i2v"]
 [ext_resource type="Texture2D" uid="uid://dgu1vsouolbs" path="res://resources/images/account.png" id="6_huq68"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_r5sl6"]
+render_priority = 0
+shader = ExtResource("2_6lw8g")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_8e4sn"]
+render_priority = 0
+shader = ExtResource("3_33fof")
+shader_parameter/cameraSize = null
+shader_parameter/mapWidth = null
+shader_parameter/mapHeight = null
+shader_parameter/meshWidth = null
+shader_parameter/meshHeight = null
+shader_parameter/resolution = null
+shader_parameter/outposts = null
+shader_parameter/outpostsLength = 0
+shader_parameter/speed = 0.1
+shader_parameter/tmp = 0.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_6cggy"]
+render_priority = 0
+shader = ExtResource("2_rru4b")
+shader_parameter/speed = 0.005
 
 [sub_resource type="Gradient" id="Gradient_at5e0"]
 
@@ -62,6 +88,47 @@ bg_color = Color(0, 0, 0, 1)
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_gxotn"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_i0dqg"]
+bg_color = Color(0, 0, 0, 1)
+
+[sub_resource type="Animation" id="Animation_ym5fu"]
+resource_name = "fade_from_black"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Fade:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.1, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_mso28"]
+resource_name = "fade_to_black"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Fade:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_hho3n"]
+_data = {
+"fade_from_black": SubResource("Animation_ym5fu"),
+"fade_to_black": SubResource("Animation_mso28")
+}
+
 [node name="MainMenu" type="MarginContainer"]
 anchors_preset = 15
 anchor_right = 1.0
@@ -75,6 +142,27 @@ playScreen = "res://CurrentGameList.tscn"
 searchScreen = "res://OpenGameList.tscn"
 settingsScreen = "res://Settings.tscn"
 createScreen = "res://GameCreator.tscn"
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 2
+
+[node name="Shader1" type="Panel" parent="Control"]
+material = SubResource("ShaderMaterial_r5sl6")
+layout_mode = 2
+offset_right = 1080.0
+offset_bottom = 1920.0
+
+[node name="Shader2" type="Panel" parent="Control"]
+material = SubResource("ShaderMaterial_8e4sn")
+layout_mode = 2
+offset_right = 1080.0
+offset_bottom = 1920.0
+
+[node name="Shader3" type="Panel" parent="Control"]
+material = SubResource("ShaderMaterial_6cggy")
+layout_mode = 2
+offset_right = 1080.0
+offset_bottom = 1920.0
 
 [node name="Panel" type="Panel" parent="."]
 material = SubResource("ShaderMaterial_08d0q")
@@ -171,7 +259,18 @@ texture_normal = ExtResource("6_huq68")
 ignore_texture_size = true
 stretch_mode = 5
 
+[node name="Fade" type="Panel" parent="."]
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_i0dqg")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_hho3n")
+}
+
 [connection signal="pressed" from="VSplitContainer/HBoxContainer/Play/Play" to="." method="_on_play_pressed"]
 [connection signal="pressed" from="VSplitContainer/HBoxContainer/Search/Search" to="." method="_on_search_pressed"]
 [connection signal="pressed" from="VSplitContainer/HBoxContainer/Create/Create" to="." method="_on_create_pressed"]
 [connection signal="pressed" from="VSplitContainer/HBoxContainer/Settings/Settings" to="." method="_on_settings_pressed"]
+[connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_animation_player_animation_finished"]

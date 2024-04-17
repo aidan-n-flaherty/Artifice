@@ -1,10 +1,8 @@
-[gd_scene load_steps=70 format=3 uid="uid://br2r5ds75s4n0"]
+[gd_scene load_steps=39 format=3 uid="uid://br2r5ds75s4n0"]
 
 [ext_resource type="Script" path="res://CameraPivot.gd" id="1_eau0c"]
 [ext_resource type="Shader" path="res://FloorShader.gdshader" id="2_8pook"]
 [ext_resource type="Shader" path="res://OceanFloor.gdshader" id="3_c5j50"]
-[ext_resource type="Shader" path="res://Terrain.gdshader" id="4_chjma"]
-[ext_resource type="Script" path="res://VirtualCamera3D.gd" id="5_pgqk6"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_rqbvh"]
 resource_local_to_scene = true
@@ -206,207 +204,15 @@ size = Vector2(100, 100)
 [sub_resource type="PlaneMesh" id="PlaneMesh_xk06g"]
 size = Vector2(100, 260)
 
-[sub_resource type="Gradient" id="Gradient_of142"]
-offsets = PackedFloat32Array(0.144201, 0.554859)
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_uw4c3"]
-frequency = 0.0025
-fractal_octaves = 3
-cellular_distance_function = 1
-cellular_return_type = 6
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_pylon"]
-width = 800
-height = 2080
-seamless = true
-color_ramp = SubResource("Gradient_of142")
-noise = SubResource("FastNoiseLite_uw4c3")
-
-[sub_resource type="Gradient" id="Gradient_pnsj3"]
-offsets = PackedFloat32Array(0.356757, 1)
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_j6337"]
-noise_type = 2
-frequency = 0.0153
-fractal_octaves = 10
-cellular_distance_function = 1
-cellular_return_type = 6
-domain_warp_type = 1
-domain_warp_amplitude = 20.0
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_kjdxf"]
-width = 800
-height = 2080
-seamless = true
-color_ramp = SubResource("Gradient_pnsj3")
-noise = SubResource("FastNoiseLite_j6337")
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_82xy1"]
-noise_type = 2
-frequency = 0.005
-fractal_type = 2
-cellular_distance_function = 1
-cellular_return_type = 6
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_a40hr"]
-width = 800
-height = 2080
-seamless = true
-noise = SubResource("FastNoiseLite_82xy1")
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_mryke"]
-frequency = 0.05
-fractal_type = 2
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_qskt8"]
-width = 800
-height = 2080
-seamless = true
-noise = SubResource("FastNoiseLite_mryke")
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_gpnvy"]
-fractal_type = 2
-cellular_distance_function = 1
-cellular_return_type = 6
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_n05uk"]
-width = 800
-height = 2080
-seamless = true
-noise = SubResource("FastNoiseLite_gpnvy")
-
-[sub_resource type="Gradient" id="Gradient_us33e"]
-offsets = PackedFloat32Array(0, 0.916216)
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_871v3"]
-noise_type = 2
-frequency = 0.0051
-fractal_type = 2
-fractal_octaves = 8
-fractal_weighted_strength = 0.27
-cellular_distance_function = 1
-cellular_return_type = 6
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_h2jwo"]
-width = 800
-height = 2080
-seamless = true
-as_normal_map = true
-bump_strength = 32.0
-color_ramp = SubResource("Gradient_us33e")
-noise = SubResource("FastNoiseLite_871v3")
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ygns3"]
-width = 800
-height = 2080
-seamless = true
-color_ramp = SubResource("Gradient_us33e")
-noise = SubResource("FastNoiseLite_871v3")
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_rc4m1"]
-frequency = 0.1
-cellular_distance_function = 3
-cellular_return_type = 4
-domain_warp_enabled = true
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_aa3ug"]
-width = 800
-height = 600
-seamless = true
-noise = SubResource("FastNoiseLite_rc4m1")
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_ewhtu"]
-fractal_type = 2
-fractal_octaves = 7
-cellular_distance_function = 1
-cellular_return_type = 0
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_r1vl3"]
-width = 800
-height = 2080
-seamless = true
-noise = SubResource("FastNoiseLite_ewhtu")
-
-[sub_resource type="Gradient" id="Gradient_hqpi2"]
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_dm60g"]
-frequency = 0.005
-cellular_distance_function = 1
-cellular_return_type = 6
-domain_warp_enabled = true
-domain_warp_amplitude = 10.0
-domain_warp_frequency = 0.1
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_uke5f"]
-width = 800
-height = 2080
-seamless = true
-as_normal_map = true
-bump_strength = 16.0
-color_ramp = SubResource("Gradient_hqpi2")
-noise = SubResource("FastNoiseLite_dm60g")
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_wiike"]
-noise_type = 2
-frequency = 0.0153
-fractal_octaves = 6
-cellular_distance_function = 1
-cellular_return_type = 6
-domain_warp_type = 1
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_7tw3d"]
-width = 800
-height = 2080
-seamless = true
-noise = SubResource("FastNoiseLite_wiike")
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_8sceq"]
-frequency = 0.2
-domain_warp_enabled = true
-domain_warp_type = 1
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_r1vxk"]
-width = 800
-height = 2080
-seamless = true
-noise = SubResource("FastNoiseLite_8sceq")
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_1fvqb"]
-resource_local_to_scene = true
-render_priority = 0
-shader = ExtResource("4_chjma")
-shader_parameter/cameraSize = 100.0
-shader_parameter/epsilon = 0.1
-shader_parameter/outposts = PackedVector2Array(2.08165e-12, 2.08165e-12, 28.65, 2.08165e-12)
-shader_parameter/outpostsLength = 0
-shader_parameter/mapWidth = 100.0
-shader_parameter/mapHeight = 100.0
-shader_parameter/ridges = SubResource("NoiseTexture2D_ygns3")
-shader_parameter/erosion = SubResource("NoiseTexture2D_pylon")
-shader_parameter/texturing = SubResource("NoiseTexture2D_7tw3d")
-shader_parameter/texturing2 = SubResource("NoiseTexture2D_r1vxk")
-shader_parameter/rocks = SubResource("NoiseTexture2D_aa3ug")
-shader_parameter/stoneTexture = SubResource("NoiseTexture2D_r1vl3")
-shader_parameter/noise1 = SubResource("NoiseTexture2D_a40hr")
-shader_parameter/noise2 = SubResource("NoiseTexture2D_qskt8")
-shader_parameter/noise3 = SubResource("NoiseTexture2D_n05uk")
-shader_parameter/hole = SubResource("NoiseTexture2D_kjdxf")
-shader_parameter/texture_normal = SubResource("NoiseTexture2D_uke5f")
-shader_parameter/ridge_normal = SubResource("NoiseTexture2D_h2jwo")
-
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nf48j"]
 albedo_color = Color(0, 0, 0, 1)
-
-[sub_resource type="Environment" id="Environment_auhjg"]
-background_mode = 1
-background_color = Color(1, 1, 1, 1)
 
 [node name="CameraManager" type="Marker3D"]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 100, -100)
 script = ExtResource("1_eau0c")
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 2.08165e-12, 100, 100)
 keep_aspect = 0
 cull_mask = 3
 projection = 1
@@ -432,16 +238,6 @@ material_override = SubResource("ShaderMaterial_wmxwp")
 cast_shadow = 0
 mesh = SubResource("PlaneMesh_oid74")
 
-[node name="Terrain1" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -100, -100)
-visible = false
-layers = 2
-sorting_offset = -10000.0
-sorting_use_aabb_center = false
-cast_shadow = 0
-mesh = SubResource("PlaneMesh_xk06g")
-surface_material_override/0 = SubResource("ShaderMaterial_1fvqb")
-
 [node name="Darkness" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, -105, -110)
 visible = false
@@ -451,19 +247,3 @@ sorting_use_aabb_center = false
 cast_shadow = 0
 mesh = SubResource("PlaneMesh_xk06g")
 surface_material_override/0 = SubResource("StandardMaterial3D_nf48j")
-
-[node name="SubViewport" type="SubViewport" parent="."]
-transparent_bg = true
-size = Vector2i(1000, 1838)
-
-[node name="VirtualCamera3D" type="Camera3D" parent="SubViewport"]
-transform = Transform3D(-1, 6.18173e-08, 6.18173e-08, 0, 0.707107, -0.707107, -8.74228e-08, -0.707107, -0.707107, 0, -100, -100)
-keep_aspect = 0
-cull_mask = 5
-environment = SubResource("Environment_auhjg")
-projection = 1
-current = true
-fov = 37.8493
-size = 100.0
-far = 300.0
-script = ExtResource("5_pgqk6")

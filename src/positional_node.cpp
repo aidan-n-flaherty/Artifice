@@ -83,11 +83,11 @@ void PositionalNode::selectSpecialist(Camera3D *camera, const Ref<InputEvent> &e
 	const InputEventMouseButton* e = Object::cast_to<InputEventMouseButton>(event.ptr());
 	
 	if(e != nullptr && e->get_button_index() == MouseButton::MOUSE_BUTTON_LEFT && e->is_pressed()) {
-		emit_signal("selected", getID());
+		emit_signal("selected", id);
 	}
 
 	if(e != nullptr && e->get_button_index() == MouseButton::MOUSE_BUTTON_LEFT && e->is_released()) {
-		emit_signal("selected", id);
+		emit_signal("released", id);
 	}
 }
 

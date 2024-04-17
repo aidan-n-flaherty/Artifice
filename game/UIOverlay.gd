@@ -1,6 +1,5 @@
-extends Control
+extends MarginContainer
 
-var t = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -9,6 +8,7 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	t += delta
-	
-	$Control/Panel.rotation = t
+	pass
+
+func _unhandled_input(event):
+	get_viewport().set_input_as_handled()

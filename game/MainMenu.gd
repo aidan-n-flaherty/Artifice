@@ -19,6 +19,10 @@ func _ready():
 	$VSplitContainer/Content.add_child(current)
 	
 	GameData.menuSwitched.connect(switch_to)
+	
+	GameData.menuFade.connect(menu_fade)
+	
+	$AnimationPlayer.play("fade_from_black")
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
@@ -33,6 +37,9 @@ func switch_to(scene):
 	
 	$VSplitContainer/Content.add_child(current)
 
+func menu_fade():
+	$AnimationPlayer.play("fade_to_black")
+
 func _on_play_pressed():
 	switch_to(playScreen)
 
@@ -44,3 +51,6 @@ func _on_search_pressed():
 
 func _on_create_pressed():
 	switch_to(createScreen)
+
+func _on_animation_player_animation_finished(anim_name):
+	pass # Replace with function body.

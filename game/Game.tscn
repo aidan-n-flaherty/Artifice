@@ -1,8 +1,11 @@
-[gd_scene load_steps=38 format=3 uid="uid://cfaaort7dldjk"]
+[gd_scene load_steps=49 format=3 uid="uid://cfaaort7dldjk"]
 
 [ext_resource type="Script" path="res://Game.gd" id="1_s53r2"]
+[ext_resource type="Shader" path="res://Background.gdshader" id="2_v2kkt"]
 [ext_resource type="PackedScene" uid="uid://br2r5ds75s4n0" path="res://CameraManager.tscn" id="2_vm3rp"]
 [ext_resource type="PackedScene" uid="uid://n0lobms04k46" path="res://Timeline.tscn" id="3_jhu7k"]
+[ext_resource type="Shader" path="res://GodRay.gdshader" id="3_w0fl0"]
+[ext_resource type="Script" path="res://Panel.gd" id="8_0027i"]
 [ext_resource type="Texture2D" uid="uid://cy7ou3wycwjra" path="res://resources/images/back.png" id="9_4ris4"]
 [ext_resource type="Shader" path="res://FrostedGlassBlack.gdshader" id="9_5ehda"]
 [ext_resource type="Theme" uid="uid://bfwpaonloeco5" path="res://resources/theme.tres" id="9_ttxpu"]
@@ -20,8 +23,33 @@
 [ext_resource type="Texture2D" uid="uid://br2xninxoa36u" path="res://resources/gameMenuIcons/hireIconBeamDown (Proto 3).png" id="21_lwlj7"]
 [ext_resource type="Texture2D" uid="uid://df304hwlkhr6p" path="res://resources/gameMenuIcons/editIcon.png" id="24_7o8jj"]
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_irxqf"]
+shader = ExtResource("2_v2kkt")
+shader_parameter/speed = 0.005
+shader_parameter/cameraSize = 100.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_xxia2"]
+shader = ExtResource("3_w0fl0")
+shader_parameter/angle = 0.2
+shader_parameter/position = 2.08165e-12
+shader_parameter/spread = 1.0
+shader_parameter/cutoff = -1.0
+shader_parameter/falloff = 1.0
+shader_parameter/edge_fade = 0.15
+shader_parameter/speed = 2.0
+shader_parameter/ray1_density = 8.0
+shader_parameter/ray2_density = 32.0
+shader_parameter/ray2_intensity = 0.4
+shader_parameter/color = Vector4(0.7, 0.8, 1, 0.4)
+shader_parameter/hdr = false
+shader_parameter/seed = 5.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bhc6j"]
+bg_color = Color(1, 1, 1, 1)
+
 [sub_resource type="Gradient" id="Gradient_o0x8m"]
-offsets = PackedFloat32Array(0.155462, 0.84874)
+offsets = PackedFloat32Array(0.155462, 0.996226)
+colors = PackedColorArray(0, 0, 0, 1, 0.383597, 0.383597, 0.383597, 1)
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_ufufh"]
 frequency = 0.005
@@ -51,14 +79,13 @@ ambient_light_sky_contribution = 0.5
 reflected_light_source = 2
 glow_enabled = true
 glow_levels/2 = 1.0
-glow_levels/5 = 0.0
 glow_normalized = true
 glow_intensity = 0.5
 glow_strength = 0.8
 glow_bloom = 1.0
 glow_blend_mode = 0
 fog_enabled = true
-fog_light_color = Color(0.211765, 0.388235, 0.623529, 1)
+fog_light_color = Color(0.2, 0.368627, 0.596078, 1)
 fog_light_energy = 0.3
 fog_density = 0.001
 fog_sky_affect = 0.0
@@ -67,8 +94,8 @@ volumetric_fog_albedo = Color(0, 0, 0.403922, 1)
 
 [sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_itg02"]
 dof_blur_far_enabled = true
-dof_blur_far_distance = 180.0
-dof_blur_far_transition = 75.0
+dof_blur_far_distance = 315.0
+dof_blur_far_transition = 50.0
 dof_blur_near_distance = 100.0
 dof_blur_near_transition = 75.0
 dof_blur_amount = 0.2
@@ -103,252 +130,60 @@ bg_color = Color(1, 1, 1, 1)
 corner_radius_top_left = 30
 corner_radius_top_right = 30
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_kf6r0"]
-shader = ExtResource("9_5ehda")
-shader_parameter/lod = 4.0
-
 [sub_resource type="Animation" id="Animation_n3pi6"]
 length = 0.001
+
+[sub_resource type="Animation" id="Animation_qrm6y"]
+resource_name = "slide_down"
+length = 0.3
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Background:position")
+tracks/0/path = NodePath(".:position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
 "update": 0,
-"values": [Vector2(0, 0)]
+"values": [Vector2(0, 0), Vector2(2.08165e-12, 400)]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("Shop:position")
+tracks/1/path = NodePath(".:modulate")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
 "update": 0,
-"values": [Vector2(0, 0)]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("Status:position")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(0, 0)]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("Chat:position")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(0, 0)]
-}
-tracks/4/type = "value"
-tracks/4/imported = false
-tracks/4/enabled = true
-tracks/4/path = NodePath("Battle Forecast:position")
-tracks/4/interp = 1
-tracks/4/loop_wrap = true
-tracks/4/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(0, 0)]
-}
-tracks/5/type = "value"
-tracks/5/imported = false
-tracks/5/enabled = true
-tracks/5/path = NodePath("Background:modulate")
-tracks/5/interp = 1
-tracks/5/loop_wrap = true
-tracks/5/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Color(1, 1, 1, 1)]
-}
-tracks/6/type = "value"
-tracks/6/imported = false
-tracks/6/enabled = true
-tracks/6/path = NodePath("Shop:modulate")
-tracks/6/interp = 1
-tracks/6/loop_wrap = true
-tracks/6/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Color(1, 1, 1, 1)]
-}
-tracks/7/type = "value"
-tracks/7/imported = false
-tracks/7/enabled = true
-tracks/7/path = NodePath("Status:modulate")
-tracks/7/interp = 1
-tracks/7/loop_wrap = true
-tracks/7/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Color(1, 1, 1, 1)]
-}
-tracks/8/type = "value"
-tracks/8/imported = false
-tracks/8/enabled = true
-tracks/8/path = NodePath("Chat:modulate")
-tracks/8/interp = 1
-tracks/8/loop_wrap = true
-tracks/8/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Color(1, 1, 1, 1)]
-}
-tracks/9/type = "value"
-tracks/9/imported = false
-tracks/9/enabled = true
-tracks/9/path = NodePath("Battle Forecast:modulate")
-tracks/9/interp = 1
-tracks/9/loop_wrap = true
-tracks/9/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Color(1, 1, 1, 1)]
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
 }
 
 [sub_resource type="Animation" id="Animation_e0ywt"]
 resource_name = "slide_up"
-length = 0.6
+length = 0.3
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Background:position")
+tracks/0/path = NodePath(".:position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
 "times": PackedFloat32Array(0, 0.3),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
-"values": [Vector2(0, 500), Vector2(0, 0)]
+"values": [Vector2(2.08165e-12, 400), Vector2(0, 0)]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("Shop:position")
+tracks/1/path = NodePath(".:modulate")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
 "times": PackedFloat32Array(0, 0.3),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Vector2(0, 500), Vector2(0, 0)]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("Status:position")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.3),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Vector2(0, 500), Vector2(0, 0)]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("Chat:position")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"times": PackedFloat32Array(0, 0.3),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Vector2(0, 500), Vector2(0, 0)]
-}
-tracks/4/type = "value"
-tracks/4/imported = false
-tracks/4/enabled = true
-tracks/4/path = NodePath("Battle Forecast:position")
-tracks/4/interp = 1
-tracks/4/loop_wrap = true
-tracks/4/keys = {
-"times": PackedFloat32Array(0, 0.3),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Vector2(0, 500), Vector2(0, 0)]
-}
-tracks/5/type = "value"
-tracks/5/imported = false
-tracks/5/enabled = true
-tracks/5/path = NodePath("Background:modulate")
-tracks/5/interp = 1
-tracks/5/loop_wrap = true
-tracks/5/keys = {
-"times": PackedFloat32Array(0.1, 0.4),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
-}
-tracks/6/type = "value"
-tracks/6/imported = false
-tracks/6/enabled = true
-tracks/6/path = NodePath("Shop:modulate")
-tracks/6/interp = 1
-tracks/6/loop_wrap = true
-tracks/6/keys = {
-"times": PackedFloat32Array(0.1, 0.4),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
-}
-tracks/7/type = "value"
-tracks/7/imported = false
-tracks/7/enabled = true
-tracks/7/path = NodePath("Status:modulate")
-tracks/7/interp = 1
-tracks/7/loop_wrap = true
-tracks/7/keys = {
-"times": PackedFloat32Array(0.1, 0.4),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
-}
-tracks/8/type = "value"
-tracks/8/imported = false
-tracks/8/enabled = true
-tracks/8/path = NodePath("Chat:modulate")
-tracks/8/interp = 1
-tracks/8/loop_wrap = true
-tracks/8/keys = {
-"times": PackedFloat32Array(0.1, 0.4),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
-}
-tracks/9/type = "value"
-tracks/9/imported = false
-tracks/9/enabled = true
-tracks/9/path = NodePath("Battle Forecast:modulate")
-tracks/9/interp = 1
-tracks/9/loop_wrap = true
-tracks/9/keys = {
-"times": PackedFloat32Array(0.1, 0.4),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
@@ -357,11 +192,58 @@ tracks/9/keys = {
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_m75d7"]
 _data = {
 "RESET": SubResource("Animation_n3pi6"),
+"slide_down": SubResource("Animation_qrm6y"),
 "slide_up": SubResource("Animation_e0ywt")
 }
 
-[sub_resource type="ButtonGroup" id="ButtonGroup_uj4rd"]
-allow_unpress = true
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_kf6r0"]
+shader = ExtResource("9_5ehda")
+shader_parameter/lod = 4.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7sjvj"]
+shader = ExtResource("9_5ehda")
+shader_parameter/lod = 4.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v3lbm"]
+bg_color = Color(0, 0, 0, 1)
+
+[sub_resource type="Animation" id="Animation_0mnru"]
+resource_name = "fade_from_black"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Fade:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_s53n2"]
+resource_name = "fade_to_black"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Fade:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_435c8"]
+_data = {
+"fade_from_black": SubResource("Animation_0mnru"),
+"fade_to_black": SubResource("Animation_s53n2")
+}
 
 [node name="Game" type="MarginContainer"]
 anchors_preset = 15
@@ -373,8 +255,32 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource("1_s53r2")
 
+[node name="Control" type="Control" parent="."]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+
+[node name="Panel" type="Panel" parent="Control"]
+material = SubResource("ShaderMaterial_irxqf")
+layout_mode = 0
+
 [node name="Viewport" type="MarginContainer" parent="."]
 layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Viewport"]
+layout_mode = 2
+
+[node name="Panel" type="Panel" parent="Viewport/VBoxContainer"]
+material = SubResource("ShaderMaterial_xxia2")
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_bhc6j")
+
+[node name="Control" type="Control" parent="Viewport/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.5
 
 [node name="Viewport3D" type="Node3D" parent="Viewport"]
 
@@ -383,7 +289,7 @@ environment = SubResource("Environment_4km5k")
 camera_attributes = SubResource("CameraAttributesPractical_itg02")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="Viewport/Viewport3D"]
-transform = Transform3D(0.846193, -0.455804, -0.276044, -4.52873e-08, -0.518027, 0.855364, -0.532876, -0.723804, -0.438351, 0, 100, 0)
+transform = Transform3D(0.906308, 0.275029, -0.320882, -6.63776e-08, 0.759272, 0.650774, 0.422618, -0.589802, 0.688133, 0, 100, 0)
 layers = 3
 light_bake_mode = 1
 shadow_bias = 0.01
@@ -404,21 +310,24 @@ theme_override_constants/separation = 0
 [node name="MarginContainer" type="MarginContainer" parent="Viewport/GameOverlay"]
 layout_mode = 2
 size_flags_vertical = 3
+mouse_filter = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Viewport/GameOverlay/MarginContainer"]
 layout_mode = 2
 size_flags_vertical = 3
+mouse_filter = 2
 theme_override_constants/separation = 0
 
 [node name="Overlay" type="MarginContainer" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+mouse_filter = 2
 
 [node name="NotStarted" type="Panel" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay"]
 visible = false
 layout_mode = 2
-mouse_filter = 1
+mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_xn107")
 
 [node name="Label" type="Label" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/NotStarted"]
@@ -435,10 +344,12 @@ vertical_alignment = 1
 [node name="EndGame" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay" instance=ExtResource("13_iadse")]
 visible = false
 layout_mode = 2
+mouse_filter = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay"]
 layout_mode = 2
 size_flags_vertical = 3
+mouse_filter = 2
 theme_override_constants/separation = 0
 
 [node name="TopSpacer" type="HBoxContainer" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/VBoxContainer"]
@@ -547,6 +458,7 @@ visible = false
 layout_mode = 2
 size_flags_vertical = 3
 mouse_filter = 0
+mouse_force_pass_scroll_events = false
 
 [node name="Background" type="Panel" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/VSeparator/ElementDisplay/Panel"]
 material = SubResource("ShaderMaterial_w7sgj")
@@ -591,10 +503,18 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 mouse_filter = 2
 
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/VSeparator/TabDisplay"]
+root_node = NodePath("../Panel")
+libraries = {
+"": SubResource("AnimationLibrary_m75d7")
+}
+
 [node name="Panel" type="MarginContainer" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/VSeparator/TabDisplay"]
 visible = false
 layout_mode = 2
 mouse_filter = 0
+mouse_force_pass_scroll_events = false
+script = ExtResource("8_0027i")
 
 [node name="Background" type="Panel" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/VSeparator/TabDisplay/Panel"]
 material = SubResource("ShaderMaterial_kf6r0")
@@ -621,11 +541,6 @@ theme = null
 [node name="Battle Forecast" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/VSeparator/TabDisplay/Panel" instance=ExtResource("20_x2ppo")]
 visible = false
 layout_mode = 2
-
-[node name="AnimationPlayer" type="AnimationPlayer" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/VSeparator/TabDisplay/Panel"]
-libraries = {
-"": SubResource("AnimationLibrary_m75d7")
-}
 
 [node name="HSeparator" type="HBoxContainer" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay"]
 layout_mode = 2
@@ -666,6 +581,7 @@ layout_mode = 2
 size_flags_vertical = 3
 
 [node name="Background" type="ColorRect" parent="Viewport/GameOverlay/VMenuBar/Tabs"]
+material = SubResource("ShaderMaterial_7sjvj")
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -674,7 +590,6 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_vertical = 3
 size_flags_stretch_ratio = 0.1
-color = Color(0, 0, 0, 1)
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Viewport/GameOverlay/VMenuBar/Tabs"]
 layout_mode = 1
@@ -703,8 +618,6 @@ theme_override_constants/margin_bottom = 30
 [node name="StatusButton" type="TextureButton" parent="Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer/StatusContainer"]
 custom_minimum_size = Vector2(80, 80)
 layout_mode = 2
-toggle_mode = true
-button_group = SubResource("ButtonGroup_uj4rd")
 texture_normal = ExtResource("14_cfqet")
 ignore_texture_size = true
 stretch_mode = 5
@@ -720,8 +633,6 @@ theme_override_constants/margin_bottom = 30
 [node name="ChatButton" type="TextureButton" parent="Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer/ChatContainer"]
 custom_minimum_size = Vector2(80, 80)
 layout_mode = 2
-toggle_mode = true
-button_group = SubResource("ButtonGroup_uj4rd")
 texture_normal = ExtResource("15_lpw6h")
 ignore_texture_size = true
 stretch_mode = 5
@@ -737,8 +648,6 @@ theme_override_constants/margin_bottom = 30
 [node name="ShopButton" type="TextureButton" parent="Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer/ShopContainer"]
 custom_minimum_size = Vector2(80, 80)
 layout_mode = 2
-toggle_mode = true
-button_group = SubResource("ButtonGroup_uj4rd")
 texture_normal = ExtResource("21_lwlj7")
 ignore_texture_size = true
 stretch_mode = 5
@@ -754,8 +663,6 @@ theme_override_constants/margin_bottom = 30
 [node name="EditorButton" type="TextureButton" parent="Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer/EditorContainer"]
 custom_minimum_size = Vector2(80, 80)
 layout_mode = 2
-toggle_mode = true
-button_group = SubResource("ButtonGroup_uj4rd")
 texture_normal = ExtResource("24_7o8jj")
 ignore_texture_size = true
 stretch_mode = 5
@@ -782,10 +689,24 @@ mouse_filter = 2
 [node name="HBoxContainer" type="HBoxContainer" parent="MenuBar"]
 layout_mode = 2
 
+[node name="Fade" type="Panel" parent="."]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_v3lbm")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_435c8")
+}
+
 [connection signal="unselect" from="Viewport/Viewport3D/CameraManager" to="." method="_on_camera_manager_unselect"]
 [connection signal="pressed" from="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/VBoxContainer/TopSpacer/MarginContainer/BackButton" to="." method="_on_back_button_pressed"]
 [connection signal="value_changed" from="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/VBoxContainer/HBoxContainer/Control/PercentBar" to="." method="_on_percent_bar_value_changed"]
-[connection signal="toggled" from="Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer/StatusContainer/StatusButton" to="." method="_on_status_button_toggled"]
-[connection signal="toggled" from="Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer/ChatContainer/ChatButton" to="." method="_on_chat_button_toggled"]
-[connection signal="toggled" from="Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer/ShopContainer/ShopButton" to="." method="_on_shop_button_toggled"]
-[connection signal="toggled" from="Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer/EditorContainer/EditorButton" to="." method="_on_editor_button_toggled"]
+[connection signal="animation_finished" from="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/VSeparator/TabDisplay/AnimationPlayer" to="." method="_on_animation_player_animation_finished"]
+[connection signal="gui_input" from="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/VSeparator/TabDisplay/Panel" to="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/VSeparator/TabDisplay/Panel" method="_on_gui_input"]
+[connection signal="pressed" from="Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer/StatusContainer/StatusButton" to="." method="_on_status_button_pressed"]
+[connection signal="pressed" from="Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer/ChatContainer/ChatButton" to="." method="_on_chat_button_pressed"]
+[connection signal="pressed" from="Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer/ShopContainer/ShopButton" to="." method="_on_shop_button_pressed"]
+[connection signal="pressed" from="Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer/EditorContainer/EditorButton" to="." method="_on_editor_button_pressed"]
+[connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_animation_player_animation_finished"]
