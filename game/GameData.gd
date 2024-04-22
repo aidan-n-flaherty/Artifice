@@ -12,6 +12,8 @@ signal queuesChanged
 
 signal menuSwitched(menu)
 
+signal menuFade
+
 var Game = preload("res://Game.tscn")
 
 var GameDetail = preload("res://GameDetail.tscn")
@@ -47,6 +49,10 @@ var user
 var users = {}
 
 var baseResolution = Vector2i(1080, 1920)
+
+var mutex = Mutex.new()
+
+var thread
 
 func _ready():
 	var root = get_tree().get_root()
@@ -176,9 +182,9 @@ func changeGame(id: int):
 	emit_signal("gameChanged", id)
 
 func viewGame(id: int, past=false):
+	var t = Time.get_unix_time_from_system()
 	
-	var loading_screen = preload("res://loading_screen.tscn").instantiate()
-	goto_node(loading_screen)
+	emit_signal("menuFade")
 	
 	if not hasGame(id):
 		await loadGameState(id)
@@ -360,11 +366,6 @@ func addGame(game):
 	
 	emit_signal("gamesChanged")
 
-func bulkAddOrders(game, orders):
-	for order in orders:
-		game.bulkAddOrder(order.type, int(order.id), int(order.referenceID), float(order.timestamp), int(order.senderID), PackedInt32Array(order.argumentIDs), int(order.argumentIDs.size()))
-	game.endBulkAdd()
-
 func updateOrders(id: int):
 	if not hasGame(id):
 		return
@@ -409,7 +410,7 @@ func loadGameSettings(id: int):
 	
 	if games.has(id):
 		games[id].init(id, self.id, details.gameData.startTime, details.gameSettings.playerCap, users, details.gameSettings.settingOverrides)
-	
+
 func loadGameState(id: int):
 	var gameState = await HTTPManager.getReq("/fetchGameState", {
 		"gameID": id
@@ -420,10 +421,19 @@ func loadGameState(id: int):
 	
 	var details = getGameDetails(id)
 	
-	games[id] = GameInterface.new()
-	games[id].init(id, self.id, details.gameData.startTime, details.gameSettings.playerCap, gameState.users, details.gameSettings.settingOverrides)
+	var game = GameInterface.new()
+	game.init(id, self.id, details.gameData.startTime, details.gameSettings.playerCap, gameState.users, details.gameSettings.settingOverrides)
 	
-	bulkAddOrders(games[id], gameState.orders)
+	bulkAddOrders(game, gameState.orders)
+	
+	mutex.lock()
+	games[id] = game
+	mutex.unlock()
+
+func bulkAddOrders(game, orders):
+	for order in orders:
+		game.bulkAddOrder(order.type, int(order.id), int(order.referenceID), float(order.timestamp), int(order.senderID), PackedInt32Array(order.argumentIDs), int(order.argumentIDs.size()))
+	game.endBulkAdd()
 
 func addOrder(gameID: int, type, referenceID, timestamp, arguments):
 	var game = getGame(gameID)

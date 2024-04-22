@@ -40,7 +40,6 @@ func resize():
 	var cameraY = 100.0 * (pow(get_viewport().size.y, 0.5) * 3.0 / pow(get_viewport().size.x, 0.5))  * ((minZoom + maxZoom)/2.0 + tanh(zoom) * (maxZoom - minZoom) / PI)
 	
 	$Camera3D.size = cameraX
-	$SubViewport/VirtualCamera3D.size = cameraX
 	$FloorDisplay.size = Vector2(10 * cameraX, 10 * cameraY)
 	$FloorSprite.scale.z = cameraY/100.0
 	$FloorSprite.scale.x = cameraX/100.0
@@ -52,7 +51,7 @@ func resize():
 	$Darkness.scale.z = cameraY/100.0
 	$Darkness.scale.x = cameraX/100.0
 	
-	get_parent().get_node("WorldEnvironment").camera_attributes.dof_blur_far_distance = 180 * max(1.0, sqrt($Camera3D.size/100.0))
+	get_parent().get_node("WorldEnvironment").camera_attributes.dof_blur_far_distance = 315 * max(1.0, sqrt($Camera3D.size/100.0))
 
 func init(gameID: int):
 	self.game = GameData.getGame(gameID)

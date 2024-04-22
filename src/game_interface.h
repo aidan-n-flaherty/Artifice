@@ -84,6 +84,8 @@ private:
 
 	bool justSelect = false;
 
+	bool justSelectedSpecialist = false;
+
 	Point mouse;
 
 protected:

@@ -7,6 +7,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <algorithm>
+#include <sstream>
 #include "gameObjects/specialist.h"
 
 void GameSettings::loadDefaults() {
@@ -199,12 +200,9 @@ void GameSettings::addSetting(const char* type, const void* value){
         if(s != "") {
             activeHours.clear();
 
-            size_t pos = 0;
-            while ((pos = s.find(",")) != std::string::npos) {
-                activeHours.insert(abs(std::stoi(s.substr(0, pos))) % 24);
-
-                s.erase(0, pos + 1);
-            }
+            std::istringstream is( s );
+            int h;
+            while (is >> h) activeHours.insert(abs(h) % 24);
         }
     }
 }

@@ -7,31 +7,37 @@ signal menuSelectionChanged(menuItem)
 @export_file("*.tscn") var settingsScreen
 @export_file("*.tscn") var createScreen
 
-var current
+var current = null
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	if not GameData.currentTab:
 		GameData.currentTab = playScreen
 	
-	current = ResourceLoader.load(GameData.currentTab).instantiate()
-	
-	$VSplitContainer/Content.add_child(current)
+	switch_to(GameData.currentTab)
 	
 	GameData.menuSwitched.connect(switch_to)
+	
+	GameData.menuFade.connect(menu_fade)
+	
+	$AnimationPlayer.play("fade_from_black")
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
 	pass
 	
 func switch_to(scene):
-	$VSplitContainer/Content.remove_child(current)
+	if current:
+		$VSplitContainer/Content.remove_child(current)
 	
 	GameData.currentTab = scene
 	
 	current = ResourceLoader.load(GameData.currentTab).instantiate()
 	
 	$VSplitContainer/Content.add_child(current)
+
+func menu_fade():
+	$AnimationPlayer.play("fade_to_black")
 
 func _on_play_pressed():
 	switch_to(playScreen)
@@ -44,3 +50,6 @@ func _on_search_pressed():
 
 func _on_create_pressed():
 	switch_to(createScreen)
+
+func _on_animation_player_animation_finished(anim_name):
+	pass # Replace with function body.

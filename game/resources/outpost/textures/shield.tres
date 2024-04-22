@@ -41,7 +41,7 @@ noise = SubResource("FastNoiseLite_l8f6o")
 [sub_resource type="Gradient" id="Gradient_5dqiy"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_i0n36"]
-noise_type = 0
+noise_type = 2
 frequency = 0.005
 cellular_return_type = 6
 
@@ -49,7 +49,6 @@ cellular_return_type = 6
 width = 1024
 height = 1024
 seamless = true
-normalize = false
 color_ramp = SubResource("Gradient_5dqiy")
 noise = SubResource("FastNoiseLite_i0n36")
 

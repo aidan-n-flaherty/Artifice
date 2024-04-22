@@ -1,5 +1,7 @@
 extends MarginContainer
 
+signal battleForecastToggle(outpost)
+
 var gameID: int
 
 var game: GameInterface
@@ -47,6 +49,15 @@ func _process(delta):
 	else:
 		$VBoxContainer/HBoxContainer/Spacer2.hide()
 		$VBoxContainer/HBoxContainer/Cancel.hide()
+	
+	var battle = game.getNextBattleEvent(outpost.getID())
+	if battle >= 0:
+		$VBoxContainer/HBoxContainer/Spacer3.show()
+		$VBoxContainer/HBoxContainer/BattleForecast.show()
+	else: 
+		$VBoxContainer/HBoxContainer/Spacer3.hide()
+		$VBoxContainer/HBoxContainer/BattleForecast.hide()
+	
 	$VBoxContainer/HBoxContainer2/Units.text = str(outpost.getUnits())
 	get_parent().color = outpost.getColor()
 	get_parent().playerName = game.getPlayer(outpost.getOwnerID()).getName()
@@ -65,3 +76,7 @@ func _on_cancel_pressed():
 
 func _on_mine_pressed():
 	GameData.addOrder(gameID, "MINE", int(game.getReferenceID()), game.getTime(), [outpost.getID()])
+
+
+func _on_battle_forecast_pressed():
+	emit_signal("battleForecastToggle", outpost)

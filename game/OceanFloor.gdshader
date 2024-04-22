@@ -130,16 +130,15 @@ void fragment() {
 	
 	float lightStrength = 0.5 * getTexture(pos + speed * 0.5 * TIME * vec2(1.0), lightTexture1).r + 0.5 * getTexture(pos + speed * 0.5 * TIME * vec2(1.0, -1.0), lightTexture2).r;
 	
-	float val = 0.01 + 0.01 * stone + 0.01 * rock - 0.01 * ridge - 0.08 * ravine * ravine + 0.5 * sunlight * sunlight * max(1.5 * lightStrength - 0.5, 0.0);
+	float val = 0.01 + 0.01 * stone + 0.01 * rock - 0.01 * ridge - 0.08 * ravine * ravine;
 	
-	if(ravine > 0.8) val -= ravine - 0.8;
+	if(ravine > 0.8) val = -1.0;
+	else val += min(1.0, 10.0 * (0.8 - ravine)) * 0.5 * sunlight * sunlight * max(1.5 * lightStrength - 0.5, 0.0);
 	
 	METALLIC = 0.5;
 	ROUGHNESS = 0.75;
 	
-	vec3 normal = 0.5 * (getTexture(pos, detailedNormal).rgb - getTexture(pos, ridgeNormal).rgb) + 0.5 * getTexture(pos, stoneNormal).rgb + 0.5 * getTexture(pos, largeRidgeNormal).rgb;
-	
-	
+	vec3 normal = 0.5 * (getTexture(pos, detailedNormal).rgb - getTexture(pos, ridgeNormal).rgb) + 0.75 * getTexture(pos, stoneNormal).rgb + 0.5 * getTexture(pos, largeRidgeNormal).rgb;
 	
 	for(int i = 0; i < outpostsLength; i++) {
 		float dX = pos.x + outposts[i].x;

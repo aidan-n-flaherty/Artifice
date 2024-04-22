@@ -219,7 +219,7 @@ GameSettings GameInterface::loadSettings() {
 			for(int j = 0; j < arr.size(); j++) {
 				if(!Variant::can_convert(arr[j].get_type(), Variant::FLOAT)) continue;
 
-				if(j > 0) str += ",";
+				if(j > 0) str += " ";
 				str += std::to_string(int(std::round(double(arr[j]))));
 			}
 
@@ -412,9 +412,15 @@ void GameInterface::release(int id) {
 	dragged = false;
 	startDrag = false;
 
-	if(didDrag) {
-		return;
+	if(!didDrag) {
+		bool selectedSpecialist = selectedSpecialists.find(id) != selectedSpecialists.end();
+
+		if(game->hasSpecialist(id) && selectedSpecialist && !justSelectedSpecialist) {
+			setSelectedSpecialist(id);
+		}
 	}
+
+	justSelectedSpecialist = false;
 }
 
 void GameInterface::sendTo(int id) {
@@ -470,10 +476,18 @@ void GameInterface::sendTo(int id) {
 
 // event propagated from positional nodes, occurs when something is clicked on
 void GameInterface::select(int id) {
-	std::cout<<"started selection"<<std::endl;
+	bool hasSpecialist = game->hasSpecialist(id);
+
+	bool selectedSpecialist = hasSpecialist && selectedSpecialists.find(id) != selectedSpecialists.end();
+
+	if(hasSpecialist && !selectedSpecialist) {
+		setSelectedSpecialist(id);
+		justSelectedSpecialist = true;
+	}
+
 	justSelect = true;
 
-	if(getSelected() && id == getSelected()->getID()) {
+	if(getSelected() && (id == getSelected()->getID() || hasSpecialist)) {
 		Vessel* v1 = dynamic_cast<Vessel*>(getSelected());
 
 		if(v1) startDrag = willSendWith(SpecialistType::NAVIGATOR);
@@ -482,11 +496,7 @@ void GameInterface::select(int id) {
 		return;
 	}
 
-	if(game->hasSpecialist(id)) {
-		setSelectedSpecialist(id);
-		std::cout<<"finished selection with specialist selected"<<std::endl;
-		return;
-	}
+	if(hasSpecialist) return;
 
 	Vessel* v1 = dynamic_cast<Vessel*>(getObj(id));
 
@@ -494,7 +504,7 @@ void GameInterface::select(int id) {
 	
 	if(v1) startDrag = willSendWith(SpecialistType::NAVIGATOR);
 	else startDrag = true;
-  std::cout<<"finished selection"<<std::endl;
+  	std::cout<<"finished selection"<<std::endl;
 }
 
 void GameInterface::unselect() {

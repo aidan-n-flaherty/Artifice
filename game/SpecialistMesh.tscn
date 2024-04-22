@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://820462udup0w"]
+[gd_scene load_steps=12 format=3 uid="uid://820462udup0w"]
 
 [ext_resource type="Script" path="res://SpecialistMesh.gd" id="1_ka51b"]
 [ext_resource type="Texture2D" uid="uid://c1f04o6gimvxl" path="res://resources/images/whiteCircle.png" id="2_puof1"]
@@ -21,6 +21,15 @@ shader = ExtResource("2_vhvoe")
 shader_parameter/inverted = false
 shader_parameter/translucent = false
 
+[sub_resource type="CylinderMesh" id="CylinderMesh_7vgjm"]
+top_radius = 2.5
+bottom_radius = 2.5
+height = 0.25
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_uctjo"]
+albedo_color = Color(0, 0, 0, 1)
+metallic = 1.0
+
 [sub_resource type="ViewportTexture" id="ViewportTexture_xim3k"]
 viewport_path = NodePath("SubViewport")
 
@@ -38,6 +47,13 @@ layers = 2
 cast_shadow = 0
 mesh = SubResource("CylinderMesh_vmxwe")
 surface_material_override/0 = SubResource("ShaderMaterial_fxjoc")
+
+[node name="Cylinder2" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 0, 0)
+layers = 2
+cast_shadow = 0
+mesh = SubResource("CylinderMesh_7vgjm")
+surface_material_override/0 = SubResource("StandardMaterial3D_uctjo")
 
 [node name="Sprite3D" type="Sprite3D" parent="."]
 transform = Transform3D(-1, 6.18173e-08, -6.18173e-08, 0, 0.707107, 0.707107, 8.74228e-08, 0.707107, -0.707107, 0, 0.1, -0.1)

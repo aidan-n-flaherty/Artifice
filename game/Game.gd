@@ -26,6 +26,8 @@ func _ready():
 	get_viewport().connect("size_changed", resize)
 	
 	resize()
+	
+	$AnimationPlayer.play("fade_from_black")
 
 func resize():
 	var element = elementDisplay()
@@ -179,11 +181,11 @@ func setDisplay(scene):
 func selectVessel(vessel):
 	var scene = preload("res://VesselDetails.tscn").instantiate()
 	scene.init(vessel, gameID)
-	scene.battleForecastToggle.connect(vesselBattleForecast)
+	scene.battleForecastToggle.connect(battleForecast)
 	$Viewport/Viewport3D/CameraManager.selected(vessel)
 	setDisplay(scene)
 
-func vesselBattleForecast(vessel):
+func battleForecast(node):
 	if tabDisplay().get_node("Panel/Battle Forecast").visible:
 		setMenuDisplay(null, false)
 	else:
@@ -192,7 +194,7 @@ func vesselBattleForecast(vessel):
 		tabDisplay().get_node("Panel").remove_child(scene)
 		
 		scene = preload("res://Battle Forecast.tscn").instantiate()
-		scene.init(gameID, vessel.getID())
+		scene.init(gameID, node.getID())
 		tabDisplay().get_node("Panel").add_child(scene)
 		setMenuDisplay(scene, true)
 	
@@ -201,6 +203,7 @@ func selectOutpost(outpost):
 	print("Debug: got to the selectOutpost() function")
 	var scene = preload("res://OutpostDetails.tscn").instantiate()
 	scene.init(outpost, gameID)
+	scene.battleForecastToggle.connect(battleForecast)
 	$Viewport/Viewport3D/CameraManager.selected(outpost)
 	setDisplay(scene)
 	print("Debug: finished the selectOutpost() function")
@@ -208,7 +211,7 @@ func selectOutpost(outpost):
 func selectSpecialist(specialist):
 	var scene = preload("res://SpecialistDetails.tscn").instantiate()
 	scene.init(specialist, gameID)
-	scene.openShop.connect(_on_shop_button_toggled.bind(true))
+	scene.openShop.connect(_on_shop_button_pressed)
 	setDisplay(scene)
 	
 func deselect():
@@ -227,51 +230,55 @@ func _on_percent_bar_value_changed(value):
 	game.setPercent(value)
 
 func setMenuDisplay(scene, select):
+	if scene == menuDisplay:
+		scene = null
+		select = false
+	
 	if menuDisplay != null:
 		#$Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel/AnimationPlayer.play("menu_close")
 		#await get_tree().create_timer(0.4).timeout
 		menuDisplay.hide()
 		menuDisplay = null
-	
-	if select:
-		menuDisplay = scene
-		#await get_tree().create_timer(0.4).timeout
-		menuDisplay.show()
-		tabDisplay().get_node("Panel").show()
-		tabDisplay().get_node("Panel/AnimationPlayer").play("slide_up")
+
+	if scene == null or not select:
+		tabDisplay().get_node("AnimationPlayer").play("slide_down")
 	else:
-		#$Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel/AnimationPlayer.play("menu_close")
-		#await get_tree().create_timer(0.4).timeout
-		tabDisplay().get_node("Panel").hide()
+		menuDisplay = scene
+		menuDisplay.show()
+		
+		if not tabDisplay().get_node("Panel").visible or tabDisplay().get_node("Panel").modulate.a < 1.0:
+			tabDisplay().get_node("Panel").show()
+			tabDisplay().get_node("AnimationPlayer").play("slide_up")
 
-func _on_status_button_toggled(button_pressed):
-	setMenuDisplay(tabDisplay().get_node("Panel/Status"), button_pressed)
+func _on_status_button_pressed():
+	setMenuDisplay(tabDisplay().get_node("Panel/Status"), true)
 
+func _on_chat_button_pressed():
+	setMenuDisplay(tabDisplay().get_node("Panel/Chat"), true)
 
-func _on_chat_button_toggled(button_pressed):
-	setMenuDisplay(tabDisplay().get_node("Panel/Chat"), button_pressed)
+func _on_shop_button_pressed():
+	setMenuDisplay(tabDisplay().get_node("Panel/Shop"), true)
 
-
-func _on_shop_button_toggled(button_pressed):
-	setMenuDisplay(tabDisplay().get_node("Panel/Shop"), button_pressed)
-
-func _on_logs_button_toggled(button_pressed):
-	setMenuDisplay(tabDisplay().get_node("Panel/Logs"), button_pressed)
-
-func _on_editor_button_toggled(button_pressed):
-	setMenuDisplay(tabDisplay().get_node("Panel/GameEditor"), button_pressed)
-
-func _on_back_button_pressed():
-	$Viewport/Viewport3D.remove_child(game)
-	game.getFloorDisplay().set_process(false)
-	$Viewport/Viewport3D/CameraManager/FloorDisplay.remove_child(game.getFloorDisplay())
-	game.set_process(false)
+func _on_editor_button_pressed():
+	setMenuDisplay(tabDisplay().get_node("Panel/GameEditor"), true)
 	
-	GameData.goto_scene("res://MainMenu.tscn")
-
+func _on_back_button_pressed():
+	$AnimationPlayer.play("fade_to_black")
 
 func _on_camera_manager_unselect():
 	setMenuDisplay(null, false)
 	
 	for button in menuButtons:
 		button.button_pressed = false
+
+
+func _on_animation_player_animation_finished(anim_name):
+	if anim_name == "fade_to_black":
+		$Viewport/Viewport3D.remove_child(game)
+		game.getFloorDisplay().set_process(false)
+		$Viewport/Viewport3D/CameraManager/FloorDisplay.remove_child(game.getFloorDisplay())
+		game.set_process(false)
+	
+		GameData.goto_scene("res://MainMenu.tscn")
+	elif anim_name == "slide_down":
+		tabDisplay().get_node("Panel").hide()

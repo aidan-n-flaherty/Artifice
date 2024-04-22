@@ -1,71 +1,15 @@
-[gd_scene load_steps=26 format=3 uid="uid://bwsmo21vmyk76"]
+[gd_scene load_steps=14 format=3 uid="uid://bwsmo21vmyk76"]
 
 [ext_resource type="Script" path="res://GameDetail.gd" id="1_fslp1"]
 [ext_resource type="PackedScene" uid="uid://biekuv7dddk3m" path="res://GameEditor.tscn" id="1_nn7qw"]
 [ext_resource type="Texture2D" uid="uid://cy7ou3wycwjra" path="res://resources/images/back.png" id="2_15oje"]
-[ext_resource type="Shader" path="res://Background.gdshader" id="3_xbo1r"]
-[ext_resource type="Shader" path="res://FrostedGlass.gdshader" id="4_a6pw4"]
+[ext_resource type="PackedScene" uid="uid://c04qxpqrgw5cq" path="res://Background.tscn" id="3_kv22t"]
+[ext_resource type="PackedScene" uid="uid://b14auts774043" path="res://Shaders.tscn" id="3_ol3vy"]
 [ext_resource type="Texture2D" uid="uid://dlqmq6fklb6q8" path="res://resources/images/back_arrow.png" id="4_dxufy"]
 [ext_resource type="Theme" uid="uid://tg7ina762c6q" path="res://resources/themes/UITheme.tres" id="7_7xuqs"]
 
-[sub_resource type="Gradient" id="Gradient_at5e0"]
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_1xfhw"]
-gradient = SubResource("Gradient_at5e0")
-fill_from = Vector2(1, 0.926554)
-
-[sub_resource type="Gradient" id="Gradient_2s0lq"]
-colors = PackedColorArray(0.345946, 0.345946, 0.345946, 1, 0.849621, 0.849621, 0.849621, 1)
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_r4ruq"]
-noise_type = 2
-frequency = 0.0029
-cellular_distance_function = 1
-cellular_return_type = 6
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_tg2tt"]
-width = 1024
-height = 1024
-seamless = true
-color_ramp = SubResource("Gradient_2s0lq")
-noise = SubResource("FastNoiseLite_r4ruq")
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_kceku"]
-fractal_type = 2
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_dv8kp"]
-width = 1024
-height = 1024
-seamless = true
-noise = SubResource("FastNoiseLite_kceku")
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_0algg"]
-domain_warp_enabled = true
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_l0w18"]
-width = 1024
-height = 1024
-seamless = true
-noise = SubResource("FastNoiseLite_0algg")
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_acul1"]
-shader = ExtResource("3_xbo1r")
-shader_parameter/speed = 0.005
-shader_parameter/cameraSize = 100.0
-shader_parameter/noise = SubResource("NoiseTexture2D_tg2tt")
-shader_parameter/noise2 = SubResource("NoiseTexture2D_dv8kp")
-shader_parameter/noise3 = SubResource("NoiseTexture2D_l0w18")
-shader_parameter/gradient = SubResource("GradientTexture2D_1xfhw")
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tl4he"]
-bg_color = Color(0, 0, 0, 1)
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_6gjl4"]
-shader = ExtResource("4_a6pw4")
-shader_parameter/lod = 4.0
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fvx02"]
-bg_color = Color(0.0392157, 0.0392157, 0.0392157, 1)
+bg_color = Color(0, 0, 0, 0.156863)
 corner_radius_bottom_right = 30
 corner_radius_bottom_left = 30
 corner_detail = 16
@@ -88,22 +32,27 @@ theme_override_constants/margin_right = 0
 theme_override_constants/margin_bottom = 0
 script = ExtResource("1_fslp1")
 
-[node name="Panel" parent="." index="0"]
-material = SubResource("ShaderMaterial_acul1")
-theme_override_styles/panel = SubResource("StyleBoxFlat_tl4he")
+[node name="Background" parent="." index="0" instance=ExtResource("3_kv22t")]
+layout_mode = 2
 
-[node name="MarginContainer2" type="MarginContainer" parent="." index="1"]
+[node name="Shaders" parent="." index="1" instance=ExtResource("3_ol3vy")]
+custom_minimum_size = Vector2(2.08165e-12, 2.08165e-12)
+layout_mode = 2
+
+[node name="Panel" parent="." index="2"]
+visible = false
+
+[node name="MarginContainer2" type="MarginContainer" parent="." index="3"]
 layout_mode = 2
 theme_override_constants/margin_left = 50
 theme_override_constants/margin_right = 50
 theme_override_constants/margin_bottom = 50
 
 [node name="Panel" type="Panel" parent="MarginContainer2" index="0"]
-material = SubResource("ShaderMaterial_6gjl4")
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_fvx02")
 
-[node name="MarginContainer" parent="." index="2"]
+[node name="MarginContainer" parent="." index="4"]
 theme_override_constants/margin_left = 100
 theme_override_constants/margin_right = 100
 theme_override_constants/margin_bottom = 100
