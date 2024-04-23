@@ -3,6 +3,7 @@
 #include <ctime>
 #include <set>
 #include <map>
+#include <unordered_map>
 #include <vector>
 #include <limits>
 #include <algorithm>
@@ -75,109 +76,40 @@ Game::Game(GameSettings settings, int simulatorID, double startTime, double endT
     int numIterations = 100;
     double epsilon = 0.0001; //small distance used to check if bases are on top of each other. prevents divide by 0 errors.
 
-    std::vector<std::pair<int, Point>> startingPositions;
-    std::vector<std::pair<int, Point>> outpostPositions;
+    std::vector<Point> outpostPositions;
 
     std::unordered_map<int, std::vector<OutpostType>> outpostTypes;
 
     int n = 0;
     //going through a assigning each player a starting position
-    for(int id : playerIDs) {
-        double angle = 2 * acos(-1) * (n++) / players.size();
 
-        Point pos = Point(this->settings, this->settings->width/2 + 10 * cos(angle), this->settings->height/2 + 10 * sin(angle));
-        pos.constrain();
+    std::mt19937 gen(seed); //seeding the random number generator. Each time this value is referenced, a new random value
+                            //is generated from the given seed
+    //bounds for uniform distribution, used for generating random width and height coordinates for each outpost
+    std::uniform_int_distribution<> widthdistr(0, (this->settings->width)-1);
+    std::uniform_int_distribution<> heightdistr(0, (this->settings->height) - 1);
 
-        // std::mt19937 gen(seed); // alternate implementation that creates a randomized set of starting points
-        // Point pos = Point(this->settings, std::uniform_int_distribution<> distr(0, (this->settings->width)-1,
-        //                     std::uniform_int_distribution<> distr(0, (this->settings->height) - 1)));
-        // pos.constrain();
+    for(int i = 0; i < (playerIDs.size()) * settings.outpostsPerPlayer; i++) {
 
-        startingPositions.push_back(std::make_pair(id, pos));
+        Point pos = Point(this->settings, widthdistr(gen), heightdistr(gen));
         
-        std::vector<OutpostType> types;
+        //pos.constrain();
 
-        //assigns (factoryDensity * OutpostsPerPlayer) factories to each player, and fills the rest of their outposts with
-        //generators
-        for(int j = 0; j < getSettings()->outpostsPerPlayer; j++) {
-            if(j < getSettings()->factoryDensity * getSettings()->outpostsPerPlayer) types.push_back(OutpostType::FACTORY);
-            else types.push_back(OutpostType::GENERATOR);
-        }
-        //std::shuffle(types.begin(), types.end(), std::default_random_engine(seed));
+        outpostPositions.push_back(pos);
 
-        outpostTypes[id] = types;
     }
-
     //------------------------------------------------------------------------------------
-
-    //goes through the current starting positions for each player and makes sure that they
-    //are in equilibrium
-    for(int i = 0; i < numIterations; i++) {
-        double mag = 10.0 - (10.0 * i) / numIterations;
-        for(int j = 0; j < startingPositions.size(); j++) {
-            for(int k = j + 1; k < startingPositions.size(); k++) {
-                if(j == k) continue; //checks to see if the two starting positions are the same
-
-                Point& a = startingPositions[j].second;
-                Point& b = startingPositions[k].second;
-
-                double dist = a.closestDistance(b);
-
-                if(dist < epsilon) { //if distance is such that the bases are basically overlapping,
-                                     //add epsilon * cos(angle) to the x coordinate of a's starting point and vice versa
-                    double angle = atan2(cos(i + j), sin(i + j)); 
-                    a.set(a.getX() + epsilon * cos(angle), a.getY() + epsilon * sin(angle));
-                }
-
-                //moves the points away from each other
-                Point newA = a.movedTowards(a.closest(b), -mag/(0.01 * dist + 1));
-                Point newB = b.movedTowards(b.closest(a), -mag/(0.01 * dist + 1));
-
-                a = newA;
-                b = newB;
-            }
-        }
-    }
-
-    //creates the positions for each player's outposts, this is likely one of the things to be modified
-    for(auto& pair : startingPositions) {
-        for(int i = 0; i < getSettings()->outpostsPerPlayer; i++) {
-            double angle = 2 * acos(-1) * i / getSettings()->outpostsPerPlayer;
-
-            //here could be a place to introduce some element of randomness
-            Point pos = Point(getSettings(), pair.second.getX() + 20 * cos(angle), pair.second.getY() + 20 * sin(angle));
-            pos.constrain();
-
-            outpostPositions.push_back(std::make_pair(pair.first, pos));
-        }
-    }
 
     //iterates through the outposts of each player
     for(int i = 0; i < numIterations; i++) {
         double mag = 10.0 - (10.0 * i) / numIterations;
         for(int j = 0; j < outpostPositions.size(); j++) {
-            for(int k = 0; k < startingPositions.size(); k++) {
-                //moves the starting positions
-                Point& a = outpostPositions[j].second;
-                const Point& b = startingPositions[k].second;
 
-                double dist = a.closestDistance(b);
-
-                if(dist < epsilon) {
-                    double angle = atan2(cos(i + j), sin(i + j));
-                    a.set(a.getX() + epsilon * cos(angle), a.getY() + epsilon * sin(angle));
-                }
-
-                if(dist > 50) continue;
-
-                a.moveTowards(a.closest(b), -mag/(0.25 * dist + 1));
-            }
-            //starting positions are now fixed, and at equilibrium
             for(int k = j + 1; k < outpostPositions.size(); k++) {
                 if(j == k) continue;
 
-                Point& a = outpostPositions[j].second;
-                Point& b = outpostPositions[k].second;
+                Point& a = outpostPositions[j];
+                Point& b = outpostPositions[k];
 
                 double dist = a.closestDistance(b);
 
@@ -199,65 +131,251 @@ Game::Game(GameSettings settings, int simulatorID, double startTime, double endT
         }
     }
 
-    //Don't have to worry past this point in regards to randomizing outpost positions
 
-    // initializes the starter outposts as objects and assigns them the queen specialist
-    for(const std::pair<int, Point>& pair : startingPositions) {
-        Outpost* o = new Outpost(incrementObjCounter(), getSettings(), OutpostType::FACTORY, 20, pair.second.getX(), pair.second.getY());
+
+    /* Both of these functions should be moved to after everything else:
+    */
+    
+    int numPlayers = players.size();
+    
+    std::vector<Point> current_centroids;
+
+    //initalize the first centroid positions
+    while(current_centroids.size() < numPlayers){
+
+        //generates a new centroid randomly using the previously specified width and height distribution bounds
+        Point new_centroid = Point(this->settings, widthdistr(gen), heightdistr(gen));
+
+        //marker to check to make sure that the centroid does not yet exist
+        bool centroid_exists = false;
+
+        for(auto point : current_centroids){
+
+            if(point == new_centroid){
+                centroid_exists = true;
+            }
+
+        }
+        //if the newly generated centroid doesn't exist, then add it to the current centroids vector
+        if(centroid_exists == false){
+            current_centroids.push_back(new_centroid);
+        }
+    }
+
+    std::vector<std::tuple<double, double, int>> curr_centroid_data; //parallel vector to current_centroids.
+                                                       //in the same index as it's corresponding centroid in current_centroids,
+                                                       //stores (sum_of_all_x, sum_of_all_y, num_of_points)
+
+
+    //storing empty tuples in curr_centroid_data to be edited in the new centroid position calculations
+    for(int i = 0; i < current_centroids.size(); i++){
+        curr_centroid_data.push_back(std::tuple<double, double, int>());
+    }
+
+
+    //begin the k-mean clustering
+    for(int i = 0; i < numIterations; i++){
+        /*loop numIteration times
+
+        loop through each outpost location, and compare the minDistance from each centroid.
+        for the centroid it is closest to, increment the number of points in centroid's sector,
+        sum of all x coordinates, and sum of all y coordinates values in the centroid outpost counts map.
+        
+        Use the values currently in the vector of the centroid_outpost_counts to calculate a new centroid
+        location using the mean (average x and average y) of all other points.
+
+        */
+        
+        //resetting the stored data in curr_centroid data, so that a new average position
+        //can be calculated for each centroid
+
+        for(int i = 0; i < curr_centroid_data.size(); i++){
+
+            std::get<0>(curr_centroid_data[i]) = 0.0; //setting average x coordinate to zero
+            std::get<1>(curr_centroid_data[i]) = 0.0; //setting average y coordinate to zero
+            std::get<2>(curr_centroid_data[i]) = 0; //setting number of outposts that are closest to it to zero
+
+        }
+
+        for(auto curr_point : outpostPositions){
+
+            int closest_centroid_index = -1;
+            double dist_from_closest_centroid = 1000000000000000; //arbitrarily large value
+
+            //loops through and finds the index of the centroid with the least distance from curr_point
+            for(int i = 0; i < current_centroids.size(); i++){
+
+                if(curr_point.closestDistance(current_centroids[i]) < dist_from_closest_centroid){
+                    closest_centroid_index = i;
+                    dist_from_closest_centroid = curr_point.closestDistance(current_centroids[i]);
+                }
+
+            }
+
+            if(closest_centroid_index == -1){
+                //error message, in case that all of the centroids are somehow invalid. Should never trigger.
+                std::cout << "Error in Map Generation: No Valid Centroids" << std::endl;
+            }
+            else{
+                //edit data for corresponding tuple in curr_centroid_data
+
+                //adjusting the sum of all x coordinates
+
+                double old_x = std::get<0>(curr_centroid_data[closest_centroid_index]);
+                std::get<0>(curr_centroid_data[closest_centroid_index]) = old_x + (current_centroids[closest_centroid_index].closest(curr_point)).getX();
+
+                //adjusting the sum of all y coordinates
+
+                double old_y = std::get<1>(curr_centroid_data[closest_centroid_index]);
+                std::get<1>(curr_centroid_data[closest_centroid_index]) = old_y + (current_centroids[closest_centroid_index].closest(curr_point)).getY();
+
+                //adding 1 to the total number of points closest to this centroid
+
+                int old_count = std::get<2>(curr_centroid_data[closest_centroid_index]);
+                std::get<2>(curr_centroid_data[closest_centroid_index]) = old_count + 1;
+
+                //remember to put blank tuples into the vector, so that they can be accessed by the necessary index!
+                //also remember to move the commented out loops to after all outposts have been initialized to a player
+            }
+        }
+        
+        //calculate new positions for all of the centroids
+
+        for(int i = 0; i < current_centroids.size(); i++){
+
+            double sum_x = std::get<0>(curr_centroid_data[i]);
+            double sum_y = std::get<1>(curr_centroid_data[i]);
+            int num_of_outposts = std::get<2>(curr_centroid_data[i]);
+
+            double average_x = sum_x / num_of_outposts;
+            double average_y = sum_y / num_of_outposts;
+
+            current_centroids[i].setX(average_x);
+            current_centroids[i].setY(average_y);
+        }
+
+
+    }
+
+    //all centroids should now be in place: figure out the closest amount (half of total outposts per player) and set them for the player
+
+    std::vector<OutpostType> types;
+
+    for(int i  = 0; i < playerIDs.size(); i++){
+        //assigns (factoryDensity * OutpostsPerPlayer) factory types to each player, and fills the rest of their outpost types with
+        //generators
+        for(int j = 0; j < getSettings()->outpostsPerPlayer; j++) {
+            if(j < getSettings()->factoryDensity * getSettings()->outpostsPerPlayer) types.push_back(OutpostType::FACTORY);
+            else types.push_back(OutpostType::GENERATOR);
+        }
+        //std::shuffle(types.begin(), types.end(), std::default_random_engine(seed));
+
+        outpostTypes[i] = types;
+    }
+
+    //this is gonna be a bit messy to read. The following is a hashmap that holds an ordered map
+    //of all of the closest points to each players' centroid. The key of the hashmap corresponds
+    //to the player to whom this centroid is assigned
+    std::unordered_map<int, std::map<double, Point>> grouped_outpost_positions;
+
+
+    //since current_centroids should be the same size as playerIDs, this loop declaration should work
+    //initializing all of the maps for each centroid
+    for(int i = 0; i < current_centroids.size(); i++){
+        grouped_outpost_positions[i] = std::map<double, Point>();
+    }
+
+    for(auto pos : outpostPositions){
+
+        int closest_centroid = -1; //the index of the closest centroid
+        double least_distance = 10000000000; //arbitrarily large value, should always be replaced
+
+        for(int i = 0; i < current_centroids.size(); i++){
+            if(pos.closestDistance(current_centroids[i]) < least_distance){
+                closest_centroid = i;
+                least_distance = pos.closestDistance(current_centroids[i]);
+            }
+        }
+
+        //if there is already some outpost stored that is exactly that distance away from the centroid.
+        //prevents the map from overriding any outposts. technically could cause weirdness, but the chance
+        //should be astronomically small.
+        while(grouped_outpost_positions[closest_centroid].find(least_distance) != grouped_outpost_positions[closest_centroid].end()){
+            least_distance += 0.00000000000000001; //adds the smallest possible value a standard double can hold.
+        }
+
+        grouped_outpost_positions[closest_centroid].insert({least_distance, pos});
+
+    }
+
+    for(auto& player_group : grouped_outpost_positions){
+
+        std::map<double, Point> curr_player_outposts = player_group.second;
+
+        std::map<double, Point>::iterator it = curr_player_outposts.begin();
+
+        int outposts_owned = 0;
+
+        int starting_owned = (settings.outpostsPerPlayer) / 2;
+
+        //initializing the outpost closest to this player's centroid to be their starter outpost,
+        //with the queen as its specialist
+
+        Outpost* o = new Outpost(incrementObjCounter(), getSettings(), OutpostType::FACTORY, 20, it->second.getX(), it->second.getY());
         addOutpost(o);
-        getPlayer(pair.first)->addOutpost(getOutpost(o->getID()));
+        getPlayer(player_group.first)->addOutpost(getOutpost(o->getID()));
 
         Specialist* s = new Specialist(incrementObjCounter(), getSettings(), SpecialistType::QUEEN);
         addSpecialist(s);
-        getPlayer(pair.first)->addSpecialist(getSpecialist(s->getID()));
-        getPlayer(pair.first)->getOutposts().front()->addSpecialist(getSpecialist(s->getID()));
+        getPlayer(player_group.first)->addSpecialist(getSpecialist(s->getID()));
+        getPlayer(player_group.first)->getOutposts().front()->addSpecialist(getSpecialist(s->getID()));
+
+        outposts_owned += 1; //remove this is we don't count starting outposts in the # of outposts each player should start with
+
+        it++;
+
+        while(it != curr_player_outposts.end()){
+            OutpostType type = outpostTypes[player_group.first].front();
+            outpostTypes[player_group.first].erase(outpostTypes[player_group.first].begin());
+
+            o = new Outpost(incrementObjCounter(), getSettings(), type, 20, it->second.getX(), it->second.getY());
+            addOutpost(o);
+
+            if(outposts_owned < starting_owned){
+                //only assigns the outpost as owned if the player doesn't have all of their starting outposts
+                getPlayer(player_group.first)->addOutpost(getOutpost(o->getID()));
+
+                std::cout << player_group.first << " has an outpost at " << o->getPosition().getX() << ", " << o->getPosition().getY() << " with ID = " << o->getID() << std::endl;
+                outposts_owned += 1;
+            }
+        }
     }
 
-    
-    
-    // int numPlayers = players.size();
+    // //initializes the starter outposts as objects and assigns them the queen specialist
+    // for(const std::pair<int, Point>& pair : startingPositions) {
+    //     Outpost* o = new Outpost(incrementObjCounter(), getSettings(), OutpostType::FACTORY, 20, pair.second.getX(), pair.second.getY());
+    //     addOutpost(o);
+    //     getPlayer(pair.first)->addOutpost(getOutpost(o->getID()));
 
-    // //implementation of k-mean clustering in order to determine where the starting position of each player should be 
-    // //int key is the ID of the player who each 
-    // //vector value should be read as follows: { number of points in centroid's sector,
-    // //                                          sum of all x coordinates, sum of all y coordinates }
-    // std::unordered_map<int, std::vector<int>> centroid_outpost_counts;
-    // std::unordered_map<int, Point> current_centroids;
-
-    // //initalize the first centroid positions
-    // for(auto pair : startingPositions){
-    //     current_centroids[pair.first] = pair.second;
-    //     std::vector<int> sector_init_values(3, 0); //initializes a vector with 3 elements all initialized to zero
-    //     centroid_outpost_counts[pair.first] = sector_init_values;
-    // }
-
-    // //begin the k-mean clustering
-    // for(int i = 0; i < numIterations; i++){
-    //     /*loop through numIteration times
-
-    //     loop through each outpost location, and compare the minDistance from each centroid.
-    //     for the centroid it is closest to, increment the number of points in centroid's sector,
-    //     sum of all x coordinates, and sum of all y coordinates values in the centroid outpost counts map.
-        
-    //     Use the values currently in the vector of the centroid_outpost_counts to calculate a new centroid
-    //     location using the mean (average x and average y) of all other points.
-
-    //     */
+    //     Specialist* s = new Specialist(incrementObjCounter(), getSettings(), SpecialistType::QUEEN);
+    //     addSpecialist(s);
+    //     getPlayer(pair.first)->addSpecialist(getSpecialist(s->getID()));
+    //     getPlayer(pair.first)->getOutposts().front()->addSpecialist(getSpecialist(s->getID()));
     // }
     
 
-    //iterates through the rest of outpost positions and outpost types and initializes all other outposts as objects
-    //and their specialists
-    for(const std::pair<int, Point>& pair : outpostPositions) {
-        OutpostType type = outpostTypes[pair.first].front();
-        outpostTypes[pair.first].erase(outpostTypes[pair.first].begin());
+    // //iterates through the rest of outpost positions and outpost types and initializes all other outposts as objects
+    // //and their specialists
+    // for(const std::pair<int, Point>& pair : outpostPositions) {
+    //     OutpostType type = outpostTypes[pair.first].front();
+    //     outpostTypes[pair.first].erase(outpostTypes[pair.first].begin());
 
-        Outpost* o = new Outpost(incrementObjCounter(), getSettings(), type, 20, pair.second.getX(), pair.second.getY());
-        addOutpost(o);
-        getPlayer(pair.first)->addOutpost(getOutpost(o->getID()));
+    //     Outpost* o = new Outpost(incrementObjCounter(), getSettings(), type, 20, pair.second.getX(), pair.second.getY());
+    //     addOutpost(o);
+    //     getPlayer(pair.first)->addOutpost(getOutpost(o->getID()));
 
-        std::cout << pair.first << " has an outpost at " << o->getPosition().getX() << ", " << o->getPosition().getY() << " with ID = " << o->getID() << std::endl;
-    }
+    //     std::cout << pair.first << " has an outpost at " << o->getPosition().getX() << ", " << o->getPosition().getY() << " with ID = " << o->getID() << std::endl;
+    // }
 
     // end map generation
 
