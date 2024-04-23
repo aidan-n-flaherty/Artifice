@@ -71,6 +71,16 @@ func _on_jump_pressed():
 
 func _on_cancel_pressed():
 	if outpost.getOriginatingOrder() != -1:
+		var response = await HTTPManager.postReq("/removeOrder", {}, {
+			"gameID": gameID,
+			"orderID": outpost.getOriginatingOrder()
+		})
+	
+		print(response)
+		
+		if !response:
+			return
+	
 		game.cancelOrder(outpost.getOriginatingOrder())
 
 

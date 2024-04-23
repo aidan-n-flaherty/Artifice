@@ -8,7 +8,7 @@ uniform sampler2D noise2;
 
 uniform sampler2D noise3;
 
-uniform sampler2D gradient;
+uniform float gradStrength = 1.0;
 
 uniform float speed = 0.005;
 
@@ -44,7 +44,7 @@ void fragment() {
 
 	//float displacement2 = texture(noise2, (UV - 0.5 + 0.01 * vec2(dX, dY)) * (cameraSize/100.0) + vec2(1.0, -1.0) * speed * TIME + NODE_POSITION_WORLD.xz/vec2(-100.0, 260.0)).r;
 	
-	float grad = texture(gradient, UV).r;
+	float grad = (1.0 - gradStrength) + gradStrength * (1.0 - UV.y);
 	
 	COLOR.rgb = vec3(grad * mix(displacement - 0.25, displacement - 0.25, 0.5));
 	COLOR.rgb = vec3(COLOR.r, 1.2 * COLOR.g, 1.5 * COLOR.b);

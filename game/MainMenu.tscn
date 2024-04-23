@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://byq6mjwxv3tt"]
+[gd_scene load_steps=16 format=3 uid="uid://byq6mjwxv3tt"]
 
 [ext_resource type="Script" path="res://MainMenu.gd" id="1_jslh6"]
 [ext_resource type="PackedScene" uid="uid://b14auts774043" path="res://Shaders.tscn" id="2_7nq6h"]
@@ -53,10 +53,27 @@ tracks/0/keys = {
 "values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
 }
 
+[sub_resource type="Animation" id="Animation_gfb4x"]
+resource_name = "fade_to_game"
+length = 0.2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Fade:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_hho3n"]
 _data = {
 "fade_from_black": SubResource("Animation_ym5fu"),
-"fade_to_black": SubResource("Animation_mso28")
+"fade_to_black": SubResource("Animation_mso28"),
+"fade_to_game": SubResource("Animation_gfb4x")
 }
 
 [node name="MainMenu" type="MarginContainer"]
@@ -85,7 +102,16 @@ mouse_filter = 2
 theme_override_constants/separation = 50
 dragger_visibility = 1
 
-[node name="Content" type="MarginContainer" parent="VSplitContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="VSplitContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 0
+
+[node name="UnsafeArea" type="Control" parent="VSplitContainer/VBoxContainer"]
+custom_minimum_size = Vector2(2.08165e-12, 2.08165e-12)
+layout_mode = 2
+
+[node name="Content" type="MarginContainer" parent="VSplitContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 
@@ -185,7 +211,6 @@ ignore_texture_size = true
 stretch_mode = 5
 
 [node name="Fade" type="Panel" parent="."]
-modulate = Color(1, 1, 1, 0)
 layout_mode = 2
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_i0dqg")

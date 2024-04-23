@@ -10,55 +10,23 @@ var color
 
 var outpostName
 
+var removed = false
+
+var added = false
+
 # Called when the node enters the scene tree for the first time.
-func _ready():	
-	$FloorSprite.texture = $SubViewport.get_texture()
-	#$factory.rotation.y = abs(sin(get_parent().getID() * 10.0)) * 2 * PI
-	#$factory2.rotation.y = $factory.rotation.y + PI/2 + abs(cos(get_parent().getID() * 20.0)) * PI/4
-	
-	return
-	
-	var noise = FastNoiseLite.new()
-	
-	noise.frequency = 0.15
-	noise.seed = get_parent().getID()
-	noise.fractal_type = 2
-	noise.fractal_octaves = 1
-	
-	var noise2 = FastNoiseLite.new()
-	
-	noise2.frequency = 0.15
-	noise2.seed = get_parent().getID()
-	noise2.noise_type = 0
-	
-	for x in range(-10, 11):
-		for y in range(-10, 11):
-			var mag = sqrt(x * x + y * y)
-			if(mag <= 3): continue
-			var height = min(1 - mag/10.0, -noise2.get_noise_2d(x, y))# + (1 - mag/10.0) * 10.0 * (0.5 + 0.5 * noise.get_noise_2d(x, y))
-			if(height <= 0): continue
-			if(mag <= 10.0): height += pow(1 - mag/10.0, 3) * 5.0 * (0.5 + 0.5 * noise.get_noise_2d(x, y))
-			
-			var scalar = 10
-			var cube = BoxMesh.new()
-			cube.size = Vector3(0.5, scalar * height, 0.5)
-			cube.material = preload("res://resources/gradient.tres")
-			#cube.material = preload("res://resources/metal.tres")
-			var mesh = MeshInstance3D.new()
-			mesh.set_mesh(cube)
-			mesh.position = Vector3(x/2.0, scalar * height/2, y/2.0)
-			
-			$City.add_child(mesh)
-	
-	$City.rotation.y = deg_to_rad(45)
+func _ready():
+	pass
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	if units != get_parent().getUnits(): $Units.text = str(get_parent().getUnits())
+	if units != get_parent().getUnits():
+		$Units.text = str(get_parent().getUnits())
 	if shield != get_parent().getShield():
 		$Shield.text = str(get_parent().getShield())
 		$SubViewport/OutpostInfo.setShield(get_parent().getShield(), get_parent().getMaxShield())
-	if outpostName != get_parent().getName(): $Name.text = get_parent().getName()
+	if outpostName != get_parent().getName():
+		$Name.text = get_parent().getName()
 	if selected != get_parent().isSelected():
 		if get_parent().isSelected():
 			$FlagSprite.modulate = Color.WHITE
@@ -78,3 +46,35 @@ func _process(delta):
 	elif get_parent().isGenerator():
 		$City/generators.show()
 		$City/factories.hide()
+	elif get_parent().isMine():
+		pass
+	else:
+		$City/generators.hide()
+		$City/factories.hide()
+		$shield.hide()
+		$City/buildings.hide()
+
+func _enter_tree():
+	if not get_node_or_null("SubViewport"):
+		var outpostInfo = get_node("SubViewportTemp/OutpostInfo")
+		$SubViewportTemp.remove_child(outpostInfo)
+		
+		var viewport = SubViewport.new()
+		viewport.size = Vector2i(200, 200)
+		viewport.name = "SubViewport"
+		viewport.transparent_bg = true
+		viewport.msaa_2d = Viewport.MSAA_4X
+		viewport.disable_3d = true
+		viewport.add_child(outpostInfo)
+		add_child(viewport)
+		
+		$FloorSprite.texture = viewport.get_texture()
+		viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
+
+func _exit_tree():
+	if get_node_or_null("SubViewport"):
+		var outpostInfo = get_node("SubViewport/OutpostInfo")
+		outpostInfo.set_owner(null)
+		get_node("SubViewport").remove_child(outpostInfo)
+		$SubViewportTemp.add_child(outpostInfo)
+		get_node("SubViewport").queue_free()

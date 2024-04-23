@@ -1,13 +1,14 @@
-[gd_scene load_steps=11 format=3 uid="uid://biekuv7dddk3m"]
+[gd_scene load_steps=10 format=3 uid="uid://biekuv7dddk3m"]
 
 [ext_resource type="Theme" uid="uid://tg7ina762c6q" path="res://resources/themes/UITheme.tres" id="1_sjo5m"]
-[ext_resource type="Script" path="res://GameEditor.gd" id="1_xc5ik"]
+[ext_resource type="Script" path="res://GameEditor.gd" id="2_ymahp"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tpxmc"]
 bg_color = Color(0.0392157, 0.0392157, 0.0392157, 0.156863)
 corner_radius_bottom_right = 30
 corner_radius_bottom_left = 30
 corner_detail = 16
+expand_margin_top = 1000.0
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_ktqn5"]
 
@@ -23,10 +24,6 @@ font_color = Color(0.45098, 0.45098, 0.45098, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_61g4f"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
 
-[sub_resource type="FontVariation" id="FontVariation_5ifx6"]
-spacing_top = 6
-spacing_bottom = 6
-
 [node name="GameEditor" type="MarginContainer"]
 anchors_preset = 15
 anchor_right = 1.0
@@ -34,7 +31,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_sjo5m")
-script = ExtResource("1_xc5ik")
+script = ExtResource("2_ymahp")
 
 [node name="Panel" type="Panel" parent="."]
 layout_mode = 2
@@ -633,10 +630,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_61g4f")
 
 [node name="AdvancedButton" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer"]
 layout_mode = 2
-theme = ExtResource("1_sjo5m")
-text = "
-Advanced
-
+text = "Advanced
 "
 
 [node name="Advanced" type="MarginContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer"]
@@ -1037,9 +1031,6 @@ placeholder_text = "Enter Password Here!"
 
 [node name="Activate" type="Button" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-theme = ExtResource("1_sjo5m")
-theme_override_fonts/font = SubResource("FontVariation_5ifx6")
-theme_override_font_sizes/font_size = 25
 text = "Create"
 
 [connection signal="pressed" from="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/AdvancedButton" to="." method="_on_advanced_button_pressed"]

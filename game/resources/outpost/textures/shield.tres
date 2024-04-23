@@ -12,29 +12,29 @@ fill_from = Vector2(1, 1)
 fill_to = Vector2(1, 0.132576)
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_j3lpt"]
-frequency = 0.005
+frequency = 0.02
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_syoi1"]
-width = 1024
-height = 1024
+width = 256
+height = 256
 seamless = true
 noise = SubResource("FastNoiseLite_j3lpt")
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_gknn5"]
-frequency = 0.005
+frequency = 0.02
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_grejy"]
-width = 1024
-height = 1024
+width = 256
+height = 256
 seamless = true
 noise = SubResource("FastNoiseLite_gknn5")
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_l8f6o"]
-frequency = 0.005
+frequency = 0.02
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_cg2j2"]
-width = 1024
-height = 1024
+width = 256
+height = 256
 seamless = true
 noise = SubResource("FastNoiseLite_l8f6o")
 
@@ -42,12 +42,12 @@ noise = SubResource("FastNoiseLite_l8f6o")
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_i0n36"]
 noise_type = 2
-frequency = 0.005
+frequency = 0.02
 cellular_return_type = 6
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_wh87w"]
-width = 1024
-height = 1024
+width = 256
+height = 256
 seamless = true
 color_ramp = SubResource("Gradient_5dqiy")
 noise = SubResource("FastNoiseLite_i0n36")

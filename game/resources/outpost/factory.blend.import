@@ -3,7 +3,7 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://cqnguh8jayx14"
+uid="uid://bt3kl4ohqjyen"
 path="res://.godot/imported/factory.blend-7f061345ed4d910e019a2c399ab478fe.scn"
 
 [deps]
@@ -13,8 +13,8 @@ dest_files=["res://.godot/imported/factory.blend-7f061345ed4d910e019a2c399ab478f
 
 [params]
 
-nodes/root_type="Node3D"
-nodes/root_name="Scene Root"
+nodes/root_type=""
+nodes/root_name=""
 nodes/apply_root_scale=true
 nodes/root_scale=1.0
 meshes/ensure_tangents=true
@@ -30,7 +30,7 @@ animation/trimming=false
 animation/remove_immutable_tracks=true
 import_script/path=""
 _subresources={}
-gltf/naming_version=0
+gltf/naming_version=1
 gltf/embedded_image_handling=1
 blender/nodes/visible=0
 blender/nodes/punctual_lights=true

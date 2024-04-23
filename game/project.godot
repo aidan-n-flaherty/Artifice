@@ -14,13 +14,15 @@ config/name="Artifice"
 run/main_scene="res://MainMenu.tscn"
 config/features=PackedStringArray("4.2", "Mobile")
 run/max_fps=60
+boot_splash/bg_color=Color(0, 0, 0, 1)
+boot_splash/image="res://resources/images/logo.png"
+boot_splash/fullsize=false
 config/icon="res://icon.svg"
 
 [autoload]
 
-Factory="*res://Factory.gd"
-GameData="*res://GameData.gd"
 HTTPManager="*res://HTTPManager.gd"
+GameData="*res://GameData.gd"
 Utilities="*res://Utilities.gd"
 WebSocketManager="*res://WebSocketManager.gd"
 
@@ -35,7 +37,11 @@ window/size/viewport_height=1920
 window/stretch/mode="viewport"
 window/stretch/aspect="expand"
 window/stretch/scale=2.0
-window/handheld/orientation=1
+window/handheld/orientation=6
+
+[editor]
+
+run/main_run_args="--verbose"
 
 [input]
 
@@ -62,9 +68,11 @@ pointing/emulate_touch_from_mouse=true
 [rendering]
 
 renderer/rendering_method="mobile"
+textures/vram_compression/import_etc2_astc=true
 lights_and_shadows/directional_shadow/size.mobile=4096
 lights_and_shadows/directional_shadow/soft_shadow_filter_quality=3
 lights_and_shadows/directional_shadow/soft_shadow_filter_quality.mobile=3
+textures/default_filters/use_nearest_mipmap_filter=true
 anti_aliasing/screen_space_roughness_limiter/enabled=false
 anti_aliasing/quality/msaa_2d=1
 anti_aliasing/quality/screen_space_aa=1

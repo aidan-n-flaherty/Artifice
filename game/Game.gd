@@ -27,6 +27,8 @@ func _ready():
 	
 	resize()
 	
+	$Fade.modulate = Color(0.0, 0.0, 0.0, 1.0)
+	
 	$AnimationPlayer.play("fade_from_black")
 
 func resize():
@@ -81,6 +83,8 @@ func resize():
 			$Viewport/GameOverlay/MarginContainer/HBoxContainer/HMenuBar.remove_child(tabs)
 			$Viewport/GameOverlay/VMenuBar.add_child(tabs)
 	
+	$Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/VBoxContainer/HBoxContainer/DisplaySpacerL.custom_minimum_size.x = DisplayServer.get_display_safe_area().position.x
+	$Viewport/GameOverlay/MarginContainer/HBoxContainer/DisplaySpacerR.custom_minimum_size.x = DisplayServer.screen_get_size().x - (DisplayServer.get_display_safe_area().position.x + DisplayServer.get_display_safe_area().size.x)
 
 func elementDisplay():
 	return get_node("Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/HSeparator/ElementDisplay") if get_node_or_null("Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/HSeparator/ElementDisplay") else get_node("Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/VSeparator/ElementDisplay")
@@ -92,7 +96,9 @@ func init(gameID):
 	self.gameID = gameID
 	
 	game = GameData.getGame(gameID)
+	game.resume()
 	game.set_process(true)
+	game.set_visible(true)
 	
 	game.connect("addOrder", addOrder)
 	game.connect("selectVessel", selectVessel)
@@ -114,8 +120,16 @@ func init(gameID):
 	
 	var details = GameData.getGameDetails(gameID)
 	
-	tabDisplay().get_node("Panel/GameEditor").setEditable(details.gameData.hostID == GameData.id and details.gameData.startTime > Time.get_unix_time_from_system() + 2 * 365 * 24 * 60 * 60)
-	tabDisplay().get_node("Panel/GameEditor").init(gameID)
+	
+	if tabDisplay().get_node_or_null("Panel/GameEditor"):
+		tabDisplay().remove_child(tabDisplay().get_node("Panel/GameEditor"))
+	
+	var gameEditor = ResourceLoader.load("res://GameModifier.tscn").instantiate()
+	gameEditor.name = "GameEditor"
+	gameEditor.hide()
+	tabDisplay().get_node("Panel").add_child(gameEditor)
+	gameEditor.setEditable(details.gameData.hostID == GameData.id and details.gameData.startTime > Time.get_unix_time_from_system() + 2 * 365 * 24 * 60 * 60)
+	gameEditor.init(gameID)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -274,10 +288,16 @@ func _on_camera_manager_unselect():
 
 func _on_animation_player_animation_finished(anim_name):
 	if anim_name == "fade_to_black":
-		$Viewport/Viewport3D.remove_child(game)
-		game.getFloorDisplay().set_process(false)
 		$Viewport/Viewport3D/CameraManager/FloorDisplay.remove_child(game.getFloorDisplay())
+		game.getFloorDisplay().set_process(false)
+		$Viewport/Viewport3D.remove_child(game)
 		game.set_process(false)
+		game.set_visible(false)
+		game.suspend()
+		
+		#GameData.games.erase(gameID)
+		#game.queue_free()
+		#game.getFloorDisplay().queue_free()
 	
 		GameData.goto_scene("res://MainMenu.tscn")
 	elif anim_name == "slide_down":

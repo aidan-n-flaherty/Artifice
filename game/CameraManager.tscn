@@ -1,8 +1,8 @@
-[gd_scene load_steps=39 format=3 uid="uid://br2r5ds75s4n0"]
+[gd_scene load_steps=6 format=3 uid="uid://br2r5ds75s4n0"]
 
 [ext_resource type="Script" path="res://CameraPivot.gd" id="1_eau0c"]
 [ext_resource type="Shader" path="res://FloorShader.gdshader" id="2_8pook"]
-[ext_resource type="Shader" path="res://OceanFloor.gdshader" id="3_c5j50"]
+[ext_resource type="PackedScene" uid="uid://c1jyi7u6vs44i" path="res://Terrain.tscn" id="3_3bdoh"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_rqbvh"]
 resource_local_to_scene = true
@@ -11,202 +11,6 @@ shader = ExtResource("2_8pook")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_utrlp"]
 size = Vector2(100, 100)
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_yhlki"]
-domain_warp_enabled = true
-domain_warp_amplitude = 10.0
-domain_warp_frequency = 0.1
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_lgm3h"]
-width = 1024
-height = 1024
-as_normal_map = true
-bump_strength = 32.0
-noise = SubResource("FastNoiseLite_yhlki")
-
-[sub_resource type="Gradient" id="Gradient_acd1m"]
-offsets = PackedFloat32Array(0.442478, 0.517699)
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_qs47c"]
-noise_type = 0
-frequency = 0.005
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_a2xk0"]
-width = 1024
-height = 1024
-invert = true
-as_normal_map = true
-bump_strength = 32.0
-color_ramp = SubResource("Gradient_acd1m")
-noise = SubResource("FastNoiseLite_qs47c")
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_f8wul"]
-frequency = 0.0025
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_f86rc"]
-width = 2048
-height = 2048
-noise = SubResource("FastNoiseLite_f8wul")
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_3t3fc"]
-seed = 1
-frequency = 0.0025
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_3utgw"]
-width = 2048
-height = 2048
-noise = SubResource("FastNoiseLite_3t3fc")
-
-[sub_resource type="Gradient" id="Gradient_ma67u"]
-offsets = PackedFloat32Array(0.159292, 0.902655)
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_rs7by"]
-noise_type = 2
-frequency = 0.004
-fractal_weighted_strength = 0.5
-cellular_distance_function = 1
-cellular_return_type = 6
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_4lckj"]
-width = 1024
-height = 1024
-as_normal_map = true
-bump_strength = 32.0
-color_ramp = SubResource("Gradient_ma67u")
-noise = SubResource("FastNoiseLite_rs7by")
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_kaoh2"]
-noise_type = 2
-frequency = 0.004
-cellular_distance_function = 1
-cellular_return_type = 6
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_nhqkd"]
-width = 1024
-height = 1024
-color_ramp = SubResource("Gradient_ma67u")
-noise = SubResource("FastNoiseLite_kaoh2")
-
-[sub_resource type="Gradient" id="Gradient_8awpg"]
-offsets = PackedFloat32Array(0, 0.667568)
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_umqgp"]
-noise_type = 2
-cellular_distance_function = 1
-cellular_return_type = 6
-domain_warp_type = 1
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_hrrny"]
-width = 1024
-height = 1024
-as_normal_map = true
-bump_strength = 16.0
-color_ramp = SubResource("Gradient_8awpg")
-noise = SubResource("FastNoiseLite_umqgp")
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_cp4d0"]
-noise_type = 2
-cellular_distance_function = 1
-cellular_return_type = 6
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_l1axq"]
-width = 1024
-height = 1024
-noise = SubResource("FastNoiseLite_cp4d0")
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_od8ok"]
-frequency = 0.0143
-domain_warp_enabled = true
-domain_warp_type = 1
-domain_warp_amplitude = 8.25
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_0p5ys"]
-width = 1024
-height = 1024
-noise = SubResource("FastNoiseLite_od8ok")
-
-[sub_resource type="Gradient" id="Gradient_pg2eg"]
-offsets = PackedFloat32Array(0, 0.32973)
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_bhkpf"]
-noise_type = 2
-frequency = 0.02
-domain_warp_enabled = true
-domain_warp_type = 1
-domain_warp_frequency = 0.04
-domain_warp_fractal_octaves = 1
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_bde0h"]
-width = 1024
-height = 1024
-as_normal_map = true
-bump_strength = 32.0
-color_ramp = SubResource("Gradient_pg2eg")
-noise = SubResource("FastNoiseLite_bhkpf")
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_vhyvg"]
-width = 1024
-height = 1024
-color_ramp = SubResource("Gradient_pg2eg")
-noise = SubResource("FastNoiseLite_bhkpf")
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_fcawy"]
-noise_type = 2
-frequency = 0.02
-fractal_octaves = 2
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ryqbk"]
-width = 1024
-height = 1024
-noise = SubResource("FastNoiseLite_fcawy")
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_14um6"]
-noise_type = 2
-seed = 1
-frequency = 0.02
-fractal_octaves = 2
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_sbgyu"]
-width = 1024
-height = 1024
-noise = SubResource("FastNoiseLite_14um6")
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_wmxwp"]
-resource_local_to_scene = true
-render_priority = 0
-shader = ExtResource("3_c5j50")
-shader_parameter/cameraSize = 100.0
-shader_parameter/mapWidth = 200.0
-shader_parameter/mapHeight = 200.0
-shader_parameter/meshWidth = 100.0
-shader_parameter/meshHeight = 100.0
-shader_parameter/resolution = 0.1
-shader_parameter/outposts = PackedVector2Array(0, 0)
-shader_parameter/outpostsLength = 1
-shader_parameter/speed = 2.0
-shader_parameter/tmp = 2.08165e-12
-shader_parameter/rockTexture = SubResource("NoiseTexture2D_0p5ys")
-shader_parameter/ridgeTexture = SubResource("NoiseTexture2D_l1axq")
-shader_parameter/stoneTexture = SubResource("NoiseTexture2D_vhyvg")
-shader_parameter/ravineTexture = SubResource("NoiseTexture2D_nhqkd")
-shader_parameter/detailedNormal = SubResource("NoiseTexture2D_lgm3h")
-shader_parameter/ridgeNormal = SubResource("NoiseTexture2D_hrrny")
-shader_parameter/ravineNormal = SubResource("NoiseTexture2D_4lckj")
-shader_parameter/largeRidgeNormal = SubResource("NoiseTexture2D_a2xk0")
-shader_parameter/stoneNormal = SubResource("NoiseTexture2D_bde0h")
-shader_parameter/sunlightTexture1 = SubResource("NoiseTexture2D_ryqbk")
-shader_parameter/sunlightTexture2 = SubResource("NoiseTexture2D_sbgyu")
-shader_parameter/lightTexture1 = SubResource("NoiseTexture2D_f86rc")
-shader_parameter/lightTexture2 = SubResource("NoiseTexture2D_3utgw")
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_oid74"]
-size = Vector2(100, 100)
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_xk06g"]
-size = Vector2(100, 260)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nf48j"]
-albedo_color = Color(0, 0, 0, 1)
 
 [node name="CameraManager" type="Marker3D"]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 100, -100)
@@ -227,24 +31,11 @@ transparent_bg = true
 size = Vector2i(1000, 2600)
 
 [node name="FloorSprite" type="MeshInstance3D" parent="."]
-transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 1.81899e-12, -100, -100)
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 2.08165e-12, -99, -100)
 sorting_offset = 1000.0
 sorting_use_aabb_center = false
 material_override = SubResource("ShaderMaterial_rqbvh")
 mesh = SubResource("PlaneMesh_utrlp")
 
-[node name="Terrain" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.81899e-12, -100.1, -100.293)
-material_override = SubResource("ShaderMaterial_wmxwp")
-cast_shadow = 0
-mesh = SubResource("PlaneMesh_oid74")
-
-[node name="Darkness" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, -105, -110)
-visible = false
-layers = 2
-sorting_offset = -10000.0
-sorting_use_aabb_center = false
-cast_shadow = 0
-mesh = SubResource("PlaneMesh_xk06g")
-surface_material_override/0 = SubResource("StandardMaterial3D_nf48j")
+[node name="Terrain" parent="." instance=ExtResource("3_3bdoh")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, -100, -100)

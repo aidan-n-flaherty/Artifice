@@ -17,6 +17,8 @@ var game
 
 var zoom = 0
 
+var zoomStart = 0
+
 @export var maxZoom = 1.5
 
 @export var minZoom = 0.5
@@ -28,6 +30,10 @@ var target = null
 var targetPos = null
 
 var cameraSize
+
+var touchEventStart = []
+
+var touchEventCurrent = []
 
 func _ready():
 	$FloorSprite.material_override.set_shader_parameter("screen_texture", $FloorDisplay.get_texture())
@@ -43,13 +49,11 @@ func resize():
 	$FloorDisplay.size = Vector2(10 * cameraX, 10 * cameraY)
 	$FloorSprite.scale.z = cameraY/100.0
 	$FloorSprite.scale.x = cameraX/100.0
-	$Terrain.material_override.set_shader_parameter("cameraSize", cameraX)
-	$Terrain.material_override.set_shader_parameter("meshHeight", cameraY)
-	$Terrain.material_override.set_shader_parameter("meshWidth", cameraX)
+	$Terrain.mesh.material.set_shader_parameter("cameraSize", cameraX)
+	$Terrain.mesh.material.set_shader_parameter("meshHeight", cameraY)
+	$Terrain.mesh.material.set_shader_parameter("meshWidth", cameraX)
 	$Terrain.scale.z = cameraY/100.0
 	$Terrain.scale.x = cameraX/100.0
-	$Darkness.scale.z = cameraY/100.0
-	$Darkness.scale.x = cameraX/100.0
 	
 	get_parent().get_node("WorldEnvironment").camera_attributes.dof_blur_far_distance = 315 * max(1.0, sqrt($Camera3D.size/100.0))
 
@@ -65,11 +69,11 @@ func updatePos():
 
 	#$Floor.get_surface_override_material(0).set_shader_parameter("offset", pos)
 	
-	var arr = game.getOutpostPositions()
-	$Terrain.material_override.set_shader_parameter("outposts", arr)
-	$Terrain.material_override.set_shader_parameter("outpostsLength", len(arr))
-	$Terrain.material_override.set_shader_parameter("mapWidth", game.getWidth())
-	$Terrain.material_override.set_shader_parameter("mapHeight", game.getHeight())
+	#var arr = game.getOutpostPositions()
+	#$Terrain.material_override.set_shader_parameter("outposts", arr)
+	#$Terrain.material_override.set_shader_parameter("outpostsLength", len(arr))
+	$Terrain.mesh.material.set_shader_parameter("mapWidth", game.getWidth())
+	$Terrain.mesh.material.set_shader_parameter("mapHeight", game.getHeight())
 
 func selected(node):
 	selectedNode = node
@@ -126,11 +130,8 @@ func _process(delta):
 		
 		game.setMouse(mousePos.x, mousePos.y)
 
-var a = 0
 func _unhandled_input(event):
 	if event is InputEventMouseButton:
-		print(a)
-		a += 1
 		if event.is_pressed():
 			mouse_start_pos = event.position
 			lastDiff = Vector2(0, 0)
@@ -191,3 +192,30 @@ func _unhandled_input(event):
 		elif(zoom < -3.0): zoom = -3.0
 		
 		resize()
+	
+	if event is InputEventScreenTouch:
+		if not event.pressed:
+			touchEventStart.remove_at(event.index)
+			touchEventCurrent.remove_at(event.index)
+		elif event.index >= len(touchEventStart):
+			touchEventStart.append(event.position)
+			touchEventCurrent.append(event.position)
+			
+			if event.index > 0:
+				dragging = false
+				zoomStart = zoom
+	
+	if event is InputEventScreenDrag and len(touchEventStart) == 2:
+		var dist1 = touchEventStart[0].distance_to(touchEventStart[1])
+		
+		touchEventCurrent[event.index] = event.position
+		
+		var dist2 = touchEventCurrent[0].distance_to(touchEventCurrent[1])
+		
+		zoom = zoomStart + 3.0 * log(dist1/dist2)/log(2)
+		if(zoom > 3.0): zoom = 3.0
+		elif(zoom < -3.0): zoom = -3.0
+		
+		resize()
+		
+

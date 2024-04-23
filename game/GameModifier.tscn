@@ -1,7 +1,14 @@
-[gd_scene load_steps=7 format=3 uid="uid://cji0ca8swtaxi"]
+[gd_scene load_steps=8 format=3 uid="uid://cji0ca8swtaxi"]
 
 [ext_resource type="PackedScene" uid="uid://biekuv7dddk3m" path="res://GameEditor.tscn" id="1_2tq6g"]
 [ext_resource type="Script" path="res://GameModifier.gd" id="2_ah1p0"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_brtyh"]
+bg_color = Color(0.239216, 0.239216, 0.239216, 0.196078)
+corner_radius_top_left = 30
+corner_radius_top_right = 30
+corner_radius_bottom_right = 30
+corner_radius_bottom_left = 30
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_8vndt"]
 
@@ -12,7 +19,12 @@
 [sub_resource type="ButtonGroup" id="ButtonGroup_xhxv3"]
 
 [node name="GameModifier" instance=ExtResource("1_2tq6g")]
+clip_contents = true
 script = ExtResource("2_ah1p0")
+
+[node name="Panel2" type="Panel" parent="." index="0"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_brtyh")
 
 [node name="2" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons" index="0"]
 button_group = SubResource("ButtonGroup_8vndt")

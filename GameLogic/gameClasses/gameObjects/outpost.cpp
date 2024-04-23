@@ -42,6 +42,11 @@ int Outpost::getUnitsAt(double& fractionalProduction, double timeDiff) const {
 }
 
 int Outpost::getShieldAt(double& fractionalShield, double timeDiff) const {
+    if(type == OutpostType::BROKEN) {
+        fractionalShield -= int(fractionalShield);
+        return 0;
+    }
+
     if(timeDiff <= 0) timeDiff = 0;
     
     timeDiff *= getSettings()->simulationSpeed;

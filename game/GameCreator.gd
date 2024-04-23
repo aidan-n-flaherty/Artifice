@@ -10,7 +10,8 @@ func activate():
 	var game = await super.activate()
 	
 	if game:
-		GameData.viewGame(game.gameData.id)
+		GameData.currentTab = "res://CurrentGameList.tscn"
+		GameData.goto_scene("res://MainMenu.tscn")
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):

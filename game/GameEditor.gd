@@ -21,7 +21,7 @@ var number_of_teams = 0
 
 var button_team_num = 0
 
-var team_button_pressed
+var team_button_pressed = false
 
 
 # Called when the node enters the scene tree for the first time.
@@ -103,6 +103,7 @@ func deserialize(gameID):
 	on_players_modified(true)
 	
 	var simSp = SettingsDefault.getSimulationSpeed()
+	print("Settings default", simSp)
 	if(settings.settingOverrides.has("simulationSpeed")):
 		simSp = settings.settingOverrides["simulationSpeed"]
 	
@@ -254,6 +255,7 @@ func activate():
 		print("Created game")
 		print(game)
 		GameData.addGame(game)
+		GameData.goto_scene("res://OpenGameList.tscn")
 		
 		return game
 	
@@ -299,12 +301,6 @@ func on_timescale_modified(button_pressed: bool, timescale):
 	if button_pressed:
 		$MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHours.visible = simulationTimescale == "days"
 		$MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows.visible = simulationTimescale == "days"
-
-func _on_create_toggled(toggled_on):
-	var game = await serialize()
-	
-	if game:
-		GameData.goto_scene("res://OpenGameList.tscn")
 		
 func on_team_number_modified(button_pressed: bool):
 	for child in $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/TeamButtons.get_children():

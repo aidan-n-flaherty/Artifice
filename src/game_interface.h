@@ -100,6 +100,10 @@ public:
 
 	void init(int gameID, int userID, int startTime, int playerCap, Dictionary players, Dictionary settingOverrides);
 
+	void suspend();
+
+	void resume();
+
 	GameSettings loadSettings();
 		
     void _process(double delta) override;
@@ -185,6 +189,9 @@ public:
 	bool ownsSpecialist(int specialistID) { return game->getSpecialist(specialistID)->getOwnerID() == userGameID; }
 	bool ownsObj(int objID) { return game->hasPosObject(objID) && game->getPosObject(objID)->getOwnerID() == userGameID; }
 
+
+	double getNextVictoryTime();
+	PlayerNode* getNextVictoryPlayer();
 	double getNextArrivalEvent(int vesselID);
 	double getNextProductionEvent(int outpostID);
 	double getNextBattleEvent(int objID);

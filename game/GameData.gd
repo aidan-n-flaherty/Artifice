@@ -14,9 +14,7 @@ signal menuSwitched(menu)
 
 signal menuFade
 
-var Game = preload("res://Game.tscn")
-
-var GameDetail = preload("res://GameDetail.tscn")
+signal loadGame(gameID, past)
 
 var currentTab = null
 
@@ -55,9 +53,6 @@ var mutex = Mutex.new()
 var thread
 
 func _ready():
-	var root = get_tree().get_root()
-	current_scene = root.get_child(root.get_child_count() - 1)
-	
 	get_viewport().connect("size_changed", resize)
 	resize()
 	
@@ -68,13 +63,15 @@ func _ready():
 	WebSocketManager.init(token)
 
 func resize():
-	get_tree().get_root().content_scale_factor = max(0.5, min(2.0, get_viewport().size.x * 1.0 / baseResolution.x))
+	get_tree().get_root().content_scale_factor = max(max(1.0, min(1.25, (baseResolution.x * 1.0 / baseResolution.y) / (get_viewport().size.x * 1.0 / get_viewport().size.y))), min(2.0, get_viewport().size.x * 1.0 / get_viewport().size.y))
 
 func goto_scene(path):
 	call_deferred("_deferred_goto_scene", path)
 
 func _deferred_goto_scene(path):
-	current_scene.queue_free()
+	if current_scene:
+		get_tree().get_root().remove_child(current_scene)
+		current_scene.queue_free()
 
 	var s = ResourceLoader.load(path)
 	current_scene = s.instantiate()
@@ -86,7 +83,9 @@ func goto_node(node) -> void:
 	call_deferred("_deferred_goto_node", node)
 	
 func _deferred_goto_node(node) -> void:
-	current_scene.queue_free()
+	if current_scene:
+		get_tree().get_root().remove_child(current_scene)
+		current_scene.queue_free()
 	
 	current_scene = node
 
@@ -148,7 +147,7 @@ func login():
 		if file:
 			auth = JSON.parse_string(file.get_as_text())
 
-	if auth:
+	if auth and int(auth.id) != 0 and str(auth.password) != "":
 		id = int(auth.id)
 		var password = str(auth.password)
 		
@@ -171,6 +170,8 @@ func login():
 		signup()
 	
 	print("Logged in!")
+	print("ID:", id)
+	print("Token", token)
 	#id = 3
 	#token = "5577006791947779410"
 	#id = 4
@@ -184,21 +185,25 @@ func changeGame(id: int):
 func viewGame(id: int, past=false):
 	var t = Time.get_unix_time_from_system()
 	
-	emit_signal("menuFade")
-	
+	emit_signal("loadGame", id, past)
+
+func viewGameCompletion(id: int, past=false):
 	if not hasGame(id):
 		await loadGameState(id)
 	
 	if past:
 		games[id].startAtEnd()
 	
-	var node = Game.instantiate()
+	games[id].set_process(false)
+	games[id].set_visible(false)
+	
+	var node = preload("res://Game.tscn").instantiate()
 	node.init(id)
 
 	goto_node(node)
 	
 func viewGameDetails(id: int):
-	var node = GameDetail.instantiate()
+	var node = preload("res://GameDetail.tscn").instantiate()
 	node.gameID = id
 
 	goto_node(node)
@@ -242,7 +247,10 @@ func loadChat(chatID: int):
 	
 	if chat and hasGame(chat.gameID):
 		self.chats[chatID] = chat
-		self.chatGroups[int(chat.gameID)].push_front(chat)
+		if not self.chatGroups.has(int(chat.gameID)):
+			self.chatGroups[int(chat.gameID)] = [chat]
+		else:
+			self.chatGroups[int(chat.gameID)].push_front(chat)
 		
 		if messageBuffer.has(chat.id):
 			var messages = messageBuffer[chat.id].filter(func(m1): return not chat.messages.any(func(m2): return m1.id == m2.id))
@@ -423,6 +431,8 @@ func loadGameState(id: int):
 	
 	var game = GameInterface.new()
 	game.init(id, self.id, details.gameData.startTime, details.gameSettings.playerCap, gameState.users, details.gameSettings.settingOverrides)
+	game.set_visible(false)
+	game.set_process(false)
 	
 	bulkAddOrders(game, gameState.orders)
 	
@@ -451,7 +461,6 @@ func addOrder(gameID: int, type, referenceID, timestamp, arguments):
 		print(order)
 	else:
 		print("failed to recieve order")
-		;
 
 	if(!order): return;
 	
@@ -550,3 +559,8 @@ func getOngoingGames():
 
 func getPastGames():
 	return pastGameIDs.keys()
+
+func _exit_tree():
+	for game in games.values():
+		game.queue_free()
+	

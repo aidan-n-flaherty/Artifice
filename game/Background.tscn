@@ -1,13 +1,7 @@
-[gd_scene load_steps=14 format=3 uid="uid://c04qxpqrgw5cq"]
+[gd_scene load_steps=12 format=3 uid="uid://c04qxpqrgw5cq"]
 
 [ext_resource type="Shader" path="res://Background.gdshader" id="1_yal4h"]
 [ext_resource type="Script" path="res://Background.gd" id="2_41fco"]
-
-[sub_resource type="Gradient" id="Gradient_at5e0"]
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_1xfhw"]
-gradient = SubResource("Gradient_at5e0")
-fill_from = Vector2(1, 1)
 
 [sub_resource type="Gradient" id="Gradient_2s0lq"]
 colors = PackedColorArray(0.345946, 0.345946, 0.345946, 1, 0.849621, 0.849621, 0.849621, 1)
@@ -46,13 +40,13 @@ noise = SubResource("FastNoiseLite_0algg")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_8khd5"]
 shader = ExtResource("1_yal4h")
+shader_parameter/gradStrength = 1.0
 shader_parameter/speed = 0.005
 shader_parameter/screenWidth = 1080.0
 shader_parameter/screenHeight = 1920.0
 shader_parameter/noise = SubResource("NoiseTexture2D_tg2tt")
 shader_parameter/noise2 = SubResource("NoiseTexture2D_dv8kp")
 shader_parameter/noise3 = SubResource("NoiseTexture2D_l0w18")
-shader_parameter/gradient = SubResource("GradientTexture2D_1xfhw")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5fxya"]
 bg_color = Color(0, 0, 0, 1)

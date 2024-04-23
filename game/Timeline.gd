@@ -16,7 +16,15 @@ var cap = -1
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass
+	for i in range(100):
+		var node = $Horizontal/TimeIndicators/Markers/Panel1.duplicate()
+		node.name = "Panel" + str(i + 2)
+		$Horizontal/TimeIndicators/Markers.add_child(node)
+		
+	for i in range(100):
+		var node = $Vertical/TimeIndicators/Markers/Panel1.duplicate()
+		node.name = "Panel" + str(i + 2)
+		$Vertical/TimeIndicators/Markers.add_child(node)
 
 func init(gameID):
 	self.gameID = gameID
@@ -48,24 +56,50 @@ func _process(delta):
 			change = time_start_pos - Time.get_unix_time_from_system() + 0.01
 			target = time_start_pos - Time.get_unix_time_from_system() + 0.01
 			game.setTime(Time.get_unix_time_from_system() + 0.01)
+			
+			userControlled = dragging
 	
 	var diff = (Time.get_unix_time_from_system() - game.getTime()) * game.getSimulationSpeed() / 3600.0
-	
-	$Vertical/TimeIndicators/ActualTime.size.y = size.y
 
-	$Horizontal/TimeIndicators/CurrentTime.position.x = size.x/2 - 40 + 2 * diff
+	$Horizontal/TimeIndicators/ActualTime.position.x = size.x/2
+	$Horizontal/TimeIndicators/CurrentTime.position.x = size.x/2 - $Vertical/TimeIndicators/CurrentTime.size.x + 2 * diff
+	$Vertical/TimeIndicators/ActualTime.position.y = size.y/2 - $Vertical/TimeIndicators/ActualTime.size.x
 	$Vertical/TimeIndicators/CurrentTime.position.y = size.y/2 - 2 * diff
 	
-	if abs(diff) > 0.05:
-		$Horizontal/Measurement/Label.text = Utilities.timeToStr(game.getTime()-Time.get_unix_time_from_system())
-		$Vertical/TimeIndicators/ActualTime/ActualTime/Label.text = Utilities.timeToStr(game.getTime()-Time.get_unix_time_from_system())
-	else:
-		$Horizontal/Measurement/Label.text = ""
-		$Vertical/TimeIndicators/ActualTime/ActualTime/Label.text = ""
+	for i in len($Horizontal/TimeIndicators/Markers.get_children()):
+		var pos = size.x/2 - 2.5 + 2 * diff + i * get_viewport_rect().size.x / 60.0
+		
+		while pos > get_viewport_rect().size.x:
+			pos -= get_viewport_rect().size.x
+			
+		while pos < 0:
+			pos += int(get_viewport_rect().size.x)
+		
+		get_node("Horizontal/TimeIndicators/Markers/Panel" + str(i + 1)).position.x = pos
+		get_node("Horizontal/TimeIndicators/Markers/Panel" + str(i + 1)).size.y = 20 if i % 4 == 0 else 10
+	
+	for i in len($Vertical/TimeIndicators/Markers.get_children()):
+		var pos = size.y/2 - 2.5 - 2 * diff + i * get_viewport_rect().size.y / 60.0
+		
+		while pos > get_viewport_rect().size.y:
+			pos -= get_viewport_rect().size.y
+			
+		while pos < 0:
+			pos += int(get_viewport_rect().size.y)
+		
+		get_node("Vertical/TimeIndicators/Markers/Panel" + str(i + 1)).position.y = pos
+		get_node("Vertical/TimeIndicators/Markers/Panel" + str(i + 1)).size.x = 20 if i % 4 == 0 else 10
 
-func _input(event):
-	if event.is_action("drag"):
-		if event.is_pressed() and mouseInComponent:
+	if abs(diff) > 0.05:
+		$Horizontal/Measurement/VBoxContainer/Label.text = Utilities.timeToStr(game.getTime()-Time.get_unix_time_from_system())
+		$Vertical/TimeIndicators/ActualTime/Label.text = Utilities.timeToStr(game.getTime()-Time.get_unix_time_from_system())
+	else:
+		$Horizontal/Measurement/VBoxContainer/Label.text = ""
+		$Vertical/TimeIndicators/ActualTime/Label.text = ""
+
+func _gui_input(event):
+	if event is InputEventMouseButton:
+		if event.is_pressed():
 			mouse_start_pos = event.position
 			time_start_pos = game.getTime()
 			dragging = true
@@ -76,7 +110,6 @@ func _input(event):
 			userControlled = true
 		else:
 			dragging = false
-			userControlled = false
 	elif event is InputEventMouseMotion and dragging:
 		if $Horizontal.visible:
 			target = 0.5 * 3600.0 / game.getSimulationSpeed() * (event.position.x - mouse_start_pos.x)

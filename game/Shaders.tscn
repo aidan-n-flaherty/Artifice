@@ -30,6 +30,7 @@ shader_parameter/speed = 0.005
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_c6m0r"]
 shader = ExtResource("4_pt022")
+shader_parameter/gradStrength = 1.0
 shader_parameter/speed = 0.005
 shader_parameter/screenWidth = 1080.0
 shader_parameter/screenHeight = 1920.0

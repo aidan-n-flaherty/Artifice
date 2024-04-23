@@ -1,4 +1,4 @@
-[gd_scene load_steps=50 format=3 uid="uid://cfaaort7dldjk"]
+[gd_scene load_steps=49 format=3 uid="uid://cfaaort7dldjk"]
 
 [ext_resource type="Script" path="res://Game.gd" id="1_s53r2"]
 [ext_resource type="PackedScene" uid="uid://b14auts774043" path="res://Shaders.tscn" id="2_qvr2g"]
@@ -18,7 +18,6 @@
 [ext_resource type="Texture2D" uid="uid://5rc0hts7wgcj" path="res://resources/gameMenuIcons/chartIcon.png" id="14_cfqet"]
 [ext_resource type="PackedScene" uid="uid://c7rmgavx0p0po" path="res://Chat.tscn" id="14_xpy25"]
 [ext_resource type="Texture2D" uid="uid://ddtmrm6d6rl0c" path="res://resources/gameMenuIcons/chatIcon.png" id="15_lpw6h"]
-[ext_resource type="PackedScene" uid="uid://cji0ca8swtaxi" path="res://GameModifier.tscn" id="19_efwav"]
 [ext_resource type="PackedScene" uid="uid://c0o7lbwqyauwq" path="res://Battle Forecast.tscn" id="20_x2ppo"]
 [ext_resource type="Texture2D" uid="uid://br2xninxoa36u" path="res://resources/gameMenuIcons/hireIconBeamDown (Proto 3).png" id="21_lwlj7"]
 [ext_resource type="Texture2D" uid="uid://df304hwlkhr6p" path="res://resources/gameMenuIcons/editIcon.png" id="24_7o8jj"]
@@ -98,7 +97,6 @@ volumetric_fog_density = 0.5024
 volumetric_fog_albedo = Color(0, 0, 0.403922, 1)
 
 [sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_itg02"]
-dof_blur_far_enabled = true
 dof_blur_far_distance = 315.0
 dof_blur_far_transition = 50.0
 dof_blur_near_distance = 100.0
@@ -387,6 +385,9 @@ layout_mode = 2
 size_flags_vertical = 3
 size_flags_stretch_ratio = 3.0
 
+[node name="DisplaySpacerL" type="Control" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+
 [node name="Spacer" type="Control" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(30, 0)
 layout_mode = 2
@@ -536,11 +537,6 @@ layout_mode = 2
 visible = false
 layout_mode = 2
 
-[node name="GameEditor" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/VSeparator/TabDisplay/Panel" instance=ExtResource("19_efwav")]
-visible = false
-layout_mode = 2
-theme = null
-
 [node name="Battle Forecast" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/VSeparator/TabDisplay/Panel" instance=ExtResource("20_x2ppo")]
 visible = false
 layout_mode = 2
@@ -561,6 +557,9 @@ size_flags_horizontal = 8
 mouse_filter = 2
 theme_override_constants/separation = 0
 
+[node name="DisplaySpacerR" type="Control" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer"]
+layout_mode = 2
+
 [node name="Spacer" type="Control" parent="Viewport/GameOverlay/MarginContainer"]
 visible = false
 custom_minimum_size = Vector2(2.08165e-12, 175)
@@ -572,7 +571,7 @@ layout_mode = 2
 size_flags_vertical = 8
 
 [node name="Timeline" parent="Viewport/GameOverlay/MarginContainer/VTimeline" instance=ExtResource("3_jhu7k")]
-custom_minimum_size = Vector2(80, 80)
+custom_minimum_size = Vector2(60, 60)
 layout_mode = 2
 
 [node name="VMenuBar" type="VBoxContainer" parent="Viewport/GameOverlay"]
@@ -613,10 +612,10 @@ size_flags_vertical = 3
 [node name="StatusContainer" type="MarginContainer" parent="Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/margin_left = 30
-theme_override_constants/margin_top = 30
-theme_override_constants/margin_right = 30
-theme_override_constants/margin_bottom = 30
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 50
 
 [node name="StatusButton" type="TextureButton" parent="Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer/StatusContainer"]
 custom_minimum_size = Vector2(80, 80)
@@ -628,10 +627,10 @@ stretch_mode = 5
 [node name="ChatContainer" type="MarginContainer" parent="Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/margin_left = 30
-theme_override_constants/margin_top = 30
-theme_override_constants/margin_right = 30
-theme_override_constants/margin_bottom = 30
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 50
 
 [node name="ChatButton" type="TextureButton" parent="Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer/ChatContainer"]
 custom_minimum_size = Vector2(80, 80)
@@ -643,10 +642,10 @@ stretch_mode = 5
 [node name="ShopContainer" type="MarginContainer" parent="Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/margin_left = 30
-theme_override_constants/margin_top = 30
-theme_override_constants/margin_right = 30
-theme_override_constants/margin_bottom = 30
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 50
 
 [node name="ShopButton" type="TextureButton" parent="Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer/ShopContainer"]
 custom_minimum_size = Vector2(80, 80)
@@ -658,10 +657,10 @@ stretch_mode = 5
 [node name="EditorContainer" type="MarginContainer" parent="Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/margin_left = 30
-theme_override_constants/margin_top = 30
-theme_override_constants/margin_right = 30
-theme_override_constants/margin_bottom = 30
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 50
 
 [node name="EditorButton" type="TextureButton" parent="Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer/EditorContainer"]
 custom_minimum_size = Vector2(80, 80)

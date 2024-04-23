@@ -8,6 +8,8 @@ func init(gameID):
 	setEditable(false)
 	
 	super.deserialize(gameID)
+	
+	$Background.material.set_shader_parameter("gradStrength", 0.75)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):

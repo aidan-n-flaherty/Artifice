@@ -63,8 +63,17 @@ func _process(delta):
 	get_parent().playerName = game.getPlayer(vessel.getOwnerID()).getName()
 
 func _on_cancel_pressed():
-	print(vessel.getOriginatingOrder())
 	if vessel.getOriginatingOrder() != -1:
+		var response = await HTTPManager.postReq("/removeOrder", {}, {
+			"gameID": gameID,
+			"orderID": vessel.getOriginatingOrder()
+		})
+	
+		print(response)
+		
+		if !response:
+			return
+	
 		game.cancelOrder(vessel.getOriginatingOrder())
 
 
@@ -86,7 +95,8 @@ func _on_gift_pressed():
 	
 	print(order)
 
-	if(!order): return;
+	if !order:
+		return
 	
 	game.addOrder(order.type, int(order.id), int(order.referenceID), float(order.timestamp), int(order.senderID), PackedInt32Array(order.argumentIDs), int(order.argumentIDs.size()))
 	

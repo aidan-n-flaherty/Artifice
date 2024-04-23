@@ -310,8 +310,11 @@ Game::~Game() {
 
 void Game::removeRelevant(int id) {
     for (auto it = events.begin(); it != events.end();) {
-        if((*it)->referencesObject(id)) events.erase(it++);
-        else ++it;
+        Event* e = *it;
+        if(e->referencesObject(id)) {
+            events.erase(it++);
+            delete e;
+        } else ++it;
     }
 }
 
@@ -603,6 +606,17 @@ const BattleEvent* Game::nextBattle(int id, double timestamp) {
         if(event->getTimestamp() > timestamp && event->referencesObject(id)) {
             BattleEvent* b = dynamic_cast<BattleEvent*>(event);
             if(b && !b->isFriendly()) return b;
+        }
+    }
+
+    return nullptr;
+}
+
+const WinConditionEvent* Game::nextWinCondition(double timestamp) {
+    for(Event* event : simulatedEvents) {
+        if(event->getTimestamp() > timestamp) {
+            WinConditionEvent* w = dynamic_cast<WinConditionEvent*>(event);
+            if(w) return w;
         }
     }
 

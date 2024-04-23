@@ -1,0 +1,22 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://bamufayui0hi1"
+path="res://.godot/imported/shieldRoots.obj-bc89a16153b85c78573ec54341cf871c.mesh"
+
+[deps]
+
+files=["res://.godot/imported/shieldRoots.obj-bc89a16153b85c78573ec54341cf871c.mesh"]
+
+source_file="res://resources/outpost/shieldRoots.obj"
+dest_files=["res://.godot/imported/shieldRoots.obj-bc89a16153b85c78573ec54341cf871c.mesh", "res://.godot/imported/shieldRoots.obj-bc89a16153b85c78573ec54341cf871c.mesh"]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+optimize_mesh=true
+force_disable_mesh_compression=false

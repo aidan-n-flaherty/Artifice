@@ -82,3 +82,5 @@ func _draw():
 		angle_from += 1.6
 		if angle_to >= angle_from:
 			draw_arc(center, radius, deg_to_rad(angle_from), deg_to_rad(angle_to), 16, color, width)
+	
+	get_parent().render_target_update_mode = SubViewport.UPDATE_ONCE

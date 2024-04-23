@@ -149,8 +149,11 @@ void fragment() {
 		while(dY > mapHeight/2.0) dY -= mapHeight;
 		while(dY < -mapHeight/2.0) dY += mapHeight;
 		
-		float mag = sqrt(dX * dX + dY * dY);
 		float radius = 10.0;
+		
+		if(abs(dX) > radius || abs(dY) > radius) continue;
+		
+		float mag = sqrt(dX * dX + dY * dY);
 		if(mag < radius) {
 			normal *= mag/radius;
 			val *= max(0.0, -1.0 + mag/radius*2.0);

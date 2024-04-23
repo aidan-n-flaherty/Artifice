@@ -1,9 +1,48 @@
-[gd_scene load_steps=3 format=3 uid="uid://n0lobms04k46"]
+[gd_scene load_steps=10 format=3 uid="uid://n0lobms04k46"]
 
 [ext_resource type="Script" path="res://Timeline.gd" id="1_nk2q8"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4pgfi"]
+bg_color = Color(0, 0, 0, 1)
+
 [sub_resource type="LabelSettings" id="LabelSettings_mfck5"]
 font_size = 26
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rd4ja"]
+bg_color = Color(0.783523, 0.783523, 0.783523, 1)
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wxee4"]
+bg_color = Color(1, 1, 1, 1)
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_right = 5
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8yfwk"]
+bg_color = Color(1, 1, 1, 1)
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 5
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4gtgl"]
+bg_color = Color(0.783523, 0.783523, 0.783523, 1)
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8leve"]
+bg_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 5
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_u6mta"]
+bg_color = Color(1, 1, 1, 1)
+corner_radius_top_right = 4
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 20
 
 [node name="Timeline" type="MarginContainer"]
 anchors_preset = 15
@@ -14,44 +53,8 @@ grow_vertical = 2
 mouse_filter = 0
 script = ExtResource("1_nk2q8")
 
-[node name="Horizontal" type="VBoxContainer" parent="."]
+[node name="Horizontal" type="MarginContainer" parent="."]
 layout_mode = 2
-mouse_filter = 2
-theme_override_constants/separation = 0
-
-[node name="TimeIndicators" type="Control" parent="Horizontal"]
-custom_minimum_size = Vector2(40, 40)
-layout_mode = 2
-mouse_filter = 2
-
-[node name="CurrentTime" type="Panel" parent="Horizontal/TimeIndicators"]
-custom_minimum_size = Vector2(40, 40)
-layout_mode = 2
-offset_right = 40.0
-offset_bottom = 40.0
-grow_horizontal = 2
-mouse_filter = 2
-
-[node name="ActualTime" type="HBoxContainer" parent="Horizontal/TimeIndicators"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-theme_override_constants/separation = 0
-
-[node name="Spacer" type="Control" parent="Horizontal/TimeIndicators/ActualTime"]
-custom_minimum_size = Vector2(40, 40)
-layout_mode = 2
-size_flags_horizontal = 10
-mouse_filter = 2
-
-[node name="ActualTime" type="Panel" parent="Horizontal/TimeIndicators/ActualTime"]
-custom_minimum_size = Vector2(40, 40)
-layout_mode = 2
-size_flags_horizontal = 2
 mouse_filter = 2
 
 [node name="Measurement" type="Control" parent="Horizontal"]
@@ -68,66 +71,75 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_vertical = 3
 mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_4pgfi")
 
-[node name="Label" type="Label" parent="Horizontal/Measurement"]
-custom_minimum_size = Vector2(2.08165e-12, 40)
+[node name="VBoxContainer" type="VBoxContainer" parent="Horizontal/Measurement"]
 layout_mode = 1
-anchors_preset = 10
+anchors_preset = 15
 anchor_right = 1.0
-offset_bottom = 36.0
+anchor_bottom = 1.0
 grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Spacer" type="Control" parent="Horizontal/Measurement/VBoxContainer"]
+custom_minimum_size = Vector2(2.08165e-12, 20)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Label" type="Label" parent="Horizontal/Measurement/VBoxContainer"]
+custom_minimum_size = Vector2(2.08165e-12, 40)
+layout_mode = 2
 text = "Test"
 label_settings = SubResource("LabelSettings_mfck5")
 horizontal_alignment = 1
 
-[node name="Vertical" type="HBoxContainer" parent="."]
+[node name="TimeIndicators" type="Control" parent="Horizontal"]
+custom_minimum_size = Vector2(40, 20)
+layout_mode = 2
+size_flags_vertical = 0
+mouse_filter = 2
+
+[node name="Markers" type="Control" parent="Horizontal/TimeIndicators"]
+layout_mode = 2
+anchors_preset = 0
+offset_right = 1080.0
+offset_bottom = 40.0
+mouse_filter = 2
+
+[node name="Panel1" type="Panel" parent="Horizontal/TimeIndicators/Markers"]
+custom_minimum_size = Vector2(5, 10)
+layout_mode = 0
+offset_right = 5.0
+offset_bottom = 20.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_rd4ja")
+
+[node name="CurrentTime" type="Panel" parent="Horizontal/TimeIndicators"]
+custom_minimum_size = Vector2(10, 30)
+layout_mode = 2
+offset_left = 530.0
+offset_top = -6.0
+offset_right = 540.0
+offset_bottom = 24.0
+grow_horizontal = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_wxee4")
+
+[node name="ActualTime" type="Panel" parent="Horizontal/TimeIndicators"]
+custom_minimum_size = Vector2(10, 30)
+layout_mode = 2
+offset_left = 540.0
+offset_top = -6.0
+offset_right = 550.0
+offset_bottom = 24.0
+size_flags_horizontal = 6
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_8yfwk")
+
+[node name="Vertical" type="MarginContainer" parent="."]
 visible = false
 layout_mode = 2
-mouse_filter = 2
-theme_override_constants/separation = 0
-
-[node name="TimeIndicators" type="Control" parent="Vertical"]
-custom_minimum_size = Vector2(40, 40)
-layout_mode = 2
-mouse_filter = 2
-
-[node name="ActualTime" type="VBoxContainer" parent="Vertical/TimeIndicators"]
-layout_mode = 2
-offset_right = 40.0
-offset_bottom = 1920.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-theme_override_constants/separation = 0
-
-[node name="ActualTime" type="Panel" parent="Vertical/TimeIndicators/ActualTime"]
-custom_minimum_size = Vector2(40, 40)
-layout_mode = 2
-size_flags_vertical = 10
-mouse_filter = 2
-
-[node name="Label" type="Label" parent="Vertical/TimeIndicators/ActualTime/ActualTime"]
-layout_mode = 2
-offset_left = -329.0
-offset_right = -19.0
-offset_bottom = 40.0
-text = "Test"
-label_settings = SubResource("LabelSettings_mfck5")
-horizontal_alignment = 2
-vertical_alignment = 1
-
-[node name="Spacer" type="Control" parent="Vertical/TimeIndicators/ActualTime"]
-custom_minimum_size = Vector2(40, 40)
-layout_mode = 2
-size_flags_vertical = 2
-mouse_filter = 2
-
-[node name="CurrentTime" type="Panel" parent="Vertical/TimeIndicators"]
-custom_minimum_size = Vector2(40, 40)
-layout_mode = 2
-offset_right = 40.0
-offset_bottom = 40.0
-grow_horizontal = 2
 mouse_filter = 2
 
 [node name="Measurement" type="Control" parent="Vertical"]
@@ -145,19 +157,63 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_vertical = 3
 mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_4pgfi")
 
-[node name="Label" type="Label" parent="Vertical/Measurement"]
-visible = false
-custom_minimum_size = Vector2(2.08165e-12, 40)
-layout_mode = 1
-anchors_preset = 10
-anchor_right = 1.0
-offset_top = 960.0
-offset_bottom = 1000.0
-grow_horizontal = 2
+[node name="TimeIndicators" type="Control" parent="Vertical"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Markers" type="Control" parent="Vertical/TimeIndicators"]
+layout_mode = 2
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 1920.0
+mouse_filter = 2
+
+[node name="Panel1" type="Panel" parent="Vertical/TimeIndicators/Markers"]
+custom_minimum_size = Vector2(10, 5)
+layout_mode = 0
+offset_right = 20.0
+offset_bottom = 5.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_4gtgl")
+
+[node name="ActualTime" type="Panel" parent="Vertical/TimeIndicators"]
+custom_minimum_size = Vector2(10, 30)
+layout_mode = 2
+offset_left = -6.0
+offset_top = 950.0
+offset_right = 4.0
+offset_bottom = 980.0
+rotation = -1.5708
+size_flags_horizontal = 6
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_8leve")
+
+[node name="Label" type="Label" parent="Vertical/TimeIndicators/ActualTime"]
+layout_mode = 2
+offset_left = 20.0
+offset_top = -310.0
+offset_right = 320.0
+offset_bottom = -274.0
+rotation = 1.5708
 text = "Test"
 label_settings = SubResource("LabelSettings_mfck5")
-horizontal_alignment = 1
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="CurrentTime" type="Panel" parent="Vertical/TimeIndicators"]
+custom_minimum_size = Vector2(10, 30)
+layout_mode = 2
+offset_left = -6.0
+offset_top = 960.0
+offset_right = 4.0
+offset_bottom = 990.0
+grow_horizontal = 2
+rotation = -1.5708
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_u6mta")
 
 [connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
 [connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]

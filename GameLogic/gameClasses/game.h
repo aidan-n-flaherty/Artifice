@@ -27,6 +27,8 @@ class BattleEvent;
 
 class VesselOutpostEvent;
 
+class WinConditionEvent;
+
 struct GameOrder {
     bool operator()(const std::shared_ptr<Game> &lhs, const std::shared_ptr<Game> &rhs) const;
 };
@@ -158,6 +160,7 @@ public:
     double getNextEndState() const { return nextEndState; }
     Event* nextAssociatedEvent(double timestamp, int id);
     const BattleEvent* nextBattle(int id, double timestamp);
+    const WinConditionEvent* nextWinCondition(double timestamp);
     const VesselOutpostEvent* nextArrival(int id, double timestamp);
     std::list<BattleEvent*> nextBattles(int id);
     const BattleEvent* simulatedBattle(int eventID);

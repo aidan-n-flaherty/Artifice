@@ -8,6 +8,7 @@
 #include "../GameLogic/gameClasses/game_settings.h"
 #include "../GameLogic/gameClasses/events/battle_event.h"
 #include "../GameLogic/gameClasses/events/vessel_outpost_event.h"
+#include "../GameLogic/gameClasses/events/win_condition_event.h"
 #include "vessel_node.h"
 #include "outpost_node.h"
 #include <godot_cpp/core/class_db.hpp>
@@ -41,6 +42,8 @@ double getTimeMillis() {
 }
 
 void GameInterface::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("suspend"), &GameInterface::suspend);
+	ClassDB::bind_method(D_METHOD("resume"), &GameInterface::resume);
 	ClassDB::bind_method(D_METHOD("select", "id"), &GameInterface::select);
 	ClassDB::bind_method(D_METHOD("sendTo", "id"), &GameInterface::sendTo);
 	ClassDB::bind_method(D_METHOD("release", "id"), &GameInterface::release);
@@ -78,6 +81,8 @@ void GameInterface::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("hasEnded"), &GameInterface::hasEnded);
 	ClassDB::bind_method(D_METHOD("getUserGameID"), &GameInterface::getUserGameID);
 	ClassDB::bind_method(D_METHOD("getReferenceID"), &GameInterface::getReferenceID);
+	ClassDB::bind_method(D_METHOD("getNextVictoryTime"), &GameInterface::getNextVictoryTime);
+	ClassDB::bind_method(D_METHOD("getNextVictoryPlayer"), &GameInterface::getNextVictoryPlayer);
 	ClassDB::bind_method(D_METHOD("getNextArrivalEvent"), &GameInterface::getNextArrivalEvent);
 	ClassDB::bind_method(D_METHOD("getNextProductionEvent"), &GameInterface::getNextProductionEvent);
 	ClassDB::bind_method(D_METHOD("getNextBattleEvent"), &GameInterface::getNextBattleEvent);
@@ -120,6 +125,29 @@ void GameInterface::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("moveTo", PropertyInfo(Variant::FLOAT, "t")));
 }
 
+void GameInterface::suspend() {
+	this->game = nullptr;
+	this->currentGame = nullptr;
+	this->simulatedGame = nullptr;
+
+	for(auto it = vessels.begin(); it != vessels.end();) {
+		it->second->queue_free();
+		remove_child(it->second);
+		it = vessels.erase(it);
+	}
+
+	for(auto it = outposts.begin(); it != outposts.end();) {
+		it->second->queue_free();
+		remove_child(it->second);
+		it = outposts.erase(it);
+	}
+}
+
+
+void GameInterface::resume() {
+	update();
+}
+
 void GameInterface::init(int gameID, int userID, int startTime, int playerCap, Dictionary players, Dictionary settingOverrides) {
 	std::cout << "started init function" << std::endl;
 	//crash testing
@@ -132,19 +160,22 @@ void GameInterface::init(int gameID, int userID, int startTime, int playerCap, D
 	this->currentGame = nullptr;
 	this->simulatedGame = nullptr;
 
-	for(auto it = this->vessels.begin(); it != this->vessels.end(); it++) {
+	for(auto it = this->vessels.begin(); it != this->vessels.end();) {
 		it->second->queue_free();
 		remove_child(it->second);
+		it = this->vessels.erase(it);
 	}
 
-	for(auto it = this->outposts.begin(); it != this->outposts.end(); it++) {
+	for(auto it = this->outposts.begin(); it != this->outposts.end();) {
 		it->second->queue_free();
 		remove_child(it->second);
+		it = this->outposts.erase(it);
 	}
 
-	for(auto it = this->players.begin(); it != this->players.end(); it++) {
+	for(auto it = this->players.begin(); it != this->players.end();) {
 		it->second->queue_free();
 		remove_child(it->second);
+		it = this->players.erase(it);
 	}
 	
 	this->vessels.clear();
@@ -640,7 +671,7 @@ PositionalNode* GameInterface::getTarget(double x, double y) {
 	Point p = Point(game->getSettings(), x, y);
 	p.constrain();
 
-	double minDist = 5.0;
+	double minDist = 10.0;
 
 	for(auto& pair : outposts) {
 		if(pair.first == selected || !pair.second->is_visible()) continue;
@@ -687,7 +718,16 @@ double GameInterface::projectedTime(double x, double y) {
 PackedVector2Array GameInterface::getOutpostPositions() {
 	PackedVector2Array arr;
 
+	double time = getTimeMillis();
+	double timeDiff = settings.clientToGameTime(getTime()) - game->getTime();
 	for(auto& pair : outposts) {
+		if(!pair.second->is_visible()) {
+			Player* p = future ? currentGame->getPlayer(getUserGameID()) : game->getPlayer(getUserGameID());
+
+			pair.second->setDiff(time, timeDiff);
+			pair.second->set_visible(p->withinRange(pair.second->getObj(), timeDiff));
+		}
+
 		if(!pair.second->is_visible()) continue;
 		const Point& p = pair.second->getObj()->getPositionAt(pair.second->getDiff());
 		arr.push_back(Vector2(p.getX(), p.getY()));
@@ -775,6 +815,18 @@ String GameInterface::getSpecialistName(int specialistNum) {
 
 String GameInterface::getSpecialistDescription(int specialistNum) {
 	return String(settings.specialistDescriptions[SpecialistType(specialistNum)].c_str());
+}
+
+double GameInterface::getNextVictoryTime() {
+	const WinConditionEvent* e = completeGame->nextWinCondition(getTime());
+
+	return e ? settings.gameToClientTime(e->getTimestamp()) : -1;
+}
+
+PlayerNode* GameInterface::getNextVictoryPlayer() {
+	const WinConditionEvent* e = completeGame->nextWinCondition(getTime());
+
+	return e ? players[e->getPlayerID()] : nullptr;
 }
 
 double GameInterface::getNextArrivalEvent(int vesselID) {

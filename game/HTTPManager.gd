@@ -37,6 +37,7 @@ func postReq(path, data, params, includeToken=true):
 	var response_code = response[1]
 	var response_headers = response[2]
 	
+	reqNode.queue_free()
 	remove_child(reqNode)
 	
 	if(response_code < 200 || response_code > 299):
@@ -78,6 +79,7 @@ func putReq(path, data, params, includeToken=true):
 	var response_code = response[1]
 	var response_headers = response[2]
 	
+	reqNode.queue_free()
 	remove_child(reqNode)
 	
 	if(response_code < 200 || response_code > 299):
@@ -118,6 +120,7 @@ func getReq(path, params={}, includeToken=true):
 	var response_headers = response[2]
 	var body = JSON.parse_string(response[3].get_string_from_utf8())
 	
+	reqNode.queue_free()
 	remove_child(reqNode)
 	
 	if(response_code < 200 || response_code > 299):
