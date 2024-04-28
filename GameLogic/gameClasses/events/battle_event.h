@@ -124,6 +124,10 @@ public:
         setPhaseUnits();
     }
 
+    std::pair<int, int> getBattleObjects() const {
+        return std::make_pair(aID, bID);
+    }
+
     static const std::list<std::string> getPhases() {
         return { "Specialist Phase", "Post-Specialist Phase", "Combat Resolution Phase", "Post-Combat Phase" };
     }

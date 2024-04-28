@@ -16,6 +16,8 @@ signal menuFade
 
 signal loadGame(gameID, past)
 
+signal loadGameDetail(gameID)
+
 var currentTab = null
 
 var current_scene = null
@@ -52,7 +54,17 @@ var mutex = Mutex.new()
 
 var thread
 
+var byteBrew = null
+
 func _ready():
+	if Engine.has_singleton("ByteBrew"):
+		byteBrew = Engine.get_singleton("ByteBrew")
+		#if OS.get_name() == "Android":
+		#	byteBrew.InitializeByteBrew("ANDROID GAME ID", "ANDROID GAME KEY", Engine.get_version_info().string, "1.0")
+		if OS.get_name() == "iOS":
+			byteBrew.InitializeByteBrew("eKK1bQDm1", "9LQjPNIHxho60LGa5IleSrpbB3iSmBE+Zr+mWcNW2oBETMQjc3xIj0l94S5kmAO+", Engine.get_version_info().string, "1.0")
+			byteBrew.StartPushNotifications()
+	
 	get_viewport().connect("size_changed", resize)
 	resize()
 	
@@ -153,11 +165,14 @@ func login():
 		
 		var expBackoff = 1
 		
+		var pushToken = byteBrew.GetUserID() if byteBrew else ""
+		print("Token ", pushToken)
+		
 		while true:
 			var response = await HTTPManager.postReq("/login", {
 				"id": id,
 				"password": password,
-				"pushToken": ""
+				"pushToken": pushToken
 			}, {}, false)
 		
 			if response:
@@ -182,9 +197,16 @@ func login():
 func changeGame(id: int):
 	emit_signal("gameChanged", id)
 
-func viewGame(id: int, past=false):
-	var t = Time.get_unix_time_from_system()
+func viewGameDetail(id: int):
+	emit_signal("loadGameDetail", id)
+
+func viewGameDetailCompletion(id: int):
+	var gameDetail = preload("res://GameDetail.tscn").instantiate()
+	gameDetail.init(id)
 	
+	goto_node(gameDetail)
+
+func viewGame(id: int, past=false):
 	emit_signal("loadGame", id, past)
 
 func viewGameCompletion(id: int, past=false):
@@ -320,11 +342,13 @@ func loadPastGames():
 		gameDetails[int(game.gameData.id)] = game
 
 func loadGames():
-	loadOpenGames()
+	await loadOpenGames()
 	
-	loadOngoingGames()
+	await loadOngoingGames()
 	
-	loadPastGames()
+	await loadPastGames()
+	
+	emit_signal("gamesChanged")
 
 func joinQueue(queueType: String):
 	if await HTTPManager.postReq("/joinQueue", {}, {
@@ -467,6 +491,24 @@ func addOrder(gameID: int, type, referenceID, timestamp, arguments):
 	game.addOrder(order.type, int(order.id), int(order.referenceID), float(order.timestamp), int(order.senderID), PackedInt32Array(order.argumentIDs), int(order.argumentIDs.size()))
 	
 	print("Order registered")
+
+func cancelOrder(gameID: int, orderID: int):
+	var game = getGame(gameID)
+	
+	if game and orderID != -1:
+		var response = await HTTPManager.postReq("/removeOrder", {}, {
+			"gameID": gameID,
+			"orderID": orderID
+		})
+	
+		print(response)
+		
+		if !response:
+			return
+	
+		game.cancelOrder(orderID)
+		
+		print("Canceled ", orderID)
 
 func sendMessage(chatID: int, content: String) -> bool:
 	return await HTTPManager.postReq("/sendMessage", {

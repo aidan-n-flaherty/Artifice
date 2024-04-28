@@ -34,6 +34,8 @@ void PositionalNode::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("getOwnerID"), &PositionalNode::getOwnerID);
 	ClassDB::bind_method(D_METHOD("select"), &PositionalNode::select);
 	ClassDB::bind_method(D_METHOD("isSelected"), &PositionalNode::isSelected);
+	ClassDB::bind_method(D_METHOD("isInRadar"), &PositionalNode::isInRadar);
+	ClassDB::bind_method(D_METHOD("canViewType"), &PositionalNode::canViewType);
 	ClassDB::bind_method(D_METHOD("getColor"), &PositionalNode::getColor);
 	ClassDB::bind_method(D_METHOD("selectSpecialist"), &PositionalNode::selectSpecialist);
 	ClassDB::bind_method(D_METHOD("canUndo"), &PositionalNode::canUndo);

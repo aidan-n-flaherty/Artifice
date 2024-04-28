@@ -42,7 +42,7 @@ void FloorDisplay::_draw() {
                 double x1 = pair.second->getPositionAt(getDiff()).getX();
                 double y1 = pair.second->getPositionAt(getDiff()).getY();
 
-                draw_circle(Vector2(x1 - x, y1 - y) * pixels, pair.second->getSonarRange() * pixels, Color(0.0, 0.0, 0.0));
+                draw_circle(Vector2(x1 - x, y1 - y) * pixels, pair.second->getSonarRange() * pixels, Color(0.25, 0.25, 0.25));
             }
         }
     }

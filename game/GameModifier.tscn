@@ -10,7 +10,7 @@ corner_radius_top_right = 30
 corner_radius_bottom_right = 30
 corner_radius_bottom_left = 30
 
-[sub_resource type="ButtonGroup" id="ButtonGroup_8vndt"]
+[sub_resource type="ButtonGroup" id="ButtonGroup_wllei"]
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_kvf6b"]
 
@@ -26,32 +26,32 @@ script = ExtResource("2_ah1p0")
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_brtyh")
 
-[node name="2" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons" index="0"]
-button_group = SubResource("ButtonGroup_8vndt")
+[node name="2" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons/HBoxContainer" index="0"]
+button_group = SubResource("ButtonGroup_wllei")
 
-[node name="3" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons" index="1"]
-button_group = SubResource("ButtonGroup_8vndt")
+[node name="3" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons/HBoxContainer" index="1"]
+button_group = SubResource("ButtonGroup_wllei")
 
-[node name="4" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons" index="2"]
-button_group = SubResource("ButtonGroup_8vndt")
+[node name="4" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons/HBoxContainer" index="2"]
+button_group = SubResource("ButtonGroup_wllei")
 
-[node name="5" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons" index="3"]
-button_group = SubResource("ButtonGroup_8vndt")
+[node name="5" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons/HBoxContainer" index="3"]
+button_group = SubResource("ButtonGroup_wllei")
 
-[node name="6" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons" index="4"]
-button_group = SubResource("ButtonGroup_8vndt")
+[node name="6" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons/HBoxContainer" index="4"]
+button_group = SubResource("ButtonGroup_wllei")
 
-[node name="7" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons" index="5"]
-button_group = SubResource("ButtonGroup_8vndt")
+[node name="7" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons/HBoxContainer" index="5"]
+button_group = SubResource("ButtonGroup_wllei")
 
-[node name="8" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons" index="6"]
-button_group = SubResource("ButtonGroup_8vndt")
+[node name="8" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons/HBoxContainer" index="6"]
+button_group = SubResource("ButtonGroup_wllei")
 
-[node name="9" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons" index="7"]
-button_group = SubResource("ButtonGroup_8vndt")
+[node name="9" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons/HBoxContainer" index="7"]
+button_group = SubResource("ButtonGroup_wllei")
 
-[node name="10" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons" index="8"]
-button_group = SubResource("ButtonGroup_8vndt")
+[node name="10" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons/HBoxContainer" index="8"]
+button_group = SubResource("ButtonGroup_wllei")
 
 [node name="conquest" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/GameModeButtons" index="0"]
 button_group = SubResource("ButtonGroup_kvf6b")

@@ -19,6 +19,13 @@ func init(outpost, gameID):
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	if not outpost.isInRadar():
+		$VBoxContainer/OutOfRange.show()
+		$VBoxContainer/HBoxContainer2.hide()
+	else:
+		$VBoxContainer/OutOfRange.hide()
+		$VBoxContainer/HBoxContainer2.show()
+	
 	if outpost.isFactory():
 		$VBoxContainer/Type.text = "Factory"
 		$VBoxContainer/HBoxContainer/Spacer1.show()
@@ -26,24 +33,28 @@ func _process(delta):
 		$VBoxContainer/HBoxContainer2/VBoxContainer/Production.text = "+" + str(outpost.getProductionAmount()) + " in " + Utilities.timeToStr(game.clientToGameTime(game.getNextProductionEvent(outpost.getID())) - game.getTime())
 	elif outpost.isMine():
 		$VBoxContainer/Type.text = "Mine"
-		print($VBoxContainer/Type.text)
-		#$VBoxContainer/HBoxContainer/Spacer1.show()
-		#$VBoxContainer/HBoxContainer/Jump.show()
-		
+		$VBoxContainer/HBoxContainer/Spacer1.show()
+		$VBoxContainer/HBoxContainer/Jump.show()
 		$VBoxContainer/HBoxContainer2/VBoxContainer/Production.text = ""
 	elif outpost.isGenerator():
 		$VBoxContainer/Type.text = "Generator"
 		$VBoxContainer/HBoxContainer/Spacer1.hide()
 		$VBoxContainer/HBoxContainer/Jump.hide()
-		print($VBoxContainer/Type.text)
 		$VBoxContainer/HBoxContainer2/VBoxContainer/Production.text = "+50 to electrical output"
+	
+	if not outpost.isInRadar() and not outpost.canViewType() and not outpost.isMine():
+		$VBoxContainer/Type.text = "Unknown"
+		
 	var owns = game.ownsObj(outpost.getID())
 	if owns and outpost.canMine():
 		$VBoxContainer/HBoxContainer/Mine.show()
+		$VBoxContainer/HBoxContainer/Mine.text = "Mine (%d)" % outpost.getMineCost()
+		print(outpost.getMineCost())
 	else:
 		$VBoxContainer/HBoxContainer/Mine.hide()
+	
 	if owns and outpost.canUndo():
-		$VBoxContainer/HBoxContainer/Cancel.text = "Undo '" + outpost.getOriginatingOrderType() + "'"
+		$VBoxContainer/HBoxContainer/Cancel.text = "Undo '%s'" % outpost.getOriginatingOrderType()
 		$VBoxContainer/HBoxContainer/Spacer2.show()
 		$VBoxContainer/HBoxContainer/Cancel.show()
 	else:
@@ -60,7 +71,10 @@ func _process(delta):
 	
 	$VBoxContainer/HBoxContainer2/Units.text = str(outpost.getUnits())
 	get_parent().color = outpost.getColor()
-	get_parent().playerName = game.getPlayer(outpost.getOwnerID()).getName()
+	if outpost.getOwnerID() != -1:
+		get_parent().playerName = game.getPlayer(outpost.getOwnerID()).getName()
+	else:
+		get_parent().playerName = "Neutral"
 
 
 func _on_jump_pressed():
@@ -70,18 +84,7 @@ func _on_jump_pressed():
 
 
 func _on_cancel_pressed():
-	if outpost.getOriginatingOrder() != -1:
-		var response = await HTTPManager.postReq("/removeOrder", {}, {
-			"gameID": gameID,
-			"orderID": outpost.getOriginatingOrder()
-		})
-	
-		print(response)
-		
-		if !response:
-			return
-	
-		game.cancelOrder(outpost.getOriginatingOrder())
+	GameData.removeOrder(gameID, outpost.getOriginatingOrder())
 
 
 func _on_mine_pressed():

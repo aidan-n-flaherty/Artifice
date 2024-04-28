@@ -13,6 +13,9 @@ uniform float resolution;
 uniform vec2 outposts[50];
 uniform int outpostsLength = 0;
 
+uniform sampler2D rockDivisionNormal;
+uniform sampler2D rockDivisionTexture;
+uniform sampler2D shelfTexture;
 uniform sampler2D rockTexture;
 uniform sampler2D ridgeTexture;
 uniform sampler2D stoneTexture;
@@ -126,6 +129,10 @@ void fragment() {
 	
 	float stone = getTexture(pos, stoneTexture).r;
 	
+	float shelf = getTexture(pos, shelfTexture).r;
+	
+	float rockDivision = getTexture(pos, rockDivisionTexture).r;
+	
 	float sunlight = 0.5 * getTexture(pos + speed * TIME * vec2(1.0), sunlightTexture1).r + 0.5 * getTexture(pos + speed * TIME * vec2(1.0, -1.0), sunlightTexture2).r;
 	
 	float lightStrength = 0.5 * getTexture(pos + speed * 0.5 * TIME * vec2(1.0), lightTexture1).r + 0.5 * getTexture(pos + speed * 0.5 * TIME * vec2(1.0, -1.0), lightTexture2).r;
@@ -160,6 +167,16 @@ void fragment() {
 			ROUGHNESS = max(ROUGHNESS, 1.0 - max(0.0, -1.0 + mag/radius*2.0));
 			METALLIC = max(METALLIC, 1.0 - max(0.0, -1.0 + mag/radius*2.0));
 		}
+	}
+	
+	
+	if(shelf > 0.5) {
+		float interpolation = min(1.0, 10.0 * (shelf - 0.5));
+		val = (1.0 - interpolation) * val + interpolation * 0.03 * rockDivision;
+		if(rockDivision > 0.1 || interpolation < 1.0) val += 0.5 * sunlight * sunlight * max(1.5 * lightStrength - 0.5, 0.0);
+		if(rockDivision < 0.1 && interpolation == 1.0) val = -1.0;
+		normal = (1.0 - interpolation) * normal + interpolation * (0.5 * getTexture(pos, rockDivisionNormal).rgb + 0.5 * getTexture(pos, detailedNormal).rgb);
+		METALLIC *= min(2.0, 1.0 + 10.0 * (shelf - 0.5));
 	}
 	
 	ALBEDO = vec3(val);

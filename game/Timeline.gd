@@ -52,7 +52,7 @@ func _process(delta):
 			change = target
 		game.setTime(time_start_pos - change)
 		
-		if userControlled and abs((time_start_pos - change) - Time.get_unix_time_from_system()) < 3600.0 * 2.0 / game.getSimulationSpeed():
+		if userControlled and abs((time_start_pos - change) - Time.get_unix_time_from_system()) < 3600.0 / game.getSimulationSpeed():
 			change = time_start_pos - Time.get_unix_time_from_system() + 0.01
 			target = time_start_pos - Time.get_unix_time_from_system() + 0.01
 			game.setTime(Time.get_unix_time_from_system() + 0.01)
@@ -62,12 +62,12 @@ func _process(delta):
 	var diff = (Time.get_unix_time_from_system() - game.getTime()) * game.getSimulationSpeed() / 3600.0
 
 	$Horizontal/TimeIndicators/ActualTime.position.x = size.x/2
-	$Horizontal/TimeIndicators/CurrentTime.position.x = size.x/2 - $Vertical/TimeIndicators/CurrentTime.size.x + 2 * diff
+	$Horizontal/TimeIndicators/CurrentTime.position.x = size.x/2 - $Horizontal/TimeIndicators/CurrentTime.size.x + 4 * diff
 	$Vertical/TimeIndicators/ActualTime.position.y = size.y/2 - $Vertical/TimeIndicators/ActualTime.size.x
-	$Vertical/TimeIndicators/CurrentTime.position.y = size.y/2 - 2 * diff
+	$Vertical/TimeIndicators/CurrentTime.position.y = size.y/2 - 4 * diff
 	
 	for i in len($Horizontal/TimeIndicators/Markers.get_children()):
-		var pos = size.x/2 - 2.5 + 2 * diff + i * get_viewport_rect().size.x / 60.0
+		var pos = size.x/2 - 2.5 + 4 * diff + i * get_viewport_rect().size.x / 60.0
 		
 		while pos > get_viewport_rect().size.x:
 			pos -= get_viewport_rect().size.x
@@ -77,9 +77,10 @@ func _process(delta):
 		
 		get_node("Horizontal/TimeIndicators/Markers/Panel" + str(i + 1)).position.x = pos
 		get_node("Horizontal/TimeIndicators/Markers/Panel" + str(i + 1)).size.y = 20 if i % 4 == 0 else 10
+		get_node("Horizontal/TimeIndicators/Markers/Panel" + str(i + 1)).modulate = Color(0.3, 0.3, 0.3) if i % 4 == 0 else Color(0.2, 0.2, 0.2)
 	
 	for i in len($Vertical/TimeIndicators/Markers.get_children()):
-		var pos = size.y/2 - 2.5 - 2 * diff + i * get_viewport_rect().size.y / 60.0
+		var pos = size.y/2 - 2.5 - 4 * diff + i * get_viewport_rect().size.y / 60.0
 		
 		while pos > get_viewport_rect().size.y:
 			pos -= get_viewport_rect().size.y
@@ -89,6 +90,7 @@ func _process(delta):
 		
 		get_node("Vertical/TimeIndicators/Markers/Panel" + str(i + 1)).position.y = pos
 		get_node("Vertical/TimeIndicators/Markers/Panel" + str(i + 1)).size.x = 20 if i % 4 == 0 else 10
+		get_node("Vertical/TimeIndicators/Markers/Panel" + str(i + 1)).modulate = Color(0.3, 0.3, 0.3) if i % 4 == 0 else Color(0.2, 0.2, 0.2)
 
 	if abs(diff) > 0.05:
 		$Horizontal/Measurement/VBoxContainer/Label.text = Utilities.timeToStr(game.getTime()-Time.get_unix_time_from_system())
@@ -112,9 +114,9 @@ func _gui_input(event):
 			dragging = false
 	elif event is InputEventMouseMotion and dragging:
 		if $Horizontal.visible:
-			target = 0.5 * 3600.0 / game.getSimulationSpeed() * (event.position.x - mouse_start_pos.x)
+			target = 0.25 * 3600.0 / game.getSimulationSpeed() * (event.position.x - mouse_start_pos.x)
 		else:
-			target = 0.5 * 3600.0 / game.getSimulationSpeed() * -(event.position.y - mouse_start_pos.y)
+			target = 0.25 * 3600.0 / game.getSimulationSpeed() * -(event.position.y - mouse_start_pos.y)
 	
 	if dragging:
 		accept_event()

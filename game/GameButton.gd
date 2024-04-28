@@ -35,9 +35,6 @@ func update(gameID):
 
 func _on_button_pressed():
 	if alreadyJoined:
-		await GameData.viewGame(gameID, past)
+		GameData.viewGame(gameID, past)
 	else:
-		var gameDetail = preload("res://GameDetail.tscn").instantiate()
-		gameDetail.init(gameID)
-	
-		GameData.goto_node(gameDetail)
+		GameData.viewGameDetail(gameID)

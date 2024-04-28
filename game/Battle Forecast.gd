@@ -16,23 +16,22 @@ func init(gameID:int, objectID:int):
 	game = GameData.getGame(gameID)
 
 	players = game.getNextBattleUsers(objectID)
-	if (len(players) == 0):
-		print("None here!")
-		return
 
 	p1 = players[0]
-	p2 = players[1]
+	p2 = null
+	if len(players) > 1:
+		p2 = players[1]
 	
 	$VBoxContainer/ScrollContainer/HBoxContainer/p1Color.color = p1.getColor()
-	$VBoxContainer/ScrollContainer/HBoxContainer/p2Color.color = p2.getColor()
+	$VBoxContainer/ScrollContainer/HBoxContainer/p2Color.color = p2.getColor() if p2 else Color(0.5, 0.5, 0.5)
 	
 	#set names
 	$VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/PlayerDivide/Player1/NameP1.text = p1.getName()
-	$VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/PlayerDivide/Player2/NameP2.text = p2.getName()
+	$VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/PlayerDivide/Player2/NameP2.text = p2.getName() if p2 else "neutral"
 	
 	pUnits = game.getNextBattleStartingUnits(objectID)
 	var p1Units = pUnits[p1.getID()]
-	var p2Units = pUnits[p2.getID()]
+	var p2Units = pUnits[p2.getID() if p2 else -1]
 	
 	#set starting units
 	$VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/PlayerDivide/Player1/HBoxContainer/UnitsP1.text = str(p1Units)
@@ -53,19 +52,15 @@ func init(gameID:int, objectID:int):
 		if (len(battleMessages) != 0):
 			var displayPhase
 			displayPhase = preload("res://BattleSpecialistEffects.tscn").instantiate()
-			displayPhase.init(p1.getID(), phase, battleMessages, p1.getColor(), p2.getColor())
+			displayPhase.init(p1.getID(), phase, battleMessages, p1.getColor(), p2.getColor() if p2 else Color(0.5, 0.5, 0.5))
 			$VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/Bonuses.add_child(displayPhase)
 	
 	#whatever to power/final
 	
-	#power
-	print("Check!")
-	#get unit counts
-	
 	var postUnits = game.getNextBattlePreVictoryUnits(objectID)
 	
 	p1Units = postUnits[p1.getID()]
-	p2Units = postUnits[p2.getID()]
+	p2Units = postUnits[p2.getID() if p2 else -1]
 	
 	$VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/Power/Player1/VBoxContainer/Units/UnitsP1.text = str(p1Units)
 	$VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/Power/Player2/VBoxContainer/Units/UnitsP2.text = str(p2Units)
@@ -75,7 +70,7 @@ func init(gameID:int, objectID:int):
 	
 	var shieldCharges = game.getNextBattleShields(objectID)
 	var p1ShieldCharge = shieldCharges[p1.getID()]
-	var p2ShieldCharge = shieldCharges[p2.getID()]
+	var p2ShieldCharge = shieldCharges[p2.getID() if p2 else -1]
 	
 	if p1ShieldCharge == 0:
 		$VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/Power/Player1/VBoxContainer/Charge.hide()
@@ -86,6 +81,7 @@ func init(gameID:int, objectID:int):
 		$VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/Power/Player2/VBoxContainer/Charge.hide()
 	else:
 		$VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/Power/Player2/VBoxContainer/Charge/ChargeP2.text = str(p2ShieldCharge)
+	
 	
 	#get total power (calculated gdscript side)
 	
@@ -112,8 +108,6 @@ func init(gameID:int, objectID:int):
 		victorPower = p2Power
 		loserPower = p1Power
 	
-
-	
 	if victor:
 		$VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/FinalResult/WinnerStatement/Winner.text = victor.getName()
 	else:
@@ -139,7 +133,7 @@ func init(gameID:int, objectID:int):
 		if (len(postBattleMessages) != 0):
 			var displayPhase
 			displayPhase = preload("res://BattleSpecialistEffects.tscn").instantiate()
-			displayPhase.init(p1.getID(), phase, postBattleMessages, p1.getColor(), p2.getColor())
+			displayPhase.init(p1.getID(), phase, postBattleMessages, p1.getColor(), p2.getColor() if p2 else Color(0.5, 0.5, 0.5))
 			$VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/PostBattle.add_child(displayPhase)
 	
 	

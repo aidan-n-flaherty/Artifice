@@ -1,53 +1,61 @@
-[gd_scene load_steps=10 format=3 uid="uid://ck0lv8v544t6x"]
+[gd_scene load_steps=11 format=3 uid="uid://ck0lv8v544t6x"]
 
 [ext_resource type="PackedScene" uid="uid://44oxio5mi3yi" path="res://GameList.tscn" id="1_4qlik"]
 [ext_resource type="Script" path="res://OpenGameList.gd" id="1_j6ila"]
 [ext_resource type="Theme" uid="uid://tg7ina762c6q" path="res://resources/themes/UITheme.tres" id="3_h7ycc"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gvxuw"]
-bg_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 20
-corner_radius_top_right = 20
-corner_radius_bottom_right = 20
-corner_radius_bottom_left = 20
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sdu37"]
+bg_color = Color(0, 0, 0, 0.156863)
+border_color = Color(0.901961, 0.901961, 0.901961, 1)
+corner_radius_top_left = 50
+corner_radius_top_right = 50
+corner_radius_bottom_right = 50
+corner_radius_bottom_left = 50
+shadow_color = Color(1, 1, 1, 0.6)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hxsgm"]
-bg_color = Color(0.0627451, 0.0627451, 0.0627451, 1)
-corner_radius_top_left = 20
-corner_radius_top_right = 20
-corner_radius_bottom_right = 20
-corner_radius_bottom_left = 20
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4ry0j"]
+bg_color = Color(0, 0, 0, 0.156863)
+border_color = Color(0.901961, 0.901961, 0.901961, 1)
+corner_radius_top_left = 50
+corner_radius_top_right = 50
+corner_radius_bottom_right = 50
+corner_radius_bottom_left = 50
+shadow_color = Color(1, 1, 1, 0.6)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lvw4p"]
+bg_color = Color(0, 0, 0, 0.235294)
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 50
+corner_radius_top_right = 50
+corner_radius_bottom_right = 50
+corner_radius_bottom_left = 50
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ty02b"]
-bg_color = Color(0.321569, 0.682353, 0.0823529, 0.513726)
-border_color = Color(0.211765, 0.631373, 0, 0.345098)
-corner_radius_top_left = 20
-corner_radius_top_right = 20
-corner_radius_bottom_right = 20
-corner_radius_bottom_left = 20
+bg_color = Color(0, 0, 0, 0.176471)
+corner_radius_top_left = 50
+corner_radius_top_right = 50
+corner_radius_bottom_right = 50
+corner_radius_bottom_left = 50
 corner_detail = 12
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mjsbn"]
-bg_color = Color(0.4, 0.717647, 0.133333, 1)
-border_color = Color(0.32549, 0.733333, 0.129412, 0.560784)
-corner_radius_top_left = 20
-corner_radius_top_right = 20
-corner_radius_bottom_right = 20
-corner_radius_bottom_left = 20
-corner_detail = 12
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f1nha"]
-bg_color = Color(0.329412, 0.596078, 0.113725, 1)
-border_color = Color(0.239216, 0.545098, 0.0980392, 0.560784)
-corner_radius_top_left = 20
-corner_radius_top_right = 20
-corner_radius_bottom_right = 20
-corner_radius_bottom_left = 20
+bg_color = Color(0, 0, 0, 0.470588)
+corner_radius_top_left = 50
+corner_radius_top_right = 50
+corner_radius_bottom_right = 50
+corner_radius_bottom_left = 50
 corner_detail = 12
 
 [sub_resource type="LabelSettings" id="LabelSettings_w8p7o"]
 font_size = 25
 outline_size = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xva13"]
+bg_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
 
 [node name="OpenGameList" instance=ExtResource("1_4qlik")]
 script = ExtResource("1_j6ila")
@@ -58,9 +66,9 @@ layout_mode = 2
 [node name="RankedUnselected" type="Button" parent="MarginContainer/VBoxContainer/RankedQueue" index="0"]
 layout_mode = 2
 theme = ExtResource("3_h7ycc")
-theme_override_styles/normal = SubResource("StyleBoxFlat_gvxuw")
-theme_override_styles/hover = SubResource("StyleBoxFlat_gvxuw")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_hxsgm")
+theme_override_styles/normal = SubResource("StyleBoxFlat_sdu37")
+theme_override_styles/hover = SubResource("StyleBoxFlat_4ry0j")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_lvw4p")
 
 [node name="RankedJoining" type="Button" parent="MarginContainer/VBoxContainer/RankedQueue" index="1"]
 visible = false
@@ -72,7 +80,7 @@ visible = false
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxFlat_mjsbn")
 theme_override_styles/hover = SubResource("StyleBoxFlat_mjsbn")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_f1nha")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_mjsbn")
 
 [node name="Margin" type="MarginContainer" parent="MarginContainer/VBoxContainer/RankedQueue" index="3"]
 layout_mode = 2
@@ -88,6 +96,11 @@ size_flags_horizontal = 3
 text = "Quick Play (Ranked)"
 label_settings = SubResource("LabelSettings_w8p7o")
 horizontal_alignment = 1
+
+[node name="Panel" type="Panel" parent="MarginContainer/VBoxContainer" index="1"]
+custom_minimum_size = Vector2(2.08165e-12, 5)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_xva13")
 
 [connection signal="pressed" from="MarginContainer/VBoxContainer/RankedQueue/RankedUnselected" to="." method="_on_ranked_unselected_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/RankedQueue/RankedSelected" to="." method="_on_ranked_selected_pressed"]

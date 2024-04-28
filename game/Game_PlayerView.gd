@@ -7,9 +7,10 @@ func _ready():
 
 func init(username, color):
 	$MarginContainer/HBoxContainer/Name.text = str(username)
-	$MarginContainer/HBoxContainer/PlayerIcon.modulate = color
+	$MarginContainer/HBoxContainer/MarginContainer/Color.modulate = color
 	$MarginContainer/HBoxContainer/Name.show()
-	$MarginContainer/HBoxContainer/PlayerIcon.show()
+	$MarginContainer/HBoxContainer/Spacer.hide()
+	$MarginContainer/HBoxContainer/MarginContainer/Color.show()
 	
 	
 	$ColorPanel.show()

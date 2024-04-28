@@ -26,10 +26,7 @@ func _process(delta):
 
 
 func _on_button_pressed():
-	var gameDetail = preload(\"res://GameDetail.tscn\").instantiate()
-	gameDetail.init(gameID)
-	
-	GameData.goto_node(gameDetail)
+	GameData.viewGameDetail(gameID)
 "
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1y7m7"]

@@ -154,6 +154,8 @@ public:
 
     GameSettings* getSettings() { return settings; };
 
+    bool teamGame() { return settings->number_of_teams > 1; }
+
     // The functions below should only be used by the client
     std::shared_ptr<Game> lastState(double timestamp);
     double nextState(double timestamp);

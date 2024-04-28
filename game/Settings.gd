@@ -30,7 +30,7 @@ func _process(delta):
 	
 
 func _on_username_text_text_changed(new_text):
-	if len(new_text) < 3:
+	if len(new_text) < 3 or len(new_text) > 20:
 		$MarginContainer/ScrollContainer/VBoxContainer/GridContainer/UsernameText["theme_override_colors/font_color"] = Color.FIREBRICK
 		return
 	else:

@@ -13,25 +13,38 @@ var gameID = null
 
 var past = false
 
+var uninitialized = true
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	GameData.current_scene = self
-	
 	if not GameData.currentTab:
-		GameData.currentTab = playScreen
-	
-	switch_to(GameData.currentTab)
-	
-	GameData.menuSwitched.connect(switch_to)
-	
-	GameData.menuFade.connect(menu_fade)
-	
-	GameData.loadGame.connect(loadGame)
-	
-	$Background.material.set_shader_parameter("gradStrength", 1.0)
-	
-	$Fade.modulate = Color(0.0, 0.0, 0.0, 1.0)
-	$AnimationPlayer.play("fade_from_black")
+		GameData.gamesChanged.connect(init)
+	else:
+		init()
+
+func init():
+	if uninitialized:
+		uninitialized = false
+		
+		GameData.current_scene = self
+		
+		if not GameData.currentTab:
+			GameData.currentTab = playScreen
+		
+		switch_to(GameData.currentTab)
+		
+		GameData.menuSwitched.connect(switch_to)
+		
+		GameData.menuFade.connect(menu_fade)
+		
+		GameData.loadGame.connect(loadGame)
+		
+		GameData.loadGameDetail.connect(loadGameDetail)
+		
+		$Background.material.set_shader_parameter("gradStrength", 1.0)
+		
+		$Fade.modulate = Color(0.0, 0.0, 0.0, 1.0)
+		$AnimationPlayer.play("fade_from_black")
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
@@ -56,6 +69,11 @@ func loadGame(gameID: int, past: bool):
 	
 	$AnimationPlayer.play("fade_to_game")
 
+func loadGameDetail(gameID: int):
+	self.gameID = gameID
+	
+	$AnimationPlayer.play("fade_to_game_detail")
+
 func _on_play_pressed():
 	switch_to(playScreen)
 
@@ -71,3 +89,6 @@ func _on_create_pressed():
 func _on_animation_player_animation_finished(anim_name):
 	if anim_name == "fade_to_game":
 		GameData.viewGameCompletion(gameID, past)
+	elif anim_name == "fade_to_game_detail":
+		print("ended")
+		GameData.viewGameDetailCompletion(gameID)

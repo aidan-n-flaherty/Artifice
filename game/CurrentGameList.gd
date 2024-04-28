@@ -1,11 +1,12 @@
 extends GameList
-
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	super()
 	
 func initList():
 	gameIDs = GameData.getOngoingGames()
+	
+	if len(gameIDs) > 0:
+		$NoGames.hide()
+	else:
+		$NoGames.show()
 
 func generateButton(id):
 	var gameDetails = GameData.getGameDetails(id)

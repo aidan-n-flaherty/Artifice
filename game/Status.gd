@@ -4,7 +4,7 @@ var gameID
 
 var game
 
-var playerStatuses = {}
+var playerStatuses = []
 
 
 func update():
@@ -17,6 +17,9 @@ func update():
 		var capacity = p.getCapacity()
 		if(capacity > largestCapacity):
 			largestCapacity = capacity
+		
+	while len(playerStatuses) < len(players):
+		playerStatuses.append(null)
 	
 	var i = 0
 	for p in players:
@@ -35,15 +38,14 @@ func update():
 		
 		var playerStatus
 		
-		if playerStatuses.has(p.getUserID()):
-			playerStatus = playerStatuses[p.getUserID()]
+		if playerStatuses[i] != null:
+			playerStatus = playerStatuses[i]
 			playerStatus.init(game, p, username, units, capacity, resources, largestCapacity, win, outposts, factories, generators, mines, color)
 			$MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer.move_child(playerStatus,i)
-	
 		else:
 			playerStatus = preload("res://PlayerStatus.tscn").instantiate()
 			playerStatus.init(game, p, username, units, capacity, resources, largestCapacity, win, outposts, factories, generators, mines, color)
-			playerStatuses[p.getUserID()] = playerStatus
+			playerStatuses[i] = playerStatus
 			$MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer.add_child(playerStatus)
 		i += 1
 		
@@ -68,7 +70,9 @@ func init(gameID):
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	update()
+	if visible:
+		print("visible!")
+		update()
 
 
 func _on_surrender_button_pressed():

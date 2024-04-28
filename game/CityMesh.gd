@@ -14,9 +14,15 @@ var removed = false
 
 var added = false
 
+@export var factoryImg: Texture2D
+
+@export var generatorImg: Texture2D
+
+@export var mineImg: Texture2D
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass
+	$CityAlternate.rotation_degrees.y = 45 + 90 * get_parent().getID()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -40,19 +46,47 @@ func _process(delta):
 	selected = get_parent().isSelected()
 	color = get_parent().getColor()
 	outpostName = get_parent().getName()
+	
+	return
+	
+	if (not get_parent().isInRadar() and get_parent().canViewType()) or (get_parent().isInRadar() and (get_parent().isFactory() or get_parent().isGenerator() or get_parent().isMine())):
+		$RotationInvariant.show()
+		$City.show()
+	else:
+		$RotationInvariant.hide()
+		$City.hide()
+	
+	if not get_parent().isInRadar():
+		$FloorSprite.hide()
+		$Shield.hide()
+		$Units.hide()
+	else:
+		$FloorSprite.show()
+		$Shield.show()
+		$Units.show()
+	
 	if get_parent().isFactory():
 		$City/factories.show()
-		$City/generators.hide()
-	elif get_parent().isGenerator():
-		$City/generators.show()
+	else:
 		$City/factories.hide()
-	elif get_parent().isMine():
-		pass
+	
+	if get_parent().isGenerator():
+		$City/generators.show()
 	else:
 		$City/generators.hide()
-		$City/factories.hide()
+	
+	if get_parent().isMine():
+		$outpostWalls.position.y = 0
 		$shield.hide()
+		$shieldRoots.hide()
+		$City/mines.show()
 		$City/buildings.hide()
+	else:
+		$outpostWalls.position.y = 7.4
+		$shield.show()
+		$shieldRoots.show()
+		$City/mines.hide()
+		$City/buildings.show()
 
 func _enter_tree():
 	if not get_node_or_null("SubViewport"):

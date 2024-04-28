@@ -41,22 +41,27 @@ func _process(delta):
 		init(specialistID, gameID)
 	
 	if game.canHire() and specialistName == "Queen":
-		$MarginContainer/HBoxContainer/MarginContainer/Hire.show()
+		$MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/Shop.show()
 	else:
-		$MarginContainer/HBoxContainer/MarginContainer/Hire.hide()
+		$MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/Shop.hide()
 	
-	if game.ownsSpecialist(specialistID):
-		$MarginContainer/HBoxContainer/MarginContainer/Release.hide()
-		if promotionOptions[0] == 0 or not game.canHire():
-			$MarginContainer/HBoxContainer/MarginContainer/Promote.hide()
-		else:
-			$MarginContainer/HBoxContainer/MarginContainer/Promote.show()
+	var owns = game.ownsSpecialist(specialistID)
+	
+	if owns and game.canUndoSpecialist(specialistID):
+		$MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/Cancel.text = "Undo '" + game.getSpecialistOriginatingOrderType(specialistID) + "'"
+		$MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/Cancel.show()
 	else:
-		$MarginContainer/HBoxContainer/MarginContainer/Promote.hide()
-		if game.canRelease(specialistID):
-			$MarginContainer/HBoxContainer/MarginContainer/Release.show()
-		else:
-			$MarginContainer/HBoxContainer/MarginContainer/Release.hide()
+		$MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/Cancel.hide()
+	
+	if owns and promotionOptions[0] == 0 or not game.canHire():
+		$MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/Promote.hide()
+	else:
+		$MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/Promote.show()
+	
+	if not owns and game.canRelease(specialistID):
+		$MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/Release.show()
+	else:
+		$MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/Release.hide()
 	
 	var player = game.getSpecialistOwner(specialistID)
 	
@@ -72,3 +77,6 @@ func _on_release_pressed():
 
 func _on_hire_pressed():
 	emit_signal("openShop")
+
+func _on_cancel_pressed():
+	GameData.cancelOrder(gameID, game.getSpecialistOriginatingOrder(specialistID))

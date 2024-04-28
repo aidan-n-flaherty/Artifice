@@ -12,15 +12,20 @@ func _process(delta):
 
 func numToStr(num: int, unit: String):
 	return str(num) + " " + unit + "s" if num != 1 else str(num) + " " + unit
+
 func twoDigit(num: int):
 	if num < 10:
 		return "0%d"%num
 	else:
 		return "%d"%num
+
 func timeToStr(time: int):
 	if time < 0: return timeToStr(abs(time)) + " ago"
-	#Avoid things like 1:1:1
-	return "%dh %sm %ss"%[(time/(60*60)),twoDigit((time/60)%60),twoDigit(time%60)]
+	
+	if time/(60*60) == 0:
+		return "%sm %ss"%[twoDigit((time/60)%60),twoDigit(time%60)]
+	else:
+		return "%dh %sm"%[(time/(60*60)),twoDigit((time/60)%60)]
 
 func timeToDateStr(t: int):
 	var time = Time.get_datetime_dict_from_unix_time(t + 60 * Time.get_time_zone_from_system().bias)

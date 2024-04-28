@@ -124,6 +124,7 @@ public:
 		return game && game->getPlayer(userGameID) ? game->getPlayer(userGameID)->getHiresAt(timeDiff) : -1;
 	}
 	
+	double getTimeMillis();
 	bool simulatingFuture() { return future; }
 	bool willSendWith(SpecialistType type);
 	void setSelectedSpecialist(int id);
@@ -151,7 +152,7 @@ public:
 	PositionalObject* getObj(int id) { return simulatedGame->getPosObject(id); }
 	PositionalNode* getNode(int id);
 	
-	void startAtEnd() { if(completeGame) setTime(completeGame->getGameEndTime());};
+	void startAtEnd() { if(completeGame && completeGame->hasEnded()) setTime(completeGame->getGameEndTime());};
 	void shiftToTime(double t);
 	void setTime(double t);
 	void setTempTime(double t) { tempTime = t; }
@@ -177,7 +178,6 @@ public:
 	Color getColor(int userID);
 
 	int getSpecialistType(int specialistID) { return game->getSpecialist(specialistID)->getType(); };
-
 	PlayerNode* getPlayer(int id);
 	PlayerNode* getSpecialistOwner(int specialistID) { return game->hasPlayer(game->getSpecialist(specialistID)->getOwnerID()) ? getPlayer(game->getSpecialist(specialistID)->getOwnerID()) : nullptr; }
 	String getSpecialistName(int specialistNum);
@@ -186,6 +186,9 @@ public:
 		return !ownsSpecialist(specialistID) && game->getSpecialist(specialistID)->getContainer() &&
 				game->getSpecialist(specialistID)->getContainer()->getOwnerID() == userGameID;
 	}
+	bool canUndoSpecialist(int specialistID) { return game->hasSpecialist(specialistID) && game->getSpecialist(specialistID)->getOriginatingOrder() && game->getSpecialist(specialistID)->getOriginatingOrder()->getTimestamp() > settings.clientToGameTime(getTimeMillis()); }
+	int getSpecialistOriginatingOrder(int specialistID) { return canUndoSpecialist(specialistID) ? game->getSpecialist(specialistID)->getOriginatingOrder()->getID() : -1; }
+	String getSpecialistOriginatingOrderType(int specialistID) { return canUndoSpecialist(specialistID) ? String(game->getSpecialist(specialistID)->getOriginatingOrder()->getType().c_str()) : ""; }
 	bool ownsSpecialist(int specialistID) { return game->getSpecialist(specialistID)->getOwnerID() == userGameID; }
 	bool ownsObj(int objID) { return game->hasPosObject(objID) && game->getPosObject(objID)->getOwnerID() == userGameID; }
 
@@ -195,6 +198,7 @@ public:
 	double getNextArrivalEvent(int vesselID);
 	double getNextProductionEvent(int outpostID);
 	double getNextBattleEvent(int objID);
+	bool canViewNextBattle(int objID);
 	Array getBattlePhases();
 	Array getNextBattleUsers(int objID);
 	Array getNextBattleMessages(int objID, const String& phase);

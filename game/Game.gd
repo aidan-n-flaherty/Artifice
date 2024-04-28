@@ -83,8 +83,9 @@ func resize():
 			$Viewport/GameOverlay/MarginContainer/HBoxContainer/HMenuBar.remove_child(tabs)
 			$Viewport/GameOverlay/VMenuBar.add_child(tabs)
 	
-	$Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/VBoxContainer/HBoxContainer/DisplaySpacerL.custom_minimum_size.x = DisplayServer.get_display_safe_area().position.x
-	$Viewport/GameOverlay/MarginContainer/HBoxContainer/DisplaySpacerR.custom_minimum_size.x = DisplayServer.screen_get_size().x - (DisplayServer.get_display_safe_area().position.x + DisplayServer.get_display_safe_area().size.x)
+	if OS.get_name() == "iOS" or OS.get_name() == "Android":
+		$Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/VBoxContainer/HBoxContainer/DisplaySpacerL.custom_minimum_size.x = DisplayServer.get_display_safe_area().position.x
+		$Viewport/GameOverlay/MarginContainer/HBoxContainer/DisplaySpacerR.custom_minimum_size.x = DisplayServer.screen_get_size().x - (DisplayServer.get_display_safe_area().position.x + DisplayServer.get_display_safe_area().size.x)
 
 func elementDisplay():
 	return get_node("Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/HSeparator/ElementDisplay") if get_node_or_null("Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/HSeparator/ElementDisplay") else get_node("Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/VSeparator/ElementDisplay")
@@ -114,6 +115,7 @@ func init(gameID):
 	$Viewport/GameOverlay/MarginContainer/VTimeline/Timeline.init(gameID)
 	tabDisplay().get_node("Panel/Status").init(gameID)
 	$Viewport/Viewport3D/CameraManager.init(gameID)
+	$Viewport/Viewport3D/TerrainManager.init(gameID)
 	
 	tabDisplay().get_node("Panel/Shop").init(gameID)
 	tabDisplay().get_node("Panel/Chat").init(gameID)
@@ -248,9 +250,7 @@ func setMenuDisplay(scene, select):
 		scene = null
 		select = false
 	
-	if menuDisplay != null:
-		#$Viewport/GameOverlay/Overlay/UIOverlay/Separator/TabDisplay/Panel/AnimationPlayer.play("menu_close")
-		#await get_tree().create_timer(0.4).timeout
+	if scene and menuDisplay:
 		menuDisplay.hide()
 		menuDisplay = null
 
@@ -302,3 +302,7 @@ func _on_animation_player_animation_finished(anim_name):
 		GameData.goto_scene("res://MainMenu.tscn")
 	elif anim_name == "slide_down":
 		tabDisplay().get_node("Panel").hide()
+		
+		if menuDisplay:
+			menuDisplay.hide()
+			menuDisplay = null

@@ -80,6 +80,9 @@ int runGameWithNotifications(cGame game, int* playerChanges, double lastUpdate, 
   for(auto it = changes.begin(); it != changes.end(); it++, i++) {
     playerChanges[i * 2] = it->first;
     playerChanges[i * 2 + 1] = it->second;
+  }
+
+  for(int i = 0; i < g->getPlayers().size(); i++) {
     notifications[i] = -1;
   }
   

@@ -58,7 +58,7 @@ Game::Game(GameSettings settings, int simulatorID, double startTime, double endT
         //iterates through unordered map "players" and updates the team_id value of each player
         for(int i = 0; i < players.size(); i++){
 
-            players[i]->set_team(curr_team_to_assign); //setting the current player's team
+            players[i]->setTeam(curr_team_to_assign); //setting the current player's team
 
             curr_team_to_assign += 1;
 
@@ -73,6 +73,11 @@ Game::Game(GameSettings settings, int simulatorID, double startTime, double endT
 
     // start map generation
 
+    int totalOutposts = playerInfo.size() * this->settings->outpostsPerPlayer;
+
+    this->settings->width = int(this->settings->defaultSonar * 0.75 * sqrt(totalOutposts));
+    this->settings->height = int(this->settings->defaultSonar * 0.75 * sqrt(totalOutposts));
+
     int numIterations = 100;
     double epsilon = 0.0001; //small distance used to check if bases are on top of each other. prevents divide by 0 errors.
 
@@ -80,7 +85,6 @@ Game::Game(GameSettings settings, int simulatorID, double startTime, double endT
 
     std::unordered_map<int, std::vector<OutpostType>> outpostTypes;
 
-    int n = 0;
     //going through a assigning each player a starting position
 
     std::mt19937 gen(seed); //seeding the random number generator. Each time this value is referenced, a new random value
@@ -102,9 +106,17 @@ Game::Game(GameSettings settings, int simulatorID, double startTime, double endT
 
     //iterates through the outposts of each player
     for(int i = 0; i < numIterations; i++) {
-        double mag = 10.0 - (10.0 * i) / numIterations;
-        for(int j = 0; j < outpostPositions.size(); j++) {
+        double mag = 20.0 - (20.0 * i) / numIterations;
 
+        double forceX[outpostPositions.size()];
+        double forceY[outpostPositions.size()];
+
+        for(int j = 0; j < outpostPositions.size(); j++) {
+            forceX[j] = 0;
+            forceY[j] = 0;
+        }
+
+        for(int j = 0; j < outpostPositions.size(); j++) {
             for(int k = j + 1; k < outpostPositions.size(); k++) {
                 if(j == k) continue;
 
@@ -118,16 +130,21 @@ Game::Game(GameSettings settings, int simulatorID, double startTime, double endT
                     a.set(a.getX() + epsilon * cos(angle), a.getY() + epsilon * sin(angle));
                 }
 
-                if(dist > 50) continue;
+                Point diff = a - a.closest(b);
+                Point force = diff.normalized(mag/(0.01 * dist * dist + 1));
 
-                Point newA = a.movedTowards(a.closest(b), -mag/(0.25 * dist + 1));
-                Point newB = b.movedTowards(b.closest(a), -mag/(0.25 * dist + 1));
+                forceX[j] += force.getX();
+                forceY[j] += force.getY();
 
-                a = newA;
-                b = newB;
+                forceX[k] -= force.getX();
+                forceY[k] -= force.getY();
             }
             //all of the outpost points are now pushed away from each other. all outposts are
             //in equilibrium. For now, we are going to assume this acts as a uniform distribution
+        }
+
+        for(int j = 0; j < outpostPositions.size(); j++) {
+            outpostPositions[j].set(outpostPositions[j].getX() + forceX[j], outpostPositions[j].getY() + forceY[j]);
         }
     }
 
@@ -309,6 +326,7 @@ Game::Game(GameSettings settings, int simulatorID, double startTime, double endT
     }
 
     for(auto& player_group : grouped_outpost_positions){
+        std::cout << "Player " << player_group.first << std::endl;
 
         std::map<double, Point> curr_player_outposts = player_group.second;
 
@@ -321,7 +339,7 @@ Game::Game(GameSettings settings, int simulatorID, double startTime, double endT
         //initializing the outpost closest to this player's centroid to be their starter outpost,
         //with the queen as its specialist
 
-        Outpost* o = new Outpost(incrementObjCounter(), getSettings(), OutpostType::FACTORY, 20, it->second.getX(), it->second.getY());
+        Outpost* o = new Outpost(incrementObjCounter(), getSettings(), OutpostType::FACTORY, 60, it->second.getX(), it->second.getY());
         addOutpost(o);
         getPlayer(player_group.first)->addOutpost(getOutpost(o->getID()));
 
@@ -332,20 +350,18 @@ Game::Game(GameSettings settings, int simulatorID, double startTime, double endT
 
         outposts_owned += 1; //remove this is we don't count starting outposts in the # of outposts each player should start with
 
-        it++;
-
-        while(it != curr_player_outposts.end()){
+        while(++it != curr_player_outposts.end()){
             OutpostType type = outpostTypes[player_group.first].front();
             outpostTypes[player_group.first].erase(outpostTypes[player_group.first].begin());
 
-            o = new Outpost(incrementObjCounter(), getSettings(), type, 20, it->second.getX(), it->second.getY());
+            o = new Outpost(incrementObjCounter(), getSettings(), type, 10, it->second.getX(), it->second.getY());
             addOutpost(o);
 
             if(outposts_owned < starting_owned){
                 //only assigns the outpost as owned if the player doesn't have all of their starting outposts
-                getPlayer(player_group.first)->addOutpost(getOutpost(o->getID()));
+                o->setUnits(40);
+                getPlayer(player_group.first)->addOutpost(o);
 
-                std::cout << player_group.first << " has an outpost at " << o->getPosition().getX() << ", " << o->getPosition().getY() << " with ID = " << o->getID() << std::endl;
                 outposts_owned += 1;
             }
         }
@@ -784,12 +800,12 @@ std::shared_ptr<Game> Game::removeOrder(int ID) {
     for(auto it = cache.begin(); it != cache.end(); it++) {
         if((*it)->getLastExecutedOrder() == ID) break;
         else returnVal = *it;
-    }
 
-    for(Order* o : returnVal->getOrders()) {
-        if(o->getID() == ID) {
-            returnVal->removeOrder(o);
-            break;
+        for(Order* o : returnVal->getOrders()) {
+            if(o->getID() == ID) {
+                returnVal->removeOrder(o);
+                break;
+            }
         }
     }
 

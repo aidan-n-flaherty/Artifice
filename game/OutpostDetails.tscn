@@ -1,13 +1,16 @@
-[gd_scene load_steps=5 format=3 uid="uid://bod0r21lv0xfs"]
+[gd_scene load_steps=6 format=3 uid="uid://bod0r21lv0xfs"]
 
 [ext_resource type="Theme" uid="uid://tg7ina762c6q" path="res://resources/themes/UITheme.tres" id="1_i20n5"]
 [ext_resource type="Script" path="res://OutpostDetails.gd" id="1_n7jsx"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_hivrr"]
-font_size = 20
+font_size = 30
 
 [sub_resource type="LabelSettings" id="LabelSettings_0dtbu"]
 font_size = 55
+
+[sub_resource type="LabelSettings" id="LabelSettings_ju200"]
+font_size = 22
 
 [node name="OutpostDetails" type="MarginContainer"]
 anchors_preset = 15
@@ -59,6 +62,11 @@ vertical_alignment = 2
 layout_mode = 2
 theme = ExtResource("1_i20n5")
 text = "-1 in"
+
+[node name="OutOfRange" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "This outpost is outside of your sonar range."
+label_settings = SubResource("LabelSettings_ju200")
 
 [node name="Spacer" type="Control" parent="VBoxContainer"]
 layout_mode = 2

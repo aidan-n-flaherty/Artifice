@@ -9,6 +9,7 @@ var swipe_mouse_start : Vector2
 var swipe_mouse_times := []
 var swipe_mouse_positions := []
 var vertical_drag_threshold = 10
+var horizontal_drag_threshold = 10
 
 func _ready():
 	self.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -53,14 +54,24 @@ func _input(ev) -> void:
 			look_for_swipe = false
 			
 	if ev is InputEventMouseMotion:
-		if swipe_mouse_start.y > ev.global_position.y && swipe_mouse_start.y - ev.global_position.y < vertical_drag_threshold:
-			return
-			
-		if swipe_mouse_start.y < ev.global_position.y && ev.global_position.y - swipe_mouse_start.y < vertical_drag_threshold:
-			return
-			
-		if swipe_mouse_start.y == ev.global_position.y:
-			return
+		if not vertical_scroll_mode == SCROLL_MODE_DISABLED:
+			if swipe_mouse_start.y > ev.global_position.y && swipe_mouse_start.y - ev.global_position.y < vertical_drag_threshold:
+				return
+				
+			if swipe_mouse_start.y < ev.global_position.y && ev.global_position.y - swipe_mouse_start.y < vertical_drag_threshold:
+				return
+				
+			if swipe_mouse_start.y == ev.global_position.y:
+				return
+		if not horizontal_scroll_mode == SCROLL_MODE_DISABLED:
+			if swipe_mouse_start.x > ev.global_position.x && swipe_mouse_start.x - ev.global_position.x < horizontal_drag_threshold:
+				return
+				
+			if swipe_mouse_start.x < ev.global_position.x && ev.global_position.x - swipe_mouse_start.x < horizontal_drag_threshold:
+				return
+				
+			if swipe_mouse_start.x == ev.global_position.x:
+				return
 			
 		if look_for_swipe:
 			var delta = ev.global_position - swipe_mouse_start

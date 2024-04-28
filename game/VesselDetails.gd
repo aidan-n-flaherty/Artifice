@@ -42,7 +42,7 @@ func _process(delta):
 		$VBoxContainer/HBoxContainer2/VBoxContainer/Arrival.text = "This vessel will never reach its target"
 	
 	var battle = game.getNextBattleEvent(vessel.getID())
-	if battle:
+	if battle and game.canViewNextBattle(vessel.getID()):
 		$VBoxContainer/HBoxContainer/Spacer3.show()
 		$VBoxContainer/HBoxContainer/BattleForecast.show()
 	else: 
@@ -60,21 +60,14 @@ func _process(delta):
 		$VBoxContainer/HBoxContainer/Cancel.hide()
 	
 	get_parent().color = vessel.getColor()
-	get_parent().playerName = game.getPlayer(vessel.getOwnerID()).getName()
+	
+	if vessel.getOwnerID() != -1:
+		get_parent().playerName = game.getPlayer(vessel.getOwnerID()).getName()
+	else:
+		get_parent().playerName = "Neutral"
 
 func _on_cancel_pressed():
-	if vessel.getOriginatingOrder() != -1:
-		var response = await HTTPManager.postReq("/removeOrder", {}, {
-			"gameID": gameID,
-			"orderID": vessel.getOriginatingOrder()
-		})
-	
-		print(response)
-		
-		if !response:
-			return
-	
-		game.cancelOrder(vessel.getOriginatingOrder())
+	GameData.cancelOrder(gameID, vessel.getOriginatingOrder())
 
 
 func _on_jump_pressed():
@@ -84,23 +77,7 @@ func _on_jump_pressed():
 
 
 func _on_gift_pressed():
-	var order = await HTTPManager.putReq("/updateOrder", {
-		"type": "GIFT",
-		"referenceID": int(game.getReferenceID()),
-		"timestamp": int(game.getTime()),
-		"argumentIDs": [vessel.getID()]
-	}, {
-		"gameID": gameID
-	})
-	
-	print(order)
-
-	if !order:
-		return
-	
-	game.addOrder(order.type, int(order.id), int(order.referenceID), float(order.timestamp), int(order.senderID), PackedInt32Array(order.argumentIDs), int(order.argumentIDs.size()))
-	
-	print("Order registered")
+	GameData.addOrder(gameID, "RELEASE", int(game.getReferenceID()), game.getTime(), [vessel.getID()])
 
 
 func _on_battle_forecast_pressed():

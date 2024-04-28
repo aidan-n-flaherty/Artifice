@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://cter64syjsq6d"]
+
+[ext_resource type="ArrayMesh" uid="uid://ilkuovqpo5j0" path="res://resources/outpost/shieldAlternate.obj" id="1_3b3ea"]
+[ext_resource type="Material" uid="uid://b64sjm6vvbj6x" path="res://resources/outpost/textures/shield.tres" id="2_o4gi2"]
+
+[node name="shield" type="MeshInstance3D"]
+transform = Transform3D(0.707107, 1.60554e-24, 0.707107, 3.48787e-16, 1, -3.48787e-16, -0.707107, 4.93259e-16, 0.707107, 2.08165e-12, 7, 2.08165e-12)
+cast_shadow = 0
+mesh = ExtResource("1_3b3ea")
+surface_material_override/0 = ExtResource("2_o4gi2")

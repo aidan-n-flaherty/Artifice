@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://GameList.gd" id="1_3i7b2"]
 [ext_resource type="Shader" path="res://FrostedGlass.gdshader" id="2_274wm"]
-[ext_resource type="Script" path="res://ScrollContainer.gd" id="3_a4dr1"]
+[ext_resource type="PackedScene" uid="uid://dg4lhqpoy431" path="res://CustomScroll.tscn" id="3_7v282"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ipm24"]
 shader = ExtResource("2_274wm")
@@ -42,11 +42,9 @@ theme_override_constants/margin_bottom = 50
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer"]
+[node name="ScrollContainer" parent="MarginContainer/VBoxContainer" instance=ExtResource("3_7v282")]
 layout_mode = 2
-size_flags_vertical = 3
 horizontal_scroll_mode = 0
-script = ExtResource("3_a4dr1")
 
 [node name="Content" type="VBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer"]
 layout_mode = 2

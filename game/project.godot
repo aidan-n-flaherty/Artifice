@@ -25,6 +25,7 @@ HTTPManager="*res://HTTPManager.gd"
 GameData="*res://GameData.gd"
 Utilities="*res://Utilities.gd"
 WebSocketManager="*res://WebSocketManager.gd"
+ByteBrewEntry="*res://ios/plugins/ByteBrew/ByteBrewEntry.gd"
 
 [debug]
 
@@ -69,7 +70,8 @@ pointing/emulate_touch_from_mouse=true
 
 renderer/rendering_method="mobile"
 textures/vram_compression/import_etc2_astc=true
-lights_and_shadows/directional_shadow/size.mobile=4096
+lights_and_shadows/directional_shadow/size=16184
+lights_and_shadows/directional_shadow/size.mobile=16184
 lights_and_shadows/directional_shadow/soft_shadow_filter_quality=3
 lights_and_shadows/directional_shadow/soft_shadow_filter_quality.mobile=3
 textures/default_filters/use_nearest_mipmap_filter=true

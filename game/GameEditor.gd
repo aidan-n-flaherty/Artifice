@@ -28,13 +28,13 @@ var team_button_pressed = false
 func _ready():
 	GameData.gameChanged.connect(update)
 	
-	for child in $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons.get_children():
+	for child in $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons/HBoxContainer.get_children():
 		child.toggled.connect(on_players_modified)
 	for child in $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/SimulationTimescaleButtons.get_children():
 		child.toggled.connect(on_timescale_modified.bind(child.name.to_lower()))
-	for child in $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/ActiveHoursButtons.get_children():
+	for child in $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/VBoxContainer/ActiveHoursButtons.get_children():
 		child.toggled.connect(on_activeTimes_modified)
-	for child in $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/ActiveHoursButtons2.get_children():
+	for child in $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/VBoxContainer/ActiveHoursButtons2.get_children():
 		child.toggled.connect(on_activeTimes_modified)
 	for child in $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/TeamButtons.get_children():
 		child.toggled.connect(on_team_number_modified)
@@ -97,9 +97,9 @@ func deserialize(gameID):
 	numPlayers = settings["playerCap"]
 	
 	for i in range(2, numCurrentPlayers):
-		get_node("MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons/" + str(i)).disabled = true
+		get_node("MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons/HBoxContainer/" + str(i)).disabled = true
 	
-	get_node("MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons/" + str(numPlayers)).button_pressed = true
+	get_node("MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons/HBoxContainer/" + str(numPlayers)).button_pressed = true
 	on_players_modified(true)
 	
 	var simSp = SettingsDefault.getSimulationSpeed()
@@ -143,7 +143,7 @@ func deserialize(gameID):
 		activeHours = range(24)
 	
 	for hour in range(24):
-		var aButtonPath = "MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/ActiveHoursButtons/" if hour < 12 else "MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/ActiveHoursButtons2/"
+		var aButtonPath = "MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/VBoxContainer/ActiveHoursButtons/" if hour < 12 else "MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/VBoxContainer/ActiveHoursButtons2/"
 		aButtonPath += str(hour)
 		var buttonAH = get_node(aButtonPath)
 		buttonAH.button_pressed = hour in activeHours
@@ -264,7 +264,7 @@ func activate():
 
 func on_players_modified(button_pressed: bool):
 	if button_pressed:
-		for child in $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons.get_children():
+		for child in $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons/HBoxContainer.get_children():
 			if child.button_pressed:
 				numPlayers = int(str(child.name))
 				for team_num in $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/TeamButtons.get_children():
@@ -279,17 +279,17 @@ func on_players_modified(button_pressed: bool):
 
 				if( (number_of_teams != 0) && ((numPlayers % number_of_teams != 0) || (numPlayers == number_of_teams)) ): 
 					$"MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/TeamButtons/0".set_pressed_no_signal(true)
-					get_node("MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons/" + str(numPlayers)).set_pressed_no_signal(false)
+					get_node("MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons/HBoxContainer" + str(numPlayers)).set_pressed_no_signal(false)
 				elif( (number_of_teams != 0) && (numPlayers % number_of_teams == 0) && (numPlayers != number_of_teams)):
 					$"MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/TeamButtons/0".set_pressed_no_signal(false)
-					get_node("MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons/" + str(numPlayers)).set_pressed_no_signal(true)
+					get_node("MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons/HBoxContainer" + str(numPlayers)).set_pressed_no_signal(true)
 
 func on_activeTimes_modified(button_pressed: bool):
 	activeHours.clear()
-	for child in $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/ActiveHoursButtons.get_children():
+	for child in $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/VBoxContainer/ActiveHoursButtons.get_children():
 		if child.button_pressed:
 			activeHours.append(child.name.to_int())
-	for child in $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/ActiveHoursButtons2.get_children():
+	for child in $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/VBoxContainer/ActiveHoursButtons2.get_children():
 		if child.button_pressed:
 			activeHours.append(child.name.to_int())
 	activeHours.sort()

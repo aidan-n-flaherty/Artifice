@@ -75,6 +75,8 @@ void Vessel::update(double timeDiff) {
 }
 
 double Vessel::getSpeed(double speed, double simulationSpeed, Player* p, const std::list<Specialist*> &specialists, PositionalObject* target) {
+    if(!p) return speed * (simulationSpeed * 2.0 / (60 * 60));
+
     if(controlsSpecialist(p, specialists, SpecialistType::GENERAL) || controlsSpecialist(p, specialists, SpecialistType::LIEUTENANT)) speed = fmax(speed, 1.5);
     if(specialists.empty() && p->controlsSpecialist(SpecialistType::ADMIRAL)) speed = fmax(speed, 1.5);
     if(controlsSpecialist(p, specialists, SpecialistType::ADMIRAL)) speed = fmax(speed, 2);

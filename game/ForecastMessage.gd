@@ -13,14 +13,12 @@ func init(p1, playerID:int, message:String, p1Color, p2Color):
 	
 	$HBoxContainer2/Control/MarginContainer/RichTextLabel.text = message
 	
-	
-	
 	if playerID == p1:
 		$HBoxContainer2/RSpacer.show()
-		$HBoxContainer2/Control/ColorRect.color = p1Color
+		$HBoxContainer2/Control/Panel.modulate = p1Color
 	else:
 		$HBoxContainer2/LSpacer.show()
-		$HBoxContainer2/Control/ColorRect.color = p2Color
+		$HBoxContainer2/Control/Panel.modulate = p2Color
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):

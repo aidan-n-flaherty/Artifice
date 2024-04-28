@@ -1,7 +1,19 @@
-[gd_scene load_steps=3 format=3 uid="uid://t7xhfw3yqw8n"]
+[gd_scene load_steps=4 format=3 uid="uid://t7xhfw3yqw8n"]
 
 [ext_resource type="PackedScene" uid="uid://44oxio5mi3yi" path="res://GameList.tscn" id="1_ffgsx"]
 [ext_resource type="Script" path="res://CurrentGameList.gd" id="2_4sr2a"]
 
+[sub_resource type="LabelSettings" id="LabelSettings_g58rv"]
+font_size = 20
+shadow_size = 10
+shadow_offset = Vector2(2.08165e-12, 2.08165e-12)
+
 [node name="CurrentGameList" instance=ExtResource("1_ffgsx")]
 script = ExtResource("2_4sr2a")
+
+[node name="NoGames" type="Label" parent="." index="2"]
+visible = false
+layout_mode = 2
+text = "You are not in any games right now."
+label_settings = SubResource("LabelSettings_g58rv")
+horizontal_alignment = 1

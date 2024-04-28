@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://cosy5s2xq3c2w"]
+[gd_scene load_steps=9 format=3 uid="uid://cosy5s2xq3c2w"]
 
 [ext_resource type="Script" path="res://SpecialistOffer.gd" id="1_r0moy"]
 [ext_resource type="Theme" uid="uid://tg7ina762c6q" path="res://resources/themes/UITheme.tres" id="1_tjwlt"]
@@ -6,11 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://b4p1418oo26f6" path="res://resources/specialistIcons/Helmsman.png" id="3_exqho"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5mrol"]
-bg_color = Color(1, 1, 1, 0)
-border_width_left = 16
-border_width_top = 16
-border_width_right = 16
-border_blend = true
+bg_color = Color(0, 0, 0, 0.509804)
 corner_radius_top_left = 30
 corner_radius_top_right = 30
 corner_radius_bottom_right = 30
@@ -19,6 +15,28 @@ corner_detail = 16
 
 [sub_resource type="LabelSettings" id="LabelSettings_bcf4o"]
 font_size = 30
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hk65e"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(1, 1, 1, 0.784314)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1ul18"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(1, 1, 1, 0.862745)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
 
 [node name="SpecialistOffer" type="MarginContainer"]
 anchors_preset = 10
@@ -99,18 +117,29 @@ material = ExtResource("2_jypff")
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+size_flags_stretch_ratio = 0.25
 mouse_filter = 2
 theme = ExtResource("1_tjwlt")
 texture = ExtResource("3_exqho")
-expand_mode = 4
+expand_mode = 1
 stretch_mode = 5
 
 [node name="Button" type="Button" parent="MarginContainer/HBoxContainer/MarginContainer"]
-custom_minimum_size = Vector2(150, 50)
+custom_minimum_size = Vector2(2.08165e-12, 2.08165e-12)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 8
 theme = ExtResource("1_tjwlt")
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_disabled_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_styles/normal = SubResource("StyleBoxFlat_hk65e")
+theme_override_styles/hover = SubResource("StyleBoxFlat_hk65e")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_1ul18")
 text = "Hire now"
 
 [connection signal="pressed" from="MarginContainer/HBoxContainer/MarginContainer/Button" to="." method="_on_button_pressed"]

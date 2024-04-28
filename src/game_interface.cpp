@@ -32,7 +32,7 @@
 
 using namespace godot;
 
-double getTimeMillis() {
+double GameInterface::getTimeMillis() {
 	auto now = std::chrono::system_clock::now();
 	auto seconds = std::chrono::time_point_cast<std::chrono::seconds>(now);
 	auto fraction = std::chrono::duration_cast<std::chrono::milliseconds>(now - seconds).count()/1000.0;
@@ -74,6 +74,9 @@ void GameInterface::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("hasLost"), &GameInterface::hasLost);
 	ClassDB::bind_method(D_METHOD("canHire"), &GameInterface::canHire);
 	ClassDB::bind_method(D_METHOD("canRelease", "specialistID"), &GameInterface::canRelease);
+	ClassDB::bind_method(D_METHOD("canUndoSpecialist", "specialistID"), &GameInterface::canUndoSpecialist);
+	ClassDB::bind_method(D_METHOD("getSpecialistOriginatingOrder", "specialistID"), &GameInterface::getSpecialistOriginatingOrder);
+	ClassDB::bind_method(D_METHOD("getSpecialistOriginatingOrderType", "specialistID"), &GameInterface::getSpecialistOriginatingOrderType);
 	ClassDB::bind_method(D_METHOD("isPaused"), &GameInterface::isPaused);
 	ClassDB::bind_method(D_METHOD("ownsSpecialist", "specialistID"), &GameInterface::ownsSpecialist);
 	ClassDB::bind_method(D_METHOD("getSpecialistOwner", "specialistID"), &GameInterface::getSpecialistOwner);
@@ -86,6 +89,7 @@ void GameInterface::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("getNextArrivalEvent"), &GameInterface::getNextArrivalEvent);
 	ClassDB::bind_method(D_METHOD("getNextProductionEvent"), &GameInterface::getNextProductionEvent);
 	ClassDB::bind_method(D_METHOD("getNextBattleEvent"), &GameInterface::getNextBattleEvent);
+	ClassDB::bind_method(D_METHOD("canViewNextBattle", "objID"), &GameInterface::canViewNextBattle);
 	ClassDB::bind_method(D_METHOD("getBattlePhases"), &GameInterface::getBattlePhases);
 	ClassDB::bind_method(D_METHOD("getNextBattleMessages", "objID", "phase"), &GameInterface::getNextBattleMessages);
 	ClassDB::bind_method(D_METHOD("getNextBattleStartingUnits", "objID"), &GameInterface::getNextBattleStartingUnits);
@@ -218,6 +222,8 @@ void GameInterface::init(int gameID, int userID, int startTime, int playerCap, D
 	settings.startTime = startTime;
 	completeGame = std::shared_ptr<Game>(new Game(settings, userID, startTime, settings.clientToGameTime(startTime + simulationBuffer / settings.simulationSpeed), playerMap, 42083, true));
 
+	settings = *(completeGame->getSettings());
+
 	completeGame->run();
 	nextEndState = completeGame->getNextEndState();
 
@@ -280,6 +286,8 @@ void GameInterface::_process(double delta) {
 	update();
 	
 	if(game != nullptr && currentGame != nullptr) {
+		double t = settings.clientToGameTime(time);
+
 		double timeDiff = settings.clientToGameTime(getTime()) - game->getTime();
 
 		double simulatedDiff = settings.clientToGameTime(getCurrent()) - simulatedGame->getTime();
@@ -287,16 +295,25 @@ void GameInterface::_process(double delta) {
 		Player* p = future ? currentGame->getPlayer(getUserGameID()) : game->getPlayer(getUserGameID());
 		
 		for(const auto& pair : vessels) {
-			pair.second->setDiff(time, timeDiff);
-			if(p) pair.second->set_visible(p->withinRange(pair.second->getObj(), timeDiff));
+			pair.second->setDiff(t, timeDiff);
+			if(p) {
+				pair.second->setInRadar(p->withinRange(pair.second->getObj(), timeDiff));
+				pair.second->set_visible(p->withinRange(pair.second->getObj(), timeDiff));
+			}
 		}
 		
 		for(const auto& pair : outposts) {
-			pair.second->setDiff(time, timeDiff);
-			if(p) pair.second->set_visible(p->withinRange(pair.second->getObj(), timeDiff));
+			pair.second->setDiff(t, timeDiff);
+			if(p) {
+				pair.second->setInRadar(p->withinRange(pair.second->getObj(), timeDiff));
+				pair.second->set_visible(true);
+				pair.second->setViewType(p->controlsSpecialist(SpecialistType::INTELLIGENCE_OFFICER));
+			}
 		}
 
-		for(const auto& pair : players) pair.second->setDiff(time, timeDiff);
+		for(const auto& pair : players) pair.second->setDiff(t, timeDiff);
+
+		if(selected >= 0) selectedUnits = getSelected()->getUnitsAt(timeDiff);
 
 		floorDisplay->setDiff(timeDiff, simulatedDiff);
 		floorDisplay->queue_redraw();
@@ -857,6 +874,24 @@ double GameInterface::getNextBattleEvent(int objID) {
 	return e ? settings.gameToClientTime(e->getTimestamp()) : -1;
 }
 
+bool GameInterface::canViewNextBattle(int objID) {
+	const BattleEvent* b = completeGame->nextBattle(objID, getTime());
+
+	if(!b) return false;
+
+	double timeDiff = settings.clientToGameTime(getTime()) - game->getTime();
+
+	Player* p = future ? currentGame->getPlayer(getUserGameID()) : game->getPlayer(getUserGameID());
+	
+	std::pair<int, int> pair = b->getBattleObjects();
+
+	if(!getObj(pair.first) || !p->withinRange(getObj(pair.first), timeDiff)) return false;
+
+	if(!getObj(pair.second) || !p->withinRange(getObj(pair.second), timeDiff)) return false;
+
+	return true;
+}
+
 Array GameInterface::getBattlePhases() {
 	Array arr;
 
@@ -969,7 +1004,7 @@ PlayerNode* GameInterface::getNextBattleVictor(int objID) {
 
 	if(!b) return nullptr;
 
-	return players[b->getVictor()];
+	return b->getVictor() >= 0 ? players[b->getVictor()] : nullptr;
 }
 
 int GameInterface::getNextBattleVictorUnits(int objID) {

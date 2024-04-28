@@ -31,6 +31,10 @@ private:
 
 	double timePassed = 0.0;
 
+	bool inRadar = false;
+
+	bool viewType = false;
+
 protected:
 	static void _bind_methods();
 	
@@ -77,6 +81,14 @@ public:
 	void setSelected(bool selected);
 
 	bool isSelected() { return selected; }
+
+	void setInRadar(bool inRadar) { this->inRadar = inRadar; };
+
+	bool isInRadar() { return inRadar; }
+
+	void setViewType(bool viewType) { this->viewType = viewType; };
+
+	bool canViewType() { return viewType; }
 
 	Color getColor();
 

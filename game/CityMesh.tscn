@@ -1,14 +1,20 @@
-[gd_scene load_steps=23 format=3 uid="uid://b16kytc1dy61a"]
+[gd_scene load_steps=29 format=3 uid="uid://b16kytc1dy61a"]
 
 [ext_resource type="Script" path="res://CityMesh.gd" id="1_cq8ip"]
 [ext_resource type="ArrayMesh" uid="uid://kb12ilq8w48c" path="res://resources/outpost/outpostWalls.obj" id="2_i1r0h"]
-[ext_resource type="Material" uid="uid://b64sjm6vvbj6x" path="res://resources/outpost/textures/shield.tres" id="5_1p8q0"]
-[ext_resource type="ArrayMesh" uid="uid://ilkuovqpo5j0" path="res://resources/outpost/shieldAlternate.obj" id="5_3gja1"]
+[ext_resource type="Texture2D" uid="uid://drnqlrdowrk54" path="res://resources/icons/FactoryFillw.png" id="2_qv5gb"]
+[ext_resource type="Texture2D" uid="uid://blkr2ru5vivp4" path="res://resources/icons/GeneratorFillw.png" id="3_8pmls"]
+[ext_resource type="Texture2D" uid="uid://bf3w076tmn81a" path="res://resources/icons/MineFillw.png" id="4_e2fl0"]
 [ext_resource type="ArrayMesh" uid="uid://bamufayui0hi1" path="res://resources/outpost/shieldRoots.obj" id="5_nhrjy"]
+[ext_resource type="PackedScene" uid="uid://cter64syjsq6d" path="res://Shield.tscn" id="6_v1bhk"]
 [ext_resource type="PackedScene" uid="uid://onrwixxo1kan" path="res://resources/outpost/generatorAlternate.glb" id="7_1j7kd"]
 [ext_resource type="Script" path="res://OutpostInfo.gd" id="7_82d0g"]
+[ext_resource type="PackedScene" uid="uid://c3032y2mt7g1i" path="res://resources/outpost/factoryComponent1.glb" id="8_tvg4k"]
+[ext_resource type="PackedScene" uid="uid://bitl4cd0a3q76" path="res://resources/outpost/mine.glb" id="8_uvw8d"]
+[ext_resource type="PackedScene" uid="uid://cnwmccv0uep7t" path="res://resources/outpost/factoryComponent3.blend" id="9_3h1yq"]
 [ext_resource type="PackedScene" uid="uid://cfdyxu400je7l" path="res://resources/outpost/building.glb" id="9_gbcvs"]
 [ext_resource type="PackedScene" uid="uid://cote8g27q1jov" path="res://resources/outpost/tower.glb" id="9_rhwgw"]
+[ext_resource type="PackedScene" uid="uid://bjri0loodwx3v" path="res://resources/outpost/factoryComponent2.blend" id="10_a580i"]
 [ext_resource type="PackedScene" uid="uid://cmbmydq0hkmax" path="res://resources/outpost/factory.glb" id="10_tb7jb"]
 [ext_resource type="Texture2D" uid="uid://c4qhl5pkr6yj0" path="res://resources/images/banner.png" id="12_6c5ig"]
 [ext_resource type="Texture2D" uid="uid://byuim6y4reelm" path="res://resources/images/black_circle.png" id="14_ijni4"]
@@ -53,6 +59,9 @@ variation_embolden = 1.0
 monitoring = false
 monitorable = false
 script = ExtResource("1_cq8ip")
+factoryImg = ExtResource("2_qv5gb")
+generatorImg = ExtResource("3_8pmls")
+mineImg = ExtResource("4_e2fl0")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.66272, 0)
@@ -64,21 +73,92 @@ shape = SubResource("CylinderShape3D_we4w1")
 
 [node name="outpostWalls" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 7.41, 2.08165e-12)
+visible = false
 mesh = ExtResource("2_i1r0h")
 
-[node name="shield" type="MeshInstance3D" parent="."]
-transform = Transform3D(0.707107, 1.60554e-24, 0.707107, 3.48787e-16, 1, -3.48787e-16, -0.707107, 4.93259e-16, 0.707107, 2.08165e-12, 7, 2.08165e-12)
-cast_shadow = 0
-mesh = ExtResource("5_3gja1")
-surface_material_override/0 = ExtResource("5_1p8q0")
+[node name="shield" parent="." instance=ExtResource("6_v1bhk")]
+visible = false
 
 [node name="shieldRoots" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.707107, -6.22982e-23, 0.707107, 3.48787e-16, 1, -3.48787e-16, -0.707107, 4.93259e-16, 0.707107, 2.08165e-12, 7, 2.08165e-12)
 visible = false
 mesh = ExtResource("5_nhrjy")
 
+[node name="CityAlternate" type="Node3D" parent="."]
+transform = Transform3D(0.869741, 1.97481e-24, 0.869741, 4.29008e-16, 1.23, -4.29008e-16, -0.869741, 6.06709e-16, 0.869741, 0, 0, 0)
+
+[node name="Base" type="Node3D" parent="CityAlternate"]
+
+[node name="factoryComponent1" parent="CityAlternate/Base" instance=ExtResource("8_tvg4k")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 2.08165e-12, 1.5)
+
+[node name="factoryComponent2" parent="CityAlternate/Base" instance=ExtResource("8_tvg4k")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 2.08165e-12, 1.5)
+
+[node name="factoryComponent3" parent="CityAlternate/Base" instance=ExtResource("8_tvg4k")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 2.08165e-12, -1.5)
+
+[node name="factoryComponent4" parent="CityAlternate/Base" instance=ExtResource("8_tvg4k")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 2.08165e-12, -1.5)
+
+[node name="Columns" type="Node3D" parent="CityAlternate"]
+
+[node name="factoryComponent1" parent="CityAlternate/Columns" instance=ExtResource("9_3h1yq")]
+transform = Transform3D(1, 3.32069e-23, -2.50326e-08, -5.42358e-23, 1, 5.42358e-23, -2.50326e-08, -3.32069e-23, 1, 2.08165e-12, 2.08165e-12, 4.5)
+
+[node name="factoryComponent2" parent="CityAlternate/Columns" instance=ExtResource("9_3h1yq")]
+transform = Transform3D(-4.37114e-08, 3.48787e-16, 1, 3.48787e-16, 1, -3.48787e-16, -1, 3.48787e-16, -4.37114e-08, 1.5, 2.08165e-12, 6)
+
+[node name="factoryComponent3" parent="CityAlternate/Columns" instance=ExtResource("9_3h1yq")]
+transform = Transform3D(-4.37114e-08, 3.48787e-16, 1, 3.48787e-16, 1, -3.48787e-16, -1, 3.48787e-16, -4.37114e-08, -1.5, 2.08165e-12, 6)
+
+[node name="factoryComponent4" parent="CityAlternate/Columns" instance=ExtResource("9_3h1yq")]
+transform = Transform3D(-1, 3.48787e-16, -8.74228e-08, 3.48787e-16, 1, -3.48787e-16, 8.74228e-08, -3.48787e-16, -1, 6, 2.08165e-12, 4.5)
+
+[node name="factoryComponent5" parent="CityAlternate/Columns" instance=ExtResource("9_3h1yq")]
+transform = Transform3D(1, -3.48787e-16, 3.48787e-16, 3.48787e-16, 1, -3.48787e-16, -3.48787e-16, 3.48787e-16, 1, -6, 2.08165e-12, -1.5)
+
+[node name="Glass" type="Node3D" parent="CityAlternate"]
+
+[node name="factoryComponent1" parent="CityAlternate/Glass" instance=ExtResource("10_a580i")]
+transform = Transform3D(1, 3.32069e-23, -2.50326e-08, -2.7766e-23, 1, 2.7766e-23, -2.50326e-08, -3.32069e-23, 1, 1.5, 2.08165e-12, -6)
+
+[node name="factoryComponent2" parent="CityAlternate/Glass" instance=ExtResource("10_a580i")]
+transform = Transform3D(1, 3.32069e-23, -2.50326e-08, -2.7766e-23, 1, 2.7766e-23, -2.50326e-08, -3.32069e-23, 1, -1.5, 2.08165e-12, -3)
+
+[node name="factoryComponent3" parent="CityAlternate/Glass" instance=ExtResource("10_a580i")]
+transform = Transform3D(-4.37114e-08, 3.48787e-16, 1, 3.48787e-16, 1, -3.48787e-16, -1, 3.48787e-16, -4.37114e-08, 1.5, 2.08165e-12, 1.5)
+
+[node name="factoryComponent4" parent="CityAlternate/Glass" instance=ExtResource("10_a580i")]
+transform = Transform3D(-4.37114e-08, 3.48787e-16, 1, 3.48787e-16, 1, -3.48787e-16, -1, 3.48787e-16, -4.37114e-08, -1.5, 2.08165e-12, 1.5)
+
 [node name="City" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.64629, 0)
+visible = false
+
+[node name="mines" type="Node3D" parent="City"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, -7, 2.08165e-12)
+visible = false
+
+[node name="mine" parent="City/mines" instance=ExtResource("8_uvw8d")]
+
+[node name="building7" parent="City/mines" instance=ExtResource("9_gbcvs")]
+transform = Transform3D(0.7, 0, 0, 0, 0.56, 0, 0, 0, 0.7, 6, 2.08165e-12, 2.08165e-12)
+
+[node name="building8" parent="City/mines" instance=ExtResource("9_gbcvs")]
+transform = Transform3D(0.35, 0, -0.606218, 0, 0.56, 0, 0.606218, 0, 0.35, 3, 2.08165e-12, 5.196)
+
+[node name="building9" parent="City/mines" instance=ExtResource("9_gbcvs")]
+transform = Transform3D(-0.35, 0, -0.606218, 0, 0.56, 0, 0.606218, 0, -0.35, -3, 2.08165e-12, 5.196)
+
+[node name="building10" parent="City/mines" instance=ExtResource("9_gbcvs")]
+transform = Transform3D(-0.7, 0, 1.05697e-07, 0, 0.56, 0, -1.05697e-07, 0, -0.7, -6, 2.08165e-12, 2.08165e-12)
+
+[node name="building11" parent="City/mines" instance=ExtResource("9_gbcvs")]
+transform = Transform3D(0.35, 0, 0.606218, 0, 0.56, 0, -0.606218, 0, 0.35, 3, 2.08165e-12, -5.196)
+
+[node name="building12" parent="City/mines" instance=ExtResource("9_gbcvs")]
+transform = Transform3D(-0.35, 0, 0.606218, 0, 0.56, 0, -0.606218, 0, -0.35, -3, 2.08165e-12, -5.196)
 
 [node name="generators" type="Node3D" parent="City"]
 
@@ -127,6 +207,7 @@ transform = Transform3D(-0.35, 0, 0.606218, 0, 0.7, 0, -0.606218, 0, -0.35, -1.5
 
 [node name="FlagSprite" type="Sprite3D" parent="."]
 transform = Transform3D(-4.37114e-08, 1, -4.37114e-08, 0, -4.37114e-08, -1, -1, -4.37114e-08, 1.91069e-15, -8.94601, 7.61623, 2.08165e-12)
+visible = false
 sorting_offset = 1000.0
 pixel_size = 0.03
 texture = ExtResource("12_6c5ig")
@@ -205,7 +286,7 @@ label_settings = SubResource("LabelSettings_l1ine")
 vertical_alignment = 2
 
 [node name="Name" type="Label3D" parent="."]
-transform = Transform3D(-1, 8.74228e-08, 3.82137e-15, -1.5246e-23, -4.37114e-08, 1, 8.74228e-08, 1, 4.37114e-08, -8.70985, 2, 0.198174)
+transform = Transform3D(-1, 8.74228e-08, 3.82137e-15, -1.5246e-23, -4.37114e-08, 1, 8.74228e-08, 1, 4.37114e-08, -8.82485, 2, -0.0326114)
 sorting_offset = 1000.0
 pixel_size = 0.1
 text = "Attendance Code"
@@ -236,5 +317,7 @@ horizontal_alignment = 0
 
 [node name="Shadow" type="Sprite3D" parent="."]
 transform = Transform3D(1, -6.97574e-16, -1.5246e-23, -1.5246e-23, -4.37114e-08, 1, -6.97574e-16, -1, -4.37114e-08, 0, 1, 0)
+visible = false
+sorting_offset = -1000.0
 pixel_size = 0.035
 texture = ExtResource("14_ijni4")

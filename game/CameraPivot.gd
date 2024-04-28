@@ -79,10 +79,10 @@ func selected(node):
 	selectedNode = node
 
 func normalize(vec):
-	while vec.x > game.getWidth()/2: vec.x -= game.getWidth()
-	while vec.x <= -game.getWidth()/2: vec.x += game.getWidth()
-	while vec.y > game.getHeight()/2: vec.y -= game.getHeight()
-	while vec.y <= -game.getHeight()/2: vec.y += game.getHeight()
+	while vec.x >= game.getWidth(): vec.x -= game.getWidth()
+	while vec.x < 0: vec.x += game.getWidth()
+	while vec.y >= game.getHeight()/2: vec.y -= game.getHeight()
+	while vec.y < -game.getHeight()/2: vec.y += game.getHeight()
 	
 	return vec
 
@@ -91,10 +91,8 @@ func _process(delta):
 		position.x += momentum.x * 0.9
 		position.z += momentum.y * 0.9
 		
-		while position.x > game.getWidth()/2: position.x -= game.getWidth()
-		while position.x <= -game.getWidth()/2: position.x += game.getWidth()
-		while position.z > game.getHeight()/2: position.z -= game.getHeight()
-		while position.z <= -game.getHeight()/2: position.z += game.getHeight()
+		position.x = normalize(Vector2(position.x, position.z)).x
+		position.z = normalize(Vector2(position.x, position.z)).y
 		
 		if(momentum != Vector2(0, 0)):
 			updatePos()
@@ -173,12 +171,7 @@ func _unhandled_input(event):
 		momentum = diff - lastDiff
 		lastDiff = diff
 		
-		var newPos = diff + screen_start_position
-		
-		while newPos.x > game.getWidth()/2: newPos.x -= game.getWidth()
-		while newPos.x <= -game.getWidth()/2: newPos.x += game.getWidth()
-		while newPos.y > game.getHeight()/2: newPos.y -= game.getHeight()
-		while newPos.y <= -game.getHeight()/2: newPos.y += game.getHeight()
+		var newPos = normalize(diff + screen_start_position)
 		
 		position.x = newPos.x
 		position.z = newPos.y

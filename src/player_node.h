@@ -67,6 +67,8 @@ public:
 
 	int getMines() { return player->outpostsOfType(OutpostType::MINE); }
 
+	int getTeamID() { return player->getTeamID(); }
+
 	double getDiff() { return timeDiff; }
 };
 

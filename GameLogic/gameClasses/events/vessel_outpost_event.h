@@ -48,15 +48,8 @@ public:
         }
         //both players exist
         else{
-
             //if both players belong to the same team, return true
-            if( (outpost_to_check->getOwner()->get_team() ) == (vessel_to_check->getOwner()->get_team() )){
-                return true;
-            }
-            //otherwise return false
-            else{
-                return false;
-            }
+            return outpost_to_check->getOwner()->getTeamID() == vessel_to_check->getOwner()->getTeamID();
         }
     }
 

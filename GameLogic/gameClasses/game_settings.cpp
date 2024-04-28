@@ -16,13 +16,13 @@ void GameSettings::loadDefaults() {
     GameSettings::resourcesToWin = 200;
     GameSettings::gameMode = CONQUEST;
     GameSettings::eloKValue = 32;
-    GameSettings::defaultSonar = 50;
+    GameSettings::defaultSonar = 60;
     GameSettings::defaultMaxShield = 20;
     GameSettings::baseFireRate = 2 * 60 * 60;
     GameSettings::fireRate = 1.0;
     GameSettings::fireRange = 0.5;
     GameSettings::costPerMine = 50;
-    GameSettings::outpostsPerPlayer = 5;
+    GameSettings::outpostsPerPlayer = 10;
     GameSettings::width = 200;
     GameSettings::height = 200;
     GameSettings::number_of_teams = -1;
@@ -189,7 +189,7 @@ void GameSettings::addSetting(const char* type, const void* value){
     else if(strcmp(type, "factoryDensity") == 0) factoryDensity = std::min(0.8, std::max(0.2, *(double*)value));
     else if(strcmp(type, "resourcesToWin") == 0) resourcesToWin = std::min(400, std::max(50, int(std::lround(*(double*)value))));
     else if(strcmp(type, "gameMode") == 0) gameMode = strcmp((char*)value, "CONQUEST") == 0 ? Mode::CONQUEST : Mode::MINING;
-    else if(strcmp(type, "defaultSonar") == 0) defaultSonar = std::min(100, std::max(25, int(std::lround(*(double*)value))));
+    else if(strcmp(type, "defaultSonar") == 0) defaultSonar = std::min(150, std::max(50, int(std::lround(*(double*)value))));
     else if(strcmp(type, "defaultMaxShield") == 0) defaultMaxShield = std::min(40, std::max(10, int(std::lround(*(double*)value))));
     else if(strcmp(type, "costPerMine") == 0) costPerMine = std::min(100, std::max(25, int(std::lround(*(double*)value))));
     else if(strcmp(type, "outpostsPerPlayer") == 0) outpostsPerPlayer = std::min(20, std::max(5, int(std::lround(*(double*)value))));

@@ -1,7 +1,8 @@
-[gd_scene load_steps=10 format=3 uid="uid://biekuv7dddk3m"]
+[gd_scene load_steps=11 format=3 uid="uid://biekuv7dddk3m"]
 
 [ext_resource type="Theme" uid="uid://tg7ina762c6q" path="res://resources/themes/UITheme.tres" id="1_sjo5m"]
 [ext_resource type="Script" path="res://GameEditor.gd" id="2_ymahp"]
+[ext_resource type="PackedScene" uid="uid://dg4lhqpoy431" path="res://CustomScroll.tscn" id="3_l4xqo"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tpxmc"]
 bg_color = Color(0.0392157, 0.0392157, 0.0392157, 0.156863)
@@ -131,12 +132,17 @@ layout_mode = 2
 theme = ExtResource("1_sjo5m")
 text = "Number of Players"
 
-[node name="NumPlayersButtons" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid"]
+[node name="NumPlayersButtons" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid" instance=ExtResource("3_l4xqo")]
+layout_mode = 2
+vertical_scroll_mode = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons"]
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_vertical = 3
 theme = ExtResource("1_sjo5m")
 
-[node name="2" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons"]
+[node name="2" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("1_sjo5m")
@@ -144,7 +150,7 @@ toggle_mode = true
 button_group = SubResource("ButtonGroup_ktqn5")
 text = "2"
 
-[node name="3" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons"]
+[node name="3" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("1_sjo5m")
@@ -152,7 +158,7 @@ toggle_mode = true
 button_group = SubResource("ButtonGroup_ktqn5")
 text = "3"
 
-[node name="4" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons"]
+[node name="4" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("1_sjo5m")
@@ -160,7 +166,7 @@ toggle_mode = true
 button_group = SubResource("ButtonGroup_ktqn5")
 text = "4"
 
-[node name="5" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons"]
+[node name="5" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("1_sjo5m")
@@ -168,7 +174,7 @@ toggle_mode = true
 button_group = SubResource("ButtonGroup_ktqn5")
 text = "5"
 
-[node name="6" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons"]
+[node name="6" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("1_sjo5m")
@@ -176,7 +182,7 @@ toggle_mode = true
 button_group = SubResource("ButtonGroup_ktqn5")
 text = "6"
 
-[node name="7" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons"]
+[node name="7" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("1_sjo5m")
@@ -184,7 +190,7 @@ toggle_mode = true
 button_group = SubResource("ButtonGroup_ktqn5")
 text = "7"
 
-[node name="8" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons"]
+[node name="8" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("1_sjo5m")
@@ -192,7 +198,7 @@ toggle_mode = true
 button_group = SubResource("ButtonGroup_ktqn5")
 text = "8"
 
-[node name="9" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons"]
+[node name="9" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("1_sjo5m")
@@ -200,7 +206,7 @@ toggle_mode = true
 button_group = SubResource("ButtonGroup_ktqn5")
 text = "9"
 
-[node name="10" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons"]
+[node name="10" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("1_sjo5m")
@@ -276,16 +282,21 @@ layout_mode = 2
 theme = ExtResource("1_sjo5m")
 text = "Active Hours"
 
-[node name="ActiveHoursRows" type="VBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid"]
+[node name="ActiveHoursRows" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid" instance=ExtResource("3_l4xqo")]
 layout_mode = 2
-theme = ExtResource("1_sjo5m")
+vertical_scroll_mode = 0
 
-[node name="ActiveHoursButtons" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("1_sjo5m")
 
-[node name="0" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/ActiveHoursButtons"]
+[node name="ActiveHoursButtons" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+
+[node name="0" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/VBoxContainer/ActiveHoursButtons"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("1_sjo5m")
@@ -293,7 +304,7 @@ toggle_mode = true
 button_pressed = true
 text = "12 AM"
 
-[node name="1" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/ActiveHoursButtons"]
+[node name="1" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/VBoxContainer/ActiveHoursButtons"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("1_sjo5m")
@@ -301,7 +312,7 @@ toggle_mode = true
 button_pressed = true
 text = "1"
 
-[node name="2" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/ActiveHoursButtons"]
+[node name="2" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/VBoxContainer/ActiveHoursButtons"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("1_sjo5m")
@@ -309,7 +320,7 @@ toggle_mode = true
 button_pressed = true
 text = "2"
 
-[node name="3" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/ActiveHoursButtons"]
+[node name="3" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/VBoxContainer/ActiveHoursButtons"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("1_sjo5m")
@@ -317,7 +328,7 @@ toggle_mode = true
 button_pressed = true
 text = "3"
 
-[node name="4" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/ActiveHoursButtons"]
+[node name="4" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/VBoxContainer/ActiveHoursButtons"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("1_sjo5m")
@@ -325,7 +336,7 @@ toggle_mode = true
 button_pressed = true
 text = "4 AM"
 
-[node name="5" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/ActiveHoursButtons"]
+[node name="5" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/VBoxContainer/ActiveHoursButtons"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("1_sjo5m")
@@ -333,7 +344,7 @@ toggle_mode = true
 button_pressed = true
 text = "5"
 
-[node name="6" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/ActiveHoursButtons"]
+[node name="6" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/VBoxContainer/ActiveHoursButtons"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("1_sjo5m")
@@ -341,7 +352,7 @@ toggle_mode = true
 button_pressed = true
 text = "6"
 
-[node name="7" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/ActiveHoursButtons"]
+[node name="7" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/VBoxContainer/ActiveHoursButtons"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("1_sjo5m")
@@ -349,7 +360,7 @@ toggle_mode = true
 button_pressed = true
 text = "7"
 
-[node name="8" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/ActiveHoursButtons"]
+[node name="8" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/VBoxContainer/ActiveHoursButtons"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("1_sjo5m")
@@ -357,7 +368,7 @@ toggle_mode = true
 button_pressed = true
 text = "8 AM"
 
-[node name="9" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/ActiveHoursButtons"]
+[node name="9" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/VBoxContainer/ActiveHoursButtons"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("1_sjo5m")
@@ -365,7 +376,7 @@ toggle_mode = true
 button_pressed = true
 text = "9"
 
-[node name="10" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/ActiveHoursButtons"]
+[node name="10" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/VBoxContainer/ActiveHoursButtons"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("1_sjo5m")
@@ -373,7 +384,7 @@ toggle_mode = true
 button_pressed = true
 text = "10"
 
-[node name="11" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/ActiveHoursButtons"]
+[node name="11" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/VBoxContainer/ActiveHoursButtons"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("1_sjo5m")
@@ -381,12 +392,12 @@ toggle_mode = true
 button_pressed = true
 text = "11"
 
-[node name="ActiveHoursButtons2" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows"]
+[node name="ActiveHoursButtons2" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("1_sjo5m")
 
-[node name="12" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/ActiveHoursButtons2"]
+[node name="12" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/VBoxContainer/ActiveHoursButtons2"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("1_sjo5m")
@@ -394,7 +405,7 @@ toggle_mode = true
 button_pressed = true
 text = "12 PM"
 
-[node name="13" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/ActiveHoursButtons2"]
+[node name="13" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/VBoxContainer/ActiveHoursButtons2"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("1_sjo5m")
@@ -402,7 +413,7 @@ toggle_mode = true
 button_pressed = true
 text = "1"
 
-[node name="14" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/ActiveHoursButtons2"]
+[node name="14" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/VBoxContainer/ActiveHoursButtons2"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("1_sjo5m")
@@ -410,7 +421,7 @@ toggle_mode = true
 button_pressed = true
 text = "2"
 
-[node name="15" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/ActiveHoursButtons2"]
+[node name="15" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/VBoxContainer/ActiveHoursButtons2"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("1_sjo5m")
@@ -418,7 +429,7 @@ toggle_mode = true
 button_pressed = true
 text = "3"
 
-[node name="16" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/ActiveHoursButtons2"]
+[node name="16" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/VBoxContainer/ActiveHoursButtons2"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("1_sjo5m")
@@ -426,7 +437,7 @@ toggle_mode = true
 button_pressed = true
 text = "4 PM"
 
-[node name="17" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/ActiveHoursButtons2"]
+[node name="17" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/VBoxContainer/ActiveHoursButtons2"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("1_sjo5m")
@@ -434,7 +445,7 @@ toggle_mode = true
 button_pressed = true
 text = "5"
 
-[node name="18" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/ActiveHoursButtons2"]
+[node name="18" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/VBoxContainer/ActiveHoursButtons2"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("1_sjo5m")
@@ -442,7 +453,7 @@ toggle_mode = true
 button_pressed = true
 text = "6"
 
-[node name="19" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/ActiveHoursButtons2"]
+[node name="19" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/VBoxContainer/ActiveHoursButtons2"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("1_sjo5m")
@@ -450,7 +461,7 @@ toggle_mode = true
 button_pressed = true
 text = "7"
 
-[node name="20" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/ActiveHoursButtons2"]
+[node name="20" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/VBoxContainer/ActiveHoursButtons2"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("1_sjo5m")
@@ -458,7 +469,7 @@ toggle_mode = true
 button_pressed = true
 text = "8 PM"
 
-[node name="21" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/ActiveHoursButtons2"]
+[node name="21" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/VBoxContainer/ActiveHoursButtons2"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("1_sjo5m")
@@ -466,7 +477,7 @@ toggle_mode = true
 button_pressed = true
 text = "9"
 
-[node name="22" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/ActiveHoursButtons2"]
+[node name="22" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/VBoxContainer/ActiveHoursButtons2"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("1_sjo5m")
@@ -474,7 +485,7 @@ toggle_mode = true
 button_pressed = true
 text = "10"
 
-[node name="23" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/ActiveHoursButtons2"]
+[node name="23" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/VBoxContainer/ActiveHoursButtons2"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("1_sjo5m")
@@ -655,9 +666,10 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
 theme = ExtResource("1_sjo5m")
-min_value = 25.0
+min_value = 30.0
+max_value = 120.0
 step = 0.0
-value = 50.0
+value = 60.0
 exp_edit = true
 rounded = true
 

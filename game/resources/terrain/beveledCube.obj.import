@@ -1,0 +1,22 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://cljtnv2st8qtk"
+path="res://.godot/imported/beveledCube.obj-2450e1107e0b127517d34526bf7ffd21.mesh"
+
+[deps]
+
+files=["res://.godot/imported/beveledCube.obj-2450e1107e0b127517d34526bf7ffd21.mesh"]
+
+source_file="res://resources/terrain/beveledCube.obj"
+dest_files=["res://.godot/imported/beveledCube.obj-2450e1107e0b127517d34526bf7ffd21.mesh", "res://.godot/imported/beveledCube.obj-2450e1107e0b127517d34526bf7ffd21.mesh"]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+optimize_mesh=true
+force_disable_mesh_compression=false

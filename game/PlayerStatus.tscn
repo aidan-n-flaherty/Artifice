@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://nglncmsgw3a6"]
+[gd_scene load_steps=13 format=3 uid="uid://nglncmsgw3a6"]
 
 [ext_resource type="Script" path="res://PlayerStatus.gd" id="1_oj4yj"]
 [ext_resource type="Texture2D" uid="uid://drnqlrdowrk54" path="res://resources/icons/FactoryFillw.png" id="2_6u3fp"]
@@ -6,9 +6,11 @@
 [ext_resource type="Texture2D" uid="uid://bf3w076tmn81a" path="res://resources/icons/MineFillw.png" id="4_7jvdn"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4j4mi"]
-bg_color = Color(0.156863, 0.156863, 0.156863, 1)
-corner_radius_top_right = 16
-corner_radius_bottom_right = 16
+bg_color = Color(0, 0, 0, 0.509804)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
 
 [sub_resource type="FontVariation" id="FontVariation_8rvbh"]
 variation_embolden = 1.0
@@ -17,24 +19,28 @@ variation_embolden = 1.0
 font = SubResource("FontVariation_8rvbh")
 font_size = 24
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_41iwl"]
-bg_color = Color(0.247059, 0.247059, 0.247059, 0)
-border_width_top = 6
-border_width_right = 5
-border_width_bottom = 5
-corner_radius_top_left = 8
-corner_radius_top_right = 8
-corner_radius_bottom_right = 8
-corner_radius_bottom_left = 8
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4deaq"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_clcgh"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_txymw"]
+bg_color = Color(0.305077, 0.305077, 0.305077, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_iuyvt"]
-bg_color = Color(1, 1, 1, 0.647059)
-corner_radius_top_left = 8
-corner_radius_top_right = 8
-corner_radius_bottom_right = 8
-corner_radius_bottom_left = 8
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bmtrr"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ijbxl"]
+bg_color = Color(0.442911, 0.442911, 0.442911, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="LabelSettings" id="LabelSettings_t8h8r"]
+font_size = 22
 
 [node name="PlayerStatus" type="MarginContainer"]
 anchors_preset = 10
@@ -47,18 +53,12 @@ script = ExtResource("1_oj4yj")
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_4j4mi")
 
-[node name="ColorRect" type="ColorRect" parent="."]
-custom_minimum_size = Vector2(10, 0)
-layout_direction = 2
-layout_mode = 2
-size_flags_horizontal = 0
-
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
 theme_override_constants/margin_left = 50
-theme_override_constants/margin_top = 50
-theme_override_constants/margin_right = 50
-theme_override_constants/margin_bottom = 50
+theme_override_constants/margin_top = 30
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 30
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
 layout_mode = 2
@@ -73,150 +73,122 @@ theme_override_constants/separation = 8
 [node name="Name" type="Label" parent="MarginContainer/HBoxContainer/VBoxName"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Player_Name"
+size_flags_vertical = 10
+text = "A very long player name that should be clipped"
 label_settings = SubResource("LabelSettings_1s5qg")
+text_overrun_behavior = 3
 
 [node name="ResourcesProgress" type="ProgressBar" parent="MarginContainer/HBoxContainer/VBoxName"]
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_vertical = 2
 
-[node name="VBox" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = 20
 
-[node name="HBox1" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBox"]
+[node name="Capacity" type="ProgressBar" parent="MarginContainer/HBoxContainer/MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_styles/background = SubResource("StyleBoxFlat_4deaq")
+theme_override_styles/fill = SubResource("StyleBoxFlat_txymw")
+step = 0.001
+value = 100.0
+show_percentage = false
+
+[node name="Units" type="ProgressBar" parent="MarginContainer/HBoxContainer/MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_styles/background = SubResource("StyleBoxFlat_bmtrr")
+theme_override_styles/fill = SubResource("StyleBoxFlat_ijbxl")
+step = 0.001
+value = 50.0
+show_percentage = false
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 30
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 30
+
+[node name="VBox" type="VBoxContainer" parent="MarginContainer/HBoxContainer/MarginContainer/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+
+[node name="HBox1" type="HBoxContainer" parent="MarginContainer/HBoxContainer/MarginContainer/MarginContainer/VBox"]
 layout_mode = 2
 theme_override_constants/separation = 5
 
-[node name="Units_Capacity" type="Label" parent="MarginContainer/HBoxContainer/VBox/HBox1"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "hello?"
-horizontal_alignment = 1
-
-[node name="factoryIcon" type="TextureRect" parent="MarginContainer/HBoxContainer/VBox/HBox1"]
+[node name="factoryIcon" type="TextureRect" parent="MarginContainer/HBoxContainer/MarginContainer/MarginContainer/VBox/HBox1"]
 layout_mode = 2
 texture = ExtResource("2_6u3fp")
 expand_mode = 3
 stretch_mode = 4
 
-[node name="x" type="Label" parent="MarginContainer/HBoxContainer/VBox/HBox1"]
+[node name="x" type="Label" parent="MarginContainer/HBoxContainer/MarginContainer/MarginContainer/VBox/HBox1"]
 layout_mode = 2
 text = "x
 "
 
-[node name="Factories" type="Label" parent="MarginContainer/HBoxContainer/VBox/HBox1"]
+[node name="Factories" type="Label" parent="MarginContainer/HBoxContainer/MarginContainer/MarginContainer/VBox/HBox1"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "5"
 
-[node name="gensIcon" type="TextureRect" parent="MarginContainer/HBoxContainer/VBox/HBox1"]
+[node name="gensIcon" type="TextureRect" parent="MarginContainer/HBoxContainer/MarginContainer/MarginContainer/VBox/HBox1"]
 layout_mode = 2
 texture = ExtResource("3_tlds2")
 expand_mode = 3
 stretch_mode = 4
 
-[node name="x2" type="Label" parent="MarginContainer/HBoxContainer/VBox/HBox1"]
+[node name="x2" type="Label" parent="MarginContainer/HBoxContainer/MarginContainer/MarginContainer/VBox/HBox1"]
 layout_mode = 2
 text = "x
 "
 
-[node name="Generators" type="Label" parent="MarginContainer/HBoxContainer/VBox/HBox1"]
+[node name="Generators" type="Label" parent="MarginContainer/HBoxContainer/MarginContainer/MarginContainer/VBox/HBox1"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "0"
 
-[node name="minesIcon" type="TextureRect" parent="MarginContainer/HBoxContainer/VBox/HBox1"]
+[node name="minesIcon" type="TextureRect" parent="MarginContainer/HBoxContainer/MarginContainer/MarginContainer/VBox/HBox1"]
 layout_mode = 2
 texture = ExtResource("4_7jvdn")
 expand_mode = 3
 stretch_mode = 4
 
-[node name="x3" type="Label" parent="MarginContainer/HBoxContainer/VBox/HBox1"]
+[node name="x3" type="Label" parent="MarginContainer/HBoxContainer/MarginContainer/MarginContainer/VBox/HBox1"]
 layout_mode = 2
 text = "x
 "
 
-[node name="Mines" type="Label" parent="MarginContainer/HBoxContainer/VBox/HBox1"]
+[node name="Mines" type="Label" parent="MarginContainer/HBoxContainer/MarginContainer/MarginContainer/VBox/HBox1"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "5
 "
 
-[node name="Outposts" type="Label" parent="MarginContainer/HBoxContainer/VBox/HBox1"]
+[node name="Outposts" type="Label" parent="MarginContainer/HBoxContainer/MarginContainer/MarginContainer/VBox/HBox1"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "= x0"
-horizontal_alignment = 1
 
-[node name="PlayerStuff" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBox/HBox1"]
+[node name="HBox2" type="HBoxContainer" parent="MarginContainer/HBoxContainer/MarginContainer/MarginContainer/VBox"]
 layout_mode = 2
 
-[node name="HBox2" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBox"]
+[node name="Units" type="Label" parent="MarginContainer/HBoxContainer/MarginContainer/MarginContainer/VBox/HBox2"]
 layout_mode = 2
+text = "0"
+label_settings = SubResource("LabelSettings_t8h8r")
 
-[node name="TotalUnits" type="Label" parent="MarginContainer/HBoxContainer/VBox/HBox2"]
+[node name="OutOf" type="Label" parent="MarginContainer/HBoxContainer/MarginContainer/MarginContainer/VBox/HBox2"]
 layout_mode = 2
-text = "Total Units:"
+text = "out of"
+label_settings = SubResource("LabelSettings_t8h8r")
 
-[node name="Control" type="Control" parent="MarginContainer/HBoxContainer/VBox/HBox2"]
+[node name="Capacity" type="Label" parent="MarginContainer/HBoxContainer/MarginContainer/MarginContainer/VBox/HBox2"]
 layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="ProgressBar" type="ProgressBar" parent="MarginContainer/HBoxContainer/VBox/HBox2/Control"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_styles/fill = SubResource("StyleBoxFlat_41iwl")
-value = 50.0
-show_percentage = false
-
-[node name="Units_of_Capacity" type="ProgressBar" parent="MarginContainer/HBoxContainer/VBox/HBox2/Control"]
-custom_minimum_size = Vector2(100, 0)
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_styles/background = SubResource("StyleBoxEmpty_clcgh")
-theme_override_styles/fill = SubResource("StyleBoxFlat_iuyvt")
-value = 28.53
-rounded = true
-show_percentage = false
-
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBox/HBox2/Control"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/separation = 5
-
-[node name="Spacer" type="Control" parent="MarginContainer/HBoxContainer/VBox/HBox2/Control/HBoxContainer"]
-layout_mode = 2
-
-[node name="unitbar" type="Label" parent="MarginContainer/HBoxContainer/VBox/HBox2/Control/HBoxContainer"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-text = "25"
-vertical_alignment = 1
-
-[node name="out of _" type="Label" parent="MarginContainer/HBoxContainer/VBox/HBox2/Control/HBoxContainer"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-text = "/
-"
-vertical_alignment = 1
-
-[node name="capabar" type="Label" parent="MarginContainer/HBoxContainer/VBox/HBox2/Control/HBoxContainer"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-text = "100"
-vertical_alignment = 1
+text = "0"
+label_settings = SubResource("LabelSettings_t8h8r")

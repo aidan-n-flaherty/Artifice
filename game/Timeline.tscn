@@ -9,23 +9,27 @@ bg_color = Color(0, 0, 0, 1)
 font_size = 26
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rd4ja"]
-bg_color = Color(0.783523, 0.783523, 0.783523, 1)
+bg_color = Color(1, 1, 1, 1)
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wxee4"]
-bg_color = Color(1, 1, 1, 1)
+bg_color = Color(1, 1, 1, 0)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
 border_color = Color(1, 1, 1, 1)
-corner_radius_top_right = 5
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 20
+corner_radius_bottom_left = 10
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8yfwk"]
-bg_color = Color(1, 1, 1, 1)
+bg_color = Color(1, 1, 1, 0)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
 border_color = Color(1, 1, 1, 1)
-corner_radius_top_left = 5
-corner_radius_bottom_right = 20
-corner_radius_bottom_left = 4
+corner_radius_bottom_right = 10
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4gtgl"]
 bg_color = Color(0.783523, 0.783523, 0.783523, 1)
@@ -33,16 +37,22 @@ corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8leve"]
-bg_color = Color(1, 1, 1, 1)
-corner_radius_top_left = 5
-corner_radius_bottom_right = 20
-corner_radius_bottom_left = 4
+bg_color = Color(1, 1, 1, 0)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(1, 1, 1, 1)
+corner_radius_bottom_right = 10
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_u6mta"]
-bg_color = Color(1, 1, 1, 1)
-corner_radius_top_right = 4
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 20
+bg_color = Color(1, 1, 1, 0)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(1, 1, 1, 1)
+corner_radius_bottom_left = 10
 
 [node name="Timeline" type="MarginContainer"]
 anchors_preset = 15
@@ -116,18 +126,18 @@ mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_rd4ja")
 
 [node name="CurrentTime" type="Panel" parent="Horizontal/TimeIndicators"]
-custom_minimum_size = Vector2(10, 30)
+custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
 offset_left = 530.0
 offset_top = -6.0
-offset_right = 540.0
+offset_right = 560.0
 offset_bottom = 24.0
 grow_horizontal = 2
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_wxee4")
 
 [node name="ActualTime" type="Panel" parent="Horizontal/TimeIndicators"]
-custom_minimum_size = Vector2(10, 30)
+custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
 offset_left = 540.0
 offset_top = -6.0
@@ -180,7 +190,7 @@ mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_4gtgl")
 
 [node name="ActualTime" type="Panel" parent="Vertical/TimeIndicators"]
-custom_minimum_size = Vector2(10, 30)
+custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
 offset_left = -6.0
 offset_top = 950.0
@@ -204,11 +214,11 @@ horizontal_alignment = 2
 vertical_alignment = 1
 
 [node name="CurrentTime" type="Panel" parent="Vertical/TimeIndicators"]
-custom_minimum_size = Vector2(10, 30)
+custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
 offset_left = -6.0
 offset_top = 960.0
-offset_right = 4.0
+offset_right = 24.0
 offset_bottom = 990.0
 grow_horizontal = 2
 rotation = -1.5708
