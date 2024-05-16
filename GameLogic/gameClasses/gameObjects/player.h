@@ -63,7 +63,8 @@ public:
 
     int getRating() const { return rating; }
 
-    double getFractionalProduction() { return fractionalProduction; }
+    double getFractionalProduction() const { return fractionalProduction; }
+    double getFractionalHires() const { return fractionalHires; }
 
     double globalSpeed() const;
     int globalMaxShield() const;
@@ -79,6 +80,7 @@ public:
 
     void projectedVictory(Player* player, double timestamp, std::multiset<Event*, EventOrder> &events);
 
+    double expSpecialistEffect(SpecialistType t) const;
     int specialistCount(SpecialistType t) const;
     bool controlsSpecialist(SpecialistType t) const;
     bool controlsSpecialists(std::list<int> specialists) const;
@@ -101,7 +103,6 @@ public:
     void removeVessel(Vessel* vessel);
 
     int outpostsOfType(OutpostType t) const;
-    bool withinRange(PositionalObject* obj, double timeDiff) const;
 
     void removeHire() { hires -= 1; }
     void drillMine() { minesDrilled++; }
@@ -110,6 +111,7 @@ public:
     int getUserID() const { return userID; }
     const std::string& getName() const { return name; }
 
+    int dailyProductionRate() const;
     std::unordered_map<int, int> calculateUnitsAt(double& fractionalProduction, double timeDiff) const;
     int getUnitsAt(double timeDiff) const;
     int getHiresAt(double timeDiff) const;
@@ -126,8 +128,10 @@ public:
     void addResources(int amount) { resources += amount; }
     void removeResources(int amount) { resources -= amount; }
 
+    double nextHireEvent(double timeDiff) const;
+
     void setTeam(int teamID){ this->teamID = teamID; }
-    int getTeamID(){ return teamID; }
+    int getTeamID() const { return teamID; }
 };
 
 #endif

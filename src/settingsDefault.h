@@ -6,6 +6,8 @@
 #include <godot_cpp/variant/utility_functions.hpp>
 #include <godot_cpp/variant/string.hpp>
 #include <godot_cpp/variant/color.hpp>
+#include <godot_cpp/variant/packed_int32_array.hpp>
+#include "../GameLogic/gameClasses/gameObjects/specialist.h"
 
 namespace godot {
 
@@ -33,6 +35,21 @@ public:
 	static int getGameMode(){
 		return defaults.gameMode;
 	}
+
+	static PackedInt32Array getAllSpecialists(){
+		PackedInt32Array arr;
+
+		for(SpecialistType t : Specialist::allHires()) {
+			arr.push_back(uint32_t(t));
+		}
+
+		return arr;
+	}
+
+	static String getSpecialistName(int specialistNum) {
+		return String(Specialist::typeAsString(SpecialistType(specialistNum)).c_str());
+	}
+
 
 	static Array getPlayerColors() {
 		Array defaultPlayerColors;

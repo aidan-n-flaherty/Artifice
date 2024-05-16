@@ -1,30 +1,11 @@
-[gd_scene load_steps=20 format=3 uid="uid://bwsmo21vmyk76"]
+[gd_scene load_steps=15 format=3 uid="uid://bwsmo21vmyk76"]
 
 [ext_resource type="Script" path="res://GameDetail.gd" id="1_fslp1"]
 [ext_resource type="PackedScene" uid="uid://biekuv7dddk3m" path="res://GameEditor.tscn" id="1_nn7qw"]
-[ext_resource type="Texture2D" uid="uid://cy7ou3wycwjra" path="res://resources/images/back.png" id="2_15oje"]
 [ext_resource type="PackedScene" uid="uid://c04qxpqrgw5cq" path="res://Background.tscn" id="3_kv22t"]
 [ext_resource type="PackedScene" uid="uid://b14auts774043" path="res://Shaders.tscn" id="3_ol3vy"]
 [ext_resource type="Texture2D" uid="uid://dlqmq6fklb6q8" path="res://resources/images/back_arrow.png" id="4_dxufy"]
 [ext_resource type="Theme" uid="uid://tg7ina762c6q" path="res://resources/themes/UITheme.tres" id="7_7xuqs"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fvx02"]
-bg_color = Color(0, 0, 0, 0.156863)
-corner_radius_bottom_right = 30
-corner_radius_bottom_left = 30
-corner_detail = 16
-
-[sub_resource type="ButtonGroup" id="ButtonGroup_bmtus"]
-
-[sub_resource type="ButtonGroup" id="ButtonGroup_4le1r"]
-
-[sub_resource type="ButtonGroup" id="ButtonGroup_ve084"]
-
-[sub_resource type="ButtonGroup" id="ButtonGroup_gk6oe"]
-
-[sub_resource type="FontVariation" id="FontVariation_wauh6"]
-spacing_top = 6
-spacing_bottom = 6
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ok5ym"]
 bg_color = Color(0, 0, 0, 1)
@@ -47,6 +28,22 @@ tracks/0/keys = {
 
 [sub_resource type="Animation" id="Animation_mso28"]
 resource_name = "fade_to_black"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Fade:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_rbvql"]
+resource_name = "fade_to_current"
 length = 0.3
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -93,140 +90,92 @@ tracks/0/keys = {
 "values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
 }
 
+[sub_resource type="Animation" id="Animation_si25o"]
+resource_name = "fade_to_user"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Fade:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_hho3n"]
 _data = {
 "fade_from_black": SubResource("Animation_ym5fu"),
 "fade_to_black": SubResource("Animation_mso28"),
+"fade_to_current": SubResource("Animation_rbvql"),
 "fade_to_game": SubResource("Animation_gfb4x"),
-"fade_to_game_detail": SubResource("Animation_tcdyf")
+"fade_to_game_detail": SubResource("Animation_tcdyf"),
+"fade_to_user": SubResource("Animation_si25o")
 }
 
-[node name="GameDetail" instance=ExtResource("1_nn7qw")]
+[node name="GameDetail" type="MarginContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("7_7xuqs")
 theme_override_constants/margin_left = 0
 theme_override_constants/margin_right = 0
 theme_override_constants/margin_bottom = 0
 script = ExtResource("1_fslp1")
 
-[node name="Background" parent="." index="0" instance=ExtResource("3_kv22t")]
+[node name="Background" parent="." instance=ExtResource("3_kv22t")]
 layout_mode = 2
 
-[node name="Shaders" parent="." index="1" instance=ExtResource("3_ol3vy")]
+[node name="Shaders" parent="." instance=ExtResource("3_ol3vy")]
 custom_minimum_size = Vector2(2.08165e-12, 2.08165e-12)
 layout_mode = 2
 
-[node name="Panel" parent="." index="2"]
-visible = false
-
-[node name="MarginContainer2" type="MarginContainer" parent="." index="3"]
+[node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
+theme = ExtResource("7_7xuqs")
 theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 50
 theme_override_constants/margin_right = 50
 theme_override_constants/margin_bottom = 50
 
-[node name="Panel" type="Panel" parent="MarginContainer2" index="0"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_fvx02")
+theme_override_constants/separation = 0
 
-[node name="MarginContainer" parent="." index="4"]
-theme_override_constants/margin_left = 100
-theme_override_constants/margin_right = 100
-theme_override_constants/margin_bottom = 100
-
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer" index="0"]
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 0
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 0
 
-[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/MarginContainer" index="0"]
-modulate = Color(1, 1, 1, 0)
+[node name="BackButton" type="Button" parent="MarginContainer/VBoxContainer/MarginContainer"]
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
-texture = ExtResource("2_15oje")
-expand_mode = 2
-stretch_mode = 4
-
-[node name="BackButton" type="TextureButton" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/MarginContainer" index="1"]
-layout_mode = 2
-texture_normal = ExtResource("4_dxufy")
-ignore_texture_size = true
-stretch_mode = 5
-
-[node name="2" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons/HBoxContainer" index="0"]
-button_group = SubResource("ButtonGroup_bmtus")
-
-[node name="3" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons/HBoxContainer" index="1"]
-button_group = SubResource("ButtonGroup_bmtus")
-
-[node name="4" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons/HBoxContainer" index="2"]
-button_group = SubResource("ButtonGroup_bmtus")
-
-[node name="5" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons/HBoxContainer" index="3"]
-button_group = SubResource("ButtonGroup_bmtus")
-
-[node name="6" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons/HBoxContainer" index="4"]
-button_group = SubResource("ButtonGroup_bmtus")
-
-[node name="7" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons/HBoxContainer" index="5"]
-button_group = SubResource("ButtonGroup_bmtus")
-
-[node name="8" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons/HBoxContainer" index="6"]
-button_group = SubResource("ButtonGroup_bmtus")
-
-[node name="9" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons/HBoxContainer" index="7"]
-button_group = SubResource("ButtonGroup_bmtus")
-
-[node name="10" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons/HBoxContainer" index="8"]
-button_group = SubResource("ButtonGroup_bmtus")
-
-[node name="conquest" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/GameModeButtons" index="0"]
-button_group = SubResource("ButtonGroup_4le1r")
-
-[node name="koh" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/GameModeButtons" index="1"]
-button_group = SubResource("ButtonGroup_4le1r")
-
-[node name="days" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/SimulationTimescaleButtons" index="0"]
-button_group = SubResource("ButtonGroup_ve084")
-
-[node name="hours" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/SimulationTimescaleButtons" index="1"]
-button_group = SubResource("ButtonGroup_ve084")
-
-[node name="minutes" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/SimulationTimescaleButtons" index="2"]
-button_group = SubResource("ButtonGroup_ve084")
-
-[node name="0" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/TeamButtons" index="0"]
-button_group = SubResource("ButtonGroup_gk6oe")
-
-[node name="2" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/TeamButtons" index="1"]
-button_group = SubResource("ButtonGroup_gk6oe")
-
-[node name="3" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/TeamButtons" index="2"]
-button_group = SubResource("ButtonGroup_gk6oe")
-
-[node name="4" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/TeamButtons" index="3"]
-button_group = SubResource("ButtonGroup_gk6oe")
-
-[node name="5" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/TeamButtons" index="4"]
-button_group = SubResource("ButtonGroup_gk6oe")
-
-[node name="AdvancedButton" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer" index="3"]
-text = "- Advanced -"
-
-[node name="Join" type="Button" parent="MarginContainer/VBoxContainer" index="4"]
-layout_mode = 2
 theme = ExtResource("7_7xuqs")
-theme_override_fonts/font = SubResource("FontVariation_wauh6")
-theme_override_font_sizes/font_size = 25
-text = "Join"
+icon = ExtResource("4_dxufy")
+flat = true
+expand_icon = true
 
-[node name="Fade" type="Panel" parent="." index="5"]
+[node name="GameEditor" parent="MarginContainer/VBoxContainer" instance=ExtResource("1_nn7qw")]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Fade" type="Panel" parent="."]
+modulate = Color(1, 1, 1, 0)
 layout_mode = 2
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_ok5ym")
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="." index="6"]
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
 "": SubResource("AnimationLibrary_hho3n")
 }
 
-[connection signal="pressed" from="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/MarginContainer/BackButton" to="." method="_on_back_button_pressed"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/Join" to="." method="_on_join_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/MarginContainer/BackButton" to="." method="_on_back_button_pressed"]
 [connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_animation_player_animation_finished"]

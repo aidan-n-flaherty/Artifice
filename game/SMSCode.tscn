@@ -1,0 +1,64 @@
+[gd_scene load_steps=5 format=3 uid="uid://t3ptgpq5b7ro"]
+
+[ext_resource type="Script" path="res://SMSCode.gd" id="1_d2dpy"]
+[ext_resource type="Theme" uid="uid://tg7ina762c6q" path="res://resources/themes/UITheme.tres" id="1_wh4om"]
+[ext_resource type="PackedScene" uid="uid://buw7agokt5fd6" path="res://Code.tscn" id="3_fgyv0"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sbuoj"]
+bg_color = Color(0, 0, 0, 1)
+
+[node name="SMSCode" type="MarginContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_d2dpy")
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 2
+theme = ExtResource("1_wh4om")
+theme_override_styles/panel = SubResource("StyleBoxFlat_sbuoj")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme = ExtResource("1_wh4om")
+theme_override_constants/margin_left = 300
+theme_override_constants/margin_top = 100
+theme_override_constants/margin_right = 300
+theme_override_constants/margin_bottom = 100
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 4
+theme = ExtResource("1_wh4om")
+theme_override_constants/separation = 20
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(100, 2.08165e-12)
+layout_mode = 2
+theme = ExtResource("1_wh4om")
+text = "Enter SMS code:"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Code" parent="MarginContainer/VBoxContainer" instance=ExtResource("3_fgyv0")]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/separation = 20
+
+[node name="Continue" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme = ExtResource("1_wh4om")
+text = "Continue"
+
+[node name="Cancel" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Cancel"
+
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/Continue" to="." method="_on_continue_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/Cancel" to="." method="_on_cancel_pressed"]

@@ -10,9 +10,9 @@
 class AttackNotification
 {
 private:
-    unsigned int listenerID;
+    unsigned int listenerID = 0;
 
-    int vesselID;
+    int vesselID = -1;
 
     double timestamp = 0.0;
 

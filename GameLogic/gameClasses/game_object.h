@@ -12,7 +12,7 @@ class GameObject
 private:
     Order* originatingOrder = nullptr;
 
-    GameSettings* settings;
+    GameSettings* settings = nullptr;
 
     const unsigned int ID = 0;
 

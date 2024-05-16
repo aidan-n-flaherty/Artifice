@@ -6,6 +6,7 @@ void fragment() {
 	vec4 color = texture(screen_texture, UV);
 	ALBEDO = color.rgb;
 	ALPHA = color.a;
+	METALLIC = 0.5;
 	
 	if(ALPHA == 1.0) {
 		ALPHA = min(min(1.0 - color.r, 1.0 - color.g), 1.0 - color.b);

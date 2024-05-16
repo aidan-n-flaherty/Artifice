@@ -49,7 +49,7 @@ public:
 
     void addUnits(int count) { numUnits += count; }
     void addSpecialist(Specialist* specialists);
-    void addSpecialists(std::list<Specialist*> specialists);
+    virtual void addSpecialists(std::list<Specialist*> specialists);
 
     void setOwner(Player* player) override {
         Possessable::setOwner(player);
@@ -62,6 +62,7 @@ public:
     bool ownerControlsSpecialist(SpecialistType type) const;
     int ownerSpecialistCount(SpecialistType type) const;
     int specialistCount(SpecialistType t) const;
+    double expSpecialistEffect(SpecialistType t) const;
     static bool controlsSpecialist(Player* p, std::list<Specialist*> specialists, SpecialistType t);
     bool controlsSpecialist(SpecialistType t) const;
 

@@ -37,7 +37,7 @@ public:
 
     Event* convert(Game* game) override {
         if(!game->hasPlayer(getSenderID()) || game->getPlayer(getSenderID())->hasLost()) {
-            std::cout << "ORDER ERROR: outpost not owned by player" << std::endl;
+            std::cout << "ORDER ERROR: player has lost" << std::endl;
             return nullptr;
         }
 
@@ -52,7 +52,7 @@ public:
         PositionalObject* target = game->getPosObject(targetID);
 
         if(outpost->getOwnerID() != getSenderID()) {
-            std::cout << "ORDER ERROR: user does not own outpost" << std::endl;
+            std::cout << "ORDER ERROR: outpost " << outpost->getID() << " is not owned by " << getSenderID() << std::endl;
             return nullptr;
         }
 

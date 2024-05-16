@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://dwx050l1kq6j6"]
+[gd_scene load_steps=6 format=3 uid="uid://gc8hq67pi7en"]
 
 [ext_resource type="Theme" uid="uid://bfwpaonloeco5" path="res://resources/theme.tres" id="2_j8ogl"]
 [ext_resource type="Texture2D" uid="uid://bmf74bvs118ed" path="res://resources/images/locked.png" id="3_yhtdu"]

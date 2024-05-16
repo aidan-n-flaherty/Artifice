@@ -17,7 +17,12 @@
 
 using namespace godot;
 
-VesselNode::VesselNode(Vessel* vessel) : PositionalNode("res://AirshipMesh.tscn", vessel), vessel(vessel) {
+
+void VesselNode::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("isGift"), &VesselNode::isGift);
+}
+
+VesselNode::VesselNode(Vessel* vessel) : PositionalNode("res://SubMesh.tscn", vessel), vessel(vessel) {
 	double angle = atan2(vessel->getTargetPos().getY() - vessel->getPosition().getY(), vessel->getTargetPos().getX() - vessel->getPosition().getX());
 	
 	for(int i = 0; i < get_child_count(); i++) {
@@ -31,5 +36,5 @@ void VesselNode::_process(double delta) {
 		
 	if(vessel == nullptr) return;
 		
-    set_position(Vector3(vessel->getPositionAt(getDiff()).getX(), 20, vessel->getPositionAt(getDiff()).getY()));
+    set_position(Vector3(vessel->getPositionAt(getDiff()).getX(), 25, vessel->getPositionAt(getDiff()).getY()));
 }

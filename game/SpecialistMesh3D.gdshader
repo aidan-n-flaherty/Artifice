@@ -1,4 +1,5 @@
 shader_type spatial;
+render_mode unshaded;
 
 uniform bool inverted;
 uniform bool translucent = false;

@@ -92,6 +92,22 @@ int PositionalObject::ownerSpecialistCount(SpecialistType type) const {
     return hasOwner() ? getOwner()->specialistCount(type) : 0;
 }
 
+double PositionalObject::expSpecialistEffect(SpecialistType t) const {
+    if(!hasOwner()) return 0;
+
+    double effect = 0;
+    double amount = 1.0;
+
+    for(auto it = specialists.begin(); it != specialists.end(); ++it){
+        if((*it)->getType() == t && (*it)->getOwnerID() == getOwnerID()) {
+            effect += amount;
+            amount *= 0.5;
+        }
+    }
+
+    return effect;
+}
+
 int PositionalObject::specialistCount(SpecialistType t) const {
     if(!hasOwner()) return 0;
 

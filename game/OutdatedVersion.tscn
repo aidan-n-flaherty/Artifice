@@ -1,0 +1,44 @@
+[gd_scene load_steps=4 format=3 uid="uid://bijmyy0oihetq"]
+
+[ext_resource type="Theme" uid="uid://tg7ina762c6q" path="res://resources/themes/UITheme.tres" id="1_d0w4h"]
+[ext_resource type="Script" path="res://OutdatedVersion.gd" id="2_lixjh"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f1bfn"]
+bg_color = Color(0, 0, 0, 1)
+
+[node name="OutdatedVersion" type="MarginContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_d0w4h")
+script = ExtResource("2_lixjh")
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_f1bfn")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_constants/separation = 20
+
+[node name="Spacer" type="Control" parent="VBoxContainer"]
+custom_minimum_size = Vector2(2.08165e-12, 100)
+layout_mode = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="VBoxContainer"]
+clip_contents = false
+layout_mode = 2
+bbcode_enabled = true
+text = "[center]Your client is outdated. Updating is highly recommended.[/center]"
+fit_content = true
+scroll_active = false
+
+[node name="Continue" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "Continue"
+
+[connection signal="meta_clicked" from="VBoxContainer/RichTextLabel" to="." method="_on_rich_text_label_meta_clicked"]
+[connection signal="pressed" from="VBoxContainer/Continue" to="." method="_on_continue_pressed"]

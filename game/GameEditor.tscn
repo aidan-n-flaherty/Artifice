@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://biekuv7dddk3m"]
+[gd_scene load_steps=13 format=3 uid="uid://biekuv7dddk3m"]
 
 [ext_resource type="Theme" uid="uid://tg7ina762c6q" path="res://resources/themes/UITheme.tres" id="1_sjo5m"]
 [ext_resource type="Script" path="res://GameEditor.gd" id="2_ymahp"]
@@ -11,9 +11,18 @@ corner_radius_bottom_left = 30
 corner_detail = 16
 expand_margin_top = 1000.0
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ehftu"]
+bg_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 50
+corner_radius_top_right = 50
+corner_radius_bottom_right = 50
+corner_radius_bottom_left = 50
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_uu6rh"]
+
 [sub_resource type="ButtonGroup" id="ButtonGroup_ktqn5"]
 
-[sub_resource type="ButtonGroup" id="ButtonGroup_e8065"]
+[sub_resource type="ButtonGroup" id="ButtonGroup_8s3p8"]
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_fv0u6"]
 
@@ -52,10 +61,30 @@ layout_mode = 2
 theme = ExtResource("1_sjo5m")
 theme_override_constants/separation = 30
 
-[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer"]
+[node name="Finalizing" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
+visible = false
 layout_mode = 2
-size_flags_vertical = 3
-theme = ExtResource("1_sjo5m")
+
+[node name="Panel" type="Panel" parent="MarginContainer/VBoxContainer/Finalizing"]
+layout_mode = 2
+mouse_filter = 1
+theme_override_styles/panel = SubResource("StyleBoxFlat_ehftu")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Finalizing"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="Finalize" type="Label" parent="MarginContainer/VBoxContainer/Finalizing/MarginContainer"]
+layout_mode = 2
+theme_override_constants/outline_size = 1
+text = "Waiting for the host to start the game..."
+horizontal_alignment = 1
+
+[node name="ScrollContainer" parent="MarginContainer/VBoxContainer" instance=ExtResource("3_l4xqo")]
+layout_mode = 2
 horizontal_scroll_mode = 0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer"]
@@ -77,21 +106,25 @@ columns = 2
 
 [node name="CreationDate" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/System/Grid"]
 layout_mode = 2
+mouse_filter = 1
 theme = ExtResource("1_sjo5m")
 text = "Creation Date"
 
 [node name="CreationDateText" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/System/Grid"]
 layout_mode = 2
+mouse_filter = 1
 theme = ExtResource("1_sjo5m")
 
 [node name="Version" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/System/Grid"]
 layout_mode = 2
+mouse_filter = 1
 theme = ExtResource("1_sjo5m")
 text = "Version
 "
 
 [node name="VersionText" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/System/Grid"]
 layout_mode = 2
+mouse_filter = 1
 theme = ExtResource("1_sjo5m")
 
 [node name="Basic" type="MarginContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer"]
@@ -126,6 +159,33 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("1_sjo5m")
 placeholder_text = "Leave blank for no password"
+
+[node name="Ranked" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid"]
+layout_mode = 2
+theme = ExtResource("1_sjo5m")
+text = "Ranked Game"
+
+[node name="RankedButtons" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+
+[node name="ranked" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/RankedButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_uu6rh")
+text = "Ranked"
+
+[node name="unranked" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/RankedButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+toggle_mode = true
+button_pressed = true
+button_group = SubResource("ButtonGroup_uu6rh")
+text = "Casual"
 
 [node name="NumPlayers" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid"]
 layout_mode = 2
@@ -225,22 +285,30 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("1_sjo5m")
 
-[node name="conquest" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/GameModeButtons"]
+[node name="Mining" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/GameModeButtons"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("1_sjo5m")
 toggle_mode = true
 button_pressed = true
-button_group = SubResource("ButtonGroup_e8065")
-text = "Conquest"
+button_group = SubResource("ButtonGroup_8s3p8")
+text = "Mining"
 
-[node name="koh" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/GameModeButtons"]
+[node name="Conquest" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/GameModeButtons"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("1_sjo5m")
 toggle_mode = true
-button_group = SubResource("ButtonGroup_e8065")
-text = "King-of-the-Hill"
+button_group = SubResource("ButtonGroup_8s3p8")
+text = "Conquest"
+
+[node name="Elimination" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/GameModeButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_8s3p8")
+text = "Elim"
 
 [node name="SimulationTimescale" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid"]
 layout_mode = 2
@@ -641,12 +709,12 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_61g4f")
 
 [node name="AdvancedButton" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer"]
 layout_mode = 2
-text = "Advanced
-"
+text = "- Advanced -"
 
 [node name="Advanced" type="MarginContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer"]
 visible = false
 layout_mode = 2
+mouse_filter = 2
 theme = ExtResource("1_sjo5m")
 
 [node name="Grid" type="GridContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced"]
@@ -655,6 +723,21 @@ theme = ExtResource("1_sjo5m")
 theme_override_constants/h_separation = 20
 theme_override_constants/v_separation = 20
 columns = 2
+
+[node name="SpecialistBans" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
+layout_mode = 2
+theme = ExtResource("1_sjo5m")
+text = "Specialist Bans"
+
+[node name="SpecialistBansButtons" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid" instance=ExtResource("3_l4xqo")]
+layout_mode = 2
+size_flags_horizontal = 3
+vertical_scroll_mode = 0
+
+[node name="SpecialistBansButtons" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/SpecialistBansButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
 
 [node name="defaultSonarText" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
 layout_mode = 2
@@ -745,14 +828,14 @@ horizontal_alignment = 2
 [node name="resourcesToWinText" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
 layout_mode = 2
 theme = ExtResource("1_sjo5m")
-text = "Victory Amount"
+text = "Resources To Win"
 
 [node name="resourcesToWin" type="HSlider" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
 theme = ExtResource("1_sjo5m")
-min_value = 100.0
+min_value = 50.0
 max_value = 400.0
 step = 0.0
 value = 200.0
@@ -775,7 +858,7 @@ layout_mode = 2
 [node name="Low" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/resourcesToWin/MarginContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "100"
+text = "50"
 label_settings = SubResource("LabelSettings_ychv2")
 
 [node name="High" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/resourcesToWin/MarginContainer/HBoxContainer"]
@@ -1012,6 +1095,7 @@ theme = ExtResource("1_sjo5m")
 [node name="PlayerList" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Players/MarginContainer"]
 layout_mode = 2
 theme = ExtResource("1_sjo5m")
+theme_override_constants/separation = 20
 
 [node name="Players" type="Label" parent="MarginContainer/VBoxContainer/Players/MarginContainer/PlayerList"]
 layout_mode = 2
@@ -1044,6 +1128,11 @@ placeholder_text = "Enter Password Here!"
 [node name="Activate" type="Button" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "Create"
+
+[node name="Secondary" type="Button" parent="MarginContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+text = "Start"
 
 [connection signal="pressed" from="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/AdvancedButton" to="." method="_on_advanced_button_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/Activate" to="." method="activate"]

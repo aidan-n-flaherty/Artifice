@@ -56,7 +56,7 @@ void GameInterface::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("projectedTime", "x", "y"), &GameInterface::projectedTime);
 	ClassDB::bind_method(D_METHOD("setMouse", "x", "y"), &GameInterface::setMouse);
 	ClassDB::bind_method(D_METHOD("setDrag", "drag"), &GameInterface::setDrag);
-	ClassDB::bind_method(D_METHOD("init", "gameID", "userID", "startTime", "playerCap", "players", "settingOverrides"), &GameInterface::init);
+	ClassDB::bind_method(D_METHOD("init", "gameID", "userID", "seed", "startTime", "playerCap", "players", "settingOverrides"), &GameInterface::init);
 	ClassDB::bind_method(D_METHOD("startAtEnd"), &GameInterface::startAtEnd);
 	ClassDB::bind_method(D_METHOD("setTempTime", "t"), &GameInterface::setTempTime);
 	ClassDB::bind_method(D_METHOD("setTime", "t"), &GameInterface::setTime);
@@ -69,14 +69,19 @@ void GameInterface::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("getWidth"), &GameInterface::getWidth);
 	ClassDB::bind_method(D_METHOD("getHeight"), &GameInterface::getHeight);
 	ClassDB::bind_method(D_METHOD("getSimulationSpeed"), &GameInterface::getSimulationSpeed);
+	ClassDB::bind_method(D_METHOD("getNextHireEvent"), &GameInterface::getNextHireEvent);
 	ClassDB::bind_method(D_METHOD("getHires"), &GameInterface::getHires);
 	ClassDB::bind_method(D_METHOD("getStartTime"), &GameInterface::getStartTime);
 	ClassDB::bind_method(D_METHOD("hasLost"), &GameInterface::hasLost);
 	ClassDB::bind_method(D_METHOD("canHire"), &GameInterface::canHire);
 	ClassDB::bind_method(D_METHOD("canRelease", "specialistID"), &GameInterface::canRelease);
+	ClassDB::bind_method(D_METHOD("canPromote", "specialistID"), &GameInterface::canPromote);
 	ClassDB::bind_method(D_METHOD("canUndoSpecialist", "specialistID"), &GameInterface::canUndoSpecialist);
 	ClassDB::bind_method(D_METHOD("getSpecialistOriginatingOrder", "specialistID"), &GameInterface::getSpecialistOriginatingOrder);
 	ClassDB::bind_method(D_METHOD("getSpecialistOriginatingOrderType", "specialistID"), &GameInterface::getSpecialistOriginatingOrderType);
+	ClassDB::bind_method(D_METHOD("isMining"), &GameInterface::isMining);
+	ClassDB::bind_method(D_METHOD("isConquest"), &GameInterface::isConquest);
+	ClassDB::bind_method(D_METHOD("isElimination"), &GameInterface::isElimination);
 	ClassDB::bind_method(D_METHOD("isPaused"), &GameInterface::isPaused);
 	ClassDB::bind_method(D_METHOD("ownsSpecialist", "specialistID"), &GameInterface::ownsSpecialist);
 	ClassDB::bind_method(D_METHOD("getSpecialistOwner", "specialistID"), &GameInterface::getSpecialistOwner);
@@ -84,6 +89,7 @@ void GameInterface::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("hasEnded"), &GameInterface::hasEnded);
 	ClassDB::bind_method(D_METHOD("getUserGameID"), &GameInterface::getUserGameID);
 	ClassDB::bind_method(D_METHOD("getReferenceID"), &GameInterface::getReferenceID);
+	ClassDB::bind_method(D_METHOD("getNextVictoryMessage"), &GameInterface::getNextVictoryMessage);
 	ClassDB::bind_method(D_METHOD("getNextVictoryTime"), &GameInterface::getNextVictoryTime);
 	ClassDB::bind_method(D_METHOD("getNextVictoryPlayer"), &GameInterface::getNextVictoryPlayer);
 	ClassDB::bind_method(D_METHOD("getNextArrivalEvent"), &GameInterface::getNextArrivalEvent);
@@ -101,6 +107,7 @@ void GameInterface::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("getNextBattleVictorUnits", "objID"), &GameInterface::getNextBattleVictorUnits);
 	ClassDB::bind_method(D_METHOD("getNextBattleCaptures", "objID"), &GameInterface::getNextBattleCaptures);
 	ClassDB::bind_method(D_METHOD("getOutpostPositions"), &GameInterface::getOutpostPositions);
+	ClassDB::bind_method(D_METHOD("getAllSpecialists"), &GameInterface::getAllSpecialists);
 	ClassDB::bind_method(D_METHOD("getShopOptions"), &GameInterface::getShopOptions);
 	ClassDB::bind_method(D_METHOD("getPromotionOptions"), &GameInterface::getPromotionOptions);
 	ClassDB::bind_method(D_METHOD("getPlayerIDs"), &GameInterface::getPlayerIDs);
@@ -112,9 +119,12 @@ void GameInterface::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("getColor", "userID"), &GameInterface::getColor);
 	ClassDB::bind_method(D_METHOD("getSpecialistName"), &GameInterface::getSpecialistName);
 	ClassDB::bind_method(D_METHOD("getSpecialistDescription"), &GameInterface::getSpecialistDescription);
+	ClassDB::bind_method(D_METHOD("getSpecialistHireAmount"), &GameInterface::getSpecialistHireAmount);
 	ClassDB::bind_method(D_METHOD("getSpecialistType"), &GameInterface::getSpecialistType);
+	ClassDB::bind_method(D_METHOD("getNumTeams"), &GameInterface::getNumTeams);
 	ClassDB::bind_method(D_METHOD("getFloorDisplay"), &GameInterface::getFloorDisplay);
 	ClassDB::bind_method(D_METHOD("getNode", "id"), &GameInterface::getNode);
+	ClassDB::bind_method(D_METHOD("getSpawnLocation"), &GameInterface::getSpawnLocation);
 	ClassDB::bind_method(D_METHOD("shiftToTime", "t"), &GameInterface::shiftToTime);
 	ClassDB::bind_method(D_METHOD("bulkAddOrder", "type", "ID", "referenceID", "timestamp", "senderID", "arguments", "argCount"), &GameInterface::bulkAddOrder);
 	ClassDB::bind_method(D_METHOD("endBulkAdd"), &GameInterface::endBulkAdd);
@@ -131,7 +141,6 @@ void GameInterface::_bind_methods() {
 
 void GameInterface::suspend() {
 	this->game = nullptr;
-	this->currentGame = nullptr;
 	this->simulatedGame = nullptr;
 
 	for(auto it = vessels.begin(); it != vessels.end();) {
@@ -145,19 +154,18 @@ void GameInterface::suspend() {
 		remove_child(it->second);
 		it = outposts.erase(it);
 	}
+
+	paused = true;
 }
 
 
 void GameInterface::resume() {
+	paused = false;
+
 	update();
 }
 
-void GameInterface::init(int gameID, int userID, int startTime, int playerCap, Dictionary players, Dictionary settingOverrides) {
-	std::cout << "started init function" << std::endl;
-	//crash testing
-	//set_debug_enabled ( true );
-	/*int* crashtest = nullptr;
-	*crashtest = 10;*/
+void GameInterface::init(int gameID, int userID, int seed, int startTime, bool finished, int playerCap, Dictionary players, Dictionary settingOverrides) {
 	// RESET MEMBER VARIABLES
 	this->completeGame = nullptr;
 	this->game = nullptr;
@@ -193,6 +201,7 @@ void GameInterface::init(int gameID, int userID, int startTime, int playerCap, D
 
 	this->gameID = gameID;
 	this->userID = userID;
+	this->finished = finished;
 
 	this->settingOverrides = settingOverrides;
 
@@ -220,7 +229,7 @@ void GameInterface::init(int gameID, int userID, int startTime, int playerCap, D
 	
 	settings = loadSettings();
 	settings.startTime = startTime;
-	completeGame = std::shared_ptr<Game>(new Game(settings, userID, startTime, settings.clientToGameTime(startTime + simulationBuffer / settings.simulationSpeed), playerMap, 42083, true));
+	completeGame = std::shared_ptr<Game>(new Game(settings, userID, startTime, settings.clientToGameTime(startTime + simulationBuffer / settings.simulationSpeed), playerMap, seed, true));
 
 	settings = *(completeGame->getSettings());
 
@@ -231,11 +240,9 @@ void GameInterface::init(int gameID, int userID, int startTime, int playerCap, D
 
 	current = getTimeMillis();
 	update();
-	std::cout << "finished init function" << std::endl;
 }
 
 GameSettings GameInterface::loadSettings() {
-	std::cout << "loading settings..." << std::endl;
 	GameSettings settings;
 
 	Array keys = settingOverrides.keys();
@@ -246,7 +253,6 @@ GameSettings GameInterface::loadSettings() {
 		const void* value;
 		std::string str = "";
 
-		std::cout << std::string(String(keys[i]).utf8().get_data()) << std::endl;
 		if(Variant::can_convert(settingOverrides[keys[i]].get_type(), Variant::FLOAT)) {
 			value = new double(settingOverrides[keys[i]]);
 			allocated = true;
@@ -264,7 +270,6 @@ GameSettings GameInterface::loadSettings() {
 		} else if(Variant::can_convert(settingOverrides[keys[i]].get_type(), Variant::STRING)) {
 			value = String(settingOverrides[keys[i]]).utf8().get_data();
 		} else {
-			std::cout << "Could not convert " << std::string(String(keys[i]).utf8().get_data()) << std::endl;
 			value = nullptr;
 		}
 
@@ -273,7 +278,6 @@ GameSettings GameInterface::loadSettings() {
 		if(allocated) delete value;
 	}
 
-	std::cout << "finished loading settings." << std::endl;
 	return settings;
 }
 
@@ -282,10 +286,10 @@ void GameInterface::_process(double delta) {
 	
 	double time = getTimeMillis();
 	if(future && current < time) current = time;
-
+	
 	update();
 	
-	if(game != nullptr && currentGame != nullptr) {
+	if(game != nullptr && simulatedGame != nullptr && currentGame != nullptr) {
 		double t = settings.clientToGameTime(time);
 
 		double timeDiff = settings.clientToGameTime(getTime()) - game->getTime();
@@ -293,27 +297,26 @@ void GameInterface::_process(double delta) {
 		double simulatedDiff = settings.clientToGameTime(getCurrent()) - simulatedGame->getTime();
 
 		Player* p = future ? currentGame->getPlayer(getUserGameID()) : game->getPlayer(getUserGameID());
+    
+		std::shared_ptr<Game> visibilityGame = future ? currentGame : game;
 		
 		for(const auto& pair : vessels) {
 			pair.second->setDiff(t, timeDiff);
-			if(p) {
-				pair.second->setInRadar(p->withinRange(pair.second->getObj(), timeDiff));
-				pair.second->set_visible(p->withinRange(pair.second->getObj(), timeDiff));
-			}
+			pair.second->setInRadar(finished || (p ? visibilityGame->withinRange(p, pair.second->getObj(), timeDiff) : false));
+			pair.second->set_visible(finished || (p ? visibilityGame->withinRange(p, pair.second->getObj(), timeDiff) : false));
 		}
 		
 		for(const auto& pair : outposts) {
 			pair.second->setDiff(t, timeDiff);
-			if(p) {
-				pair.second->setInRadar(p->withinRange(pair.second->getObj(), timeDiff));
-				pair.second->set_visible(true);
-				pair.second->setViewType(p->controlsSpecialist(SpecialistType::INTELLIGENCE_OFFICER));
-			}
+			pair.second->setInRadar(finished || (p ? visibilityGame->withinRange(p, pair.second->getObj(), timeDiff) : false));
+			pair.second->set_visible(true);
+			pair.second->setViewType(finished || (p ? p->controlsSpecialist(SpecialistType::INTELLIGENCE_OFFICER) : false));
 		}
 
-		for(const auto& pair : players) pair.second->setDiff(t, timeDiff);
+		//for(const auto& pair : players) pair.second->setDiff(t, timeDiff);
 
-		if(selected >= 0) selectedUnits = getSelected()->getUnitsAt(timeDiff);
+		if(selected >= 0 && getNode(selected)->isInRadar()) selectedUnits = getSelected()->getUnitsAt(timeDiff);
+		else selectedUnits = -1;
 
 		floorDisplay->setDiff(timeDiff, simulatedDiff);
 		floorDisplay->queue_redraw();
@@ -335,7 +338,7 @@ void GameInterface::update() {
 	double time = settings.clientToGameTime(getTime());
 	double currentTime = settings.clientToGameTime(getCurrent());
 	double timeMillis = settings.clientToGameTime(getTimeMillis());
-
+	
 	if(game == nullptr || time + simulationBuffer / settings.simulationSpeed > nextEndState) {
 		if(time > nextEndState) game = nullptr;
 
@@ -429,6 +432,8 @@ void GameInterface::update() {
 				it = selectedSpecialists.begin();
 			} else it++;
 		}
+
+		if(selected >= 0 && !getSelected()) unselect();
 	}
 }
 
@@ -540,7 +545,6 @@ void GameInterface::select(int id) {
 
 		if(v1) startDrag = willSendWith(SpecialistType::NAVIGATOR);
 		else startDrag = true;
-		std::cout<<"finished selection with starting drag"<<std::endl;
 		return;
 	}
 
@@ -552,31 +556,23 @@ void GameInterface::select(int id) {
 	
 	if(v1) startDrag = willSendWith(SpecialistType::NAVIGATOR);
 	else startDrag = true;
-  	std::cout<<"finished selection"<<std::endl;
 }
 
 void GameInterface::unselect() {
-	std::cout<<"started deselection"<<std::endl;
 	setSelected(-1);
 
 	emit_signal("deselect");
 
 	while(!selectedSpecialists.empty()) setSelectedSpecialist(*selectedSpecialists.begin());
-
-	std::cout<<"finished deselection"<<std::endl;
 }
 
 void GameInterface::setSelected(int id) {
-	std::cout<<"started setting selection"<<std::endl;
 	if(getSelected() && getNode(selected)) getNode(selected)->setSelected(false);
 
 	PositionalNode* obj = getNode(id);
 
 	if(obj) {
 		obj->setSelected(true);
-
-		double timeDiff = current - game->getTime();
-		selectedUnits = obj->getObj()->getUnitsAt(timeDiff);
 	}
 
 	VesselNode* v = dynamic_cast<VesselNode*>(obj);
@@ -585,7 +581,6 @@ void GameInterface::setSelected(int id) {
 	if(o) emit_signal("selectOutpost", o);
 
 	selected = id;
-	std::cout<<"finished setting selection"<<std::endl;
 }
 
 void GameInterface::setSelectedSpecialist(int id) {
@@ -644,17 +639,16 @@ void GameInterface::bulkAddOrder(const String &type, uint32_t ID, int32_t refere
 }
 
 void GameInterface::endBulkAdd() {
-	std::cout << "About to enter game..." << std::endl;
 	completeGame->run();
-	std::cout << "game->run() completed..." << std::endl;
 	game = nullptr;
 	simulatedGame = nullptr;
-	currentGame = nullptr;
 	
 	current += epsilon;
 	
-	update();
-	std::cout << "Entered game!" << std::endl;
+	if(!paused) {
+		currentGame = nullptr;
+		update();
+	}
 }
 
 void GameInterface::addOrder(const String &type, uint32_t ID, int32_t referenceID, double timestamp, uint32_t senderID, PackedInt32Array arguments, uint32_t argCount) {
@@ -740,9 +734,10 @@ PackedVector2Array GameInterface::getOutpostPositions() {
 	for(auto& pair : outposts) {
 		if(!pair.second->is_visible()) {
 			Player* p = future ? currentGame->getPlayer(getUserGameID()) : game->getPlayer(getUserGameID());
+			std::shared_ptr<Game> visibilityGame = future ? currentGame : game;
 
 			pair.second->setDiff(time, timeDiff);
-			pair.second->set_visible(p->withinRange(pair.second->getObj(), timeDiff));
+			pair.second->set_visible(visibilityGame->withinRange(p, pair.second->getObj(), timeDiff));
 		}
 
 		if(!pair.second->is_visible()) continue;
@@ -806,21 +801,31 @@ int GameInterface::getScore(int userID) {
 	return -1;
 }
 
-PackedInt32Array GameInterface::getShopOptions() {
+PackedInt32Array GameInterface::getAllSpecialists() {
 	PackedInt32Array arr;
 
-	for(SpecialistType t : Specialist::baseHires()) {
+	for(SpecialistType t : Specialist::allHires()) {
 		arr.push_back(uint32_t(t));
 	}
 
 	return arr;
 }
 
-PackedInt32Array GameInterface::getPromotionOptions(int specialistID) {
+PackedInt32Array GameInterface::getShopOptions() {
 	PackedInt32Array arr;
 
-	for(SpecialistType t : game->getSpecialist(specialistID)->promotionOptions()) {
-		arr.push_back(uint32_t(t));
+	for(SpecialistType t : Specialist::baseHires()) {
+		if(settings.specialistBans.find(t) == settings.specialistBans.end()) arr.push_back(uint32_t(t));
+	}
+
+	return arr;
+}
+
+PackedInt32Array GameInterface::getPromotionOptions(int specialistNum) {
+	PackedInt32Array arr;
+
+	for(SpecialistType t : Specialist::promotionOptions(SpecialistType(specialistNum))) {
+		if(settings.specialistBans.find(t) == settings.specialistBans.end()) arr.push_back(uint32_t(t));
 	}
 
 	return arr;
@@ -834,20 +839,43 @@ String GameInterface::getSpecialistDescription(int specialistNum) {
 	return String(settings.specialistDescriptions[SpecialistType(specialistNum)].c_str());
 }
 
+int GameInterface::getSpecialistHireAmount(int specialistNum) {
+	return Specialist::hireAmount(SpecialistType(specialistNum));
+}
+
+String GameInterface::getNextVictoryMessage() {
+	double timeDiff = settings.clientToGameTime(getCurrent()) - game->getTime();
+
+	Player* victor = game->sortedPlayers().front();
+	std::string res = victor->getName();
+
+	if(settings.gameMode == Mode::CONQUEST) {
+		if((1 + (game->getPlayers().size() / 2)) * settings.outpostsPerPlayer - victor->getOutposts().size() > 0) res += " needs " + std::to_string((1 + (game->getPlayers().size() / 2)) * settings.outpostsPerPlayer - victor->getOutposts().size()) + " more outposts to win";
+		else res += " has won";
+	} else if(settings.gameMode == Mode::MINING) {
+		if(settings.resourcesToWin - victor->getResourcesAt(timeDiff) > 0) res += " needs " + std::to_string(settings.resourcesToWin - victor->getResourcesAt(timeDiff)) + " more resources to win";
+		else res += " has won";
+	} else {
+		return "";
+	}
+
+	return String(res.c_str());
+}
+
 double GameInterface::getNextVictoryTime() {
-	const WinConditionEvent* e = completeGame->nextWinCondition(getTime());
+	const WinConditionEvent* e = completeGame->nextWinCondition(clientToGameTime(getTime()));
 
 	return e ? settings.gameToClientTime(e->getTimestamp()) : -1;
 }
 
 PlayerNode* GameInterface::getNextVictoryPlayer() {
-	const WinConditionEvent* e = completeGame->nextWinCondition(getTime());
+	const WinConditionEvent* e = completeGame->nextWinCondition(clientToGameTime(getTime()));
 
 	return e ? players[e->getPlayerID()] : nullptr;
 }
 
 double GameInterface::getNextArrivalEvent(int vesselID) {
-	const VesselOutpostEvent* e = completeGame->nextArrival(vesselID, getTime());
+	const VesselOutpostEvent* e = completeGame->nextArrival(vesselID, clientToGameTime(getTime()));
 
 	return e ? settings.gameToClientTime(e->getTimestamp()) : -1;
 }
@@ -865,29 +893,46 @@ double GameInterface::getNextProductionEvent(int outpostID) {
 		next = completeGame->nextState(time);
 	}
 
-	return settings.gameToClientTime(time + curr->getOutpost(outpostID)->nextProductionEvent(getTime() - time) + epsilon);
+	return settings.gameToClientTime(time + curr->getOutpost(outpostID)->nextProductionEvent(clientToGameTime(getTime()) - time) + epsilon);
+}
+
+double GameInterface::getNextHireEvent() {
+	std::shared_ptr<Game> curr = game;
+
+	double next = completeGame->nextState(curr->getTime());
+
+	double time = curr->getTime();
+
+	while(curr->getTime() + curr->getPlayer(userGameID)->nextHireEvent(0) > next) {
+		curr = completeGame->lastState(next);
+		time = next;
+		next = completeGame->nextState(time);
+	}
+
+	return settings.gameToClientTime(time + curr->getPlayer(userGameID)->nextHireEvent(clientToGameTime(getTime()) - time) + epsilon);
 }
 
 double GameInterface::getNextBattleEvent(int objID) {
-	const BattleEvent* e = completeGame->nextBattle(objID, getTime());
+	const BattleEvent* e = completeGame->nextBattle(objID, clientToGameTime(getTime()));
 
 	return e ? settings.gameToClientTime(e->getTimestamp()) : -1;
 }
 
 bool GameInterface::canViewNextBattle(int objID) {
-	const BattleEvent* b = completeGame->nextBattle(objID, getTime());
+	const BattleEvent* b = completeGame->nextBattle(objID, clientToGameTime(getTime()));
 
 	if(!b) return false;
 
 	double timeDiff = settings.clientToGameTime(getTime()) - game->getTime();
 
 	Player* p = future ? currentGame->getPlayer(getUserGameID()) : game->getPlayer(getUserGameID());
+	std::shared_ptr<Game> visibilityGame = future ? currentGame : game;
 	
 	std::pair<int, int> pair = b->getBattleObjects();
 
-	if(!getObj(pair.first) || !p->withinRange(getObj(pair.first), timeDiff)) return false;
+	if(!getObj(pair.first) || !visibilityGame->withinRange(p, getObj(pair.first), timeDiff)) return false;
 
-	if(!getObj(pair.second) || !p->withinRange(getObj(pair.second), timeDiff)) return false;
+	if(!getObj(pair.second) || !visibilityGame->withinRange(p, getObj(pair.second), timeDiff)) return false;
 
 	return true;
 }
@@ -903,7 +948,7 @@ Array GameInterface::getBattlePhases() {
 }
 
 Array GameInterface::getNextBattleUsers(int objID) {
-	const BattleEvent* b = completeGame->nextBattle(objID, getTime());
+	const BattleEvent* b = completeGame->nextBattle(objID, clientToGameTime(getTime()));
 
 	Array arr;
 
@@ -916,7 +961,7 @@ Array GameInterface::getNextBattleUsers(int objID) {
 }
 
 Array GameInterface::getNextBattleMessages(int objID, const String& phase) {
-	const BattleEvent* b = completeGame->nextBattle(objID, getTime());
+	const BattleEvent* b = completeGame->nextBattle(objID, clientToGameTime(getTime()));
 
 	Array arr;
 
@@ -935,7 +980,7 @@ Array GameInterface::getNextBattleMessages(int objID, const String& phase) {
 }
 
 Dictionary GameInterface::getNextBattleStartingUnits(int objID) {
-	const BattleEvent* b = completeGame->nextBattle(objID, getTime());
+	const BattleEvent* b = completeGame->nextBattle(objID, clientToGameTime(getTime()));
 
 	Dictionary d;
 
@@ -951,7 +996,7 @@ Dictionary GameInterface::getNextBattleStartingUnits(int objID) {
 }
 
 Dictionary GameInterface::getNextBattleUnits(int objID, const String& phase) {
-	const BattleEvent* b = completeGame->nextBattle(objID, getTime());
+	const BattleEvent* b = completeGame->nextBattle(objID, clientToGameTime(getTime()));
 
 	Dictionary d;
 
@@ -968,7 +1013,7 @@ Dictionary GameInterface::getNextBattleUnits(int objID, const String& phase) {
 
 
 Dictionary GameInterface::getNextBattlePreVictoryUnits(int objID) {
-	const BattleEvent* b = completeGame->nextBattle(objID, getTime());
+	const BattleEvent* b = completeGame->nextBattle(objID, clientToGameTime(getTime()));
 
 	Dictionary d;
 
@@ -984,7 +1029,7 @@ Dictionary GameInterface::getNextBattlePreVictoryUnits(int objID) {
 }
 
 Dictionary GameInterface::getNextBattleShields(int objID) {
-	const BattleEvent* b = completeGame->nextBattle(objID, getTime());
+	const BattleEvent* b = completeGame->nextBattle(objID, clientToGameTime(getTime()));
 
 	Dictionary d;
 
@@ -1000,7 +1045,7 @@ Dictionary GameInterface::getNextBattleShields(int objID) {
 }
 
 PlayerNode* GameInterface::getNextBattleVictor(int objID) {
-	const BattleEvent* b = completeGame->nextBattle(objID, getTime());
+	const BattleEvent* b = completeGame->nextBattle(objID, clientToGameTime(getTime()));
 
 	if(!b) return nullptr;
 
@@ -1008,7 +1053,7 @@ PlayerNode* GameInterface::getNextBattleVictor(int objID) {
 }
 
 int GameInterface::getNextBattleVictorUnits(int objID) {
-	const BattleEvent* b = completeGame->nextBattle(objID, getTime());
+	const BattleEvent* b = completeGame->nextBattle(objID, clientToGameTime(getTime()));
 
 	if(!b) return -1;
 
@@ -1016,7 +1061,7 @@ int GameInterface::getNextBattleVictorUnits(int objID) {
 }
 
 Array GameInterface::getNextBattleCaptures(int objID) {
-	const BattleEvent* b = completeGame->nextBattle(objID, getTime());
+	const BattleEvent* b = completeGame->nextBattle(objID, clientToGameTime(getTime()));
 
 	Array arr;
 

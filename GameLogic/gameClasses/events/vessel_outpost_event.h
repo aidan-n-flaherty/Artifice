@@ -59,10 +59,20 @@ public:
         BattleEvent::run(game);
 
         if(outpost->getOwnerID() == vessel->getOwnerID() || vessel->isGift() || (((game->getSettings())->number_of_teams > 1) && same_team(outpost, vessel))) {
-            outpost->addUnits(vessel->getUnits());
-            if(vessel->isGift()) outpost->getOwner()->addSpecialists(vessel->getSpecialists());
+            if(outpost->hasOwner() && vessel->isGift() && outpost->getOwnerID() != vessel->getOwnerID()) {
+                for(Specialist* s : vessel->getSpecialists()) {
+                    if(s->hasOwner() && s->getOwnerID() == vessel->getOwnerID()) {
+                        outpost->getOwner()->addSpecialist(s);
+                    }
+                }
+
+                outpost->addUnits(std::max(0, std::min(vessel->getUnits(), outpost->getOwner()->getCapacity() - outpost->getOwner()->getUnits())));
+            } else {
+                outpost->addUnits(vessel->getUnits());
+            }
 
             outpost->addSpecialists(vessel->removeSpecialists());
+            setFriendly();
         } else {
             // start with specialist phase
             specialistPhase(game);
@@ -84,12 +94,13 @@ public:
             victorySpecialistPhase(game);
             postCombatSpecialistPhase(game);
 
-            outpost->addSpecialists(vessel->removeSpecialists());
 
             Player* vesselOwner = vessel->getOwner();
             Player* outpostOwner = outpost->getOwner();
 
             if(!vessel->isDeleted() && !outpost->isDeleted()) {
+                outpost->addSpecialists(vessel->removeSpecialists());
+
                 if(vesselWins) {
                     vesselOwner->addOutpost(outpost);
                     outpost->addUnits(vessel->getUnits() - outpost->getUnits());

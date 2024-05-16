@@ -3,11 +3,11 @@
 [ext_resource type="Script" path="res://MainMenu.gd" id="1_jslh6"]
 [ext_resource type="PackedScene" uid="uid://b14auts774043" path="res://Shaders.tscn" id="2_7nq6h"]
 [ext_resource type="Theme" uid="uid://bfwpaonloeco5" path="res://resources/theme.tres" id="2_pk1f5"]
-[ext_resource type="Texture2D" uid="uid://bv5d2gydbkiq" path="res://resources/images/play.png" id="3_w5suc"]
 [ext_resource type="PackedScene" uid="uid://c04qxpqrgw5cq" path="res://Background.tscn" id="3_x1uu2"]
-[ext_resource type="Texture2D" uid="uid://cwrcutyiv8l8j" path="res://resources/images/search.png" id="4_qhor3"]
-[ext_resource type="Texture2D" uid="uid://b3hhk4u32imks" path="res://resources/images/create.png" id="5_t8i2v"]
-[ext_resource type="Texture2D" uid="uid://dgu1vsouolbs" path="res://resources/images/account.png" id="6_huq68"]
+[ext_resource type="Texture2D" uid="uid://b4fevsntbhuu8" path="res://resources/gameMenuIcons/Play.png" id="5_1x5pv"]
+[ext_resource type="Texture2D" uid="uid://bp1sr2rdkcnor" path="res://resources/gameMenuIcons/Search.png" id="6_c80il"]
+[ext_resource type="Texture2D" uid="uid://d3je4tr2v8qcj" path="res://resources/gameMenuIcons/Create.png" id="7_nvx6e"]
+[ext_resource type="Texture2D" uid="uid://c5xpe873eaaqs" path="res://resources/gameMenuIcons/Account.png" id="8_6pyp5"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_82ple"]
 bg_color = Color(0.0470588, 0.0941176, 0.137255, 1)
@@ -104,7 +104,7 @@ size_flags_vertical = 3
 script = ExtResource("1_jslh6")
 playScreen = "res://CurrentGameList.tscn"
 searchScreen = "res://OpenGameList.tscn"
-settingsScreen = "res://Settings.tscn"
+settingsScreen = "res://AccountDetails.tscn"
 createScreen = "res://GameCreator.tscn"
 
 [node name="Shaders" parent="." instance=ExtResource("2_7nq6h")]
@@ -168,7 +168,7 @@ size_flags_vertical = 3
 theme = ExtResource("2_pk1f5")
 toggle_mode = true
 button_group = SubResource("ButtonGroup_gxotn")
-texture_normal = ExtResource("3_w5suc")
+texture_normal = ExtResource("5_1x5pv")
 ignore_texture_size = true
 stretch_mode = 5
 
@@ -186,7 +186,7 @@ size_flags_horizontal = 3
 theme = ExtResource("2_pk1f5")
 toggle_mode = true
 button_group = SubResource("ButtonGroup_gxotn")
-texture_normal = ExtResource("4_qhor3")
+texture_normal = ExtResource("6_c80il")
 ignore_texture_size = true
 stretch_mode = 5
 
@@ -204,7 +204,7 @@ size_flags_horizontal = 3
 theme = ExtResource("2_pk1f5")
 toggle_mode = true
 button_group = SubResource("ButtonGroup_gxotn")
-texture_normal = ExtResource("5_t8i2v")
+texture_normal = ExtResource("7_nvx6e")
 ignore_texture_size = true
 stretch_mode = 5
 
@@ -223,7 +223,7 @@ size_flags_vertical = 3
 theme = ExtResource("2_pk1f5")
 toggle_mode = true
 button_group = SubResource("ButtonGroup_gxotn")
-texture_normal = ExtResource("6_huq68")
+texture_normal = ExtResource("8_6pyp5")
 ignore_texture_size = true
 stretch_mode = 5
 

@@ -18,10 +18,7 @@ shader_parameter/mapHeight = null
 shader_parameter/meshWidth = null
 shader_parameter/meshHeight = null
 shader_parameter/resolution = null
-shader_parameter/outposts = null
-shader_parameter/outpostsLength = 0
 shader_parameter/speed = 0.1
-shader_parameter/tmp = 0.0
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_llsqg"]
 render_priority = 0

@@ -12,7 +12,8 @@
 
 enum Mode {
     MINING,
-    CONQUEST
+    CONQUEST,
+    ELIMINATION
 };
 
 enum SpecialistType : unsigned int;
@@ -24,7 +25,9 @@ public:
 
     double simulationSpeed;
     double factoryDensity;
+    double resourceReductionAmount;
     int resourcesToWin;
+    int outpostsToWin;
     Mode gameMode;
     int eloKValue;
     int defaultSonar;
@@ -41,6 +44,7 @@ public:
     std::vector<std::tuple<double, double, double>> playerColors;
     std::vector<std::string> outpostNames;
     std::unordered_set<int> activeHours;
+    std::unordered_set<SpecialistType> specialistBans;
     int number_of_teams;
 
     void loadDefaults();

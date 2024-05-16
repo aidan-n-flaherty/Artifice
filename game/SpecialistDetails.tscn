@@ -3,24 +3,23 @@
 [ext_resource type="Theme" uid="uid://tg7ina762c6q" path="res://resources/themes/UITheme.tres" id="1_cfgj3"]
 [ext_resource type="Script" path="res://SpecialistDetails.gd" id="1_psvyd"]
 [ext_resource type="Material" uid="uid://ceshq08mjed03" path="res://resources/materials/SpecialistMesh.tres" id="2_nlvwq"]
-[ext_resource type="Texture2D" uid="uid://b4p1418oo26f6" path="res://resources/specialistIcons/Helmsman.png" id="3_cl3u5"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sjq4a"]
-bg_color = Color(0.117647, 0.117647, 0.117647, 1)
-corner_radius_top_left = 30
-corner_radius_top_right = 30
-corner_radius_bottom_right = 30
-corner_radius_bottom_left = 30
-corner_detail = 16
+[ext_resource type="Texture2D" uid="uid://cidbww6nbslt4" path="res://resources/specialistIcons/Helmsman.png" id="3_cl3u5"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_cfbt4"]
 font_size = 30
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5jxhx"]
+bg_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 25
+corner_radius_top_right = 25
+corner_radius_bottom_right = 25
+corner_radius_bottom_left = 25
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lefyu"]
 content_margin_left = 10.0
-content_margin_top = 10.0
+content_margin_top = 0.0
 content_margin_right = 10.0
-content_margin_bottom = 10.0
+content_margin_bottom = 0.0
 bg_color = Color(0, 0, 0, 0.784314)
 corner_radius_top_left = 10
 corner_radius_top_right = 10
@@ -29,9 +28,9 @@ corner_radius_bottom_left = 10
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bfggk"]
 content_margin_left = 10.0
-content_margin_top = 10.0
+content_margin_top = 0.0
 content_margin_right = 10.0
-content_margin_bottom = 10.0
+content_margin_bottom = 0.0
 bg_color = Color(0, 0, 0, 0.862745)
 corner_radius_top_left = 10
 corner_radius_top_right = 10
@@ -42,17 +41,10 @@ corner_radius_bottom_left = 10
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_bottom = -1685.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_cfgj3")
 script = ExtResource("1_psvyd")
-
-[node name="Background" type="Panel" parent="."]
-visible = false
-layout_mode = 2
-theme = ExtResource("1_cfgj3")
-theme_override_styles/panel = SubResource("StyleBoxFlat_sjq4a")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
@@ -82,7 +74,6 @@ theme = ExtResource("1_cfgj3")
 text = "Testing"
 label_settings = SubResource("LabelSettings_cfbt4")
 vertical_alignment = 2
-clip_text = true
 
 [node name="Description" type="RichTextLabel" parent="MarginContainer/HBoxContainer/HBoxContainer/VBoxContainer"]
 layout_mode = 2
@@ -90,6 +81,22 @@ theme = ExtResource("1_cfgj3")
 text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
 fit_content = true
 scroll_active = false
+
+[node name="NextHireLabel" type="Label" parent="MarginContainer/HBoxContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="PromotionOptions" type="HFlowContainer" parent="MarginContainer/HBoxContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/h_separation = 10
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/HBoxContainer/VBoxContainer/PromotionOptions"]
+layout_mode = 2
+text = "Promotion Options:"
+
+[node name="Back" type="Button" parent="MarginContainer/HBoxContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Back"
 
 [node name="Spacer" type="Control" parent="MarginContainer/HBoxContainer/HBoxContainer"]
 visible = false
@@ -99,18 +106,30 @@ theme = ExtResource("1_cfgj3")
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 3
 size_flags_stretch_ratio = 0.25
 theme = ExtResource("1_cfgj3")
 
-[node name="Image" type="TextureRect" parent="MarginContainer/HBoxContainer/MarginContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 0
+
+[node name="Panel" type="Panel" parent="MarginContainer/HBoxContainer/MarginContainer/MarginContainer"]
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_5jxhx")
+
+[node name="Image" type="TextureRect" parent="MarginContainer/HBoxContainer/MarginContainer/MarginContainer"]
 modulate = Color(0, 0, 0, 1)
 material = ExtResource("2_nlvwq")
-custom_minimum_size = Vector2(150, 150)
 layout_mode = 2
 size_flags_vertical = 3
 theme = ExtResource("1_cfgj3")
 texture = ExtResource("3_cl3u5")
+expand_mode = 1
 stretch_mode = 5
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer/MarginContainer"]
@@ -162,7 +181,20 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_lefyu")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_bfggk")
 text = "Cancel Hire"
 
+[node name="NextHire" type="Button" parent="MarginContainer/HBoxContainer/MarginContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 8
+theme = ExtResource("1_cfgj3")
+theme_override_styles/normal = SubResource("StyleBoxFlat_lefyu")
+theme_override_styles/hover = SubResource("StyleBoxFlat_lefyu")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_bfggk")
+text = "Next Hire"
+
+[connection signal="pressed" from="MarginContainer/HBoxContainer/HBoxContainer/VBoxContainer/Back" to="." method="_on_back_pressed"]
 [connection signal="pressed" from="MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/Promote" to="." method="_on_promote_pressed"]
 [connection signal="pressed" from="MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/Release" to="." method="_on_release_pressed"]
-[connection signal="pressed" from="MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/Shop" to="." method="_on_hire_pressed"]
+[connection signal="pressed" from="MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/Shop" to="." method="_on_shop_pressed"]
 [connection signal="pressed" from="MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/Cancel" to="." method="_on_cancel_pressed"]
+[connection signal="pressed" from="MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/NextHire" to="." method="_on_next_hire_pressed"]

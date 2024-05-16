@@ -15,8 +15,16 @@ var past = false
 
 var uninitialized = true
 
+var buttons
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	buttons = [
+		$VSplitContainer/MarginContainer/MarginContainer/HBoxContainer/Play/Play,
+		$VSplitContainer/MarginContainer/MarginContainer/HBoxContainer/Search/Search,
+		$VSplitContainer/MarginContainer/MarginContainer/HBoxContainer/Create/Create,
+		$VSplitContainer/MarginContainer/MarginContainer/HBoxContainer/Settings/Settings
+	]
 	if not GameData.currentTab:
 		GameData.gamesChanged.connect(init)
 	else:
@@ -30,6 +38,15 @@ func init():
 		
 		if not GameData.currentTab:
 			GameData.currentTab = playScreen
+		
+		if GameData.currentTab == playScreen:
+			$VSplitContainer/MarginContainer/MarginContainer/HBoxContainer/Play/Play.set_pressed_no_signal(true)
+		elif GameData.currentTab == searchScreen:
+			$VSplitContainer/MarginContainer/MarginContainer/HBoxContainer/Search/Search.set_pressed_no_signal(true)
+		elif GameData.currentTab == createScreen:
+			$VSplitContainer/MarginContainer/MarginContainer/HBoxContainer/Create/Create.set_pressed_no_signal(true)
+		elif GameData.currentTab == settingsScreen:
+			$VSplitContainer/MarginContainer/MarginContainer/HBoxContainer/Settings/Settings.set_pressed_no_signal(true)
 		
 		switch_to(GameData.currentTab)
 		
@@ -57,6 +74,15 @@ func switch_to(scene):
 	GameData.currentTab = scene
 	
 	current = ResourceLoader.load(GameData.currentTab).instantiate()
+	
+	if scene == settingsScreen:
+		current.init(GameData.getSelfID())
+	
+	for button in buttons:
+		if not button.button_pressed:
+			button.modulate = Color(0.6, 0.6, 0.6)
+		else:
+			button.modulate = Color(1.0, 1.0, 1.0)
 	
 	$VSplitContainer/VBoxContainer/Content.add_child(current)
 

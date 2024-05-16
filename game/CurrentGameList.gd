@@ -3,6 +3,10 @@ extends GameList
 func initList():
 	gameIDs = GameData.getOngoingGames()
 	
+	gameIDs.sort_custom(func(a, b):
+		var gameDetailsA = GameData.getGameDetails(a)
+		return gameDetailsA.gameData.hasNotifications or gameDetailsA.gameData.hasChatNotifications)
+	
 	if len(gameIDs) > 0:
 		$NoGames.hide()
 	else:

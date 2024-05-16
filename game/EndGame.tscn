@@ -4,6 +4,10 @@
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1u3xq"]
 bg_color = Color(0, 0, 0, 0.423529)
+expand_margin_left = 500.0
+expand_margin_top = 500.0
+expand_margin_right = 500.0
+expand_margin_bottom = 500.0
 
 [node name="EndGame" type="Panel"]
 anchors_preset = 15

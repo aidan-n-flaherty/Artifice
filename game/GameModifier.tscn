@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://cji0ca8swtaxi"]
+[gd_scene load_steps=9 format=3 uid="uid://cji0ca8swtaxi"]
 
 [ext_resource type="PackedScene" uid="uid://biekuv7dddk3m" path="res://GameEditor.tscn" id="1_2tq6g"]
 [ext_resource type="Script" path="res://GameModifier.gd" id="2_ah1p0"]
@@ -10,9 +10,11 @@ corner_radius_top_right = 30
 corner_radius_bottom_right = 30
 corner_radius_bottom_left = 30
 
+[sub_resource type="ButtonGroup" id="ButtonGroup_xs45a"]
+
 [sub_resource type="ButtonGroup" id="ButtonGroup_wllei"]
 
-[sub_resource type="ButtonGroup" id="ButtonGroup_kvf6b"]
+[sub_resource type="ButtonGroup" id="ButtonGroup_5awch"]
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_hnxii"]
 
@@ -25,6 +27,12 @@ script = ExtResource("2_ah1p0")
 [node name="Panel2" type="Panel" parent="." index="0"]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_brtyh")
+
+[node name="ranked" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/RankedButtons" index="0"]
+button_group = SubResource("ButtonGroup_xs45a")
+
+[node name="unranked" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/RankedButtons" index="1"]
+button_group = SubResource("ButtonGroup_xs45a")
 
 [node name="2" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons/HBoxContainer" index="0"]
 button_group = SubResource("ButtonGroup_wllei")
@@ -53,11 +61,14 @@ button_group = SubResource("ButtonGroup_wllei")
 [node name="10" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons/HBoxContainer" index="8"]
 button_group = SubResource("ButtonGroup_wllei")
 
-[node name="conquest" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/GameModeButtons" index="0"]
-button_group = SubResource("ButtonGroup_kvf6b")
+[node name="Mining" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/GameModeButtons" index="0"]
+button_group = SubResource("ButtonGroup_5awch")
 
-[node name="koh" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/GameModeButtons" index="1"]
-button_group = SubResource("ButtonGroup_kvf6b")
+[node name="Conquest" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/GameModeButtons" index="1"]
+button_group = SubResource("ButtonGroup_5awch")
+
+[node name="Elimination" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/GameModeButtons" index="2"]
+button_group = SubResource("ButtonGroup_5awch")
 
 [node name="days" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/SimulationTimescaleButtons" index="0"]
 button_group = SubResource("ButtonGroup_hnxii")
@@ -83,5 +94,5 @@ button_group = SubResource("ButtonGroup_xhxv3")
 [node name="5" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/TeamButtons" index="4"]
 button_group = SubResource("ButtonGroup_xhxv3")
 
-[node name="Activate" parent="MarginContainer/VBoxContainer" index="3"]
+[node name="Activate" parent="MarginContainer/VBoxContainer" index="4"]
 text = "Save"

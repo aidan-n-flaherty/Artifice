@@ -1,7 +1,15 @@
 extends GameList
-	
+
+var userID = null
+
+func initUser(userID):
+	self.userID = userID
+
 func initList():
-	gameIDs = GameData.getPastGames()
+	if not userID:
+		gameIDs = await GameData.getPastGames(GameData.getSelfID())
+	else:
+		gameIDs = await GameData.getPastGames(userID)
 	
 func generateButton(id):
 	var button = preload("res://GameButton.tscn").instantiate()

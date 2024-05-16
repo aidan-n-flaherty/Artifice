@@ -50,6 +50,8 @@ public:
     int getShieldAt(double& fractionalShield, double timeDiff) const;
     int getProductionAmount();
 
+    void addSpecialists(std::list<Specialist*> specialists) override;
+
     // returns seconds until another set of units are produced
     double nextProductionEvent(double timeDiff) const;
 

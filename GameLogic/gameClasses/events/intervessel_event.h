@@ -20,9 +20,7 @@ private:
 public:
     IntervesselEvent(){};
     IntervesselEvent(double timestamp, Vessel* vesselA, Vessel* vesselB) :
-        BattleEvent(timestamp, vesselA, vesselB), vesselA(vesselA), vesselB(vesselB) {
-        if(vesselA->isGift() || vesselB->isGift()) setFriendly();
-    }
+        BattleEvent(timestamp, vesselA, vesselB), vesselA(vesselA), vesselB(vesselB) {}
 
     Event* copy() override { return new IntervesselEvent(*this); }
 
@@ -35,13 +33,14 @@ public:
     void run(Game* game) override {
         BattleEvent::run(game);
 
-        if(vesselA->isGift() && vesselB->isGift()) {
+        if(vesselA->isGift() && vesselB->getTargetID() != vesselA->getID()) {
+            setFriendly();
             return;
-        } else if(vesselA->isGift() && !vesselB->isGift()) {
-            vesselB->getOwner()->addVessel(vesselA);
-        } else if(vesselB->isGift() && !vesselA->isGift()) {
-            vesselA->getOwner()->addVessel(vesselB);
+        } else if(vesselB->isGift() && vesselA->getTargetID() != vesselB->getID()) {
+            setFriendly();
+            return;
         } else if(vesselA->getOwnerID() == vesselB->getOwnerID()) {
+            setFriendly();
             vesselA->addUnits(vesselB->removeUnits(vesselB->getUnits()));
             vesselA->addSpecialists(vesselB->getSpecialists());
 

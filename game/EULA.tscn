@@ -1,0 +1,130 @@
+[gd_scene load_steps=10 format=3 uid="uid://cfk021w4mspse"]
+
+[ext_resource type="Theme" uid="uid://tg7ina762c6q" path="res://resources/themes/UITheme.tres" id="1_7s6rg"]
+[ext_resource type="Script" path="res://EULA.gd" id="2_7jux1"]
+[ext_resource type="Texture2D" uid="uid://dr8u8jworw66l" path="res://resources/images/checkmark.png" id="3_rrqog"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f1bfn"]
+bg_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2jkio"]
+content_margin_left = 5.0
+content_margin_top = 5.0
+content_margin_right = 5.0
+content_margin_bottom = 5.0
+bg_color = Color(0.376727, 0.628812, 0.81628, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_26vji"]
+content_margin_left = 5.0
+content_margin_top = 5.0
+content_margin_right = 5.0
+content_margin_bottom = 5.0
+bg_color = Color(0.202277, 0.408611, 0.557062, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rvng3"]
+content_margin_left = 15.0
+content_margin_top = 5.0
+content_margin_right = 15.0
+content_margin_bottom = 5.0
+bg_color = Color(0.260775, 0.536518, 0.734948, 1)
+corner_radius_top_left = 30
+corner_radius_top_right = 30
+corner_radius_bottom_right = 30
+corner_radius_bottom_left = 30
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xjmin"]
+content_margin_left = 15.0
+content_margin_top = 5.0
+content_margin_right = 15.0
+content_margin_bottom = 5.0
+bg_color = Color(0.260775, 0.536518, 0.734948, 1)
+corner_radius_top_left = 30
+corner_radius_top_right = 30
+corner_radius_bottom_right = 30
+corner_radius_bottom_left = 30
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_51s8c"]
+content_margin_left = 15.0
+content_margin_top = 5.0
+content_margin_right = 15.0
+content_margin_bottom = 5.0
+bg_color = Color(0.195948, 0.439129, 0.611817, 1)
+corner_radius_top_left = 30
+corner_radius_top_right = 30
+corner_radius_bottom_right = 30
+corner_radius_bottom_left = 30
+
+[node name="EULA" type="MarginContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_7s6rg")
+script = ExtResource("2_7jux1")
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_f1bfn")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_constants/separation = 20
+
+[node name="Spacer" type="Control" parent="VBoxContainer"]
+custom_minimum_size = Vector2(2.08165e-12, 100)
+layout_mode = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="VBoxContainer"]
+clip_contents = false
+layout_mode = 2
+bbcode_enabled = true
+text = "[center]I have read and agreed to the [color=#7dcde8][url=https://doc-hosting.flycricket.io/artifice-privacy-policy/5dde4917-e084-4708-810a-c3fe26f826a6/privacy]privacy policy[/url][/color] and the [color=#7dcde8][url=https://doc-hosting.flycricket.io/artifice-terms-of-use/184da099-f932-4e63-846d-8c9cad7c1478/terms]terms of service[/url][/color][/center]"
+fit_content = true
+scroll_active = false
+
+[node name="Agree" type="Button" parent="VBoxContainer"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/normal = SubResource("StyleBoxFlat_2jkio")
+theme_override_styles/hover = SubResource("StyleBoxFlat_2jkio")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_26vji")
+toggle_mode = true
+icon = ExtResource("3_rrqog")
+expand_icon = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer"]
+custom_minimum_size = Vector2(2.08165e-12, 100)
+layout_mode = 2
+
+[node name="Spacer" type="Control" parent="VBoxContainer/VBoxContainer"]
+visible = false
+custom_minimum_size = Vector2(2.08165e-12, 2.08165e-12)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Start" type="Button" parent="VBoxContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 22
+theme_override_styles/normal = SubResource("StyleBoxFlat_rvng3")
+theme_override_styles/hover = SubResource("StyleBoxFlat_xjmin")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_51s8c")
+text = "Create Account"
+
+[connection signal="meta_clicked" from="VBoxContainer/RichTextLabel" to="." method="_on_rich_text_label_meta_clicked"]
+[connection signal="toggled" from="VBoxContainer/Agree" to="." method="_on_agree_toggled"]
+[connection signal="pressed" from="VBoxContainer/VBoxContainer/Start" to="." method="_on_start_pressed"]

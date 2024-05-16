@@ -10,20 +10,14 @@ uniform float meshHeight;
 
 uniform float resolution;
 
-uniform vec2 outposts[50];
-uniform int outpostsLength = 0;
-
 uniform sampler2D rockDivisionNormal;
 uniform sampler2D rockDivisionTexture;
 uniform sampler2D shelfTexture;
 uniform sampler2D rockTexture;
-uniform sampler2D ridgeTexture;
 uniform sampler2D stoneTexture;
 uniform sampler2D ravineTexture;
 uniform sampler2D detailedNormal;
 uniform sampler2D ridgeNormal;
-uniform sampler2D ravineNormal;
-uniform sampler2D largeRidgeNormal;
 uniform sampler2D stoneNormal;
 uniform sampler2D sunlightTexture1;
 uniform sampler2D sunlightTexture2;
@@ -31,7 +25,6 @@ uniform sampler2D lightTexture1;
 uniform sampler2D lightTexture2;
 
 uniform float speed = 0.1;
-uniform float tmp = 0.0;
 
 vec4 getTexture(vec2 pos, sampler2D tex) {
 	if(resolution <= 0.0) return vec4(0.0);
@@ -65,12 +58,8 @@ vec4 getTexture(vec2 pos, sampler2D tex) {
 	
 	vec2 displacement = pos;
 	
-	//if(pos2.x < 0.2 * size.x) displacement.x = pos2.x;
 	if(displacement.x < 0.2 * size.x) displacement.x += 0.8 * size.x;
-	//else if(normalized.x > 0.9) displacement.x -= 0.9;
-	//if(pos2.y < 0.2 * size.y) return vec4(1.0);
 	if(displacement.y < 0.2 * size.y) displacement.y += 0.8 * size.y;
-	//else if(normalized.y > 0.9) displacement.y -= 0.9;
 	
 	if(displacement != pos) {
 		//return vec4(0.0);
@@ -123,21 +112,17 @@ void fragment() {
 
 	float rock = getTexture(pos, rockTexture).r;
 	
-	float ridge = getTexture(pos, ridgeTexture).r;
-	
 	float ravine = getTexture(pos, ravineTexture).r;
 	
 	float stone = getTexture(pos, stoneTexture).r;
 	
 	float shelf = getTexture(pos, shelfTexture).r;
 	
-	float rockDivision = getTexture(pos, rockDivisionTexture).r;
-	
 	float sunlight = 0.5 * getTexture(pos + speed * TIME * vec2(1.0), sunlightTexture1).r + 0.5 * getTexture(pos + speed * TIME * vec2(1.0, -1.0), sunlightTexture2).r;
 	
 	float lightStrength = 0.5 * getTexture(pos + speed * 0.5 * TIME * vec2(1.0), lightTexture1).r + 0.5 * getTexture(pos + speed * 0.5 * TIME * vec2(1.0, -1.0), lightTexture2).r;
 	
-	float val = 0.01 + 0.01 * stone + 0.01 * rock - 0.01 * ridge - 0.08 * ravine * ravine;
+	float val = 0.01 * stone + 0.02 * rock - 0.08 * ravine * ravine;
 	
 	if(ravine > 0.8) val = -1.0;
 	else val += min(1.0, 10.0 * (0.8 - ravine)) * 0.5 * sunlight * sunlight * max(1.5 * lightStrength - 0.5, 0.0);
@@ -145,37 +130,16 @@ void fragment() {
 	METALLIC = 0.5;
 	ROUGHNESS = 0.75;
 	
-	vec3 normal = 0.5 * (getTexture(pos, detailedNormal).rgb - getTexture(pos, ridgeNormal).rgb) + 0.75 * getTexture(pos, stoneNormal).rgb + 0.5 * getTexture(pos, largeRidgeNormal).rgb;
-	
-	for(int i = 0; i < outpostsLength; i++) {
-		float dX = pos.x + outposts[i].x;
-		float dY = pos.y + outposts[i].y;
-		
-		while(dX > mapWidth/2.0) dX -= mapWidth;
-		while(dX < -mapWidth/2.0) dX += mapWidth;
-		while(dY > mapHeight/2.0) dY -= mapHeight;
-		while(dY < -mapHeight/2.0) dY += mapHeight;
-		
-		float radius = 10.0;
-		
-		if(abs(dX) > radius || abs(dY) > radius) continue;
-		
-		float mag = sqrt(dX * dX + dY * dY);
-		if(mag < radius) {
-			normal *= mag/radius;
-			val *= max(0.0, -1.0 + mag/radius*2.0);
-			ROUGHNESS = max(ROUGHNESS, 1.0 - max(0.0, -1.0 + mag/radius*2.0));
-			METALLIC = max(METALLIC, 1.0 - max(0.0, -1.0 + mag/radius*2.0));
-		}
-	}
-	
+	vec3 normal = 0.25 * (getTexture(pos, detailedNormal).rgb - getTexture(pos, ridgeNormal).rgb) + 0.5 * getTexture(pos, stoneNormal).rgb;	
 	
 	if(shelf > 0.5) {
+		float rockDivision = getTexture(pos, rockDivisionTexture).r;
+	
 		float interpolation = min(1.0, 10.0 * (shelf - 0.5));
 		val = (1.0 - interpolation) * val + interpolation * 0.03 * rockDivision;
 		if(rockDivision > 0.1 || interpolation < 1.0) val += 0.5 * sunlight * sunlight * max(1.5 * lightStrength - 0.5, 0.0);
 		if(rockDivision < 0.1 && interpolation == 1.0) val = -1.0;
-		normal = (1.0 - interpolation) * normal + interpolation * (0.5 * getTexture(pos, rockDivisionNormal).rgb + 0.5 * getTexture(pos, detailedNormal).rgb);
+		normal = (1.0 - interpolation) * normal + interpolation * (0.5 * getTexture(pos, rockDivisionNormal).rgb + 0.75 * getTexture(pos, detailedNormal).rgb);
 		METALLIC *= min(2.0, 1.0 + 10.0 * (shelf - 0.5));
 	}
 	

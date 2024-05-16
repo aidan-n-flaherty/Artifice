@@ -12,12 +12,14 @@ func init(gameID: int):
 	self.game = GameData.getGame(gameID)
 	self.gameID = gameID
 	
+	var details = GameData.getGameDetails(gameID)
+	
 	for child in $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer.get_children():
 		child.queue_free()
 	
 	for player in game.getSortedPlayers():
 		var playerDetail = preload("res://PlayerDetail.tscn").instantiate()
-		playerDetail.init(player.getName(), game.getScore(player.getUserID()))
+		playerDetail.init(player.getName(), game.getScore(player.getUserID()) if details.gameSettings.ranked else 0)
 		$MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer.add_child(playerDetail)
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.

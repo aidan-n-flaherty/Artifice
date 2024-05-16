@@ -33,7 +33,7 @@ func _process(delta):
 	
 	var arrival = game.getNextArrivalEvent(vessel.getID())
 	if arrival >= 0:
-		$VBoxContainer/HBoxContainer2/VBoxContainer/Arrival.text = "Arrives in " + Utilities.timeToStr(game.getNextArrivalEvent(vessel.getID()) - Time.get_unix_time_from_system())
+		$VBoxContainer/HBoxContainer2/VBoxContainer/Arrival.text = "Arrives in " + Utilities.timeToStr(arrival - game.getTime())
 		$VBoxContainer/HBoxContainer/Spacer1.show()
 		$VBoxContainer/HBoxContainer/Jump.show()
 	else:
@@ -77,7 +77,7 @@ func _on_jump_pressed():
 
 
 func _on_gift_pressed():
-	GameData.addOrder(gameID, "RELEASE", int(game.getReferenceID()), game.getTime(), [vessel.getID()])
+	GameData.addOrder(gameID, "GIFT", int(game.getReferenceID()), game.getTime(), [vessel.getID()])
 
 
 func _on_battle_forecast_pressed():

@@ -81,7 +81,7 @@ private:
 
     std::set<AttackNotification*, NotificationOrder> notifications;
 
-    GameSettings* settings;
+    GameSettings* settings = nullptr;
 
 public:
     // Deterministically creates a pseudo-random map and initializes all player states.
@@ -91,7 +91,9 @@ public:
     ~Game();
 
     // Uses the orders supplied and runs a full simulation of the game, returns player ids and rating changes
-    std::list<std::pair<int, int>> run();
+    std::list<std::pair<int, int>> run(bool pastEnd);
+
+    std::list<std::pair<int, int>> run() { return run(true); };
 
     // returns a list of players sorted in order of ranking, paired with their corresponding rating change
     std::list<std::pair<int, int>> getScores();
@@ -117,6 +119,8 @@ public:
     const std::multiset<Order*, OrderOrder>& getOrders() const { return orders; }
     const std::list<Order*>& getInvalid() { return invalidOrders; }
     const std::set<AttackNotification*, NotificationOrder>& getNotifications() { return notifications; };
+    std::list<Outpost*> getTeamOutposts(int teamID) const;
+    std::list<Vessel*> getTeamVessels(int teamID) const;
     
     bool hasPlayer(const int id) const { return players.find(id) != players.end(); }
     bool hasVessel(const int id) const { return vessels.find(id) != vessels.end(); }
@@ -124,6 +128,7 @@ public:
     bool hasSpecialist(const int id) const { return specialists.find(id) != specialists.end(); }
     bool hasPosObject(const int id) const { return hasOutpost(id) || hasVessel(id); }
     int simulatedEventCount() const { return simulatedEvents.size(); }
+
 
     void addPlayer(Player* p);
     void addVessel(Vessel* v);
@@ -154,9 +159,11 @@ public:
 
     GameSettings* getSettings() { return settings; };
 
-    bool teamGame() { return settings->number_of_teams > 1; }
+    bool teamGame() const { return settings->number_of_teams > 1; }
 
     // The functions below should only be used by the client
+
+    bool withinRange(Player* p, PositionalObject* obj, double timeDiff) const;
     std::shared_ptr<Game> lastState(double timestamp);
     double nextState(double timestamp);
     double getNextEndState() const { return nextEndState; }

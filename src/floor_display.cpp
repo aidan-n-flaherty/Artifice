@@ -29,7 +29,13 @@ void FloorDisplay::_draw() {
     double rootX = cameraPivot->get_position().x - viewport->get_size().x/2.0/pixels;
     double rootY = cameraPivot->get_position().z - viewport->get_size().y/2.0/pixels + 100;
 
+    // draw_arc(const Vector2 &center, double radius, double start_angle, double end_angle, int32_t point_count, const Color &color, double width = -1.0, bool antialiased = false)
+
     draw_rect(Rect2(0, 0, viewport->get_size().x, viewport->get_size().y), Color(0.0, 0.0, 0.0, 0.75));
+
+    Player* p = gameInterface->simulatingFuture() ? current->getPlayer(gameInterface->getUserGameID()) : game->getPlayer(gameInterface->getUserGameID());
+
+    std::shared_ptr<Game> visibilityGame = gameInterface->simulatingFuture() ? current : game;
 
     for(int i = -1; i <= 1; i++) {
         for(int j = -1; j <= 1; j++) {
@@ -37,12 +43,12 @@ void FloorDisplay::_draw() {
             double y = rootY + j * game->getSettings()->height;
 
             for(const auto& pair : (gameInterface->simulatingFuture() ? current->getOutposts() : game->getOutposts())) {
-                if(pair.second->getOwnerID() != gameInterface->getUserGameID()) continue;
+                if(pair.second->getOwnerID() != gameInterface->getUserGameID() && (!pair.second->hasOwner() || !complete->teamGame() || pair.second->getOwner()->getTeamID() != p->getTeamID())) continue;
 
                 double x1 = pair.second->getPositionAt(getDiff()).getX();
                 double y1 = pair.second->getPositionAt(getDiff()).getY();
 
-                draw_circle(Vector2(x1 - x, y1 - y) * pixels, pair.second->getSonarRange() * pixels, Color(0.25, 0.25, 0.25));
+                draw_circle(Vector2(x1 - x, y1 - y) * pixels, pair.second->getSonarRange() * pixels, Color(0.9, 0.9, 0.9));
             }
         }
     }
@@ -53,7 +59,7 @@ void FloorDisplay::_draw() {
             double y = rootY + j * game->getSettings()->height;
 
             for(const auto& pair : (gameInterface->simulatingFuture() ? current->getOutposts() : game->getOutposts())) {
-                if(pair.second->getOwnerID() != gameInterface->getUserGameID()) continue;
+                if(pair.second->getOwnerID() != gameInterface->getUserGameID() && (!pair.second->hasOwner() || !complete->teamGame() || pair.second->getOwner()->getTeamID() != p->getTeamID())) continue;
 
                 double x1 = pair.second->getPositionAt(getDiff()).getX();
                 double y1 = pair.second->getPositionAt(getDiff()).getY();
@@ -88,17 +94,30 @@ void FloorDisplay::_draw() {
             double x = rootX + i * game->getSettings()->width;
             double y = rootY + j * game->getSettings()->height;
 
-            for(const auto& pair : (gameInterface->simulatingFuture() ? current->getOutposts() : game->getOutposts())) {
-                if(!pair.second->controlsSpecialist(SpecialistType::SENTRY)) continue;
+            for(const auto& pair : game->getOutposts()) {
+                if(p && !visibilityGame->withinRange(p, pair.second, getDiff())) continue;
+
+                if(!pair.second->controlsSpecialist(SpecialistType::SENTRY) && !pair.second->controlsSpecialist(SpecialistType::MARTYR)) continue;
 
                 double x1 = pair.second->getPositionAt(getDiff()).getX();
                 double y1 = pair.second->getPositionAt(getDiff()).getY();
-                //if the outpost is selected, have it semi-transparent
-                draw_arc(Vector2(x1 - x, y1 - y) * pixels, pair.second->getFireRange() * pixels, 0, UtilityFunctions::deg_to_rad(360), 64, Color(0.25,0.0,0.0),3.0,true);
+
+                if(pair.second->controlsSpecialist(SpecialistType::SENTRY)) draw_arc(Vector2(x1 - x, y1 - y) * pixels, pair.second->getFireRange() * pixels, 0, UtilityFunctions::deg_to_rad(360), 64, Color(0.25,0.0,0.0),6.0,false);
+                if(pair.second->controlsSpecialist(SpecialistType::MARTYR)) draw_arc(Vector2(x1 - x, y1 - y) * pixels, game->getSettings()->defaultSonar/5.0 * pixels, 0, UtilityFunctions::deg_to_rad(360), 64, Color(0.25,0.0,0.0),6.0,false);
+            }
+
+            for(const auto& pair : game->getVessels()) {
+                if(p && !visibilityGame->withinRange(p, pair.second, getDiff())) continue;
+
+                if(!pair.second->controlsSpecialist(SpecialistType::MARTYR)) continue;
+
+                double x1 = pair.second->getPositionAt(getDiff()).getX();
+                double y1 = pair.second->getPositionAt(getDiff()).getY();
+
+                if(pair.second->controlsSpecialist(SpecialistType::MARTYR)) draw_arc(Vector2(x1 - x, y1 - y) * pixels, game->getSettings()->defaultSonar/5.0 * pixels, 0, UtilityFunctions::deg_to_rad(360), 64, Color(0.25,0.0,0.0),6.0,false);
             }
         }
     }
-    Player* p = gameInterface->simulatingFuture() ? current->getPlayer(gameInterface->getUserGameID()) : game->getPlayer(gameInterface->getUserGameID());
 
     for(int i = -1; i <= 1; i++) {
         for(int j = -1; j <= 1; j++) {
@@ -112,14 +131,14 @@ void FloorDisplay::_draw() {
                 double deltaY = gameInterface->getMouse().getY() - y1;
                 double deltaMag = sqrt(deltaX * deltaX + deltaY * deltaY);
 
-                draw_arc(Vector2(x1 - x, y1 - y) * pixels, 8, 0, UtilityFunctions::deg_to_rad(360), 32, Color(0.0, 0.0, 0.0), 3.0, true);
+                draw_arc(Vector2(x1 - x, y1 - y) * pixels, 8, 0, UtilityFunctions::deg_to_rad(360), 32, Color(0.0, 0.0, 0.0), 3.0, false);
                 draw_line(Vector2(x1 - x, y1 - y) * pixels + 8 * Vector2(deltaX / deltaMag, deltaY / deltaMag), Vector2(gameInterface->getMouse().getX() - x, gameInterface->getMouse().getY() - y) * pixels, Color(0.0, 0.0, 0.0), 5.0);
                 draw_line(Vector2(gameInterface->getMouse().getX() - x, gameInterface->getMouse().getY() - y) * pixels, Vector2(gameInterface->getMouse().getX() + 1.5 * cos(atan2(deltaY, deltaX) + 3.14159 * 3.0/4.0) - x, gameInterface->getMouse().getY() + 1.5 * sin(atan2(deltaY, deltaX) + 3.14159 * 3.0/4.0) - y) * pixels, Color(0.0, 0.0, 0.0), 5.0);
                 draw_line(Vector2(gameInterface->getMouse().getX() - x, gameInterface->getMouse().getY() - y) * pixels, Vector2(gameInterface->getMouse().getX() + 1.5 * cos(atan2(deltaY, deltaX) - 3.14159 * 3.0/4.0) - x, gameInterface->getMouse().getY() + 1.5 * sin(atan2(deltaY, deltaX) - 3.14159 * 3.0/4.0) - y) * pixels, Color(0.0, 0.0, 0.0), 5.0);
             }
 
             for(const auto& pair : game->getVessels()) {
-                if(p && !p->withinRange(pair.second, getDiff())) continue;
+                if(p && !visibilityGame->withinRange(p, pair.second, getDiff())) continue;
 
                 Point position = pair.second->getPositionAt(getDiff());
 
@@ -130,12 +149,12 @@ void FloorDisplay::_draw() {
                 double deltaMag = sqrt(deltaX * deltaX + deltaY * deltaY);
 
                 if(pair.second->getOrigin()) draw_line(Vector2(x1 - x, y1 - y) * pixels - 8 * Vector2(deltaX / deltaMag, deltaY / deltaMag), Vector2(position.closest(pair.second->getOrigin()->getPosition()).getX() - x, position.closest(pair.second->getOrigin()->getPosition()).getY() - y) * pixels, Color(0.0, 0.0, 0.0, 0.5), 3.0);
-                draw_arc(Vector2(x1 - x, y1 - y) * pixels, 8, 0, UtilityFunctions::deg_to_rad(360), 32, Color(0.0, 0.0, 0.0), 3.0, true);
+                draw_arc(Vector2(x1 - x, y1 - y) * pixels, 8, 0, UtilityFunctions::deg_to_rad(360), 32, Color(0.0, 0.0, 0.0), 3.0, false);
                 draw_line(Vector2(x1 - x, y1 - y) * pixels + 8 * Vector2(deltaX / deltaMag, deltaY / deltaMag), Vector2(position.closest(pair.second->getTargetPos()).getX() - x, position.closest(pair.second->getTargetPos()).getY() - y) * pixels, Color(0.0, 0.0, 0.0), 5.0);
             }
 
             for(const auto& pair : game->getVessels()) {
-                if(p && !p->withinRange(pair.second, getDiff())) continue;
+                if(p && !visibilityGame->withinRange(p, pair.second, getDiff())) continue;
 
                 double referenceTime = game->getTime();
 
@@ -146,22 +165,24 @@ void FloorDisplay::_draw() {
                     const BattleEvent* simulatedBattle = complete->simulatedBattle(battle->getID());
 
                     Color c;
-                    if(simulatedBattle && simulatedBattle->getVictor() != -1) {
-                        if(simulatedBattle->getVictor() == gameInterface->getUserGameID()) c = Color(0.0, 0.75, 0.0);
+                    if(simulatedBattle && (simulatedBattle->getVictor() != -1 || simulatedBattle->isFriendly())) {
+                        if(simulatedBattle->getVictor() == gameInterface->getUserGameID() || simulatedBattle->isFriendly()) c = Color(0.0, 0.75, 0.0);
                         else c = Color(0.75, 0.0, 0.0);
                     } else {
                         c = Color(0.75, 0.75, 0.75);
                     }
 
-                    draw_circle(Vector2(x1 - x, y1 - y) * pixels, 10, Color(0.0, 0.0, 0.0));
-                    draw_circle(Vector2(x1 - x, y1 - y) * pixels, 9, c);
-                    draw_arc(Vector2(x1 - x, y1 - y) * pixels, 5, 0, UtilityFunctions::deg_to_rad(360), 32, Color(0.0, 0.0, 0.0), 0.5, true);
+                    //draw_circle(Vector2(x1 - x, y1 - y) * pixels, 5, Color(0.0, 0.0, 0.0));
+                    //draw_circle(Vector2(x1 - x, y1 - y) * pixels, 9, c);
+                    draw_arc(Vector2(x1 - x, y1 - y) * pixels, 5, 0, UtilityFunctions::deg_to_rad(360), 16, Color(0.0, 0.0, 0.0), 5, false);
+                    draw_arc(Vector2(x1 - x, y1 - y) * pixels, 4, 0, UtilityFunctions::deg_to_rad(360), 16, c, 5, false);
+                    draw_arc(Vector2(x1 - x, y1 - y) * pixels, 5, 0, UtilityFunctions::deg_to_rad(360), 16, Color(0.0, 0.0, 0.0), 0.5, false);
 
                     for(int i = 45; i < 360; i += 90) {
                         double x2 = x1 + 0.3 * cos(UtilityFunctions::deg_to_rad(i)), x3 = x1 + cos(UtilityFunctions::deg_to_rad(i));
                         double y2 = y1 + 0.3 * sin(UtilityFunctions::deg_to_rad(i)), y3 = y1 + sin(UtilityFunctions::deg_to_rad(i));
 
-                        draw_line(Vector2(x2 - x, y2 - y) * pixels, Vector2(x3 - x, y3 - y) * pixels, Color(0.0, 0.0, 0.0), 0.5, true);
+                        draw_line(Vector2(x2 - x, y2 - y) * pixels, Vector2(x3 - x, y3 - y) * pixels, Color(0.0, 0.0, 0.0), 0.5, false);
                     }
                 }
             }

@@ -14,7 +14,7 @@ void GameSettings::loadDefaults() {
     GameSettings::simulationSpeed = 60 * 60; // each hour is a second
     GameSettings::factoryDensity = 0.5;
     GameSettings::resourcesToWin = 200;
-    GameSettings::gameMode = CONQUEST;
+    GameSettings::gameMode = MINING;
     GameSettings::eloKValue = 32;
     GameSettings::defaultSonar = 60;
     GameSettings::defaultMaxShield = 20;
@@ -27,39 +27,40 @@ void GameSettings::loadDefaults() {
     GameSettings::height = 200;
     GameSettings::number_of_teams = -1;
     GameSettings::startTime = -1;
+    GameSettings::resourceReductionAmount = 0.2;
     GameSettings::activeHours.clear();
     for(int i = 0; i < 24; i++) GameSettings::activeHours.insert(i);
+    GameSettings::specialistBans.clear();
 
     GameSettings::specialistDescriptions = {
-        { QUEEN, "Adds 20 to her outpost's maximum shield charge. If you acquire another Queen, she becomes a Princess. Queen may periodically hire specialists."},
-        { PRINCESS, "Increases her outpost's sonar range by 50%. If you lose control of your Queen, the closest Princess becomes the new Queen. "},
-        { PIRATE, "Sub carrying Pirate can target another sub. When targeting a sub, travels 2x faster than ordinary subs, then travels at 4x normal speed to nearest friendly outpost."},
-        { ADMIRAL, "Increases speed of all your subs that aren't carrying specialists by 50%. Admiral travels 2x faster than ordinary subs." },
-        { NAVIGATOR, "Owner may change course of sub carrying Navigator.\nPromotes to: Admiral" },
-        { ASSASSIN, "Kills all enemy specialists present when participating in combat." },
+        { QUEEN, "If you lose your Queen, you lose the game. Maximum shield charge of the Queen's outpost is increased by 20. All hired specialists spawn at the Queen's outpost, and cannot be hired in transit. If you acquire another Queen, she becomes a Princess."},
+        { PRINCESS, "The sonar range of the local outpost is increased by 50% of the base value for the first Princess, 25% for the second Princess, etc. If you lose your Queen, the nearest Princess will replace her."},
+        { PIRATE, "A Pirate can target an enemy submarine in transit. When targeting a submarine, movement speed is 2x the base value. Upon a successful attack, the Pirate returns at 4x base movement speed to the nearest friendly outpost."},
+        { ADMIRAL, "Movement speed is 2x the base value. Increases speed of all your subs that aren't carrying specialists by 50% for the first Admiral, 25% for the next Admiral, etc." },
+        { NAVIGATOR, "A submarine carrying a Navigator can be redirected during transit." },
+        { ASSASSIN, "Kills any enemy specialists it encounters in combat." },
         { INFILTRATOR, "Drains all shield charge from any outpost it attacks." },
-        { LIEUTENANT, "Destroys 5 enemy drillers when participating in combat, travels 50% faster than ordinary subs." },
-        { THIEF, "Converts 15% of enemy's drillers (rounded up) to your side when attacking an outpost, or in sub to sub combat." },
-        { DOUBLE_AGENT, "When participating in sub-to-sub combat, drillers on both subs are destroyed, subs swap ownership along with any specialists aboard, and combat ends." },
-        { INSPECTOR, "Fully charges the shields of a friendly outpost upon arrival and after every combat while he's present." },
-        { MARTYR, "Destroys all subs and outposts within Martyr's blast radius when participating in combat. Blast radius is 20% of standard sonar range." },
-        { REVERED_ELDER, "Local effect: Specialists do not participate in combat, unless subs on both sides carry a Revered Elder" },
-        { SABOTEUR, "Redirects enemy sub to its owner's nearest outpost when participating in sub-to-sub combat." },
-        { SENTRY, "Fires on an enemy sub once every 2 hours while at an outpost. Each shot destroys 5% of drillers rounded up. Sentry's range is half of its outpost's sonar range. Target is chosen to maximize damage." },
-        { SMUGGLER, "Travels 3x faster than ordinary subs while heading for one of its owner's outposts.\nPromotes to: Tycoon" },
-        { DIPLOMAT, "Releases all captive specialists you own that are being held at an outpost within Diplomat's outpost's sonar range." },
-        { FOREMAN, "Produces 6 additional drillers with each production cycle while at a factory.\nPromotes to: Engineer" },
-        { HELMSMAN, "Travels 2x faster than ordinary subs." },
-        { HYPNOTIST, "Takes control of all captured specialists present at his outpost.\nPromotes to: King" },
-        { INTELLIGENCE_OFFICER, "Adds 25% to all your outposts' sonar range. Shows you the type of all outposts that are outside your sonar range." },
-        { TINKERER, "Increases your electrical output by 3 times Tinkerer's outpost's maximum shield charge. Tinkerer's outpost's shield charge is drained at 3 units per hour.\nPromotes to: Minister of Energy" },
-        { ENGINEER, "Repairs 25% of the drillers you lose in combat (rounded up) after each combat you win. Additional 25% are repaired after combat taking place where Engineer is present (rounded up)." },
-        { GENERAL, "Travels 50% faster than ordinary subs. When one or more of your specialists is present where combat occurs, 10 enemy drillers are destroyed after specialist phase." },
-        { KING, "Destroys 1 enemy driller for every 3 of your drillers that remain after specialist phase in every combat you are involved. Reduces max shield charge of all your outposts by 20, except at King's outpost, where it is increased by 20." },
-        { MINISTER_OF_ENERGY, "Adds 300 to your electrical output. Your factories produce 1 driller less each production cycle." },
-        { SECURITY_CHIEF, "Adds 10 to max shield charge of all your outposts. Adds 10 to max shield charge of Security Chief's outpost." },
-        { TYCOON, "Speeds up your driller production rate by 50%. Produces 3 additional drillers with each production cycle while at a factory." },
-        { WAR_HERO, "Destroys 20 enemy drillers when participating in combat." }
+        { LIEUTENANT, "Moves 50% faster than the base movement speed. When directly participating in combat, kill 5 extra enemy units." },
+        { THIEF, "15% of the enemy's units (rounded up) are converted to yours when directly participating in combat." },
+        { INSPECTOR, "While at an outpost, the local shield is always fully charged." },
+        { MARTYR, "When participating in combat, destroy all outposts, submarines, and specialists, allied and enemy alike, within a range of 20% the default sonar value." },
+        { REVERED_ELDER, "When directly participating in combat and the opponent does not have another Revered Elder, all other specialist effects are negated (including your own)." },
+        { SABOTEUR, "Redirect any victorious enemy submarine to its owner's nearest outpost." },
+        { SENTRY, "While at an outpost, remove 5% of units from the highest-unit enemy vessel every 2 hours. Range is 50% of the outpost where the Sentry resides." },
+        { SMUGGLER, "When traveling to an outpost that you own, speed is 3 times the base value." },
+        { DIPLOMAT, "If any of your specialists are captured and in the sonar range of the diplomat, they are forcibly released." },
+        { FOREMAN, "When at a factory, 6 more units are produced." },
+        { HELMSMAN, "Movement speed is 2x the base value." },
+        { HYPNOTIST, "You take control of any captured specialists at the Hypnotist's outpost." },
+        { INTELLIGENCE_OFFICER, "The sonar range of all your outposts are increased by 25% of the base value. All types of outposts outside your sonar range are revealed." },
+        { TINKERER, "Maximum unit capacity is increased by 3 times the maximum shield charge at the Tinkerer's outpost's. Local shield decreases by 3 units per hour, per Tinkerer." },
+        { ENGINEER, "25% of any of your units lost to combat are regenerated. An additional 25% are regenerated when directly participating in combat." },
+        { GENERAL, "Moves 50% faster than the base movement speed. When one of your specialists participates in combat, kills 10 enemy units after specialist phase." },
+        { KING, "After specialist phase, kill 1 enemy unit for every 4 units you have. For each stacked King, the number of units required increases by 2. Shields on all outposts are reduced by 20, except for the King's outpost, where it is increased by 20." },
+        { MINISTER_OF_ENERGY, "Maximum unit capacity is raised by 300, while production is reduced by 1 every cycle." },
+        { SECURITY_CHIEF, "All shield charges are raised by 10, and an additional 10 shield charge is added to the Security Chief's outpost." },
+        { TYCOON, "Unit production speed is increased by 50%. When at a factory, 3 additional units are produced." },
+        { WAR_HERO, "20 enemy units are killed when the War Hero is participating in battle." }
     };
 
     GameSettings::playerColors = {
@@ -83,7 +84,7 @@ void GameSettings::loadDefaults() {
         "Aranorin",
         "Ararin",
         "Askersund",
-        "Atlanis",
+        "Atlantis",
         "Atyrau",
         "Bahat",
         "Benthic",
@@ -99,7 +100,6 @@ void GameSettings::loadDefaults() {
         "Coralore",
         "Coralville",
         "Corvid",
-        "Corvidae",
         "Corvus",
         "Draebanor",
         "Darkpeak",
@@ -139,6 +139,7 @@ void GameSettings::loadDefaults() {
         "Nemo",
         "Neptune",
         "Nuxinon",
+        "Noel",
         "Oaktown",
         "October",
         "Olomud",
@@ -152,12 +153,12 @@ void GameSettings::loadDefaults() {
         "Riviern",
         "Roberts",
         "Rocs",
+        "Ronus",
         "Rokovoko",
         "Savinka",
         "Senusha",
         "Slinate",
         "Sophutria",
-        "Sub station",
         "Suijin",
         "Tamir",
         "Tangaroa",
@@ -166,7 +167,7 @@ void GameSettings::loadDefaults() {
         "Tiberius",
         "Tometz",
         "Torshavn",
-        "Twilightvault",
+        "Twilight",
         "Vintgar",
         "Vimarile",
         "Votara",
@@ -188,12 +189,13 @@ void GameSettings::addSetting(const char* type, const void* value){
     else if(strcmp(type, "fireRange") == 0) fireRange = std::min(1.0, std::max(0.25, *(double*)value));
     else if(strcmp(type, "factoryDensity") == 0) factoryDensity = std::min(0.8, std::max(0.2, *(double*)value));
     else if(strcmp(type, "resourcesToWin") == 0) resourcesToWin = std::min(400, std::max(50, int(std::lround(*(double*)value))));
-    else if(strcmp(type, "gameMode") == 0) gameMode = strcmp((char*)value, "CONQUEST") == 0 ? Mode::CONQUEST : Mode::MINING;
+    else if(strcmp(type, "gameMode") == 0) gameMode = strcmp((char*)value, "CONQUEST") == 0 ? Mode::CONQUEST : strcmp((char*)value, "ELIMINATION") == 0 ? Mode::ELIMINATION : Mode::MINING;
     else if(strcmp(type, "defaultSonar") == 0) defaultSonar = std::min(150, std::max(50, int(std::lround(*(double*)value))));
     else if(strcmp(type, "defaultMaxShield") == 0) defaultMaxShield = std::min(40, std::max(10, int(std::lround(*(double*)value))));
     else if(strcmp(type, "costPerMine") == 0) costPerMine = std::min(100, std::max(25, int(std::lround(*(double*)value))));
     else if(strcmp(type, "outpostsPerPlayer") == 0) outpostsPerPlayer = std::min(20, std::max(5, int(std::lround(*(double*)value))));
     else if(strcmp(type, "number_of_teams") == 0) number_of_teams = int(std::lround(*(double*)value));
+    else if(strcmp(type, "resourceReductionAmount") == 0) resourceReductionAmount = std::min(1.0, std::max(0.0, *(double*)value));
     else if(strcmp(type, "activeHours") == 0) {
         std::string s((char*)value);
 
@@ -203,6 +205,22 @@ void GameSettings::addSetting(const char* type, const void* value){
             std::istringstream is( s );
             int h;
             while (is >> h) activeHours.insert(abs(h) % 24);
+        }
+    } else if(strcmp(type, "specialistBans") == 0) {
+        std::string s((char*)value);
+
+        if(s != "") {
+            specialistBans.clear();
+
+            std::istringstream is( s );
+            int typeNum;
+            while (is >> typeNum) {
+                try {
+                    specialistBans.insert(SpecialistType(typeNum));
+                } catch(...) {
+                    continue;
+                }
+            }
         }
     }
 }

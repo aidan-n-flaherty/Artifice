@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://c0o7lbwqyauwq"]
+[gd_scene load_steps=7 format=3 uid="uid://c0o7lbwqyauwq"]
 
 [ext_resource type="Script" path="res://Battle Forecast.gd" id="1_44nss"]
 [ext_resource type="Theme" uid="uid://tg7ina762c6q" path="res://resources/themes/UITheme.tres" id="1_go72y"]
@@ -6,12 +6,22 @@
 [sub_resource type="LabelSettings" id="LabelSettings_jbe78"]
 font_size = 36
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ulo0b"]
+bg_color = Color(1, 1, 1, 1)
+corner_radius_top_right = 30
+corner_radius_bottom_right = 30
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xt0dj"]
 bg_color = Color(1, 1, 1, 1)
 corner_radius_top_left = 10
 corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vmbaq"]
+bg_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 30
+corner_radius_bottom_left = 30
 
 [node name="Battle Forecast" type="MarginContainer"]
 anchors_preset = 15
@@ -56,16 +66,18 @@ size_flags_vertical = 3
 theme = ExtResource("1_go72y")
 theme_override_constants/separation = 50
 
-[node name="p1Color" type="ColorRect" parent="VBoxContainer/ScrollContainer/HBoxContainer"]
+[node name="p1Color" type="Panel" parent="VBoxContainer/ScrollContainer/HBoxContainer"]
 custom_minimum_size = Vector2(10, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 theme = ExtResource("1_go72y")
+theme_override_styles/panel = SubResource("StyleBoxFlat_ulo0b")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/ScrollContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("1_go72y")
+theme_override_constants/separation = 10
 
 [node name="PlayerDivide" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer"]
 layout_mode = 2
@@ -79,6 +91,7 @@ theme = ExtResource("1_go72y")
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("1_go72y")
+theme_override_constants/separation = 10
 
 [node name="NameP1" type="Label" parent="VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/PlayerDivide/Player1"]
 layout_mode = 2
@@ -104,6 +117,7 @@ text = "Units
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("1_go72y")
+theme_override_constants/separation = 10
 
 [node name="NameP2" type="Label" parent="VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/PlayerDivide/Player2"]
 layout_mode = 2
@@ -152,6 +166,7 @@ theme = ExtResource("1_go72y")
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/Power/Player1"]
 layout_mode = 2
 theme = ExtResource("1_go72y")
+theme_override_constants/separation = 10
 
 [node name="Units" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/Power/Player1/VBoxContainer"]
 layout_mode = 2
@@ -210,6 +225,7 @@ alignment = 2
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/Power/Player2"]
 layout_mode = 2
 theme = ExtResource("1_go72y")
+theme_override_constants/separation = 10
 
 [node name="Units" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/Power/Player2/VBoxContainer"]
 layout_mode = 2
@@ -280,6 +296,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_xt0dj")
 [node name="FinalResult" type="VBoxContainer" parent="VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer"]
 layout_mode = 2
 theme = ExtResource("1_go72y")
+theme_override_constants/separation = 10
 
 [node name="WinnerStatement" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/FinalResult"]
 layout_mode = 2
@@ -342,8 +359,9 @@ alignment = 1
 layout_mode = 2
 theme = ExtResource("1_go72y")
 
-[node name="p2Color" type="ColorRect" parent="VBoxContainer/ScrollContainer/HBoxContainer"]
+[node name="p2Color" type="Panel" parent="VBoxContainer/ScrollContainer/HBoxContainer"]
 custom_minimum_size = Vector2(10, 0)
 layout_mode = 2
 size_flags_horizontal = 8
 theme = ExtResource("1_go72y")
+theme_override_styles/panel = SubResource("StyleBoxFlat_vmbaq")

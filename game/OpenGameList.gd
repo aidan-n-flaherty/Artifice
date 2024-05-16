@@ -1,15 +1,23 @@
 extends GameList
 
-var queues
-	
-func initList():
-	GameData.loadOpenGames()
-	gameIDs = GameData.getOpenGames()
+var queues = {}
+
+func _ready():
+	super._ready()
 	
 	GameData.queuesChanged.connect(updateQueues)
 	
-	setValues()
+func initList():
+	gameIDs = GameData.getOpenGames()
+	
 	updateQueues()
+	
+	GameData.loadQueues()
+
+func init():
+	await super.init()
+	await GameData.loadOpenGames()
+	await super.init()
 	
 func generateButton(id: int):
 	var gameDetails = GameData.getGameDetails(id)
@@ -22,31 +30,16 @@ func _process(delta):
 	pass
 
 func updateQueues():
-	await GameData.loadQueues()
+	var queueNames = GameData.getQueues().keys()
 	
-	setValues()
-	
-func setValues():
-	var quickRanked = GameData.getQueue("quickRanked")
-	
-	$MarginContainer/VBoxContainer/RankedQueue/RankedSelected.visible = quickRanked != null
-	$MarginContainer/VBoxContainer/RankedQueue/RankedUnselected.visible = quickRanked == null
-	$MarginContainer/VBoxContainer/RankedQueue/RankedJoining.visible = false
-	
-	if quickRanked:
-		$MarginContainer/VBoxContainer/RankedQueue/Margin/Title.text = "Quick Play (Ranked), " + str(quickRanked.playerCount) + " out of " + str(quickRanked.playerCap)
-	else:
-		$MarginContainer/VBoxContainer/RankedQueue/Margin/Title.text = "Quick Play (Ranked)"
-
-
-func _on_ranked_selected_pressed():
-	GameData.leaveQueue("quickRanked")
-
-
-func _on_ranked_unselected_pressed():
-	$MarginContainer/VBoxContainer/RankedQueue/Margin/Title.text = "Joining Queue..."
-	
-	$MarginContainer/VBoxContainer/RankedQueue/RankedUnselected.visible = false
-	$MarginContainer/VBoxContainer/RankedQueue/RankedJoining.visible = true
-	
-	GameData.joinQueue("quickRanked")
+	for queueName in queueNames:
+		var node
+		
+		if not queues.has(queueName):
+			node = preload("res://Queue.tscn").instantiate()
+			self.queues[queueName] = node
+			$MarginContainer/VBoxContainer/MarginContainer/MarginContainer/GridContainer.add_child(node)
+		else:
+			node = self.queues[queueName]
+		
+		node.init(queueName)

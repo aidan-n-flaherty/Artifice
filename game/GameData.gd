@@ -4,7 +4,7 @@ signal gamesChanged
 
 signal gameChanged(gameID)
 
-signal userChanged
+signal userChanged(userID)
 
 signal chatChanged(chatID)
 
@@ -14,9 +14,15 @@ signal menuSwitched(menu)
 
 signal menuFade
 
+signal loadUserDetail(userID)
+
 signal loadGame(gameID, past)
 
 signal loadGameDetail(gameID)
+
+var version = "1.1"
+
+var needsUpdate = false
 
 var currentTab = null
 
@@ -28,11 +34,11 @@ var openGameIDs = {}
 
 var ongoingGameIDs = {}
 
-var pastGameIDs = {}
-
 var gameDetails = {}
 
 var games = {}
+
+var gameUsers = {}
 
 var messageBuffer = {}
 
@@ -40,13 +46,19 @@ var chats = {}
 
 var chatGroups = {}
 
+var currentGameIDs = []
+
 var id: int
+
+var password: String
 
 var token: String
 
 var user
 
 var users = {}
+
+var pastUserGameIDs = {}
 
 var baseResolution = Vector2i(1080, 1920)
 
@@ -56,7 +68,34 @@ var thread
 
 var byteBrew = null
 
+var pushToken = ""
+
+var pushTokenSet = false
+
+var iCloudEnabled = true
+
+func _apn_device(value):
+	pushToken = value
+	print("Push token: ", pushToken)
+	
+	mutex.lock()
+	if token:
+		pushTokenSet = true
+		
+		var returnVal = await HTTPManager.postReq("/updatePushToken", {}, {
+			"pushToken": pushToken
+		})
+		
+		print("Push token update: ", returnVal)
+	mutex.unlock()
+	
 func _ready():
+	#if Engine.has_singleton("APN"):
+	#	var _apn = Engine.get_singleton("APN");
+	#	_apn.connect("device_address_changed", _apn_device);
+	#	_apn.register_push_notifications(_apn.PUSH_SOUND | _apn.PUSH_BADGE | _apn.PUSH_ALERT);
+	
+	
 	if Engine.has_singleton("ByteBrew"):
 		byteBrew = Engine.get_singleton("ByteBrew")
 		#if OS.get_name() == "Android":
@@ -68,11 +107,21 @@ func _ready():
 	get_viewport().connect("size_changed", resize)
 	resize()
 	
-	await login()
-	loadSelf()
-	loadGames()
+	var response = await HTTPManager.getReq("/version", {}, false)
 	
-	WebSocketManager.init(token)
+	if response and response["version"] != version:
+		needsUpdate = true
+		goto_scene("res://OutdatedVersion.tscn")
+	else:
+		await login()
+	
+	#mutex.lock()
+	#if not pushTokenSet:
+	#	var returnVal = await HTTPManager.postReq("/updatePushToken", {}, {
+	#		"pushToken": pushToken
+	#	})
+	#mutex.unlock()
+	
 
 func resize():
 	get_tree().get_root().content_scale_factor = max(max(1.0, min(1.25, (baseResolution.x * 1.0 / baseResolution.y) / (get_viewport().size.x * 1.0 / get_viewport().size.y))), min(2.0, get_viewport().size.x * 1.0 / get_viewport().size.y))
@@ -104,9 +153,81 @@ func _deferred_goto_node(node) -> void:
 	get_tree().get_root().add_child(current_scene)
 	get_tree().set_current_scene(current_scene)
 
-func signup():
+func storeAuth(authObj):
+	if iCloudEnabled and OS.get_name() == "iOS" and Engine.has_singleton("ICloud"):
+		var iCloud = Engine.get_singleton("ICloud")
+		
+		if iCloud.synchronize_key_values() == OK:
+			iCloud.set_key_values({
+				"auth": authObj
+			})
+		else:
+			print("Could not synchronize iCloud values")
+	
+	var file = FileAccess.open("user://artifice_data.save", FileAccess.WRITE)
+	file.store_string(JSON.stringify(authObj))
+
+func getAuth():
+	var auth
+	
+	if iCloudEnabled and OS.get_name() == "iOS" and Engine.has_singleton("ICloud"):
+		var iCloud = Engine.get_singleton("ICloud")
+		
+		if iCloud.synchronize_key_values() == OK:
+			auth = iCloud.get_key_value("auth")
+			print("Got authentication from iCloud")
+		else:
+			print("Could not synchronize iCloud values")
+	
+	if not auth:
+		var file = FileAccess.open("user://artifice_data.save", FileAccess.READ)
+		
+		if file:
+			auth = JSON.parse_string(file.get_as_text())
+	
+	return auth
+
+func startShare():
+	return await HTTPManager.getReq("/startShare", {
+		"id": id,
+		"password": password
+	}, false)
+	
+func getShare(code: String):
+	var auth = await HTTPManager.getReq("/getShare", {
+		"code": code
+	}, false)
+	
+	if auth:
+		id = auth.id
+		password = auth.password
+		
+		var authObj = {
+			"id": id,
+			"password": password
+		}
+		
+		storeAuth(authObj)
+		
+		goto_scene("res://MainMenu.tscn")
+		
+		await login()
+		
+		return true
+	
+	return false
+
+func requestCode(phoneNumber: String):
+	return await HTTPManager.getReq("/verifyPhone", {
+		"phoneNumber": phoneNumber
+	}, false)
+
+func signup(phoneNumber: String, code: String):
+	print("phone ", phoneNumber)
+	print("code ", code)
+	print("Signing up...")
 	var username = "unnamed"
-	var password = ""
+	password = ""
 	
 	var characters = []
 	for i in range(0, 10):
@@ -121,49 +242,57 @@ func signup():
 	var response = await HTTPManager.postReq("/signup", {
 		"username": username,
 		"password": password
-	}, {})
+	}, {
+		"phoneNumber": phoneNumber,
+		"code": code
+	}, false)
 	
 	print(response)
 	
 	if not response: return false
 	
 	id = int(response.id)
-	token = str(response.token)
 	
 	var authObj = {
 		"id": id,
 		"password": password
 	}
 	
-	if OS.get_name() == "iOS" and Engine.has_singleton("ICloud"):
+	storeAuth(authObj)
+	
+	print("Signed up!")
+	
+	goto_scene("res://MainMenu.tscn")
+	
+	await login()
+
+func deleteAccount():
+	print("Deleting account...")
+	
+	var response = await HTTPManager.putReq("/deleteAccount", {}, {})
+	
+	print(response)
+	
+	if not response: return false
+	
+	if iCloudEnabled and OS.get_name() == "iOS" and Engine.has_singleton("ICloud"):
 		var iCloud = Engine.get_singleton("ICloud")
 		
-		iCloud.set_key_values({
-			"auth": authObj
-		})
+		iCloud.remove_key("auth")
 	else:
 		var file = FileAccess.open("user://artifice_data.save", FileAccess.WRITE)
-		file.store_string(JSON.stringify(authObj))
+		
+	goto_scene("res://EULA.tscn")
 
 func login():
 	print("Logging in...")
-	var auth
-	
-	if OS.get_name() == "iOS" and Engine.has_singleton("ICloud"):
-		var iCloud = Engine.get_singleton("ICloud")
-		
-		auth = iCloud.get_key_value("auth")
-	else:
-		var file = FileAccess.open("user://artifice_data.save", FileAccess.READ)
-		
-		if file:
-			auth = JSON.parse_string(file.get_as_text())
+	var auth = getAuth()
 
 	if auth and int(auth.id) != 0 and str(auth.password) != "":
 		id = int(auth.id)
-		var password = str(auth.password)
+		password = str(auth.password)
 		
-		var expBackoff = 1
+		var expBackoff = 2
 		
 		var pushToken = byteBrew.GetUserID() if byteBrew else ""
 		print("Token ", pushToken)
@@ -181,12 +310,24 @@ func login():
 			
 			await get_tree().create_timer(expBackoff).timeout
 			expBackoff *= 2
+		
+		loadSelf()
+		loadGames()
+		
+		gameUsers.clear()
+		for arr in currentGameIDs:
+			loadGameUsers(arr[0])
+			loadChats(arr[0])
+		
+		if not WebSocketManager.hasSocket():
+			WebSocketManager.init(token)
+		
+		print("Logged in!")
+		print("ID:", id)
+		print("Token", token)
 	else:
-		signup()
+		goto_scene("res://EULA.tscn")
 	
-	print("Logged in!")
-	print("ID:", id)
-	print("Token", token)
 	#id = 3
 	#token = "5577006791947779410"
 	#id = 4
@@ -194,17 +335,40 @@ func login():
 	#id = 5
 	#token = "15352856648520921629"
 
+func getCurrentGameID():
+	return currentGameIDs[len(currentGameIDs) - 1][0]
+
 func changeGame(id: int):
 	emit_signal("gameChanged", id)
+
+func viewUser(id: int):
+	emit_signal("loadUserDetail", id)
+
+func viewUserCompletion(id: int):
+	var node = preload("res://UserDetails.tscn").instantiate()
+	node.init(id)
+		
+	goto_node(node)
 
 func viewGameDetail(id: int):
 	emit_signal("loadGameDetail", id)
 
 func viewGameDetailCompletion(id: int):
-	var gameDetail = preload("res://GameDetail.tscn").instantiate()
-	gameDetail.init(id)
+	var details = getGameDetails(id)
 	
-	goto_node(gameDetail)
+	if len(currentGameIDs) == 0 or currentGameIDs[len(currentGameIDs) - 1][0] != id:
+		currentGameIDs.push_back([id, false])
+	
+	if int(details.gameData.hostID) == getSelfID():
+		var gameChanger = preload("res://GameChanger.tscn").instantiate()
+		gameChanger.init(id)
+		
+		goto_node(gameChanger)
+	else:
+		var gameDetail = preload("res://GameDetail.tscn").instantiate()
+		gameDetail.init(id)
+		
+		goto_node(gameDetail)
 
 func viewGame(id: int, past=false):
 	emit_signal("loadGame", id, past)
@@ -216,19 +380,43 @@ func viewGameCompletion(id: int, past=false):
 	if past:
 		games[id].startAtEnd()
 	
+	gameDetails[id].gameData.hasNotifications = false
+	
 	games[id].set_process(false)
 	games[id].set_visible(false)
 	
 	var node = preload("res://Game.tscn").instantiate()
 	node.init(id)
 
+	if len(currentGameIDs) == 0 or currentGameIDs[len(currentGameIDs) - 1][0] != id:	
+		currentGameIDs.push_back([id, past])
+	
 	goto_node(node)
+
+func exitGameToMenu():
+	if len(currentGameIDs) > 0:
+		currentGameIDs.remove_at(len(currentGameIDs) - 1)
+	
+	if len(currentGameIDs) > 0:
+		if hasGame(currentGameIDs[len(currentGameIDs) - 1][0]):
+			viewGame(currentGameIDs[len(currentGameIDs) - 1][0], currentGameIDs[len(currentGameIDs) - 1][1])
+		else:
+			viewGameDetail(currentGameIDs[len(currentGameIDs) - 1][0])
+		return false
+	else:
+		return true
 	
 func viewGameDetails(id: int):
 	var node = preload("res://GameDetail.tscn").instantiate()
 	node.gameID = id
 
+	if len(currentGameIDs) == 0 or currentGameIDs[len(currentGameIDs) - 1][0] != id:
+		currentGameIDs.push_back([id, false])
+	
 	goto_node(node)
+
+func getSelfID():
+	return id
 
 func loadSelf():
 	var user = await HTTPManager.getReq("/fetchSelf")
@@ -237,11 +425,13 @@ func loadSelf():
 	
 	self.user = user
 	
+	emit_signal("userChanged", id)
+	
 func editSelf(user):
 	return await HTTPManager.putReq("/editSelf", user, {})
 	
 func loadUser(userID: int):
-	print("Loading " + str(userID))
+	print("Loading user " + str(userID))
 	var user = await HTTPManager.getReq("/fetchUser", {
 		"id": userID
 	})
@@ -249,6 +439,8 @@ func loadUser(userID: int):
 	if not user: return null
 	
 	users[userID] = user
+	
+	emit_signal("userChanged", userID)
 	
 	return user
 	
@@ -270,9 +462,9 @@ func loadChat(chatID: int):
 	if chat and hasGame(chat.gameID):
 		self.chats[chatID] = chat
 		if not self.chatGroups.has(int(chat.gameID)):
-			self.chatGroups[int(chat.gameID)] = [chat]
-		else:
-			self.chatGroups[int(chat.gameID)].push_front(chat)
+			self.chatGroups[int(chat.gameID)] = [chatID]
+		elif not self.chatGroups[int(chat.gameID)].has(chatID):
+			self.chatGroups[int(chat.gameID)].push_front(chatID)
 		
 		if messageBuffer.has(chat.id):
 			var messages = messageBuffer[chat.id].filter(func(m1): return not chat.messages.any(func(m2): return m1.id == m2.id))
@@ -287,25 +479,41 @@ func loadChats(gameID: int):
 	})
 	
 	if(chatGroup):
-		self.chatGroups[gameID] = chatGroup
+		self.chatGroups[gameID] = []
 		
 		for chat in chatGroup:
 			self.chats[int(chat.id)] = chat
-		
-		return chatGroup
+			self.chatGroups[gameID].push_back(int(chat.id))
+	else:
+		self.chatGroups[gameID] = []
 	
-	return []
+	return getChats(gameID)
+
+func loadMessages(chatID: int):
+	var chat = getChat(chatID)
+	
+	if chat:
+		var messages = await HTTPManager.getReq("/fetchMessages", {
+			"chatID": chatID,
+			"offset": len(chat.messages)
+		})
+		
+		if messages:
+			messages = messages.filter(func(m1): return not chat.messages.any(func(m2): return m1.id == m2.id))
+			chat.messages.append_array(messages)
+			
+			emit_signal("chatChanged", chatID)
 
 func loadQueues():
 	var statuses = await HTTPManager.getReq("/fetchQueues")
 	
-	queues = {}
+	self.queues = {}
 	
 	if statuses:
 		for status in statuses:
-			queues[status.queueName] = status
+			self.queues[status.queueName] = status
 	
-	return queues
+	emit_signal("queuesChanged")
 
 func loadOpenGames():
 	var openGames = await HTTPManager.getReq("/fetchGames")
@@ -316,6 +524,19 @@ func loadOpenGames():
 	for game in openGames: 
 		openGameIDs[int(game.gameData.id)] = true
 		gameDetails[int(game.gameData.id)] = game
+
+func loadOpenGame(gameID: int):
+	var game = await HTTPManager.getReq("/fetchGameDetails", {
+		"gameID": id
+	})
+	
+	if not game:
+		return
+	
+	openGameIDs[int(game.gameData.id)] = true
+	gameDetails[int(game.gameData.id)] = game
+	
+	emit_signal("gamesChanged")
 
 func loadOngoingGames():
 	var ongoingGames = await HTTPManager.getReq("/fetchUserGames", {
@@ -337,9 +558,29 @@ func loadPastGames():
 	if not pastGames:
 		return
 	
+	if not pastUserGameIDs.has(getSelfID()):
+		pastUserGameIDs[getSelfID()] = {}
+	
 	for game in pastGames:
-		pastGameIDs[int(game.gameData.id)] = true
+		pastUserGameIDs[getSelfID()][int(game.gameData.id)] = true
 		gameDetails[int(game.gameData.id)] = game
+
+func loadPastUserGames(userID: int):
+	var pastGames = await HTTPManager.getReq("/fetchPastGames", {
+		"userID": userID
+	})
+	
+	if not pastGames:
+		return {}
+	
+	if not pastUserGameIDs.has(userID):
+		pastUserGameIDs[userID] = {}
+	
+	for game in pastGames:
+		pastUserGameIDs[userID][int(game.gameData.id)] = true
+		gameDetails[int(game.gameData.id)] = game
+	
+	return pastUserGameIDs[userID]
 
 func loadGames():
 	await loadOpenGames()
@@ -351,21 +592,23 @@ func loadGames():
 	emit_signal("gamesChanged")
 
 func joinQueue(queueType: String):
-	if await HTTPManager.postReq("/joinQueue", {}, {
+	await HTTPManager.postReq("/joinQueue", {}, {
 		"queueType": queueType,
-	}):
-		emit_signal("queuesChanged")
+	})
+	
+	await loadQueues()
 
 func leaveQueue(queueType: String):
-	if await HTTPManager.postReq("/leaveQueue", {}, {
+	await HTTPManager.postReq("/leaveQueue", {}, {
 		"queueType": queueType,
-	}):
-		emit_signal("queuesChanged")
+	})
+	
+	await loadQueues()
 
-func joinGame(id: int, password = ""):
+func joinGame(id: int, gamePassword = ""):
 	var response = await HTTPManager.postReq("/joinMatch", {}, {
 		"gameID": id,
-		"password": password
+		"password": gamePassword
 	})
 	
 	if not response: return false
@@ -378,7 +621,16 @@ func joinGame(id: int, password = ""):
 	
 	addGame(game)
 	
+	await GameData.loadGameUsers(id)
+	
 	return true
+
+func leaveGame(id: int):
+	var response = await HTTPManager.postReq("/leaveMatch", {}, {
+		"gameID": id
+	})
+	
+	return response
 
 func openQuickMatch(id: int, password = ""):
 	var game = await HTTPManager.getReq("/fetchGameDetails", {
@@ -407,30 +659,38 @@ func updateOrders(id: int):
 		"referenceID": games[id].getReferenceID()
 	})
 	
-	bulkAddOrders(games[id], orderData)
+	bulkAddOrders(id, games[id], orderData)
+	
+	if len(orderData) > 0:
+		emit_signal("gameChanged", id)
 
 func getGameUsers(id: int):
-	return await HTTPManager.getReq("/fetchGameUsers", {
-		"gameID": id
-	})
+	if not gameUsers.has(id):
+		await loadGameUsers(id)
+		
+	return gameUsers[id]
 
 func loadGameUsers(id: int):
-	var users = await getGameUsers(id)
+	print("Loading users")
+	var users = await HTTPManager.getReq("/fetchGameUsers", {
+		"gameID": id
+	})
+	print("Users ", users)
 	
 	if not users:
+		gameUsers[id] = {}
 		return
 	
-	var details = getGameDetails(id)
+	gameUsers[id] = users
 	
-	if games.has(id):
-		games[id].init(id, self.id, details.gameData.startTime, details.gameSettings.playerCap, users, details.gameSettings.settingOverrides)
+	if gameDetails.has(id):
+		gameDetails[id].gameData.playerCount = len(users)
+	
+	emit_signal("gameChanged", id)
+	
+	emit_signal("gamesChanged")
 
 func loadGameSettings(id: int):
-	var users = await getGameUsers(id)
-	
-	if not users:
-		return
-	
 	var details = await HTTPManager.getReq("/fetchGameDetails", {
 		"gameID": id
 	})
@@ -440,8 +700,18 @@ func loadGameSettings(id: int):
 	
 	gameDetails[id] = details
 	
+	if details.gameData.started and gameUsers.has(id) and len(gameUsers[id].keys()) < details.gameSettings.playerCap:
+		await loadGameUsers(id)
+	
 	if games.has(id):
-		games[id].init(id, self.id, details.gameData.startTime, details.gameSettings.playerCap, users, details.gameSettings.settingOverrides)
+		var game = games[id]
+		var users = await getGameUsers(id)
+		
+		game.init(id, self.id, details.gameData.seed, details.gameData.startTime, details.gameData.finished, details.gameSettings.playerCap, users, details.gameSettings.settingOverrides)
+	
+	emit_signal("gameChanged", id)
+	
+	emit_signal("gamesChanged")
 
 func loadGameState(id: int):
 	var gameState = await HTTPManager.getReq("/fetchGameState", {
@@ -454,20 +724,23 @@ func loadGameState(id: int):
 	var details = getGameDetails(id)
 	
 	var game = GameInterface.new()
-	game.init(id, self.id, details.gameData.startTime, details.gameSettings.playerCap, gameState.users, details.gameSettings.settingOverrides)
+	game.init(id, self.id, details.gameData.seed, details.gameData.startTime, details.gameData.finished, details.gameSettings.playerCap, gameState.users, details.gameSettings.settingOverrides)
 	game.set_visible(false)
 	game.set_process(false)
 	
-	bulkAddOrders(game, gameState.orders)
+	bulkAddOrders(id, game, gameState.orders)
 	
 	mutex.lock()
 	games[id] = game
 	mutex.unlock()
 
-func bulkAddOrders(game, orders):
+func bulkAddOrders(gameID: int, game, orders):
 	for order in orders:
 		game.bulkAddOrder(order.type, int(order.id), int(order.referenceID), float(order.timestamp), int(order.senderID), PackedInt32Array(order.argumentIDs), int(order.argumentIDs.size()))
 	game.endBulkAdd()
+	
+	if len(orders) > 0 and gameDetails.has(gameID) and not gameID in currentGameIDs:
+		gameDetails[gameID].gameData.hasNotifications = true
 
 func addOrder(gameID: int, type, referenceID, timestamp, arguments):
 	var game = getGame(gameID)
@@ -533,11 +806,35 @@ func addMessage(message):
 	
 	emit_signal("chatChanged", int(message.chatID))
 
+func readChat(chatID: int):
+	WebSocketManager.sendMessage("[READCHAT]" + str(chatID))
+	
+	if chats.has(chatID):
+		chats[chatID].readTimestamp = Time.get_unix_time_from_system()
+
 func reportUser(userID: int, reason: String) -> bool:
 	return await HTTPManager.postReq("/reportUser", {}, {
 		"userID": userID,
 		"reason": reason
 	})
+	
+func blockUser(userID: int) -> bool:
+	if await HTTPManager.postReq("/block", {}, {
+		"userID": userID
+	}):
+		for chat in chats.values():
+			var newMessages = []
+			
+			for message in chat.messages:
+				if int(message.senderID) != userID:
+					newMessages.append(message)
+			
+			if len(newMessages) < len(chat.messages):
+				chat.messages = newMessages
+				emit_signal("chatChanged", chat.id)
+		
+		return true
+	return false
 
 func verifyEnd(gameID: int):
 	if await HTTPManager.getReq("/verifyGameEnd", {
@@ -546,7 +843,11 @@ func verifyEnd(gameID: int):
 		gameDetails[gameID].gameData.finished = true
 		if ongoingGameIDs.has(gameID):
 			ongoingGameIDs.erase(gameID)
-		pastGameIDs[gameID] = true
+		
+		if not pastUserGameIDs.has(getSelfID()):
+			pastUserGameIDs[getSelfID()] = {}
+		
+		pastUserGameIDs[getSelfID()][gameID] = true
 		return true
 	
 	return false
@@ -556,7 +857,6 @@ func viewEnd(gameID: int):
 	
 	emit_signal("gamesChanged")
 
-	
 func isFinished(gameID: int):
 	return gameDetails[gameID].gameData.finished
 
@@ -570,13 +870,22 @@ func getUser(id: int):
 	return users[id] if users.has(id) else await loadUser(id)
 
 func getChats(gameID: int):
-	return chatGroups[gameID]
+	var chatIDs = chatGroups[gameID]
+	var chats = []
 	
+	for id in chatIDs:
+		chats.push_back(getChat(id))
+	
+	return chats
+
 func getChat(chatID: int):
 	return chats[chatID]
 
 func getQueue(queueType: String):
 	return queues[queueType] if queues.has(queueType) else null
+
+func getQueues():
+	return queues
 
 func getGameDetails(id: int):
 	return gameDetails[id]
@@ -599,8 +908,8 @@ func getOpenGames():
 func getOngoingGames():
 	return ongoingGameIDs.keys()
 
-func getPastGames():
-	return pastGameIDs.keys()
+func getPastGames(userID: int):
+	return pastUserGameIDs[userID].keys() if pastUserGameIDs.has(userID) else (await loadPastUserGames(userID)).keys()
 
 func _exit_tree():
 	for game in games.values():

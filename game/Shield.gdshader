@@ -1,7 +1,7 @@
 shader_type spatial;
 
 render_mode unshaded;
-//render_mode cull_disabled;
+render_mode cull_disabled;
 
 uniform sampler2D screen_texture;
 
@@ -28,7 +28,8 @@ void fragment() {
 	
 	vec3 grad = texture(gradient, UV).rgb;
 	
-	ALPHA = pow(grad.r, 2);
+	ALPHA = pow(grad.r, 2.0);
+
 	//if(grad.r > 0.5) ALPHA += grad.r - 0.5;
 	//if(grad.r < 0.5) ALPHA -= (0.5 - grad.r) * c.r * c.r;
 	

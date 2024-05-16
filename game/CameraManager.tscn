@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://br2r5ds75s4n0"]
 
-[ext_resource type="Script" path="res://CameraPivot.gd" id="1_eau0c"]
+[ext_resource type="Script" path="res://CameraManager.gd" id="1_eau0c"]
 [ext_resource type="Shader" path="res://FloorShader.gdshader" id="2_8pook"]
 [ext_resource type="PackedScene" uid="uid://c1jyi7u6vs44i" path="res://Terrain.tscn" id="3_3bdoh"]
 
@@ -38,5 +38,4 @@ mesh = SubResource("PlaneMesh_utrlp")
 
 [node name="Terrain" parent="." instance=ExtResource("3_3bdoh")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, -100, -100)
-visible = false
 sorting_offset = -2000.0

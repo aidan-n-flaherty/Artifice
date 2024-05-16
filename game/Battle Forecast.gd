@@ -22,8 +22,8 @@ func init(gameID:int, objectID:int):
 	if len(players) > 1:
 		p2 = players[1]
 	
-	$VBoxContainer/ScrollContainer/HBoxContainer/p1Color.color = p1.getColor()
-	$VBoxContainer/ScrollContainer/HBoxContainer/p2Color.color = p2.getColor() if p2 else Color(0.5, 0.5, 0.5)
+	$VBoxContainer/ScrollContainer/HBoxContainer/p1Color.modulate = p1.getColor()
+	$VBoxContainer/ScrollContainer/HBoxContainer/p2Color.modulate = p2.getColor() if p2 else Color(0.5, 0.5, 0.5)
 	
 	#set names
 	$VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/PlayerDivide/Player1/NameP1.text = p1.getName()

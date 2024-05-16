@@ -1,5 +1,7 @@
 extends MarginContainer
 
+signal viewUser(userID: int)
+
 var userID: int
 
 var color: Color
@@ -16,9 +18,10 @@ func init(player, selected: bool, modifiable: bool):
 	self.selected = selected
 	userID = player.getUserID()
 	color = player.getColor()
+	self.modifiable = modifiable
 	
-	$Button.button_pressed = selected
-	$Button.disabled = not modifiable
+	if modifiable:
+		$Button.button_pressed = selected
 	
 	$MarginContainer/HBoxContainer/Label.text = player.getName()
 	
@@ -36,11 +39,8 @@ func getUserID() -> int:
 	return userID
 
 func _on_button_toggled(button_pressed):
-	selected = button_pressed
-	
-	$Button.modulate = color if selected else Color(0.0, 0.0, 0.0)
-
-
-func _on_report_pressed():
-	if await GameData.reportUser(userID, "unspecified"):
-		$MarginContainer/HBoxContainer/Report.visible = false
+	if modifiable:
+		selected = button_pressed
+		$Button.modulate = color if selected else Color(0.0, 0.0, 0.0)
+	else:
+		GameData.viewUser(userID)

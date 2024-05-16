@@ -15,7 +15,13 @@ func initList():
 	pass
 	
 func init():
-	initList()
+	await initList()
+	
+	gameIDs.sort_custom(func(a, b):
+		var gameA = GameData.getGameDetails(a)
+		var gameB = GameData.getGameDetails(b)
+		return gameA != null and gameB != null && gameA.gameData.createdAt > gameB.gameData.createdAt
+	)
 	
 	var node = $MarginContainer/VBoxContainer/ScrollContainer/Content
 	

@@ -3,11 +3,12 @@ extends GameEditor
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	setEditable(true)
+	playersVisible(false)
 	
 	super._ready()
 
 func activate():
-	var game = await super.activate()
+	var game = await createGame()
 	
 	if game:
 		GameData.currentTab = "res://CurrentGameList.tscn"

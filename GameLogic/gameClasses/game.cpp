@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <tuple>
 #include <random>
+#include <cmath>
 #include "game.h"
 #include "gameObjects/vessel.h"
 #include "order.h"
@@ -49,26 +50,24 @@ Game::Game(GameSettings settings, int simulatorID, double startTime, double endT
         addPlayer(p);
     }
 
+    std::mt19937 gen(seed); //seeding the random number generator. Each time this value is referenced, a new random value
+                            //is generated from the given seed
+
     //check if the current GameSettings has number_of_teams initialized to some value that is > 1
-    if(this->settings->number_of_teams > 1){
-        
-        //counter used to track the team the current player will be added to
-        int curr_team_to_assign = 1;
+    if(this->settings->number_of_teams > 1 && players.size() % this->settings->number_of_teams == 0){
+        for(int i = 0; i < players.size(); i++) players[i]->setTeam(i / this->settings->number_of_teams);
 
-        //iterates through unordered map "players" and updates the team_id value of each player
-        for(int i = 0; i < players.size(); i++){
+        for(int i = players.size() - 1; i >= 0; i--) {
+            int j = gen() % players.size();
 
-            players[i]->setTeam(curr_team_to_assign); //setting the current player's team
-
-            curr_team_to_assign += 1;
-
-            if(curr_team_to_assign > this->settings->number_of_teams){
-                //resetting team if the counter exceeds the number of teams
-                curr_team_to_assign = 1;
-            }
+            int teamA = players[i]->getTeamID();
+            players[i]->setTeam(players[j]->getTeamID());
+            players[j]->setTeam(teamA);
         }
 
-
+        if(this->settings->gameMode == Mode::CONQUEST) this->settings->gameMode = Mode::ELIMINATION;
+    } else {
+        this->settings->number_of_teams = -1;
     }
 
     // start map generation
@@ -87,15 +86,15 @@ Game::Game(GameSettings settings, int simulatorID, double startTime, double endT
 
     //going through a assigning each player a starting position
 
-    std::mt19937 gen(seed); //seeding the random number generator. Each time this value is referenced, a new random value
-                            //is generated from the given seed
     //bounds for uniform distribution, used for generating random width and height coordinates for each outpost
-    std::uniform_int_distribution<> widthdistr(0, (this->settings->width)-1);
-    std::uniform_int_distribution<> heightdistr(0, (this->settings->height) - 1);
 
-    for(int i = 0; i < (playerIDs.size()) * settings.outpostsPerPlayer; i++) {
+    for(int i = 0; i < (playerIDs.size()) * this->settings->outpostsPerPlayer; i++) {
+        double x = (gen() % (this->settings->width * 100000)) / 100000.0;
+        double y = (gen() % (this->settings->height * 100000)) / 100000.0;
 
-        Point pos = Point(this->settings, widthdistr(gen), heightdistr(gen));
+        std::cout << x << ", " << y << std::endl;
+
+        Point pos = Point(this->settings, x, y);
         
         //pos.constrain();
 
@@ -159,9 +158,11 @@ Game::Game(GameSettings settings, int simulatorID, double startTime, double endT
 
     //initalize the first centroid positions
     while(current_centroids.size() < numPlayers){
+        double x = (gen() % (this->settings->width * 100000)) / 100000.0;
+        double y = (gen() % (this->settings->height * 100000)) / 100000.0;
 
         //generates a new centroid randomly using the previously specified width and height distribution bounds
-        Point new_centroid = Point(this->settings, widthdistr(gen), heightdistr(gen));
+        Point new_centroid = Point(this->settings, x, y);
 
         //marker to check to make sure that the centroid does not yet exist
         bool centroid_exists = false;
@@ -278,16 +279,16 @@ Game::Game(GameSettings settings, int simulatorID, double startTime, double endT
 
     std::vector<OutpostType> types;
 
-    for(int i  = 0; i < playerIDs.size(); i++){
-        //assigns (factoryDensity * OutpostsPerPlayer) factory types to each player, and fills the rest of their outpost types with
-        //generators
-        for(int j = 0; j < getSettings()->outpostsPerPlayer; j++) {
+    //assigns (factoryDensity * OutpostsPerPlayer) factory types to each player, and fills the rest of their outpost types with
+    //generators
+    for(int j = 0; j < getSettings()->outpostsPerPlayer; j++) {
+        if(gen() % 2 == 0) {
             if(j < getSettings()->factoryDensity * getSettings()->outpostsPerPlayer) types.push_back(OutpostType::FACTORY);
             else types.push_back(OutpostType::GENERATOR);
+        } else {
+            if(j < getSettings()->factoryDensity * getSettings()->outpostsPerPlayer) types.insert(types.begin(), OutpostType::FACTORY);
+            else types.insert(types.begin(), OutpostType::GENERATOR);
         }
-        //std::shuffle(types.begin(), types.end(), std::default_random_engine(seed));
-
-        outpostTypes[i] = types;
     }
 
     //this is gonna be a bit messy to read. The following is a hashmap that holds an ordered map
@@ -325,44 +326,46 @@ Game::Game(GameSettings settings, int simulatorID, double startTime, double endT
 
     }
 
-    for(auto& player_group : grouped_outpost_positions){
-        std::cout << "Player " << player_group.first << std::endl;
-
-        std::map<double, Point> curr_player_outposts = player_group.second;
-
-        std::map<double, Point>::iterator it = curr_player_outposts.begin();
-
-        int outposts_owned = 0;
-
-        int starting_owned = (settings.outpostsPerPlayer) / 2;
-
-        //initializing the outpost closest to this player's centroid to be their starter outpost,
-        //with the queen as its specialist
-
-        Outpost* o = new Outpost(incrementObjCounter(), getSettings(), OutpostType::FACTORY, 60, it->second.getX(), it->second.getY());
+    for(int i = 0; i < outpostPositions.size(); i++) {
+        Outpost* o = new Outpost(incrementObjCounter(), getSettings(), OutpostType::BROKEN, 10, outpostPositions[i].getX(), outpostPositions[i].getY());
         addOutpost(o);
-        getPlayer(player_group.first)->addOutpost(getOutpost(o->getID()));
+    }
 
-        Specialist* s = new Specialist(incrementObjCounter(), getSettings(), SpecialistType::QUEEN);
-        addSpecialist(s);
-        getPlayer(player_group.first)->addSpecialist(getSpecialist(s->getID()));
-        getPlayer(player_group.first)->getOutposts().front()->addSpecialist(getSpecialist(s->getID()));
+    for(int i = 0; i < this->settings->outpostsPerPlayer; i++) {
+        for(int j = 0; j < numPlayers; j++) {
+            Player* p = getPlayer(j);
 
-        outposts_owned += 1; //remove this is we don't count starting outposts in the # of outposts each player should start with
+            const Point& point = current_centroids[j];
 
-        while(++it != curr_player_outposts.end()){
-            OutpostType type = outpostTypes[player_group.first].front();
-            outpostTypes[player_group.first].erase(outpostTypes[player_group.first].begin());
+            double closestDistance = -1;
+            Outpost* closest = nullptr;
+            for(auto& pair : getOutposts()) {
+                if(pair.second->hasOwner() || pair.second->getType() != OutpostType::BROKEN) continue;
 
-            o = new Outpost(incrementObjCounter(), getSettings(), type, 10, it->second.getX(), it->second.getY());
-            addOutpost(o);
+                double dist = point.closestDistance(pair.second->getPosition());
+                if(closest == nullptr || dist < closestDistance) {
+                    closestDistance = dist;
+                    closest = pair.second;
+                }
+            }
 
-            if(outposts_owned < starting_owned){
-                //only assigns the outpost as owned if the player doesn't have all of their starting outposts
-                o->setUnits(40);
-                getPlayer(player_group.first)->addOutpost(o);
+            if(closest) {
+                if(p->getOutposts().empty()) {
+                    closest->setUnits(60);
+                    p->addOutpost(closest);
+                    
+                    Specialist* s = new Specialist(incrementObjCounter(), getSettings(), SpecialistType::QUEEN);
+                    addSpecialist(s);
+                    p->addSpecialist(getSpecialist(s->getID()));
+                    closest->addSpecialist(getSpecialist(s->getID()));
+                } else if(p->getOutposts().size() < this->settings->outpostsPerPlayer / 2) {
+                    closest->setUnits(40);
+                    p->addOutpost(closest);
 
-                outposts_owned += 1;
+                    std::cout << j << " has an outpost at " << closest->getPosition().getX() << ", " << closest->getPosition().getY() << " with ID = " << closest->getID() << std::endl;
+                }
+
+                closest->setType(types[i]);
             }
         }
     }
@@ -408,7 +411,7 @@ Game::Game(GameSettings settings, int simulatorID, double startTime, double endT
     addEvent(new OutpostRangeEvent(getTime()));
 }
 
-Game::Game(const Game& game) : startTime(game.startTime), stateTime(game.stateTime), cacheEnabled(game.cacheEnabled), endTime(game.endTime), referenceID(game.referenceID), simulatorID(game.simulatorID), lastExecutedOrder(game.lastExecutedOrder), nextEndState(game.nextEndState), gameObjCounter(game.gameObjCounter), settings(game.settings) {
+Game::Game(const Game& game) : startTime(game.startTime), stateTime(game.stateTime), cacheEnabled(game.cacheEnabled), ended(game.ended), endTime(game.endTime), referenceID(game.referenceID), simulatorID(game.simulatorID), lastExecutedOrder(game.lastExecutedOrder), nextEndState(game.nextEndState), gameEndTime(game.gameEndTime), gameObjCounter(game.gameObjCounter), settings(game.settings) {
     for(Event* event : game.events) events.insert(event->copy());
     for(Event* event : game.simulatedEvents) simulatedEvents.push_back(event->copy());
     for(const auto& pair : game.vessels) vessels[pair.first] = new Vessel(*pair.second);
@@ -462,7 +465,7 @@ void Game::updateEvents() {
             itA = vessels.erase(itA);
 
             for(auto& pair : vessels) {
-                if(pair.second->getTarget()->getID() == vessel->getID()) {
+                if(pair.second->getTargetID() == vessel->getID()) {
                     pair.second->returnHome();
                 }
             }
@@ -550,7 +553,7 @@ void Game::cacheState() {
 ** Returns an empty list if the game is still in progress.
 ** Fills up the inputted list of invalid orders with orders that were rejected.
 */
-std::list<std::pair<int, int>> Game::run() {
+std::list<std::pair<int, int>> Game::run(bool pastEnd) {
     updateEvents();
 
     bool ranOutOfTime = false;
@@ -598,7 +601,10 @@ std::list<std::pair<int, int>> Game::run() {
 
         events.erase(event);
 
-        if(e->getTimestamp() <= endTime && dynamic_cast<OutpostRangeEvent*>(e) && vessels.empty()) continue; 
+        if(e->getTimestamp() <= endTime && dynamic_cast<OutpostRangeEvent*>(e) && vessels.empty()) {
+            if(!orders.empty() || !events.empty()) addEvent(new OutpostRangeEvent(e->getTimestamp() + getSettings()->fireRate * getSettings()->baseFireRate / getSettings()->simulationSpeed));
+            continue;
+        }
 
         nextEndState = e->getTimestamp();
 
@@ -611,6 +617,8 @@ std::list<std::pair<int, int>> Game::run() {
 
         e->run(this);
         simulatedEvents.push_back(e);
+
+        if(!pastEnd && ended) break;
 
         updateEvents();
     }
@@ -635,7 +643,7 @@ std::vector<Player*> Game::sortedPlayers() const {
         });
 
         break;
-    case Mode::CONQUEST:
+    case Mode::CONQUEST: case Mode::ELIMINATION:
         std::sort(scores.begin(), scores.end(), [](Player* a, Player* b) {
             return a->getOutposts().size() != b->getOutposts().size() ? a->getOutposts().size() > b->getOutposts().size()
                 : a->hasLost() != b->hasLost() ? !a->hasLost()
@@ -647,24 +655,48 @@ std::vector<Player*> Game::sortedPlayers() const {
         break;
     }
 
+    if(settings->number_of_teams > 1) {
+        std::vector<Player*> newScores;
+
+        while(!scores.empty()) {
+            int teamID = scores.front()->getTeamID();
+
+            for(int i = 0; i < scores.size(); i++) {
+                if(scores[i]->getTeamID() == teamID) newScores.push_back(scores[i]);
+            }
+
+            for(int i = scores.size() - 1; i >= 0; i--) {
+                if(scores[i]->getTeamID() == teamID) scores.erase(scores.begin() + i);
+            }
+        }
+
+        return newScores;
+    }
+
     return scores;
 }
 
 bool Game::hasEnded() const {
     std::vector<Player*> sorted = sortedPlayers();
+    std::unordered_set<int> teams;
 
     // eliminating all other players always ends the game
     int alive = 0;
     for(const auto& pair : getPlayers()) {
         // only person with a queen is the winning player
         if(!pair.second->hasLost()) alive++;
+        teams.insert(pair.second->getTeamID());
     }
-    if(alive <= 1) return true;
+    if(alive <= 1 || (teamGame() && teams.size() <= 1)) return true;
 
     switch(settings->gameMode) {
     case Mode::MINING:
-        if(sorted.front()->getResources() < settings->resourcesToWin) return false;
-        break;
+        return sorted.front()->getResources() >= settings->resourcesToWin;
+    case Mode::CONQUEST: {
+        int outpostsToWin = (1 + (getPlayers().size() / 2)) * settings->outpostsPerPlayer;
+
+        return sorted.front()->getOutposts().size() >= outpostsToWin;
+    }
     default: return false;
     }
 
@@ -705,12 +737,11 @@ std::shared_ptr<Game> Game::lastState(double timestamp) {
     std::shared_ptr<Game> returnVal = shared_from_this();
 
     if(cache.begin() != cache.end()) returnVal = *cache.begin();
+    else return returnVal;
     for(auto it = cache.begin(); it != cache.end(); it++) {
         if((*it)->getTime() > timestamp) break;
         else returnVal = *it;
     }
-
-    if(returnVal->getTime() == getTime()) returnVal = shared_from_this();
 
     return returnVal;
 }
@@ -923,6 +954,55 @@ void Game::removeOrder(Order* o) {
     orders.erase(o);
 }
 
+std::list<Outpost*> Game::getTeamOutposts(int teamID) const {
+    std::list<Outpost*> returnVal;
+
+    for(auto& pair : players) {
+        if(pair.second->getTeamID() == teamID) {
+            std::list<Outpost*> playerOutposts = pair.second->getOutposts();
+            returnVal.insert(returnVal.end(), playerOutposts.begin(), playerOutposts.end());
+        }
+    }
+
+    return returnVal;
+}
+
+
+std::list<Vessel*> Game::getTeamVessels(int teamID) const {
+    std::list<Vessel*> returnVal;
+
+    for(auto& pair : players) {
+        if(pair.second->getTeamID() == teamID) {
+            std::list<Vessel*> playerVessels = pair.second->getVessels();
+            returnVal.insert(returnVal.end(), playerVessels.begin(), playerVessels.end());
+        }
+    }
+
+    return returnVal;
+}
+
+bool Game::withinRange(Player* p, PositionalObject* obj, double timeDiff) const {
+    if(obj->getOwnerID() == p->getID() || (teamGame() && obj->hasOwner() && obj->getOwner()->getTeamID() == p->getTeamID())) return true;
+
+    std::list<Outpost*> controlledOutposts = teamGame() ? getTeamOutposts(p->getTeamID()) : p->getOutposts();
+    std::list<Vessel*> controlledVessels = teamGame() ? getTeamVessels(p->getTeamID()) : p->getVessels();
+
+    Vessel* v = dynamic_cast<Vessel*>(obj);
+
+    for(Outpost* o : controlledOutposts) {
+        if(o->getPositionAt(timeDiff).closestDistance(obj->getPositionAt(timeDiff)) < o->getSonarRange()) return true;
+
+        if(v && v->getTargetID() == o->getID()) return true;
+    }
+
+    if(v) {
+        for(Vessel* v1 : controlledVessels) {
+            if(v->getTargetID() == v1->getID()) return true;
+        }
+    }
+
+    return false;
+}
 
 bool GameOrder::operator()(const std::shared_ptr<Game> &lhs, const std::shared_ptr<Game> &rhs) const {
     double diff = lhs->getTime() - rhs->getTime();

@@ -5,6 +5,7 @@
 #include <cmath>
 #include <list>
 #include <ctime>
+#include <iostream>
 #include "../event.h"
 #include "../game.h"
 #include "../events/hire_event.h"
@@ -36,6 +37,15 @@ public:
             return nullptr;
         }
 
+        if(!dynamic_cast<Outpost*>(player->getSpawnLocation())) return nullptr;
+
+        if(player->getSpawnLocation()->getOwnerID() != getSenderID()) {
+            std::cout << "ORDER ERROR: player does not own Queen's container" << std::endl;
+            return nullptr;
+        }
+
+        if(game->getSettings()->specialistBans.find(t) != game->getSettings()->specialistBans.end()) return nullptr;
+
         bool canHire = false;
         for(SpecialistType option : Specialist::baseHires()) {
             if(option == t) {
@@ -47,7 +57,12 @@ public:
 
         updateOrders(game, game->getOrders());
 
-        return new HireEvent(this, getTimestamp(), player, new Specialist(game->incrementObjCounter(), game->getSettings(), t));
+        std::list<Specialist*> specialists;
+        for(int i = 0; i < Specialist::hireAmount(t); i++) {
+            specialists.push_back(new Specialist(game->incrementObjCounter(), game->getSettings(), t));
+        }
+
+        return new HireEvent(this, getTimestamp(), player, specialists);
     }
 
     std::string getType() override { return "Hire"; }

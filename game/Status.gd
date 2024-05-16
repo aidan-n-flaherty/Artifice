@@ -25,6 +25,7 @@ func update():
 	for p in players:
 		
 		var username = p.getName()
+		var dailyProduction = p.getDailyProduction()
 		var units = p.getUnits()
 		var capacity = p.getCapacity()
 		
@@ -40,18 +41,14 @@ func update():
 		
 		if playerStatuses[i] != null:
 			playerStatus = playerStatuses[i]
-			playerStatus.init(game, p, username, units, capacity, resources, largestCapacity, win, outposts, factories, generators, mines, color)
+			playerStatus.init(game, p, username, dailyProduction, units, capacity, resources, largestCapacity, win, outposts, factories, generators, mines, color)
 			$MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer.move_child(playerStatus,i)
 		else:
 			playerStatus = preload("res://PlayerStatus.tscn").instantiate()
-			playerStatus.init(game, p, username, units, capacity, resources, largestCapacity, win, outposts, factories, generators, mines, color)
+			playerStatus.init(game, p, username, dailyProduction, units, capacity, resources, largestCapacity, win, outposts, factories, generators, mines, color)
 			playerStatuses[i] = playerStatus
 			$MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer.add_child(playerStatus)
 		i += 1
-		
-		
-		
-	
 	
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -71,7 +68,6 @@ func init(gameID):
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	if visible:
-		print("visible!")
 		update()
 
 

@@ -71,10 +71,10 @@ int runGame(cGame game, int* playerChanges) {
   return changes.empty() ? 0 : 1;
 }
 
-int runGameWithNotifications(cGame game, int* playerChanges, double lastUpdate, int* notifications) {
+int runGameWithNotifications(cGame game, int* playerChanges, double lastUpdate, double* lastUpdates, int* notifications) {
   Game* g = (Game*)game;
 
-  std::list<std::pair<int, int>> changes = g->run();
+  std::list<std::pair<int, int>> changes = g->run(false);
 
   int i = 0;
   for(auto it = changes.begin(); it != changes.end(); it++, i++) {
@@ -88,6 +88,8 @@ int runGameWithNotifications(cGame game, int* playerChanges, double lastUpdate, 
   
   for(auto it = g->getNotifications().begin(); it != g->getNotifications().end(); it++) {
     if((*it)->getTimestamp() <= lastUpdate || !g->hasVessel((*it)->getVesselID())) continue;
+
+    if((*it)->getTimestamp() <= lastUpdates[(*it)->getListenerID()]) continue;
 
     notifications[(*it)->getListenerID()] = g->getPlayer((*it)->getListenerID())->getUserID();
   }

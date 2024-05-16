@@ -17,9 +17,9 @@ class PlayerNode : public Node {
 private:
 	Player* player = nullptr;
 
-    double currentTime;
+    double currentTime = -1;
 	
-	double timeDiff;
+	double timeDiff = -1;
 
 protected:
 	static void _bind_methods();
@@ -54,6 +54,8 @@ public:
 	int getUserID() { return player->getUserID(); }
 
 	int getID() { return player->getID(); }
+
+	int getDailyProduction() { return player->dailyProductionRate(); }
 
 	int getResources() { return player->getResourcesAt(timeDiff); }
 

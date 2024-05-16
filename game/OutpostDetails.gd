@@ -26,11 +26,15 @@ func _process(delta):
 		$VBoxContainer/OutOfRange.hide()
 		$VBoxContainer/HBoxContainer2.show()
 	
+	$Images/HBoxContainer/Factory.visible = (outpost.isInRadar() or outpost.canViewType()) and outpost.isFactory()
+	$Images/HBoxContainer/Generator.visible = (outpost.isInRadar() or outpost.canViewType()) and outpost.isGenerator()
+	$Images/HBoxContainer/Mine.visible = (outpost.isInRadar() or outpost.canViewType()) and outpost.isMine()
+		
 	if outpost.isFactory():
 		$VBoxContainer/Type.text = "Factory"
 		$VBoxContainer/HBoxContainer/Spacer1.show()
 		$VBoxContainer/HBoxContainer/Jump.show()
-		$VBoxContainer/HBoxContainer2/VBoxContainer/Production.text = "+" + str(outpost.getProductionAmount()) + " in " + Utilities.timeToStr(game.clientToGameTime(game.getNextProductionEvent(outpost.getID())) - game.getTime())
+		$VBoxContainer/HBoxContainer2/VBoxContainer/Production.text = "+" + str(outpost.getProductionAmount()) + " in " + Utilities.timeToStr(game.getNextProductionEvent(outpost.getID()) - game.getTime())
 	elif outpost.isMine():
 		$VBoxContainer/Type.text = "Mine"
 		$VBoxContainer/HBoxContainer/Spacer1.show()
@@ -41,7 +45,14 @@ func _process(delta):
 		$VBoxContainer/HBoxContainer/Spacer1.hide()
 		$VBoxContainer/HBoxContainer/Jump.hide()
 		$VBoxContainer/HBoxContainer2/VBoxContainer/Production.text = "+50 to electrical output"
-	
+	else:
+		$VBoxContainer/Type.text = "Destroyed"
+		$VBoxContainer/HBoxContainer2/VBoxContainer/Production.text = ""
+		$VBoxContainer/HBoxContainer/Spacer1.hide()
+		$VBoxContainer/HBoxContainer/Jump.hide()
+		$VBoxContainer/HBoxContainer/Spacer2.hide()
+		$VBoxContainer/HBoxContainer/Mine.hide()
+		
 	if not outpost.isInRadar() and not outpost.canViewType() and not outpost.isMine():
 		$VBoxContainer/Type.text = "Unknown"
 		
@@ -49,7 +60,6 @@ func _process(delta):
 	if owns and outpost.canMine():
 		$VBoxContainer/HBoxContainer/Mine.show()
 		$VBoxContainer/HBoxContainer/Mine.text = "Mine (%d)" % outpost.getMineCost()
-		print(outpost.getMineCost())
 	else:
 		$VBoxContainer/HBoxContainer/Mine.hide()
 	

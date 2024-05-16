@@ -21,11 +21,12 @@ func _input(ev) -> void:
 	if ev is InputEventScreenDrag and swiping:
 		accept_event()
 		return
-		
+	
+	
 	if ev is InputEventMouseButton:
 		
 		if ev.pressed and get_global_rect().has_point(ev.global_position):
-			look_for_swipe = true
+			look_for_swipe = (not vertical_scroll_mode == SCROLL_MODE_DISABLED and get_v_scroll_bar().max_value - get_v_scroll_bar().min_value > size.y) or (not horizontal_scroll_mode == SCROLL_MODE_DISABLED and get_h_scroll_bar().max_value - get_h_scroll_bar().min_value > size.x)
 			swipe_mouse_start = ev.global_position
 			
 		elif swiping:
@@ -54,7 +55,7 @@ func _input(ev) -> void:
 			look_for_swipe = false
 			
 	if ev is InputEventMouseMotion:
-		if not vertical_scroll_mode == SCROLL_MODE_DISABLED:
+		if not vertical_scroll_mode == SCROLL_MODE_DISABLED and get_v_scroll_bar().max_value - get_v_scroll_bar().min_value > size.y:
 			if swipe_mouse_start.y > ev.global_position.y && swipe_mouse_start.y - ev.global_position.y < vertical_drag_threshold:
 				return
 				
@@ -63,7 +64,7 @@ func _input(ev) -> void:
 				
 			if swipe_mouse_start.y == ev.global_position.y:
 				return
-		if not horizontal_scroll_mode == SCROLL_MODE_DISABLED:
+		if not horizontal_scroll_mode == SCROLL_MODE_DISABLED and get_h_scroll_bar().max_value - get_h_scroll_bar().min_value > size.x:
 			if swipe_mouse_start.x > ev.global_position.x && swipe_mouse_start.x - ev.global_position.x < horizontal_drag_threshold:
 				return
 				
@@ -75,7 +76,7 @@ func _input(ev) -> void:
 			
 		if look_for_swipe:
 			var delta = ev.global_position - swipe_mouse_start
-			if abs(delta.x) > delta_for_swipe.x or abs(delta.y) > delta_for_swipe.y:
+			if (abs(delta.x) > delta_for_swipe.x and get_h_scroll_bar().max_value - get_h_scroll_bar().min_value > size.x) or (abs(delta.y) > delta_for_swipe.y and get_v_scroll_bar().max_value - get_v_scroll_bar().min_value > size.y):
 				swiping = true
 				look_for_swipe = false
 				swipe_start = Vector2(get_h_scroll(), get_v_scroll())

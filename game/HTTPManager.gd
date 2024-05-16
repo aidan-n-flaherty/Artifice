@@ -1,6 +1,6 @@
 extends Node
 
-var url = "https://chemiserver.com/temp"
+var url = "https://artificeserver.com"
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -28,7 +28,7 @@ func postReq(path, data, params, includeToken=true):
 			first = false
 		else:
 			path += "&"
-		path += key + "=" + str(params[key])
+		path += key + "=" + str(params[key]).replace(" ", "%20")
 		
 	reqNode.request(url + path, headers, HTTPClient.METHOD_POST, json)
 	var response = await reqNode.request_completed
@@ -70,7 +70,7 @@ func putReq(path, data, params, includeToken=true):
 			first = false
 		else:
 			path += "&"
-		path += key + "=" + str(params[key])
+		path += key + "=" + str(params[key]).replace(" ", "%20")
 		
 	reqNode.request(url + path, headers, HTTPClient.METHOD_PUT, json)
 	var response = await reqNode.request_completed
@@ -110,7 +110,7 @@ func getReq(path, params={}, includeToken=true):
 			first = false
 		else:
 			path += "&"
-		path += key + "=" + str(params[key])
+		path += key + "=" + str(params[key]).replace(" ", "%20")
 	
 	reqNode.request(url + path, [], HTTPClient.METHOD_GET)
 	var response = await reqNode.request_completed

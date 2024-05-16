@@ -22,7 +22,9 @@ func twoDigit(num: int):
 func timeToStr(time: int):
 	if time < 0: return timeToStr(abs(time)) + " ago"
 	
-	if time/(60*60) == 0:
+	if time < 60:
+		return "%ss"%twoDigit(time)
+	elif time < 60*60:
 		return "%sm %ss"%[twoDigit((time/60)%60),twoDigit(time%60)]
 	else:
 		return "%dh %sm"%[(time/(60*60)),twoDigit((time/60)%60)]

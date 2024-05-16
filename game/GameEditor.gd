@@ -3,6 +3,8 @@ class_name GameEditor
 
 var advancedSettings = ["defaultSonar", "defaultMaxShield", "resourcesToWin", "factoryDensity", "fireRate", "fireRange", "costPerMine", "outpostsPerPlayer"]
 
+var advancedSettingsDefaults = {}
+
 var changedAdvancedSettings = []
 
 var days = []
@@ -47,16 +49,41 @@ func setEditable(canEdit):
 	if editable:
 		$MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/System.hide()
 		$MarginContainer/VBoxContainer/Passworded.hide()
-		$MarginContainer/VBoxContainer/Players.hide()
-		$MarginContainer/VBoxContainer/Activate.show()
 		$MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/Password.show()
 		$MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/PasswordText.show()
 	else:
 		$MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/System.show()
-		$MarginContainer/VBoxContainer/Players.show()
-		$MarginContainer/VBoxContainer/Activate.hide()
 		$MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/Password.hide()
 		$MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/PasswordText.hide()
+	
+	if $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/SpecialistBansButtons/SpecialistBansButtons.get_child_count() == 0:
+		for specialist in SettingsDefault.getAllSpecialists():
+			var specialistName = SettingsDefault.getSpecialistName(specialist)
+			
+			var button = Button.new()
+			button.name = str(specialist)
+			button.text = specialistName
+			
+			button.toggle_mode = true
+			$MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/SpecialistBansButtons/SpecialistBansButtons.add_child(button)
+
+func playersVisible(value: bool):
+	$MarginContainer/VBoxContainer/Players.visible = value
+
+func setActivatable(activatable: bool):
+	$MarginContainer/VBoxContainer/Activate.visible = activatable
+
+func getActivationButton():
+	return $MarginContainer/VBoxContainer/Activate
+
+func getSecondaryButton():
+	return $MarginContainer/VBoxContainer/Secondary
+
+func setFinalizing(value: bool):
+	$MarginContainer/VBoxContainer/Finalizing.visible = value
+
+func setFinalizeText(text):
+	$MarginContainer/VBoxContainer/Finalizing/MarginContainer/Finalize.text = text
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -67,6 +94,13 @@ func update(gameID):
 		deserialize(self.gameID)
 
 func deserialize(gameID):
+	if self.gameID == -1:
+			for setting in advancedSettings:
+				var default = get_node_or_null("MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/" + setting)
+				
+				if default:
+					advancedSettingsDefaults[setting] = default.value
+	
 	print("deserializing...")
 	
 	self.gameID = gameID
@@ -93,6 +127,18 @@ func deserialize(gameID):
 	
 	$MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/RatingSlider.value = settings.minRating
 		
+	$MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/RankedButtons/ranked.button_pressed = details.gameSettings.ranked
+	$MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/RankedButtons/unranked.button_pressed = not details.gameSettings.ranked
+	
+	if settings.settingOverrides.has("gameMode"):
+		if settings.settingOverrides["gameMode"] == "CONQUEST":
+			$MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/GameModeButtons/Conquest.button_pressed = true
+		elif settings.settingOverrides["gameMode"] == "ELIMINATION":
+			$MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/GameModeButtons/Elimination.button_pressed = true
+		else:
+			$MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/GameModeButtons/Mining.button_pressed = true
+			
+	
 	var numCurrentPlayers = data["playerCount"]
 	numPlayers = settings["playerCap"]
 	
@@ -122,11 +168,13 @@ func deserialize(gameID):
 	if settings.settingOverrides.has("number_of_teams"):
 		number_of_teams = int(settings.settingOverrides["number_of_teams"])
 		
-		get_node("MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/TeamButtons/" + str(number_of_teams)).button_pressed = true
+		if number_of_teams > 1 and get_node_or_null("MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/TeamButtons/" + str(number_of_teams)):
+			get_node("MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/TeamButtons/" + str(number_of_teams)).button_pressed = true
 	
 	var bias = int(Time.get_time_zone_from_system().bias/60)
 
 	if (settings.settingOverrides.has("activeHours")):
+		print("a ", settings.settingOverrides["activeHours"])
 		activeHours = []
 		for hour in settings.settingOverrides["activeHours"]:
 			hour = int(hour)
@@ -137,7 +185,7 @@ func deserialize(gameID):
 			while hour < 0:
 				hour += 24
 			activeHours.push_back(hour)
-	
+		print("b ", activeHours)
 		activeHours.sort()
 	else:
 		activeHours = range(24)
@@ -146,9 +194,36 @@ func deserialize(gameID):
 		var aButtonPath = "MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/VBoxContainer/ActiveHoursButtons/" if hour < 12 else "MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/VBoxContainer/ActiveHoursButtons2/"
 		aButtonPath += str(hour)
 		var buttonAH = get_node(aButtonPath)
-		buttonAH.button_pressed = hour in activeHours
+		buttonAH.set_pressed_no_signal(hour in activeHours)
 	
 	var hasAdvanced = false
+	
+	for child in $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/SpecialistBansButtons/SpecialistBansButtons.get_children():
+		child.button_pressed = false
+	
+	if settings.settingOverrides.has("specialistBans") and len(settings.settingOverrides["specialistBans"]) > 0:
+		for ban in settings.settingOverrides["specialistBans"]:
+			for child in $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/SpecialistBansButtons/SpecialistBansButtons.get_children():
+				if child.name == str(ban):
+					hasAdvanced = true
+					child.button_pressed = true
+					break
+		$MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/SpecialistBans.show()
+		$MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/SpecialistBansButtons.show()
+		
+		for child in $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/SpecialistBansButtons/SpecialistBansButtons.get_children():
+			var found = false
+			
+			for ban in settings.settingOverrides["specialistBans"]:
+				if child.name == str(ban):
+					found = true
+					break
+			
+			if not found:
+				$MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/SpecialistBansButtons/SpecialistBansButtons.move_child(child, $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/SpecialistBansButtons/SpecialistBansButtons.get_child_count() - 1)
+	else:
+		$MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/SpecialistBans.hide()
+		$MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/SpecialistBansButtons.hide()
 		
 	for setting in advancedSettings:
 		var default = get_node("MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/" + setting)
@@ -160,7 +235,7 @@ func deserialize(gameID):
 		if settings.settingOverrides.has(setting):
 			var value = settings.settingOverrides[setting]
 			
-			if value != default.value:
+			if value != advancedSettingsDefaults[setting]:
 				default.value = value
 				default.show()
 				defaultText.show()
@@ -179,15 +254,25 @@ func deserialize(gameID):
 	else:
 		$MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced.hide()
 		$MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/AdvancedButton.hide()
-		
+	
+	await updatePlayers(gameID, settings)
+	
+	print("Loaded game editor")
+
+func updatePlayers(gameID, settings):
 	var playerViews = []
+	
+	for n in $MarginContainer/VBoxContainer/Players/MarginContainer/PlayerList/GridContainer.get_children():
+		$MarginContainer/VBoxContainer/Players/MarginContainer/PlayerList/GridContainer.remove_child(n)
+		n.queue_free() 
 	
 	for	i in range(int(settings.playerCap)):
 		var playerView = preload("res://Game_PlayerView.tscn").instantiate()
 		playerViews.append(playerView)
 		$MarginContainer/VBoxContainer/Players/MarginContainer/PlayerList/GridContainer.add_child(playerView)
-		
+	
 	var users = await GameData.getGameUsers(gameID)
+	
 	var userKeys = Array(users.keys())
 	
 	var colors = SettingsDefault.getPlayerColors()
@@ -197,14 +282,15 @@ func deserialize(gameID):
 	for	i in userKeys:
 		var id = int(i)
 		var color = colors[id]
-		var username = users[i].username
 		
-		playerViews[id].init(username, color)
+		playerViews[id].init(users[i].id, users[i].username, color, users[i].userStats.rating, settings.ranked)
 
 func serialize():
 	var bias = int(Time.get_time_zone_from_system().bias/60)
 	
 	var hours = []
+	
+	print("c ", activeHours)
 	
 	for hour in activeHours:
 		hour -= bias
@@ -215,8 +301,10 @@ func serialize():
 			hour += 24
 		
 		hours.push_back(hour)
+		
 	
 	hours.sort()
+	print("d ", hours)
 	
 	##Checks to make sure that the current team count is valid. If it isn't automatically sets
 	##number of teams to zero
@@ -228,15 +316,25 @@ func serialize():
 		"lobbyName": $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/LobbyNameText.text,
 		"password": $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/PasswordText.text,
 		"playerCap": numPlayers,
+		"ranked": $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/RankedButtons/ranked.button_pressed,
 		"startTimeDisplacement": 24 * 60 * 60 if simulationTimescale == "days" else 60 * 10 if simulationTimescale == "hours" else 30,
+		"minRating": $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/RatingSlider.value,
 		"settingOverrides": {
+			"simulationSpeed": (1 if simulationTimescale == "days" else 60 if simulationTimescale == "hours" else 60 * 60) * $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/SpeedSlider.value,
 			"number_of_teams": number_of_teams,
 			"ratingConstraints": $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/RatingSlider.value,
 			"activeHours": hours,
-			"simulationSpeed": (1 if simulationTimescale == "days" else 60 if simulationTimescale == "hours" else 60 * 60) * $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/SpeedSlider.value,
-			"gameMode": "CONQUEST" if $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/GameModeButtons/conquest.button_pressed else "KOH",
+			"gameMode": "CONQUEST" if $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/GameModeButtons/Conquest.button_pressed else "ELIMINATION" if $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/GameModeButtons/Elimination.button_pressed else "MINING",
 		}
 	}
+	
+	var bans = []
+	for child in $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/SpecialistBansButtons/SpecialistBansButtons.get_children():
+		if child.button_pressed:
+			bans.push_back(child.name.to_int())
+	
+	if len(bans) > 0:
+		data.settingOverrides["specialistBans"] = bans
 	
 	for setting in advancedSettings:
 		var slider = get_node("MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/" + setting)
@@ -249,13 +347,15 @@ func serialize():
 	return data
 
 func activate():
+	pass
+
+func createGame():
 	var game = await HTTPManager.postReq("/createMatch", serialize(), {})
 	
 	if game:
 		print("Created game")
 		print(game)
 		GameData.addGame(game)
-		GameData.goto_scene("res://OpenGameList.tscn")
 		
 		return game
 	
@@ -277,12 +377,12 @@ func on_players_modified(button_pressed: bool):
 					else:
 						team_num.visible = false
 
-				if( (number_of_teams != 0) && ((numPlayers % number_of_teams != 0) || (numPlayers == number_of_teams)) ): 
+				if( (number_of_teams > 0) && ((numPlayers % number_of_teams != 0) || (numPlayers == number_of_teams)) ): 
 					$"MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/TeamButtons/0".set_pressed_no_signal(true)
-					get_node("MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons/HBoxContainer" + str(numPlayers)).set_pressed_no_signal(false)
-				elif( (number_of_teams != 0) && (numPlayers % number_of_teams == 0) && (numPlayers != number_of_teams)):
+					get_node("MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons/HBoxContainer/" + str(numPlayers)).set_pressed_no_signal(false)
+				elif( (number_of_teams > 0) && (numPlayers % number_of_teams == 0) && (numPlayers != number_of_teams)):
 					$"MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/TeamButtons/0".set_pressed_no_signal(false)
-					get_node("MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons/HBoxContainer" + str(numPlayers)).set_pressed_no_signal(true)
+					get_node("MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons/HBoxContainer/" + str(numPlayers)).set_pressed_no_signal(true)
 
 func on_activeTimes_modified(button_pressed: bool):
 	activeHours.clear()
@@ -293,7 +393,7 @@ func on_activeTimes_modified(button_pressed: bool):
 		if child.button_pressed:
 			activeHours.append(child.name.to_int())
 	activeHours.sort()
-	print(activeHours)
+	print("e", activeHours)
 
 func on_timescale_modified(button_pressed: bool, timescale):
 	simulationTimescale = timescale

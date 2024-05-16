@@ -1,12 +1,16 @@
-[gd_scene load_steps=10 format=3 uid="uid://n0lobms04k46"]
+[gd_scene load_steps=16 format=3 uid="uid://n0lobms04k46"]
 
 [ext_resource type="Script" path="res://Timeline.gd" id="1_nk2q8"]
+[ext_resource type="Texture2D" uid="uid://57i835npgjvr" path="res://resources/icons/chevron-left.png" id="2_lgopp"]
+[ext_resource type="Texture2D" uid="uid://b8p10oo07dfgs" path="res://resources/icons/chevron-right.png" id="3_8ejq5"]
+[ext_resource type="Theme" uid="uid://tg7ina762c6q" path="res://resources/themes/UITheme.tres" id="3_pyl2o"]
+[ext_resource type="Texture2D" uid="uid://b62qf6fqwyjhg" path="res://resources/icons/chevron-up.png" id="4_bt6hn"]
+[ext_resource type="Texture2D" uid="uid://dqpu21rnx58pl" path="res://resources/icons/chevron-down.png" id="5_kvoxd"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4pgfi"]
 bg_color = Color(0, 0, 0, 1)
 
-[sub_resource type="LabelSettings" id="LabelSettings_mfck5"]
-font_size = 26
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2phfc"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rd4ja"]
 bg_color = Color(1, 1, 1, 1)
@@ -30,6 +34,8 @@ border_width_right = 5
 border_width_bottom = 5
 border_color = Color(1, 1, 1, 1)
 corner_radius_bottom_right = 10
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vc00k"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4gtgl"]
 bg_color = Color(0.783523, 0.783523, 0.783523, 1)
@@ -64,8 +70,10 @@ mouse_filter = 0
 script = ExtResource("1_nk2q8")
 
 [node name="Horizontal" type="MarginContainer" parent="."]
+clip_contents = true
 layout_mode = 2
 mouse_filter = 2
+theme_override_constants/margin_top = 6
 
 [node name="Measurement" type="Control" parent="Horizontal"]
 layout_mode = 2
@@ -97,12 +105,32 @@ custom_minimum_size = Vector2(2.08165e-12, 20)
 layout_mode = 2
 mouse_filter = 2
 
-[node name="Label" type="Label" parent="Horizontal/Measurement/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Horizontal/Measurement/VBoxContainer"]
+layout_mode = 2
+
+[node name="Back" type="Button" parent="Horizontal/Measurement/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+theme_override_styles/focus = SubResource("StyleBoxEmpty_2phfc")
+icon = ExtResource("2_lgopp")
+flat = true
+expand_icon = true
+
+[node name="Label" type="Label" parent="Horizontal/Measurement/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(2.08165e-12, 40)
 layout_mode = 2
-text = "Test"
-label_settings = SubResource("LabelSettings_mfck5")
+size_flags_horizontal = 3
+theme = ExtResource("3_pyl2o")
+text = "testing"
 horizontal_alignment = 1
+
+[node name="Forward" type="Button" parent="Horizontal/Measurement/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+theme_override_styles/focus = SubResource("StyleBoxEmpty_2phfc")
+icon = ExtResource("3_8ejq5")
+flat = true
+expand_icon = true
 
 [node name="TimeIndicators" type="Control" parent="Horizontal"]
 custom_minimum_size = Vector2(40, 20)
@@ -151,6 +179,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_8yfwk")
 visible = false
 layout_mode = 2
 mouse_filter = 2
+theme_override_constants/margin_left = 6
 
 [node name="Measurement" type="Control" parent="Vertical"]
 layout_mode = 2
@@ -168,6 +197,46 @@ grow_vertical = 2
 size_flags_vertical = 3
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_4pgfi")
+
+[node name="Label" type="Label" parent="Vertical/Measurement"]
+custom_minimum_size = Vector2(200, 2.08165e-12)
+layout_direction = 2
+layout_mode = 0
+offset_left = -220.0
+offset_top = 960.0
+offset_right = -20.0
+offset_bottom = 982.0
+theme = ExtResource("3_pyl2o")
+text = "Test"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="Vertical"]
+layout_mode = 2
+theme_override_constants/margin_left = 30
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Vertical/MarginContainer"]
+layout_mode = 2
+
+[node name="Forward" type="Button" parent="Vertical/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+theme_override_styles/focus = SubResource("StyleBoxEmpty_vc00k")
+icon = ExtResource("4_bt6hn")
+flat = true
+expand_icon = true
+
+[node name="Control" type="Control" parent="Vertical/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Back" type="Button" parent="Vertical/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+theme_override_styles/focus = SubResource("StyleBoxEmpty_vc00k")
+icon = ExtResource("5_kvoxd")
+flat = true
+expand_icon = true
 
 [node name="TimeIndicators" type="Control" parent="Vertical"]
 custom_minimum_size = Vector2(40, 40)
@@ -201,18 +270,6 @@ size_flags_horizontal = 6
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_8leve")
 
-[node name="Label" type="Label" parent="Vertical/TimeIndicators/ActualTime"]
-layout_mode = 2
-offset_left = 20.0
-offset_top = -310.0
-offset_right = 320.0
-offset_bottom = -274.0
-rotation = 1.5708
-text = "Test"
-label_settings = SubResource("LabelSettings_mfck5")
-horizontal_alignment = 2
-vertical_alignment = 1
-
 [node name="CurrentTime" type="Panel" parent="Vertical/TimeIndicators"]
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
@@ -227,3 +284,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_u6mta")
 
 [connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
 [connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]
+[connection signal="pressed" from="Horizontal/Measurement/VBoxContainer/HBoxContainer/Back" to="." method="_on_back_pressed"]
+[connection signal="pressed" from="Horizontal/Measurement/VBoxContainer/HBoxContainer/Forward" to="." method="_on_forward_pressed"]
+[connection signal="pressed" from="Vertical/MarginContainer/VBoxContainer/Forward" to="." method="_on_forward_pressed"]
+[connection signal="pressed" from="Vertical/MarginContainer/VBoxContainer/Back" to="." method="_on_back_pressed"]

@@ -32,15 +32,19 @@ class GameInterface : public Node3D {
     GDCLASS(GameInterface, Node3D)
 
 private:
+	// stores all future game states
 	std::shared_ptr<Game> completeGame = nullptr;
 
+	// game at the current time
 	std::shared_ptr<Game> game = nullptr;
 	double nextState = 0.0;
 	double nextEndState = 0.0;
 
+	// game at the start of drag
 	std::shared_ptr<Game> currentGame = nullptr;
 	double nextCurrentState = 0.0;
 
+	// game at the end of drag
 	std::shared_ptr<Game> simulatedGame = nullptr;
 	double nextSimulatedState = 0.0;
 	
@@ -86,6 +90,10 @@ private:
 
 	bool justSelectedSpecialist = false;
 
+	bool finished = false;
+
+	bool paused = false;
+
 	Point mouse;
 
 protected:
@@ -98,7 +106,7 @@ public:
 
     ~GameInterface() {}
 
-	void init(int gameID, int userID, int startTime, int playerCap, Dictionary players, Dictionary settingOverrides);
+	void init(int gameID, int userID, int seed, int startTime, bool finished, int playerCap, Dictionary players, Dictionary settingOverrides);
 
 	void suspend();
 
@@ -121,7 +129,7 @@ public:
 
 	int getHires() {
 		double timeDiff = settings.clientToGameTime(current) - game->getTime();
-		return game && game->getPlayer(userGameID) ? game->getPlayer(userGameID)->getHiresAt(timeDiff) : -1;
+		return game && game->hasPlayer(userGameID) ? game->getPlayer(userGameID)->getHiresAt(timeDiff) : -1;
 	}
 	
 	double getTimeMillis();
@@ -152,7 +160,7 @@ public:
 	PositionalObject* getObj(int id) { return simulatedGame->getPosObject(id); }
 	PositionalNode* getNode(int id);
 	
-	void startAtEnd() { if(completeGame && completeGame->hasEnded()) setTime(completeGame->getGameEndTime());};
+	void startAtEnd() { if(completeGame && completeGame->hasEnded()) {setTime(completeGame->getGameEndTime());}};
 	void shiftToTime(double t);
 	void setTime(double t);
 	void setTempTime(double t) { tempTime = t; }
@@ -165,38 +173,54 @@ public:
 	void setPercent(double percent) { this->percent = percent; }
 	double getPercent() { return percent; }
 
+	bool isMining() { return settings.gameMode == Mode::MINING; }
+	bool isConquest() { return settings.gameMode == Mode::CONQUEST; }
+	bool isElimination() { return settings.gameMode == Mode::ELIMINATION; }
+
+	Vector2 getSpawnLocation() { return game && game->hasPlayer(userGameID) && game->getPlayer(userGameID)->getSpawnLocation()
+		? Vector2(game->getPlayer(userGameID)->getSpawnLocation()->getPositionAt(settings.clientToGameTime(getTime()) - game->getTime()).getX(),
+				game->getPlayer(userGameID)->getSpawnLocation()->getPositionAt(settings.clientToGameTime(getTime()) - game->getTime()).getY()) : Vector2(0.0, 0.0); }
 	PositionalNode* getTarget(double x, double y);
 	double projectedTime(double x, double y);
 	PackedInt32Array getPlayerIDs();
 	PackedVector2Array getOutpostPositions();
+	PackedInt32Array getAllSpecialists();
 	PackedInt32Array getShopOptions();
-	PackedInt32Array getPromotionOptions(int specialistID);
+	PackedInt32Array getPromotionOptions(int specialistNum);
 	Array getPlayers();
 	Array getSortedPlayers();
 	Array getCurrentSortedPlayers();
 	int getScore(int userID);
 	Color getColor(int userID);
 
-	int getSpecialistType(int specialistID) { return game->getSpecialist(specialistID)->getType(); };
+	int getSpecialistType(int specialistID) { return game->hasSpecialist(specialistID) ? game->getSpecialist(specialistID)->getType() : 0; };
 	PlayerNode* getPlayer(int id);
-	PlayerNode* getSpecialistOwner(int specialistID) { return game->hasPlayer(game->getSpecialist(specialistID)->getOwnerID()) ? getPlayer(game->getSpecialist(specialistID)->getOwnerID()) : nullptr; }
+	PlayerNode* getSpecialistOwner(int specialistID) { return game->hasSpecialist(specialistID) && game->hasPlayer(game->getSpecialist(specialistID)->getOwnerID()) ? getPlayer(game->getSpecialist(specialistID)->getOwnerID()) : nullptr; }
 	String getSpecialistName(int specialistNum);
 	String getSpecialistDescription(int specialistNum);
+	int getSpecialistHireAmount(int specialistNum);
 	bool canRelease(int specialistID) {
-		return !ownsSpecialist(specialistID) && game->getSpecialist(specialistID)->getContainer() &&
+		return game->hasSpecialist(specialistID) && !ownsSpecialist(specialistID) && game->getSpecialist(specialistID)->getContainer() &&
 				game->getSpecialist(specialistID)->getContainer()->getOwnerID() == userGameID;
+	}
+	bool canPromote(int specialistID) {
+		return ownsSpecialist(specialistID) && game->getSpecialist(specialistID)->getContainer() &&
+			game->getSpecialist(specialistID)->getContainer()->getOwnerID() == userGameID &&
+				dynamic_cast<Outpost*>(game->getSpecialist(specialistID)->getContainer());
 	}
 	bool canUndoSpecialist(int specialistID) { return game->hasSpecialist(specialistID) && game->getSpecialist(specialistID)->getOriginatingOrder() && game->getSpecialist(specialistID)->getOriginatingOrder()->getTimestamp() > settings.clientToGameTime(getTimeMillis()); }
 	int getSpecialistOriginatingOrder(int specialistID) { return canUndoSpecialist(specialistID) ? game->getSpecialist(specialistID)->getOriginatingOrder()->getID() : -1; }
 	String getSpecialistOriginatingOrderType(int specialistID) { return canUndoSpecialist(specialistID) ? String(game->getSpecialist(specialistID)->getOriginatingOrder()->getType().c_str()) : ""; }
-	bool ownsSpecialist(int specialistID) { return game->getSpecialist(specialistID)->getOwnerID() == userGameID; }
+	bool ownsSpecialist(int specialistID) { return game->hasSpecialist(specialistID) && game->getSpecialist(specialistID)->getOwnerID() == userGameID; }
 	bool ownsObj(int objID) { return game->hasPosObject(objID) && game->getPosObject(objID)->getOwnerID() == userGameID; }
 
 
+    String getNextVictoryMessage();
 	double getNextVictoryTime();
 	PlayerNode* getNextVictoryPlayer();
 	double getNextArrivalEvent(int vesselID);
 	double getNextProductionEvent(int outpostID);
+	double getNextHireEvent();
 	double getNextBattleEvent(int objID);
 	bool canViewNextBattle(int objID);
 	Array getBattlePhases();
@@ -210,15 +234,16 @@ public:
 	int getNextBattleVictorUnits(int objID);
 	Array getNextBattleCaptures(int objID);
 
-	bool canHire() { return game->getPlayer(userGameID)->getHiresAt(settings.clientToGameTime(current)) >= 0; }
+	bool canHire() { return game && game->hasPlayer(userGameID) && game->getPlayer(userGameID)->getHiresAt(settings.clientToGameTime(getCurrent()) - game->getTime()) >= 0 && dynamic_cast<Outpost*>(game->getPlayer(userGameID)->getSpawnLocation()) && game->getPlayer(userGameID)->getSpawnLocation()->getOwnerID() == userGameID; }
 	bool hasStarted() { return current >= game->getStartTime(); }
 	bool hasEnded() { return game->hasEnded() && currentGame->hasEnded(); }
-	bool hasLost() { return game->getPlayer(userGameID)->hasLost() && currentGame->getPlayer(userGameID)->hasLost(); }
+	bool hasLost() { return game && game->hasPlayer(userGameID) && game->getPlayer(userGameID)->hasLost() && currentGame->getPlayer(userGameID)->hasLost(); }
 	bool isPaused() { return settings.clientIsPaused(getTime()); }
 
-	double getStartTime() { return game->getStartTime(); }
-	int getReferenceID() { return game->getReferenceID(); }
+	double getStartTime() { return completeGame->getStartTime(); }
+	int getReferenceID() { return completeGame->getReferenceID(); }
 
+	int getNumTeams() { return settings.number_of_teams; }
 	double getSimulationSpeed() { return settings.simulationSpeed; }
 	int getWidth() { return settings.width; }
 	int getHeight() { return settings.height; }

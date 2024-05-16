@@ -35,11 +35,11 @@ public:
 
 	int getProductionAmount() { return outpost->getProductionAmount(); }
 
-	int getShield() { return outpost != nullptr ? outpost->getShieldAt(getDiff()) : -1; }
+	int getShield() { return outpost ? outpost->getShieldAt(getDiff()) : -1; }
 
-	int getMaxShield() { return outpost != nullptr ? outpost->getMaxShield() : -1; }
+	int getMaxShield() { return outpost ? outpost->getMaxShield() : -1; }
 
-	int getMineCost() { return outpost != nullptr && outpost->getOwner() ? outpost->getOwner()->getMineCost() : -1; }
+	int getMineCost() { return outpost && outpost->getOwner() ? outpost->getOwner()->getMineCost() : -1; }
 
 	bool canMine() { return outpost->getOwner() && outpost->getUnits() >= outpost->getOwner()->getMineCost() && outpost->getType() != OutpostType::MINE; }
 
@@ -48,6 +48,8 @@ public:
 	bool isGenerator() { return outpost->getType() == OutpostType::GENERATOR; }
 
 	bool isMine() { return outpost->getType() == OutpostType::MINE; }
+
+	bool isBroken() { return outpost->getType() == OutpostType::BROKEN; }
 
 	String getName();
 };

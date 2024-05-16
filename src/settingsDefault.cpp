@@ -14,6 +14,8 @@ void SettingsDefault::_bind_methods() {
 	ClassDB::bind_static_method("SettingsDefault",D_METHOD("getSimulationTimescale"), &SettingsDefault::getSimulationTimescale);
 	ClassDB::bind_static_method("SettingsDefault",D_METHOD("getGameMode"), &SettingsDefault::getGameMode);
 	ClassDB::bind_static_method("SettingsDefault",D_METHOD("getPlayerColors"), &SettingsDefault::getPlayerColors);
+	ClassDB::bind_static_method("SettingsDefault",D_METHOD("getAllSpecialists"), &SettingsDefault::getAllSpecialists);
+	ClassDB::bind_static_method("SettingsDefault",D_METHOD("getSpecialistName"), &SettingsDefault::getSpecialistName);
 
 }
 

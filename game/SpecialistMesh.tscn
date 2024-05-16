@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://c1f04o6gimvxl" path="res://resources/images/whiteCircle.png" id="2_puof1"]
 [ext_resource type="Shader" path="res://SpecialistMesh3D.gdshader" id="2_vhvoe"]
 [ext_resource type="Material" uid="uid://ceshq08mjed03" path="res://resources/materials/SpecialistMesh.tres" id="3_74y6v"]
-[ext_resource type="Texture2D" uid="uid://b01ch1xp0y68k" path="res://resources/specialistIcons/Smuggler.png" id="3_wml8q"]
+[ext_resource type="Texture2D" uid="uid://hxbtj5f0qnsi" path="res://resources/specialistIcons/Smuggler.png" id="3_wml8q"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_ddm8n"]
 height = 0.2
@@ -14,6 +14,8 @@ radius = 2.0
 top_radius = 2.0
 bottom_radius = 2.0
 height = 0.25
+radial_segments = 16
+rings = 1
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_fxjoc"]
 render_priority = 0
@@ -25,6 +27,8 @@ shader_parameter/translucent = false
 top_radius = 2.5
 bottom_radius = 2.5
 height = 0.25
+radial_segments = 16
+rings = 1
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_uctjo"]
 albedo_color = Color(0, 0, 0, 1)
@@ -45,6 +49,7 @@ transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 
 visible = false
 layers = 2
 cast_shadow = 0
+gi_mode = 0
 mesh = SubResource("CylinderMesh_vmxwe")
 surface_material_override/0 = SubResource("ShaderMaterial_fxjoc")
 
@@ -52,6 +57,7 @@ surface_material_override/0 = SubResource("ShaderMaterial_fxjoc")
 transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 0, 0)
 layers = 2
 cast_shadow = 0
+gi_mode = 0
 mesh = SubResource("CylinderMesh_7vgjm")
 surface_material_override/0 = SubResource("StandardMaterial3D_uctjo")
 
@@ -60,7 +66,8 @@ transform = Transform3D(-1, 6.18173e-08, -6.18173e-08, 0, 0.707107, 0.707107, 8.
 layers = 2
 cast_shadow = 0
 ignore_occlusion_culling = true
-pixel_size = 0.04
+gi_mode = 0
+pixel_size = 0.08
 double_sided = false
 no_depth_test = true
 render_priority = 2
@@ -68,7 +75,7 @@ texture = SubResource("ViewportTexture_xim3k")
 
 [node name="SubViewport" type="SubViewport" parent="."]
 transparent_bg = true
-size = Vector2i(100, 100)
+size = Vector2i(50, 50)
 
 [node name="Control" type="Control" parent="SubViewport"]
 material = ExtResource("3_74y6v")
@@ -104,5 +111,6 @@ grow_vertical = 2
 size_flags_horizontal = 6
 size_flags_vertical = 6
 texture = ExtResource("3_wml8q")
+expand_mode = 1
 
 [connection signal="input_event" from="." to="." method="_on_input_event"]

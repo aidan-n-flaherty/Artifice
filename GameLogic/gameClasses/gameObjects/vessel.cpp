@@ -45,7 +45,7 @@ const Point Vessel::getTargetPos() const {
         returnVal = targetPos + targetDelta * t;
 
         // there's a shorter path if the projected arrival happens outside the wrap-around box
-        if(returnVal == getPosition().closest(returnVal)) break;
+        if(returnVal == getPosition().closest(returnVal)) continue;
         // if both paths fail, then return to origin
         else if(i == 1) return Point();
 
@@ -78,11 +78,11 @@ double Vessel::getSpeed(double speed, double simulationSpeed, Player* p, const s
     if(!p) return speed * (simulationSpeed * 2.0 / (60 * 60));
 
     if(controlsSpecialist(p, specialists, SpecialistType::GENERAL) || controlsSpecialist(p, specialists, SpecialistType::LIEUTENANT)) speed = fmax(speed, 1.5);
-    if(specialists.empty() && p->controlsSpecialist(SpecialistType::ADMIRAL)) speed = fmax(speed, 1.5);
+    if(specialists.empty() && p->controlsSpecialist(SpecialistType::ADMIRAL)) speed = fmax(speed, 1.0 + 0.5 * p->expSpecialistEffect(SpecialistType::ADMIRAL));
     if(controlsSpecialist(p, specialists, SpecialistType::ADMIRAL)) speed = fmax(speed, 2);
     if(controlsSpecialist(p, specialists, SpecialistType::HELMSMAN)) speed = fmax(speed, 2);
-    if(controlsSpecialist(p, specialists, SpecialistType::PIRATE) && (!target || dynamic_cast<Vessel*>(target))) speed = fmax(speed, 2);
-    if(controlsSpecialist(p, specialists, SpecialistType::SMUGGLER) && (!target || target->getOwnerID() == p->getID())) speed = fmax(speed, 3);
+    if(controlsSpecialist(p, specialists, SpecialistType::PIRATE) && (target && dynamic_cast<Vessel*>(target))) speed = fmax(speed, 2);
+    if(controlsSpecialist(p, specialists, SpecialistType::SMUGGLER) && target && target->getOwnerID() == p->getID()) speed = fmax(speed, 3);
 
     return speed * (simulationSpeed * 2.0 / (60 * 60));
 }
@@ -120,7 +120,7 @@ void Vessel::collision(Vessel* vessel, Vessel* other, double timestamp, std::mul
     }
     // Case 3: the other vessel is targeting this one
     else if(other->getTargetID() == vessel->getID()) {
-        if(other->getSpeed() > 0) seconds = vessel->distance(other->getTargetPos())/other->getSpeed();
+        if(other->getSpeed() > 0) seconds = other->distance(other->getTargetPos())/other->getSpeed();
     }
 
     if(seconds >= 0) {

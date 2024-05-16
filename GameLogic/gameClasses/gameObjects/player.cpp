@@ -49,10 +49,8 @@ int Player::getHiresAt(double& fractionalHires, double timeDiff) const {
     int hires = this->hires;
 
     fractionalHires += timeDiff * (1.0 / (24 * 60 * 60));
-    while(fractionalHires >= 1) {
-        fractionalHires -= 1;
-        hires += 1;
-    }
+    hires += int(fractionalHires);
+    fractionalHires -= int(fractionalHires);
 
     return hires;
 }
@@ -69,6 +67,8 @@ void Player::update(double timeDiff) {
 void Player::setDefeated(Game* game) {
     defeated = true;
     defeatedTime = game->getTime();
+
+    setRefresh(true);
 
     for(Vessel* v : vessels) v->setOwner(nullptr);
     for(Outpost* o : outposts) o->setOwner(nullptr);
@@ -106,7 +106,7 @@ std::list<Outpost*> Player::sortedOutposts(const PositionalObject* obj) {
 void Player::projectedVictory(Player* player, double timestamp, std::multiset<Event*, EventOrder> &events) {
     if(getSettings()->gameMode == Mode::MINING && resourceProductionSpeed() > 0) {
         int diff = ceil((getSettings()->resourcesToWin - (getResources() + fractionalProduction)) / resourceProductionSpeed());
-        if(diff < 0) diff = 0;
+        if(diff < 0) return;
         events.insert(new WinConditionEvent(timestamp + diff, player));
     }
 }
@@ -159,6 +159,21 @@ double Player::globalSonar() const {
     range = 1 + 0.25 * specialistCount(SpecialistType::INTELLIGENCE_OFFICER);
 
     return range;
+}
+
+
+double Player::expSpecialistEffect(SpecialistType t) const {
+    double effect = 0;
+    double amount = 1.0;
+
+    for(auto it = specialists.begin(); it != specialists.end(); ++it){
+        if((*it)->getType() == t && (*it)->getContainer()->getOwnerID() == getID()) {
+            effect += amount;
+            amount *= 0.5;
+        }
+    }
+
+    return effect;
 }
 
 int Player::specialistCount(SpecialistType t) const {
@@ -240,6 +255,11 @@ void Player::addOutpost(Outpost* outpost) {
 void Player::removeOutpost(Outpost* outpost) {
     for(auto it = outposts.begin(); it != outposts.end(); it++) {
         if((*it)->getID() == outpost->getID()) {
+            if(outpost->getType() == OutpostType::MINE) {
+                resources *= 1.0 - getSettings()->resourceReductionAmount;
+                fractionalProduction = 0;
+            }
+
             outposts.erase(it);
             break;
         }
@@ -305,6 +325,18 @@ int Player::getUnitsAt(double timeDiff) const {
     for(Vessel* v : vessels) totalUnits += v->getUnitsAt(timeDiff);
 
     return totalUnits;
+}
+
+int Player::dailyProductionRate() const {
+    int totalProductionRate = 0;
+
+    for(Outpost* o : outposts) {
+        if(o->getProductionAmount() > 0 && o->getType() == OutpostType::FACTORY) {
+            totalProductionRate += o->getProductionAmount();
+        }
+    }
+
+    return totalProductionRate * globalProductionSpeed() * 3.0;
 }
 
 std::unordered_map<int, int> Player::calculateUnitsAt(double& fractionalProduction, double timeDiff) const {
@@ -381,22 +413,12 @@ int Player::outpostsOfType(OutpostType t) const {
     return count;
 }
 
-bool Player::withinRange(PositionalObject* obj, double timeDiff) const {
-    if(obj->getOwnerID() == getID()) return true;
+double Player::nextHireEvent(double timeDiff) const {
+    int i = 1;
+    double time;
+    do {
+        time = (i++ - getFractionalHires()) / (getSettings()->simulationSpeed / (24 * 60 * 60));
+    } while(time < timeDiff);
 
-    Vessel* v = dynamic_cast<Vessel*>(obj);
-
-    for(Outpost* o : outposts) {
-        if(o->getPositionAt(timeDiff).closestDistance(obj->getPositionAt(timeDiff)) < o->getSonarRange()) return true;
-
-        if(v && v->getTargetID() == o->getID()) return true;
-    }
-
-    if(v) {
-        for(Vessel* v1 : vessels) {
-            if(v->getTargetID() == v1->getID()) return true;
-        }
-    }
-
-    return false;
+    return time;
 }

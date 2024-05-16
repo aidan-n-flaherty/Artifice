@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://c04qxpqrgw5cq"]
+[gd_scene load_steps=16 format=3 uid="uid://c04qxpqrgw5cq"]
 
 [ext_resource type="Shader" path="res://Background.gdshader" id="1_yal4h"]
 [ext_resource type="Script" path="res://Background.gd" id="2_41fco"]
@@ -7,6 +7,7 @@
 colors = PackedColorArray(0.345946, 0.345946, 0.345946, 1, 0.849621, 0.849621, 0.849621, 1)
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_r4ruq"]
+noise_type = 2
 frequency = 0.003
 cellular_distance_function = 1
 cellular_return_type = 6
@@ -20,6 +21,22 @@ seamless = true
 color_ramp = SubResource("Gradient_2s0lq")
 noise = SubResource("FastNoiseLite_r4ruq")
 
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_xbic2"]
+noise_type = 2
+seed = 1
+frequency = 0.003
+cellular_distance_function = 1
+cellular_return_type = 6
+domain_warp_type = 1
+domain_warp_fractal_octaves = 1
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_w14it"]
+width = 1024
+height = 1024
+seamless = true
+color_ramp = SubResource("Gradient_2s0lq")
+noise = SubResource("FastNoiseLite_xbic2")
+
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_kceku"]
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_dv8kp"]
@@ -30,13 +47,23 @@ noise = SubResource("FastNoiseLite_kceku")
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_0algg"]
 seed = 1
-domain_warp_enabled = true
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_l0w18"]
 width = 1024
 height = 1024
 seamless = true
 noise = SubResource("FastNoiseLite_0algg")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_f6bcx"]
+noise_type = 2
+fractal_octaves = 1
+cellular_jitter = 0.8
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_bt0lp"]
+width = 1024
+height = 1024
+invert = true
+noise = SubResource("FastNoiseLite_f6bcx")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_8khd5"]
 shader = ExtResource("1_yal4h")
@@ -45,8 +72,10 @@ shader_parameter/speed = 0.005
 shader_parameter/screenWidth = 1080.0
 shader_parameter/screenHeight = 1920.0
 shader_parameter/noise = SubResource("NoiseTexture2D_tg2tt")
+shader_parameter/noise1 = SubResource("NoiseTexture2D_w14it")
 shader_parameter/noise2 = SubResource("NoiseTexture2D_dv8kp")
 shader_parameter/noise3 = SubResource("NoiseTexture2D_l0w18")
+shader_parameter/noise4 = SubResource("NoiseTexture2D_bt0lp")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5fxya"]
 bg_color = Color(0, 0, 0, 1)

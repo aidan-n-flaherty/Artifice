@@ -13,11 +13,11 @@ config_version=5
 config/name="Artifice"
 run/main_scene="res://MainMenu.tscn"
 config/features=PackedStringArray("4.2", "Mobile")
-run/max_fps=60
+run/max_fps=200
 boot_splash/bg_color=Color(0, 0, 0, 1)
 boot_splash/image="res://resources/images/logo.png"
 boot_splash/fullsize=false
-config/icon="res://icon.svg"
+config/icon="res://resources/images/LogoNoText.png"
 
 [autoload]
 
@@ -26,9 +26,12 @@ GameData="*res://GameData.gd"
 Utilities="*res://Utilities.gd"
 WebSocketManager="*res://WebSocketManager.gd"
 ByteBrewEntry="*res://ios/plugins/ByteBrew/ByteBrewEntry.gd"
+DebugMenu="*res://addons/debug_menu/debug_menu.tscn"
 
 [debug]
 
+settings/stdout/print_fps=true
+settings/stdout/print_gpu_profile=true
 settings/stdout/verbose_stdout=true
 
 [display]
@@ -39,10 +42,15 @@ window/stretch/mode="viewport"
 window/stretch/aspect="expand"
 window/stretch/scale=2.0
 window/handheld/orientation=6
+window/vsync/vsync_mode=0
 
 [editor]
 
 run/main_run_args="--verbose"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/debug_menu/plugin.cfg")
 
 [input]
 
@@ -70,11 +78,9 @@ pointing/emulate_touch_from_mouse=true
 
 renderer/rendering_method="mobile"
 textures/vram_compression/import_etc2_astc=true
-lights_and_shadows/directional_shadow/size=16184
-lights_and_shadows/directional_shadow/size.mobile=16184
-lights_and_shadows/directional_shadow/soft_shadow_filter_quality=3
-lights_and_shadows/directional_shadow/soft_shadow_filter_quality.mobile=3
+lights_and_shadows/directional_shadow/size=256
+lights_and_shadows/directional_shadow/size.mobile=256
 textures/default_filters/use_nearest_mipmap_filter=true
 anti_aliasing/screen_space_roughness_limiter/enabled=false
-anti_aliasing/quality/msaa_2d=1
+anti_aliasing/quality/msaa_3d=1
 anti_aliasing/quality/screen_space_aa=1

@@ -21,10 +21,11 @@ void OutpostNode::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("isMine"), &OutpostNode::isMine);
 	ClassDB::bind_method(D_METHOD("isFactory"), &OutpostNode::isFactory);
 	ClassDB::bind_method(D_METHOD("isGenerator"), &OutpostNode::isGenerator);
+	ClassDB::bind_method(D_METHOD("isBroken"), &OutpostNode::isBroken);
 	ClassDB::bind_method(D_METHOD("getName"), &OutpostNode::getName);
 }
 
-OutpostNode::OutpostNode(Outpost* outpost) : PositionalNode("res://CityMesh.tscn", outpost), outpost(outpost) {
+OutpostNode::OutpostNode(Outpost* outpost) : PositionalNode("res://OutpostMesh.tscn", outpost), outpost(outpost) {
 	
 }
 
@@ -38,6 +39,6 @@ void OutpostNode::_process(double delta) {
 String OutpostNode::getName() {
 	if (outpost == nullptr) return "";
 	//return the name of an outpost (currently based on its ID)
-	std::string outpostStr = outpost->getSettings()->outpostNames[outpost->getID()];
+	std::string outpostStr = outpost->getSettings()->outpostNames[outpost->getID() % outpost->getSettings()->outpostNames.size()];
 	return String(outpostStr.c_str());
 }

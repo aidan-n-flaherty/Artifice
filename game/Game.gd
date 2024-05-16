@@ -14,15 +14,12 @@ var hasLost = false
 
 var menuButtons = []
 
+var userID: int
+
+var diff = 0
+
 # Called when the node enters the scene tree for the first time.
-func _ready():
-	menuButtons = [
-		$Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer/StatusContainer/StatusButton,
-		$Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer/ChatContainer/ChatButton,
-		$Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer/ShopContainer/ShopButton,
-		$Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer/EditorContainer/EditorButton
-	]
-	
+func _ready():	
 	get_viewport().connect("size_changed", resize)
 	
 	resize()
@@ -66,6 +63,12 @@ func resize():
 		if $Viewport/GameOverlay/VMenuBar.get_child_count() > 0:
 			var tabs = $Viewport/GameOverlay/VMenuBar.get_child(0)
 			
+			tabs.get_node("Horizontal").show()
+			tabs.get_node("Vertical").hide()
+			
+			tabs.add_theme_constant_override("margin_top", 40)
+			tabs.add_theme_constant_override("margin_left", 0)
+			
 			for child in tabs.get_node("HBoxContainer").get_children():
 				tabs.get_node("HBoxContainer").remove_child(child)
 				tabs.get_node("VBoxContainer").add_child(child)
@@ -76,6 +79,12 @@ func resize():
 		if $Viewport/GameOverlay/MarginContainer/HBoxContainer/HMenuBar.get_child_count() > 0:
 			var tabs = $Viewport/GameOverlay/MarginContainer/HBoxContainer/HMenuBar.get_child(0)
 			
+			tabs.get_node("Horizontal").hide()
+			tabs.get_node("Vertical").show()
+			
+			tabs.add_theme_constant_override("margin_top", 0)
+			tabs.add_theme_constant_override("margin_left", 40)
+			
 			for child in tabs.get_node("VBoxContainer").get_children():
 				tabs.get_node("VBoxContainer").remove_child(child)
 				tabs.get_node("HBoxContainer").add_child(child)
@@ -84,7 +93,7 @@ func resize():
 			$Viewport/GameOverlay/VMenuBar.add_child(tabs)
 	
 	if OS.get_name() == "iOS" or OS.get_name() == "Android":
-		$Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/VBoxContainer/HBoxContainer/DisplaySpacerL.custom_minimum_size.x = DisplayServer.get_display_safe_area().position.x
+		$Viewport/GameOverlay/MarginContainer/HBoxContainer/DisplaySpacerL.custom_minimum_size.x = DisplayServer.get_display_safe_area().position.x
 		$Viewport/GameOverlay/MarginContainer/HBoxContainer/DisplaySpacerR.custom_minimum_size.x = DisplayServer.screen_get_size().x - (DisplayServer.get_display_safe_area().position.x + DisplayServer.get_display_safe_area().size.x)
 
 func elementDisplay():
@@ -107,15 +116,21 @@ func init(gameID):
 	game.connect("selectSpecialist", selectSpecialist)
 	game.connect("deselect", deselect)
 	game.connect("deselectSpecialist", deselectSpecialist)
+	
+	GameData.loadUserDetail.connect(viewUser)
+	GameData.loadGameDetail.connect(viewGameDetail)
+	GameData.loadGame.connect(viewGame)
 
 	var startTime = int(Time.get_unix_time_from_system())
 	
 	$Viewport/Viewport3D.add_child(game)
 	
+	$Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer/ShopContainer.visible = game.getUserGameID() != -1
+	$Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer/ChatContainer.visible = game.getUserGameID() != -1
+	
 	$Viewport/GameOverlay/MarginContainer/VTimeline/Timeline.init(gameID)
 	tabDisplay().get_node("Panel/Status").init(gameID)
 	$Viewport/Viewport3D/CameraManager.init(gameID)
-	$Viewport/Viewport3D/TerrainManager.init(gameID)
 	
 	tabDisplay().get_node("Panel/Shop").init(gameID)
 	tabDisplay().get_node("Panel/Chat").init(gameID)
@@ -136,6 +151,15 @@ func init(gameID):
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	var details = GameData.getGameDetails(gameID)
+	
+	var message = game.getNextVictoryMessage()
+	
+	if message != "" and not GameData.isFinished(gameID):
+		$Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/VBoxContainer/VictoryMessage.show()
+		$Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/VBoxContainer/VictoryMessage.text = message
+	else:
+		$Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/VBoxContainer/VictoryMessage.hide()
+		$Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/VBoxContainer/VictoryMessage.text = ""
 	
 	if not game.hasStarted() or game.isPaused():
 		$Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/NotStarted.show()
@@ -179,9 +203,29 @@ func _process(delta):
 	
 	if details.gameData.hostID == GameData.id and details.gameData.startTime > Time.get_unix_time_from_system() + 2 * 365 * 24 * 60 * 60:
 		tabDisplay().get_node("Panel/GameEditor").setEditable(true)
+		tabDisplay().get_node("Panel/GameEditor").setActivatable(true)
 	else:
 		tabDisplay().get_node("Panel/GameEditor").setEditable(false)
-		
+		tabDisplay().get_node("Panel/GameEditor").setActivatable(false)
+	
+	var rect = $Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay.get_global_rect()
+	
+	var s = get_viewport().get_visible_rect().size.y * 1.0 / DisplayServer.screen_get_size(DisplayServer.window_get_current_screen()).y
+	
+	var screenY = DisplayServer.screen_get_size(DisplayServer.window_get_current_screen()).y * s
+	
+	
+	var keyboardTop = screenY - (DisplayServer.virtual_keyboard_get_height() if DisplayServer.has_feature(DisplayServer.FEATURE_VIRTUAL_KEYBOARD) else 0) * s
+	
+	if keyboardTop < rect.position.y + rect.size.y - 75:
+		diff = 0.5 * diff + 0.5 * (rect.position.y + rect.size.y - 75 - keyboardTop)
+	elif abs(diff) > 0.01:
+		diff *= 0.5
+	else:
+		diff = 0
+	
+	$Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay.add_theme_constant_override("margin_bottom", 150 + diff)
+	
 func addOrder(type, referenceID, timestamp, arguments):
 	GameData.addOrder(gameID, type, referenceID, timestamp, arguments)
 
@@ -282,27 +326,58 @@ func _on_back_button_pressed():
 func _on_camera_manager_unselect():
 	setMenuDisplay(null, false)
 	
-	for button in menuButtons:
-		button.button_pressed = false
+	if get_viewport().size.x > get_viewport().size.y:
+		if $Viewport/GameOverlay/MarginContainer/HBoxContainer/HMenuBar.get_child_count() > 0:
+			var tabs = $Viewport/GameOverlay/MarginContainer/HBoxContainer/HMenuBar.get_child(0)
+			
+			for child in tabs.get_node("VBoxContainer").get_children():
+				if child.get_child_count() > 0:
+					child.get_child(0).button_pressed = false
+	else:
+		if $Viewport/GameOverlay/VMenuBar.get_child_count() > 0:
+			var tabs = $Viewport/GameOverlay/VMenuBar.get_child(0)
+			
+			for child in tabs.get_node("HBoxContainer").get_children():
+				if child.get_child_count() > 0:
+					child.get_child(0).button_pressed = false
 
+func viewUser(userID: int):
+	self.userID = userID
+	
+	$AnimationPlayer.play("fade_to_user")
 
-func _on_animation_player_animation_finished(anim_name):
-	if anim_name == "fade_to_black":
-		$Viewport/Viewport3D/CameraManager/FloorDisplay.remove_child(game.getFloorDisplay())
-		game.getFloorDisplay().set_process(false)
-		$Viewport/Viewport3D.remove_child(game)
-		game.set_process(false)
-		game.set_visible(false)
-		game.suspend()
+func viewGame(gameID: int, past: bool):
+	GameData.viewGameCompletion(gameID, past)
+
+func viewGameDetail(gameID: int):
+	GameData.viewGameDetailCompletion(gameID)
+	
+func _exit_tree():
+	$Viewport/Viewport3D/CameraManager/FloorDisplay.remove_child(game.getFloorDisplay())
+	game.getFloorDisplay().set_process(false)
+	$Viewport/Viewport3D.remove_child(game)
+	
+	game.set_process(false)
+	game.set_visible(false)
+	game.suspend()
 		
+func _on_animation_player_animation_finished(anim_name):
+	if anim_name == "fade_to_user":
+		GameData.viewUserCompletion(userID)
+	elif anim_name == "fade_to_black":
 		#GameData.games.erase(gameID)
 		#game.queue_free()
 		#game.getFloorDisplay().queue_free()
-	
-		GameData.goto_scene("res://MainMenu.tscn")
+		
+		if GameData.exitGameToMenu():
+			GameData.goto_scene("res://MainMenu.tscn")
 	elif anim_name == "slide_down":
 		tabDisplay().get_node("Panel").hide()
 		
 		if menuDisplay:
 			menuDisplay.hide()
 			menuDisplay = null
+
+
+func _on_shop_deselect_shop():
+	_on_camera_manager_unselect()

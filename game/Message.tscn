@@ -1,6 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://4o681gofc1wg"]
+[gd_scene load_steps=5 format=3 uid="uid://4o681gofc1wg"]
 
 [ext_resource type="Script" path="res://Message.gd" id="1_clcsq"]
+[ext_resource type="Theme" uid="uid://tg7ina762c6q" path="res://resources/themes/UITheme.tres" id="2_jleqy"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nk3lw"]
 bg_color = Color(0.247059, 0.521569, 0.968627, 1)
@@ -9,7 +10,8 @@ corner_radius_top_right = 25
 corner_radius_bottom_left = 25
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b2bbd"]
-bg_color = Color(0.231373, 0.231373, 0.239216, 1)
+bg_color = Color(0.20802, 0.20802, 0.21527, 1)
+border_width_left = 8
 corner_radius_top_left = 25
 corner_radius_top_right = 25
 corner_radius_bottom_right = 25
@@ -17,16 +19,20 @@ corner_radius_bottom_right = 25
 [node name="Message" type="MarginContainer"]
 anchors_preset = 10
 anchor_right = 1.0
-offset_bottom = 43.0
+offset_bottom = 72.0
 grow_horizontal = 2
+size_flags_horizontal = 3
+mouse_filter = 2
 script = ExtResource("1_clcsq")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
+mouse_filter = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
 visible = false
 layout_mode = 2
+mouse_filter = 2
 theme_override_constants/margin_left = 20
 theme_override_constants/margin_top = 20
 theme_override_constants/margin_right = 20
@@ -34,10 +40,12 @@ theme_override_constants/margin_bottom = 0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/MarginContainer"]
 layout_mode = 2
+mouse_filter = 2
 
 [node name="TimeContainer" type="MarginContainer" parent="VBoxContainer/MarginContainer/VBoxContainer"]
 visible = false
 layout_mode = 2
+mouse_filter = 2
 theme_override_constants/margin_top = 20
 theme_override_constants/margin_bottom = 20
 
@@ -57,45 +65,67 @@ horizontal_alignment = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 0
 
 [node name="LSpacer" type="Control" parent="VBoxContainer/HBoxContainer"]
 visible = false
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
+size_flags_stretch_ratio = 0.01
+mouse_filter = 2
+
+[node name="LSpacer2" type="Control" parent="VBoxContainer/HBoxContainer"]
+visible = false
+custom_minimum_size = Vector2(2.08165e-12, 2.08165e-12)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.01
+mouse_filter = 2
 
 [node name="Control" type="MarginContainer" parent="VBoxContainer/HBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 3
+size_flags_horizontal = 4
 
 [node name="SelfSent" type="Panel" parent="VBoxContainer/HBoxContainer/Control"]
 visible = false
 layout_mode = 2
 size_flags_horizontal = 3
+mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_nk3lw")
 
 [node name="OtherSent" type="Panel" parent="VBoxContainer/HBoxContainer/Control"]
 visible = false
 layout_mode = 2
 size_flags_horizontal = 3
+mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_b2bbd")
 
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/HBoxContainer/Control"]
+custom_minimum_size = Vector2(2.08165e-12, 2.08165e-12)
 layout_mode = 2
+mouse_filter = 2
 theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 10
+theme_override_constants/margin_top = 15
 theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 10
+theme_override_constants/margin_bottom = 15
 
-[node name="Label" type="RichTextLabel" parent="VBoxContainer/HBoxContainer/Control/MarginContainer"]
-clip_contents = false
+[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/Control/MarginContainer"]
+custom_minimum_size = Vector2(2.08165e-12, 2.08165e-12)
 layout_mode = 2
-focus_mode = 2
-theme_override_colors/default_color = Color(1, 1, 1, 1)
-text = "qpwoeipqwieo pqweoi qpwoe qpwoei qpw"
-fit_content = true
-selection_enabled = true
+theme = ExtResource("2_jleqy")
+
+[node name="RSpacer2" type="Control" parent="VBoxContainer/HBoxContainer"]
+visible = false
+custom_minimum_size = Vector2(2.08165e-12, 2.08165e-12)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.01
+mouse_filter = 2
 
 [node name="RSpacer" type="Control" parent="VBoxContainer/HBoxContainer"]
 visible = false
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
+size_flags_stretch_ratio = 0.01
+mouse_filter = 2

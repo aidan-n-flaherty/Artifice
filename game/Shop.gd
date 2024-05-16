@@ -1,5 +1,7 @@
 extends Control
 
+signal deselectShop
+
 var gameID
 
 var game
@@ -18,8 +20,8 @@ func init(gameID):
 	
 	for specialistNum in specialists:
 		var item = ResourceLoader.load("res://SpecialistOffer.tscn").instantiate()
-		item.specialistNum = specialistNum
-		item.init(gameID)
+		item.init(specialistNum, gameID, true)
+		item.hired.connect(hired)
 		
 		$VBoxContainer/ScrollContainer/Stack.add_child(item)
 
@@ -27,3 +29,6 @@ func init(gameID):
 func _process(delta):
 	var hires = game.getHires()
 	$VBoxContainer/Label.text = "You can hire " + str(hires) + " specialist" + ("" if hires == 1 else "s")
+
+func hired():
+	emit_signal("deselectShop")

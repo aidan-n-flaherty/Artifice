@@ -1,38 +1,15 @@
-[gd_scene load_steps=9 format=3 uid="uid://dcji62ofxfmw2"]
+[gd_scene load_steps=8 format=3 uid="uid://dcji62ofxfmw2"]
 
 [ext_resource type="Script" path="res://PlayerTag.gd" id="1_j33fx"]
-[ext_resource type="Texture2D" uid="uid://b5vdodthk832g" path="res://resources/images/flag.png" id="2_y3icm"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dkyom"]
-bg_color = Color(1, 1, 1, 1)
-corner_radius_top_left = 20
-corner_radius_top_right = 20
-corner_radius_bottom_right = 20
-corner_radius_bottom_left = 20
-corner_detail = 16
+[ext_resource type="Theme" uid="uid://tg7ina762c6q" path="res://resources/themes/UITheme.tres" id="2_nxgvv"]
+[ext_resource type="FontFile" uid="uid://bt7qlnun0cepj" path="res://resources/fonts/nasalization-free/nasalization-rg.otf" id="3_ylxf1"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hl7n8"]
 bg_color = Color(1, 1, 1, 1)
-corner_radius_top_left = 30
-corner_radius_top_right = 30
-corner_radius_bottom_right = 30
-corner_radius_bottom_left = 30
-corner_detail = 16
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mlsyb"]
-bg_color = Color(1, 1, 1, 1)
-corner_radius_top_left = 30
-corner_radius_top_right = 30
-corner_radius_bottom_right = 30
-corner_radius_bottom_left = 30
-corner_detail = 16
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cm8ws"]
-bg_color = Color(1, 1, 1, 1)
-corner_radius_top_left = 30
-corner_radius_top_right = 30
-corner_radius_bottom_right = 30
-corner_radius_bottom_left = 30
+corner_radius_top_left = 50
+corner_radius_top_right = 50
+corner_radius_bottom_right = 50
+corner_radius_bottom_left = 50
 corner_detail = 16
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wyw27"]
@@ -42,17 +19,21 @@ border_width_top = 4
 border_width_right = 4
 border_width_bottom = 4
 border_color = Color(1, 1, 1, 1)
-corner_radius_top_left = 20
-corner_radius_top_right = 20
-corner_radius_bottom_right = 20
-corner_radius_bottom_left = 20
+corner_radius_top_left = 50
+corner_radius_top_right = 50
+corner_radius_bottom_right = 50
+corner_radius_bottom_left = 50
+corner_detail = 16
+
+[sub_resource type="FontVariation" id="FontVariation_ir4ne"]
+base_font = ExtResource("3_ylxf1")
+variation_embolden = 0.5
 
 [sub_resource type="LabelSettings" id="LabelSettings_kwpe0"]
+font = SubResource("FontVariation_ir4ne")
 font_size = 20
-outline_size = 10
 outline_color = Color(0, 0, 0, 1)
 shadow_size = 20
-shadow_color = Color(0, 0, 0, 0.219608)
 shadow_offset = Vector2(2.08165e-12, 2.08165e-12)
 
 [node name="PlayerTag" type="MarginContainer"]
@@ -65,10 +46,10 @@ script = ExtResource("1_j33fx")
 
 [node name="Button" type="Button" parent="."]
 layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_dkyom")
+theme_override_styles/normal = SubResource("StyleBoxFlat_hl7n8")
 theme_override_styles/hover = SubResource("StyleBoxFlat_hl7n8")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_mlsyb")
-theme_override_styles/disabled = SubResource("StyleBoxFlat_cm8ws")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_hl7n8")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_hl7n8")
 toggle_mode = true
 
 [node name="Panel" type="Panel" parent="."]
@@ -80,9 +61,9 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_wyw27")
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 20
+theme_override_constants/margin_top = 15
 theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 20
+theme_override_constants/margin_bottom = 15
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
 layout_mode = 2
@@ -91,17 +72,9 @@ theme_override_constants/separation = 20
 
 [node name="Label" type="Label" parent="MarginContainer/HBoxContainer"]
 layout_mode = 2
+theme = ExtResource("2_nxgvv")
 text = "Testing"
 label_settings = SubResource("LabelSettings_kwpe0")
 horizontal_alignment = 1
 
-[node name="Report" type="TextureButton" parent="MarginContainer/HBoxContainer"]
-modulate = Color(0, 0, 0, 1)
-custom_minimum_size = Vector2(30, 30)
-layout_mode = 2
-texture_normal = ExtResource("2_y3icm")
-ignore_texture_size = true
-stretch_mode = 5
-
 [connection signal="toggled" from="Button" to="." method="_on_button_toggled"]
-[connection signal="pressed" from="MarginContainer/HBoxContainer/Report" to="." method="_on_report_pressed"]

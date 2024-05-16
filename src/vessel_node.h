@@ -14,6 +14,9 @@ class VesselNode : public PositionalNode {
 
 private:
 	Vessel* vessel = nullptr;
+
+protected:
+	static void _bind_methods();
 	
 public:
     VesselNode(Vessel* vessel);
@@ -21,6 +24,8 @@ public:
     ~VesselNode() {}
 
     void _process(double delta) override;
+	
+	bool isGift() { return vessel->isGift(); }
 		
 	void setReference(Vessel* vessel) {
 		PositionalNode::setReference(vessel, 1);

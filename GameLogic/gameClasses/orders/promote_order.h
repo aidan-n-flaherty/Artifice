@@ -45,6 +45,16 @@ public:
             std::cout << "ORDER ERROR: does not own specialist" << std::endl;
             return nullptr;
         }
+
+        if(specialist->getContainer()->getOwnerID() != getSenderID()) {
+            std::cout << "ORDER ERROR: player does not own specialist's container" << std::endl;
+            return nullptr;
+        }
+
+        if(!dynamic_cast<Outpost*>(specialist->getContainer())) {
+            std::cout << "ORDER ERROR: specialist not at outpost" << std::endl;
+            return nullptr;
+        }
         
         SpecialistType t;
 
@@ -53,6 +63,8 @@ public:
         } catch(...) {
             return nullptr;
         }
+
+        if(game->getSettings()->specialistBans.find(t) != game->getSettings()->specialistBans.end()) return nullptr;
 
         bool canPromote = false;
         for(SpecialistType option : specialist->promotionOptions()) {

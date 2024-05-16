@@ -7,8 +7,9 @@ var capacity = 0
 func _ready():
 	pass # Replace with function body.
 
-func init(game, player, username, units, capacity, resources, largest, win, outposts, factories, generators, mines, color):
+func init(game, player, username, dailyProduction, units, capacity, resources, largest, win, outposts, factories, generators, mines, color):
 	$MarginContainer/HBoxContainer/VBoxName/Name.text = str(username)
+	$MarginContainer/HBoxContainer/MarginContainer/MarginContainer/VBox/HBox2/DailyProduction.text = "+%d / day" % dailyProduction
 	$MarginContainer/HBoxContainer/MarginContainer/MarginContainer/VBox/HBox2/Units.text = str(units)
 	$MarginContainer/HBoxContainer/MarginContainer/MarginContainer/VBox/HBox1/Outposts.text = "= " + str(outposts)
 	$MarginContainer/HBoxContainer/MarginContainer/MarginContainer/VBox/HBox1/Factories.text = str(factories)
@@ -34,7 +35,14 @@ func init(game, player, username, units, capacity, resources, largest, win, outp
 	$MarginContainer/HBoxContainer/MarginContainer/MarginContainer/VBox/HBox1/minesIcon.modulate = color
 	
 	if(game.getUserGameID() != player.getID()):
-		$Panel.modulate = Color(0.5, 0.5, 0.5)
+		$Panel.modulate = Color(0.0, 0.0, 0.0)
+	
+	if game.getNumTeams() > 1:
+		$MarginContainer/HBoxContainer/VBoxName/Team.show()
+		$MarginContainer/HBoxContainer/VBoxName/Team.text = "Team #" + str(1 + player.getTeamID())
+	else:
+		$MarginContainer/HBoxContainer/VBoxName/Team.hide()
+	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	$MarginContainer/HBoxContainer/MarginContainer/Units.value = 0.9 * $MarginContainer/HBoxContainer/MarginContainer/Units.value + 0.1 * units

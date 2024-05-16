@@ -24,6 +24,9 @@ func _process(delta):
 		queue_redraw()
 	
 func setShield(shield: int, maxShield: int):
+	if maxShield != self.maxShield:
+		queue_redraw()
+	
 	self.shield = shield
 	self.maxShield = maxShield
 	$ShieldContainer/Shield.text = str(shield)
@@ -31,6 +34,7 @@ func setShield(shield: int, maxShield: int):
 func setUnits(units: int):
 	self.units = units
 	$UnitsContainer/Units.text = str(units)
+
 func _draw():
 	var center = Vector2(size.x/2, size.y/2)
 	
@@ -40,9 +44,9 @@ func _draw():
 		var radius = size.x * 3/7
 		var angle_from = 45
 		var angle_to = angle_from + 160
-		var color = Color(1.0, 1.0, 1.0, 0.2)
+		var color = Color(0.0, 0.0, 0.0, 0.5)
 		var width = 25
-		draw_arc(center, radius, deg_to_rad(angle_from), deg_to_rad(angle_to), 16, color, width)
+		draw_arc(center, radius, deg_to_rad(angle_from), deg_to_rad(angle_to), 32, color, width)
 		
 		#width = 30
 		#color = Color(1.0, 1.0, 1.0, 0.5)
@@ -53,7 +57,7 @@ func _draw():
 		angle_to = angle_from + 160 * (fill - 0.01)
 		angle_from += 1.6
 		if angle_to >= angle_from:
-			draw_arc(center, radius, deg_to_rad(angle_from), deg_to_rad(angle_to), 16, color, width)
+			draw_arc(center, radius, deg_to_rad(angle_from), deg_to_rad(angle_to), 32, color, width)
 
 		return
 	
@@ -64,9 +68,9 @@ func _draw():
 		var angle_from = 45
 		var angle_to = angle_from + 160
 		
-		var color = Color(1.0, 1.0, 1.0, 0.5)
+		var color = Color(0.0, 0.0, 0.0, 0.5)
 		var width = 5
-		draw_arc(center, radius, deg_to_rad(angle_from), deg_to_rad(angle_to), 16, color, width)
+		draw_arc(center, radius, deg_to_rad(angle_from), deg_to_rad(angle_to), 32, color, width)
 
 		if fill <= 0:
 			continue
@@ -81,6 +85,6 @@ func _draw():
 		angle_to = angle_from + 160 * (fill - 0.01)
 		angle_from += 1.6
 		if angle_to >= angle_from:
-			draw_arc(center, radius, deg_to_rad(angle_from), deg_to_rad(angle_to), 16, color, width)
+			draw_arc(center, radius, deg_to_rad(angle_from), deg_to_rad(angle_to), 32, color, width)
 	
 	get_parent().render_target_update_mode = SubViewport.UPDATE_ONCE

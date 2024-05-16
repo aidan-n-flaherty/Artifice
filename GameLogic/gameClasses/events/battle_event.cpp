@@ -43,18 +43,6 @@ void BattleEvent::specialistPhase(Game* game) {
         addMessage(b->getOwnerID(), b->getOwner()->getName() + "'s Lieutenant kills " + std::to_string(a->removeUnits(5)) + " units");
     }
 
-    if(!a->getSpecialists().empty()) {
-        for(int i = 0; i < a->ownerSpecialistCount(SpecialistType::GENERAL); i++) {
-            addMessage(a->getOwnerID(), a->getOwner()->getName() + "'s General kills " + std::to_string(b->removeUnits(10)) + " units");
-        }
-    }
-
-    if(!b->getSpecialists().empty()) {
-        for(int i = 0; i < b->ownerSpecialistCount(SpecialistType::GENERAL); i++) {
-            addMessage(b->getOwnerID(), b->getOwner()->getName() + "'s General kills " + std::to_string(a->removeUnits(10)) + " units");
-        }
-    }
-
     for(int i = 0; i < a->specialistCount(SpecialistType::WAR_HERO); i++) {
         addMessage(a->getOwnerID(), a->getOwner()->getName() + "'s War Hero kills " + std::to_string(b->removeUnits(20)) + " units");
     }
@@ -78,35 +66,6 @@ void BattleEvent::specialistPhase(Game* game) {
         if(v2->controlsSpecialist(SpecialistType::SABOTEUR)) {
             addMessage(v2->getOwnerID(), v2->getOwner()->getName() + "'s Saboteur redirects the enemy vessel to its origin.");
             v1->returnHome();
-        }
-
-        if(v1->controlsSpecialist(SpecialistType::DOUBLE_AGENT) != v2->controlsSpecialist(SpecialistType::DOUBLE_AGENT)) {
-            if(v1->controlsSpecialist(SpecialistType::DOUBLE_AGENT)) {
-                addMessage(v1->getOwnerID(), v1->getOwner()->getName() + "'s Double Agent swaps all specialists, swaps vessel ownership, destroys all units on both sides.");
-            }
-
-            if(v2->controlsSpecialist(SpecialistType::DOUBLE_AGENT)) {
-                addMessage(v2->getOwnerID(), v2->getOwner()->getName() + "'s Double Agent swaps all specialists, swaps vessel ownership, and destroys all units on both sides.");
-            }
-
-            // change ownership of all specialists
-            for(Specialist* specialist : v1->getSpecialists()) {
-                if(v1->hasOwner()) v1->getOwner()->removeSpecialist(specialist);
-                if(v2->hasOwner()) v2->getOwner()->addSpecialist(specialist);
-            }
-
-            for(Specialist* specialist : v2->getSpecialists()) {
-                if(v2->hasOwner()) v2->getOwner()->removeSpecialist(specialist);
-                if(v1->hasOwner()) v1->getOwner()->addSpecialist(specialist);
-            }
-
-            v1->setUnits(0);
-            v2->setUnits(0);
-
-            // swap owners
-            Player* v2Owner = v2->getOwner();
-            v2->setOwner(v1->getOwner());
-            v1->setOwner(v2Owner);
         }
     }
 
@@ -137,12 +96,24 @@ void BattleEvent::postSpecialistPhase(Game* game) {
         return;
     }
 
-    if(b->ownerControlsSpecialist(SpecialistType::KING)) {
-        addMessage(b->getOwnerID(), b->getOwner()->getName() + "'s King kills " + std::to_string(a->removeUnits(int(unitsB / 3.0))) + " units");
+    for(int i = 0; i < a->ownerSpecialistCount(SpecialistType::KING); i++) {
+        addMessage(a->getOwnerID(), a->getOwner()->getName() + "'s King kills " + std::to_string(b->removeUnits(int(unitsA * 1.0 / (i + 4)))) + " units");
     }
 
-    if(a->ownerControlsSpecialist(SpecialistType::KING)) {
-        addMessage(a->getOwnerID(), a->getOwner()->getName() + "'s King kills " + std::to_string(b->removeUnits(int(unitsA / 3.0))) + " units");
+    for(int i = 0; i < b->ownerSpecialistCount(SpecialistType::KING); i++) {
+        addMessage(b->getOwnerID(), b->getOwner()->getName() + "'s King kills " + std::to_string(a->removeUnits(int(unitsB * 1.0 / (2 * i + 4)))) + " units");
+    }
+
+    if(!a->getSpecialists().empty()) {
+        for(int i = 0; i < a->ownerSpecialistCount(SpecialistType::GENERAL); i++) {
+            addMessage(a->getOwnerID(), a->getOwner()->getName() + "'s General kills " + std::to_string(b->removeUnits(10)) + " units");
+        }
+    }
+
+    if(!b->getSpecialists().empty()) {
+        for(int i = 0; i < b->ownerSpecialistCount(SpecialistType::GENERAL); i++) {
+            addMessage(b->getOwnerID(), b->getOwner()->getName() + "'s General kills " + std::to_string(a->removeUnits(10)) + " units");
+        }
     }
 
     setPhaseUnits();
@@ -238,11 +209,17 @@ void BattleEvent::postCombatSpecialistPhase(Game* game) {
         int range = game->getSettings()->defaultSonar/5;
 
         for(const auto &v : game->getVessels()) {
-            if(a->distance(v.second->getPosition()) <= range) game->removeVessel(v.second);
+            if(a->distance(v.second->getPosition()) <= range) {
+                game->removeVessel(v.second);
+            }
         }
 
         for(const auto &o : game->getOutposts()) {
             if(a->distance(o.second->getPosition()) <= range) {
+                if(o.second->getType() == OutpostType::MINE && o.second->hasOwner()) {
+                    o.second->getOwner()->removeResources(o.second->getOwner()->getResources() * game->getSettings()->resourceReductionAmount);
+                }
+                
                 o.second->setType(OutpostType::BROKEN);
                 o.second->setUnits(0);
 
@@ -257,11 +234,17 @@ void BattleEvent::postCombatSpecialistPhase(Game* game) {
         int range = game->getSettings()->defaultSonar/5;
 
         for(const auto &v : game->getVessels()) {
-            if(b->distance(v.second->getPosition()) <= range) game->removeVessel(v.second);
+            if(b->distance(v.second->getPosition()) <= range) {
+                game->removeVessel(v.second);
+            }
         }
 
         for(const auto &o : game->getOutposts()) {
             if(b->distance(o.second->getPosition()) <= range) {
+                if(o.second->getType() == OutpostType::MINE && o.second->hasOwner()) {
+                    o.second->getOwner()->removeResources(o.second->getOwner()->getResources() * game->getSettings()->resourceReductionAmount);
+                }
+
                 o.second->setType(OutpostType::BROKEN);
                 o.second->setUnits(0);
 

@@ -18,3 +18,4 @@ func _process(delta):
 func activate():
 	if await HTTPManager.putReq("/editMatch", serialize(), { "gameID": self.gameID }):
 		GameData.loadGameSettings(self.gameID)
+		deserialize(self.gameID)

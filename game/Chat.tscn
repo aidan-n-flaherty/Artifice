@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://c7rmgavx0p0po"]
+[gd_scene load_steps=5 format=3 uid="uid://c7rmgavx0p0po"]
 
 [ext_resource type="Script" path="res://Chat.gd" id="1_dw2co"]
 [ext_resource type="Theme" uid="uid://tg7ina762c6q" path="res://resources/themes/UITheme.tres" id="1_yqui8"]
+[ext_resource type="PackedScene" uid="uid://dg4lhqpoy431" path="res://CustomScroll.tscn" id="3_e038s"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_dyrnh"]
 font_size = 40
@@ -42,10 +43,8 @@ size_flags_horizontal = 8
 theme = ExtResource("1_yqui8")
 text = "   New   "
 
-[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer"]
+[node name="ScrollContainer" parent="VBoxContainer" instance=ExtResource("3_e038s")]
 layout_mode = 2
-size_flags_vertical = 3
-theme = ExtResource("1_yqui8")
 horizontal_scroll_mode = 0
 
 [node name="ChatContainer" type="VBoxContainer" parent="VBoxContainer/ScrollContainer"]

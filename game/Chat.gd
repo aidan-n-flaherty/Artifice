@@ -17,12 +17,20 @@ func init(gameID):
 	refresh(await GameData.loadChats(gameID))
 	
 func refresh(newChats):
-	newChats.sort_custom(func(a, b): return a.readTimestamp > b.readTimestamp)
+	for chat in newChats:
+		chat.messages.sort_custom(func(a, b): return a.timestamp < b.timestamp)
+	
+	newChats.sort_custom(func(a, b):
+		var lastMessageA = a.messages[len(a.messages) - 1] if len(a.messages) > 0 else null
+		var lastMessageB = b.messages[len(b.messages) - 1] if len(b.messages) > 0 else null
+		return (lastMessageA != null and lastMessageB != null and lastMessageA.timestamp > lastMessageB.readTimestamp) or (lastMessageA != null and lastMessageB == null)
+	)
 	
 	var pos = 0
 	for chat in newChats:
 		if chats.has(chat.id):
 			$VBoxContainer/ScrollContainer/ChatContainer.move_child(chats[chat.id], pos)
+			chats[chat.id].init(gameID, chat.id)
 			pos += 1
 			continue
 		
@@ -47,10 +55,15 @@ func chatChanged(chatID: int):
 		refresh(GameData.getChats(gameID))
 
 func selected(conversation):
+	$VBoxContainer/HBoxContainer.hide()
+	$VBoxContainer/ScrollContainer.hide()
 	$ChatPanel.add_child(conversation)
 
 func deselected(conversation):
+	$VBoxContainer/HBoxContainer.show()
+	$VBoxContainer/ScrollContainer.show()
 	$ChatPanel.remove_child(conversation)
+	refresh(GameData.getChats(gameID))
 
 func _on_new_chat_pressed():
 	var conversation = preload("res://Conversation.tscn").instantiate()

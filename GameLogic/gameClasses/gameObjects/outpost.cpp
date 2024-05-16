@@ -123,7 +123,7 @@ int Outpost::getSonarRange() const {
 
     if(!hasOwner()) return range;
 
-    range = int((getOwner()->globalSonar() + 0.5 * controlsSpecialist(SpecialistType::PRINCESS)) * range);
+    range = int((getOwner()->globalSonar() + 0.5 * expSpecialistEffect(SpecialistType::PRINCESS)) * range);
 
     return range;
 }
@@ -136,4 +136,11 @@ int Outpost::getProductionAmount() {
     productionAmount += 3 * specialistCount(SpecialistType::TYCOON);
 
     return productionAmount;
+}
+
+void Outpost::addSpecialists(std::list<Specialist*> specialists) {
+    for(Specialist* specialist : specialists) {
+        specialist->recharge();
+        addSpecialist(specialist);
+    }
 }

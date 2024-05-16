@@ -18,17 +18,26 @@ var game
 func _ready():
 	pass # Replace with function body.
 
-func init(gameID, chatID):
+func init(gameID: int, chatID: int):
 	game = GameData.getGame(gameID)
 	self.gameID = gameID
 	
 	self.chatID = chatID
 	chat = GameData.getChat(chatID)
 	
+	chat.messages.sort_custom(func(a, b): return a.timestamp < b.timestamp)
 	var lastMessage = chat.messages[len(chat.messages) - 1] if len(chat.messages) > 0 else null
 	
 	if lastMessage:
-		$MarginContainer/VBoxContainer/LastMessage.text = (await GameData.getUser(lastMessage.senderID)).username + ": " + lastMessage.content
+		var user = await GameData.getUser(lastMessage.senderID)
+		
+		if user:
+			$MarginContainer/VBoxContainer/LastMessage.text = user.username + ": " + lastMessage.content
+		
+		if lastMessage.senderID != GameData.getSelfID() and lastMessage.timestamp > chat.readTimestamp:
+			$Button.modulate = Color.DARK_GRAY
+		else:
+			$Button.modulate = Color.BLACK
 	
 	participants = []
 	
@@ -42,6 +51,9 @@ func init(gameID, chatID):
 		if len(chat.participants) >= 2 and i == len(chat.participants) - 1:
 			$MarginContainer/VBoxContainer/Participants.text += "and "
 		$MarginContainer/VBoxContainer/Participants.text += user.username
+	
+	if chat.public:
+		$MarginContainer/VBoxContainer/Participants.text = "Public Chat: " + $MarginContainer/VBoxContainer/Participants.text
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -55,4 +67,5 @@ func _on_button_pressed():
 	emit_signal("selected", conversation)
 	
 func deselectedConversation(conversation):
+	init(gameID, chatID)
 	emit_signal("deselected", conversation)

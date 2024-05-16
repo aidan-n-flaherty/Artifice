@@ -1,0 +1,96 @@
+[gd_scene load_steps=9 format=3 uid="uid://db3usjdlu5cvp"]
+
+[ext_resource type="Theme" uid="uid://tg7ina762c6q" path="res://resources/themes/UITheme.tres" id="1_lkiex"]
+[ext_resource type="Script" path="res://Queue.gd" id="1_ticsk"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sdu37"]
+bg_color = Color(0, 0, 0, 0.156863)
+border_color = Color(0.901961, 0.901961, 0.901961, 1)
+corner_radius_top_left = 50
+corner_radius_top_right = 50
+corner_radius_bottom_right = 50
+corner_radius_bottom_left = 50
+shadow_color = Color(1, 1, 1, 0.6)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4ry0j"]
+bg_color = Color(0, 0, 0, 0.156863)
+border_color = Color(0.901961, 0.901961, 0.901961, 1)
+corner_radius_top_left = 50
+corner_radius_top_right = 50
+corner_radius_bottom_right = 50
+corner_radius_bottom_left = 50
+shadow_color = Color(1, 1, 1, 0.6)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lvw4p"]
+bg_color = Color(0, 0, 0, 0.235294)
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 50
+corner_radius_top_right = 50
+corner_radius_bottom_right = 50
+corner_radius_bottom_left = 50
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_i31q5"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ty02b"]
+bg_color = Color(0, 0, 0, 0.176471)
+corner_radius_top_left = 50
+corner_radius_top_right = 50
+corner_radius_bottom_right = 50
+corner_radius_bottom_left = 50
+corner_detail = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mjsbn"]
+bg_color = Color(0, 0, 0, 0.470588)
+corner_radius_top_left = 50
+corner_radius_top_right = 50
+corner_radius_bottom_right = 50
+corner_radius_bottom_left = 50
+corner_detail = 12
+
+[node name="Queue" type="MarginContainer"]
+size_flags_horizontal = 3
+script = ExtResource("1_ticsk")
+
+[node name="Unselected" type="Button" parent="."]
+visible = false
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_sdu37")
+theme_override_styles/hover = SubResource("StyleBoxFlat_4ry0j")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_lvw4p")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_i31q5")
+
+[node name="Joining" type="Button" parent="."]
+visible = false
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_ty02b")
+theme_override_styles/hover = SubResource("StyleBoxFlat_ty02b")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_ty02b")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_i31q5")
+
+[node name="Selected" type="Button" parent="."]
+visible = false
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_mjsbn")
+theme_override_styles/hover = SubResource("StyleBoxFlat_mjsbn")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_mjsbn")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_i31q5")
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("1_lkiex")
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 30
+theme_override_constants/margin_right = 15
+theme_override_constants/margin_bottom = 30
+
+[node name="Title" type="Label" parent="Margin"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_lkiex")
+text = "Quick Play (Ranked)"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[connection signal="pressed" from="Unselected" to="." method="_on_unselected_pressed"]
+[connection signal="pressed" from="Selected" to="." method="_on_selected_pressed"]
