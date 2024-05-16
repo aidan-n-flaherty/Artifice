@@ -26,7 +26,7 @@ public:
     }
 
     void run(Game* game) override {
-        if(target->hasOwner() && vessel->getTarget()->getOwnerID() != target->getOwnerID()) game->addNotification(new AttackNotification(getTimestamp(), vessel->getID(), target->getOwnerID()));
+         if(target->hasOwner() && vessel->hasOwner() && target->getOwnerID() != vessel->getOwnerID() && vessel->getTarget()->getOwnerID() != target->getOwnerID() && (!game->teamGame() || target->getOwner()->getTeamID() != vessel->getOwner()->getTeamID())) game->addNotification(new AttackNotification(getTimestamp(), vessel->getID(), target->getOwnerID()));
 
         vessel->setOriginatingOrder(getOriginatingOrder());
         vessel->setTarget(target);

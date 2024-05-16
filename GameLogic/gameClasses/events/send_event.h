@@ -37,7 +37,7 @@ public:
         vessel->setOriginatingOrder(getOriginatingOrder());
 
         game->addVessel(vessel);
-        if(target->hasOwner() && target->getOwnerID() != outpost->getOwnerID()) game->addNotification(new AttackNotification(getTimestamp(), vessel->getID(), target->getOwnerID()));
+        if(target->hasOwner() && outpost->hasOwner() && target->getOwnerID() != outpost->getOwnerID() && (!game->teamGame() || target->getOwner()->getTeamID() != outpost->getOwner()->getTeamID())) game->addNotification(new AttackNotification(getTimestamp(), vessel->getID(), target->getOwnerID()));
     }
 };
 

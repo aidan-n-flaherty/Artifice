@@ -30,8 +30,6 @@ DebugMenu="*res://addons/debug_menu/debug_menu.tscn"
 
 [debug]
 
-settings/stdout/print_fps=true
-settings/stdout/print_gpu_profile=true
 settings/stdout/verbose_stdout=true
 
 [display]
