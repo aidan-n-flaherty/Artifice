@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://be40a30mo8arh"]
+[gd_scene load_steps=9 format=3 uid="uid://be40a30mo8arh"]
 
 [ext_resource type="Script" path="res://JellyfishMesh.gd" id="1_67kmm"]
 [ext_resource type="ArrayMesh" uid="uid://b1on2kir3uh0r" path="res://resources/outpost/shieldAlternate2.obj" id="1_xfmtc"]
@@ -6,6 +6,7 @@
 [ext_resource type="Shader" path="res://Cloth.gdshader" id="3_e4syj"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ngkqi"]
+resource_local_to_scene = true
 transparency = 1
 shading_mode = 0
 albedo_color = Color(1, 1, 1, 0.117647)
@@ -15,12 +16,21 @@ resource_local_to_scene = true
 render_priority = 0
 shader = ExtResource("3_e4syj")
 shader_parameter/dark = false
+shader_parameter/rotation = 2.08165e-12
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_s0cio"]
+transparency = 1
+albedo_color = Color(1, 1, 1, 0)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6euiv"]
+resource_local_to_scene = true
+transparency = 1
+albedo_color = Color(1, 1, 1, 0)
 emission_enabled = true
 emission = Color(1, 1, 1, 1)
 emission_energy_multiplier = 16.0
 disable_receive_shadows = true
+point_size = 4.1
 
 [node name="JellyfishMesh" type="Node3D"]
 script = ExtResource("1_67kmm")
@@ -31,4 +41,5 @@ mesh = ExtResource("1_xfmtc")
 surface_material_override/0 = SubResource("StandardMaterial3D_ngkqi")
 surface_material_override/1 = ExtResource("2_boht3")
 surface_material_override/2 = SubResource("ShaderMaterial_77716")
+surface_material_override/3 = SubResource("StandardMaterial3D_s0cio")
 surface_material_override/4 = SubResource("StandardMaterial3D_6euiv")

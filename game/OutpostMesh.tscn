@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://b01b6amie746a" path="res://OutpostSubMesh.tscn" id="2_ihlos"]
 [ext_resource type="Texture2D" uid="uid://458uxurryqvh" path="res://resources/images/Banner3.png" id="20_v2hdy"]
 [ext_resource type="Script" path="res://OutpostInfo.gd" id="21_b5fe2"]
-[ext_resource type="Texture2D" uid="uid://byuim6y4reelm" path="res://resources/images/black_circle.png" id="22_3le47"]
+[ext_resource type="Texture2D" uid="uid://mitwiba1a215" path="res://resources/images/black_circle.png" id="22_3le47"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_0ql3e"]
 height = 13.875
@@ -59,6 +59,12 @@ shape = SubResource("CylinderShape3D_we4w1")
 
 [node name="FlagSprite" type="Sprite3D" parent="."]
 transform = Transform3D(-1, -7.54979e-08, 6.60024e-15, 0, -2.18557e-08, -1, 1.50996e-07, -0.5, 4.37114e-08, -12.8056, 2.01714, 2.7042)
+sorting_offset = 1000.0
+pixel_size = 0.015
+texture = ExtResource("20_v2hdy")
+
+[node name="FlagSprite2" type="Sprite3D" parent="FlagSprite"]
+transform = Transform3D(0.62, 0, -5.09826e-22, 0, 1, 0, 3.39112e-22, 0, 1, -1.45298, -5.30615, 1.43051e-06)
 sorting_offset = 1000.0
 pixel_size = 0.015
 texture = ExtResource("20_v2hdy")

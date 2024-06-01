@@ -70,6 +70,8 @@ Game::Game(GameSettings settings, int simulatorID, double startTime, double endT
         this->settings->number_of_teams = -1;
     }
 
+    this->settings->outpostsToWin = (1 + (getPlayers().size() / 2)) * this->settings->outpostsPerPlayer;
+
     // start map generation
 
     int totalOutposts = playerInfo.size() * this->settings->outpostsPerPlayer;
@@ -265,8 +267,8 @@ Game::Game(GameSettings settings, int simulatorID, double startTime, double endT
             double sum_y = std::get<1>(curr_centroid_data[i]);
             int num_of_outposts = std::get<2>(curr_centroid_data[i]);
 
-            double average_x = sum_x / num_of_outposts;
-            double average_y = sum_y / num_of_outposts;
+            double average_x = num_of_outposts > 0 ? sum_x / num_of_outposts : 0;
+            double average_y = num_of_outposts > 0 ? sum_y / num_of_outposts : 0;
 
             current_centroids[i].setX(average_x);
             current_centroids[i].setY(average_y);
@@ -414,6 +416,10 @@ Game::Game(GameSettings settings, int simulatorID, double startTime, double endT
 Game::Game(const Game& game) : startTime(game.startTime), stateTime(game.stateTime), cacheEnabled(game.cacheEnabled), ended(game.ended), endTime(game.endTime), referenceID(game.referenceID), simulatorID(game.simulatorID), lastExecutedOrder(game.lastExecutedOrder), nextEndState(game.nextEndState), gameEndTime(game.gameEndTime), gameObjCounter(game.gameObjCounter), settings(game.settings) {
     for(Event* event : game.events) events.insert(event->copy());
     for(Event* event : game.simulatedEvents) simulatedEvents.push_back(event->copy());
+    for(Order* order : game.orders) orders.insert(order->copy());
+    for(Order* order : game.invalidOrders) invalidOrders.push_back(order->copy());
+    for(Order* order : game.simulatedOrders) simulatedOrders.push_back(order->copy());
+
     for(const auto& pair : game.vessels) vessels[pair.first] = new Vessel(*pair.second);
     for(const auto& pair : game.players) players[pair.first] = new Player(*pair.second);
     for(const auto& pair : game.outposts) outposts[pair.first] = new Outpost(*pair.second);
@@ -425,8 +431,6 @@ Game::Game(const Game& game) : startTime(game.startTime), stateTime(game.stateTi
     for(const auto& pair : outposts) pair.second->updatePointers(this);
     for(const auto& pair : specialists) pair.second->updatePointers(this);
 
-    orders = game.orders;
-    invalidOrders = game.invalidOrders;
     cache = game.cache;
 }
 
@@ -437,10 +441,11 @@ Game::~Game() {
     for(const auto& pair : players) delete pair.second;
     for(const auto& pair : outposts) delete pair.second;
     for(const auto& pair : specialists) delete pair.second;
+    for(Order* o : orders) delete o;
+    for(Order* o : invalidOrders) delete o;
+    for(Order* o : simulatedOrders) delete o;
 
     if(cache.size() == 0) {
-        for(Order* o : orders) delete o;
-        for(Order* o : invalidOrders) delete o;
         delete settings;
     }
 }
@@ -491,7 +496,7 @@ void Game::updateEvents() {
 
         removeRelevant(player->getID());
 
-        player->projectedVictory(player, stateTime, events);
+        if(!ended) player->projectedVictory(player, stateTime, events);
     }
 
     // All outposts flagged for update (e.g. changed specialists)
@@ -554,6 +559,7 @@ void Game::cacheState() {
 ** Fills up the inputted list of invalid orders with orders that were rejected.
 */
 std::list<std::pair<int, int>> Game::run(bool pastEnd) {
+    std::cout << "Running " << events.size() << ", " << orders.size() << std::endl;
     updateEvents();
 
     bool ranOutOfTime = false;
@@ -589,6 +595,7 @@ std::list<std::pair<int, int>> Game::run(bool pastEnd) {
             if(!converted) {
                 invalidOrders.push_back(order);
             } else {
+                simulatedOrders.push_back(order);
                 event = events.insert(converted);
                 break;
             }
@@ -622,32 +629,51 @@ std::list<std::pair<int, int>> Game::run(bool pastEnd) {
 
         updateEvents();
     }
+    std::cout << "Ended " << events.size() << ", " << orders.size() << std::endl;
 
     if(!ranOutOfTime) nextEndState = std::numeric_limits<double>::max();
 
     return getScores();
 }
 
-std::vector<Player*> Game::sortedPlayers() const {
+std::vector<Player*> Game::sortedPlayers(double timeDiff) const {
     std::vector<Player*> scores;
-    for(auto& pair : getPlayers()) scores.push_back(pair.second);
+
+    if(cacheEnabled) {
+        std::shared_ptr<const Game> game = shared_from_this();
+
+        if(ended) {
+            auto it = cache.begin();
+            for(; it != cache.end(); it++) {
+                game = *it;
+
+                if(game->ended) break;
+            }
+
+            if(it == cache.end()) game = shared_from_this();
+        }
+
+        for(auto& pair : game->getPlayers()) scores.push_back(pair.second);
+    } else {
+        for(auto& pair : getPlayers()) scores.push_back(pair.second);
+    }
 
     switch(settings->gameMode) {
     case Mode::MINING:
-        std::sort(scores.begin(), scores.end(), [](Player* a, Player* b) {
-            return a->getResources() != b->getResources() ? a->getResources() > b->getResources()
+        std::sort(scores.begin(), scores.end(), [&timeDiff](Player* a, Player* b) {
+            return a->getResourcesAt(timeDiff) != b->getResourcesAt(timeDiff) ? a->getResourcesAt(timeDiff) > b->getResourcesAt(timeDiff)
                 : a->hasLost() != b->hasLost() ? !a->hasLost()
-                : !a->hasLost() && a->getUnits() != b->getUnits() ? a->getUnits() > b->getUnits()
+                : !a->hasLost() && a->getUnitsAt(timeDiff) != b->getUnitsAt(timeDiff) ? a->getUnitsAt(timeDiff) > b->getUnitsAt(timeDiff)
                 : a->hasLost() && a->getDefeatedTime() != b->getDefeatedTime() ? a->getDefeatedTime() > b->getDefeatedTime()
                 : a->getID() > b->getID();
         });
 
         break;
     case Mode::CONQUEST: case Mode::ELIMINATION:
-        std::sort(scores.begin(), scores.end(), [](Player* a, Player* b) {
+        std::sort(scores.begin(), scores.end(), [&timeDiff](Player* a, Player* b) {
             return a->getOutposts().size() != b->getOutposts().size() ? a->getOutposts().size() > b->getOutposts().size()
                 : a->hasLost() != b->hasLost() ? !a->hasLost()
-                : !a->hasLost() && a->getUnits() != b->getUnits() ? a->getUnits() > b->getUnits()
+                : !a->hasLost() && a->getUnitsAt(timeDiff) != b->getUnitsAt(timeDiff) ? a->getUnitsAt(timeDiff) > b->getUnitsAt(timeDiff)
                 : a->hasLost() && a->getDefeatedTime() != b->getDefeatedTime() ? a->getDefeatedTime() > b->getDefeatedTime()
                 : a->getID() > b->getID();
         });
@@ -677,7 +703,7 @@ std::vector<Player*> Game::sortedPlayers() const {
 }
 
 bool Game::hasEnded() const {
-    std::vector<Player*> sorted = sortedPlayers();
+    std::vector<Player*> sorted = sortedPlayers(0);
     std::unordered_set<int> teams;
 
     // eliminating all other players always ends the game
@@ -693,9 +719,8 @@ bool Game::hasEnded() const {
     case Mode::MINING:
         return sorted.front()->getResources() >= settings->resourcesToWin;
     case Mode::CONQUEST: {
-        int outpostsToWin = (1 + (getPlayers().size() / 2)) * settings->outpostsPerPlayer;
 
-        return sorted.front()->getOutposts().size() >= outpostsToWin;
+        return sorted.front()->getOutposts().size() >= settings->outpostsToWin;
     }
     default: return false;
     }
@@ -704,14 +729,14 @@ bool Game::hasEnded() const {
 }
 
 void Game::endGame() {
-    gameEndTime = stateTime;
+    if(!ended) gameEndTime = stateTime;
     ended = true;
 }
 
 std::list<std::pair<int, int>> Game::getScores() {
     std::list<std::pair<int, int>> scores;
 
-    std::vector<Player*> sorted = sortedPlayers();
+    std::vector<Player*> sorted = sortedPlayers(0);
 
     if(!hasEnded()) return scores;
 
@@ -727,7 +752,15 @@ std::list<std::pair<int, int>> Game::getScores() {
             scoreDelta += settings->eloKValue * (score - expected);
         }
 
-        scores.push_back(std::make_pair<int, int>(sorted[i]->getUserID(), round(scoreDelta / (sorted.size() - 1))));
+        if(settings->simulationSpeed >= 1000) {
+            scoreDelta *= 0.25;
+        }
+
+        if(scoreDelta < 1 && scoreDelta > -1) {
+            scoreDelta = scoreDelta >= 0 ? 1 : -1;
+        }
+
+        scores.push_back(std::make_pair<int, int>(sorted[i]->getUserID(), round(scoreDelta)));
     }
 
     return scores;
@@ -825,16 +858,32 @@ const BattleEvent* Game::simulatedBattle(int eventID) {
     return nullptr;
 }
 
+Order* Game::getOrder(int ID) {
+    std::list<Order*> allOrders;
+    allOrders.insert(allOrders.end(), orders.begin(), orders.end());
+    allOrders.insert(allOrders.end(), simulatedOrders.begin(), simulatedOrders.end());
+
+    for(Order* o : allOrders) {
+        if(o->getID() == ID) return o;
+    }
+
+    return nullptr;
+}
+
 std::shared_ptr<Game> Game::removeOrder(int ID) {
     std::shared_ptr<Game> returnVal = shared_from_this();
 
     for(auto it = cache.begin(); it != cache.end(); it++) {
-        if((*it)->getLastExecutedOrder() == ID) break;
+        const std::multiset<Order*, OrderOrder> &cacheOrders = (*it)->getOrders();
+
+        if(std::find_if(cacheOrders.begin(), cacheOrders.end(), [&ID](Order* o) {
+            return o->getID() == ID;
+        }) == cacheOrders.end()) break;
         else returnVal = *it;
 
-        for(Order* o : returnVal->getOrders()) {
+        for(Order* o : cacheOrders) {
             if(o->getID() == ID) {
-                returnVal->removeOrder(o);
+                o->setCanceled(true);
                 break;
             }
         }
@@ -843,7 +892,7 @@ std::shared_ptr<Game> Game::removeOrder(int ID) {
     return returnVal;
 }
 
-void Game::addOrder(const std::string &type, int ID, int referenceID, double timestamp, int senderID, int arguments[], int argCount) {
+void Game::addOrder(const std::string &type, int ID, int referenceID, bool canceled, double timestamp, int senderID, int arguments[], int argCount) {
     double time = timestamp;
 
     std::list<int> argumentIDs;
@@ -856,43 +905,43 @@ void Game::addOrder(const std::string &type, int ID, int referenceID, double tim
         argumentIDs.pop_front();
         int targetID = argumentIDs.front();
         argumentIDs.pop_front();
-        addOrder(new SendOrder(ID, time, senderID, numUnits, argumentIDs, originID, targetID, referenceID));
+        addOrder(new SendOrder(ID, time, senderID, numUnits, argumentIDs, originID, targetID, referenceID, canceled));
     } else if(type == "HIRE" && argumentIDs.size() >= 1) {
         int specialistID = argumentIDs.front();
         argumentIDs.pop_front();
-        addOrder(new HireOrder(ID, time, senderID, specialistID, referenceID));
+        addOrder(new HireOrder(ID, time, senderID, specialistID, referenceID, canceled));
     } else if(type == "RELEASE" && argumentIDs.size() >= 1) {
         int specialistID = argumentIDs.front();
         argumentIDs.pop_front();
-        addOrder(new ReleaseOrder(ID, time, senderID, specialistID, referenceID));
+        addOrder(new ReleaseOrder(ID, time, senderID, specialistID, referenceID, canceled));
     } else if(type == "GIFT" && argumentIDs.size() >= 1) {
         int vesselID = argumentIDs.front();
         argumentIDs.pop_front();
-        addOrder(new GiftOrder(ID, time, senderID, vesselID, referenceID));
+        addOrder(new GiftOrder(ID, time, senderID, vesselID, referenceID, canceled));
     } else if(type == "PROMOTE" && argumentIDs.size() >= 2) {
         int specialistID = argumentIDs.front();
         argumentIDs.pop_front();
         int promoteID = argumentIDs.front();
         argumentIDs.pop_front();
-        addOrder(new PromoteOrder(ID, time, senderID, specialistID, promoteID, referenceID));
+        addOrder(new PromoteOrder(ID, time, senderID, specialistID, promoteID, referenceID, canceled));
     } else if(type == "REROUTE" && argumentIDs.size() >= 2) {
         int vesselID = argumentIDs.front();
         argumentIDs.pop_front();
         int targetID = argumentIDs.front();
         argumentIDs.pop_front();
-        addOrder(new RerouteOrder(ID, time, senderID, vesselID, targetID, referenceID));
+        addOrder(new RerouteOrder(ID, time, senderID, vesselID, targetID, referenceID, canceled));
     } else if(type == "MINE" && argumentIDs.size() >= 1) {
         int outpostID = argumentIDs.front();
         argumentIDs.pop_front();
-        addOrder(new MineOrder(ID, time, senderID, outpostID, referenceID));
+        addOrder(new MineOrder(ID, time, senderID, outpostID, referenceID, canceled));
     } else if(type == "SURRENDER") {
-        addOrder(new SurrenderOrder(ID, time, senderID, referenceID));
+        addOrder(new SurrenderOrder(ID, time, senderID, referenceID, canceled));
     } else {
         std::cout << "Unknown order type" << std::endl;
     }
 }
 
-std::shared_ptr<Game> Game::processOrder(const std::string &type, int ID, int referenceID, double timestamp, int senderID, int arguments[], int argCount) {
+std::shared_ptr<Game> Game::processOrder(const std::string &type, int ID, int referenceID, bool canceled, double timestamp, int senderID, int arguments[], int argCount) {
     std::list<int> argumentIDs;
     for(int i = 0; i < argCount; i++) argumentIDs.push_back(arguments[i]);
 
@@ -902,7 +951,7 @@ std::shared_ptr<Game> Game::processOrder(const std::string &type, int ID, int re
         if(o->getID() == ID) return game;
     }
 
-    game->addOrder(type, ID, referenceID, timestamp, senderID, arguments, argCount);
+    game->addOrder(type, ID, referenceID, canceled, timestamp, senderID, arguments, argCount);
 
     return game;
 }
@@ -924,7 +973,7 @@ void Game::addSpecialist(Specialist* s) {
 }
 
 void Game::addOrder(Order* o) {
-    for(std::shared_ptr<Game> game : cache) game->orders.insert(o);
+    for(std::shared_ptr<Game> game : cache) game->orders.insert(o->copy());
 
     orders.insert(o);
 }
@@ -948,10 +997,6 @@ void Game::removeSpecialist(Specialist* s) {
     if(s->hasOwner()) s->getOwner()->removeSpecialist(s);
     if(s->getContainer()) s->getContainer()->removeSpecialist(s);
     s->remove();
-}
-
-void Game::removeOrder(Order* o) {
-    orders.erase(o);
 }
 
 std::list<Outpost*> Game::getTeamOutposts(int teamID) const {

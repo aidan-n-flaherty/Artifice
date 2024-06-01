@@ -5,6 +5,7 @@
 #include <cmath>
 #include <list>
 #include <ctime>
+#include "../gameObjects/vessel.h"
 #include "../event.h"
 #include "../game.h"
 #include "../events/reroute_event.h"
@@ -19,15 +20,17 @@ public:
     RerouteOrder(){};
     RerouteOrder(double timestamp, int senderID, int vesselID, int targetID, int referenceID) :
         Order(timestamp, senderID, referenceID), vesselID(vesselID), targetID(targetID) {}
-    RerouteOrder(int id, double timestamp, int senderID, int vesselID, int targetID, int referenceID) :
-        Order(id, timestamp, senderID, referenceID), vesselID(vesselID), targetID(targetID) {}
+    RerouteOrder(int id, double timestamp, int senderID, int vesselID, int targetID, int referenceID, bool canceled) :
+        Order(id, timestamp, senderID, referenceID, canceled), vesselID(vesselID), targetID(targetID) {}
 
-    void adjustIDs(int createdID) override {
-        if(vesselID >= createdID) vesselID++;
-        if(targetID >= createdID) targetID++;
+    Order* copy() override { return new RerouteOrder(*this); }
+
+    void adjustIDs(int createdID, int amount) override {
+        if(vesselID >= createdID) vesselID += amount;
+        if(targetID >= createdID) targetID += amount;
     }
 
-    Event* convert(Game* game) override {
+    Event* converted(Game* game) override {
         if(!game->hasPlayer(getSenderID()) || game->getPlayer(getSenderID())->hasLost()) return nullptr;
         
         if(!game->hasVessel(vesselID) || !game->hasPosObject(targetID)) return nullptr;

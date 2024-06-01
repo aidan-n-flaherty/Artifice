@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://dmg0putetptq4"]
+[gd_scene load_steps=8 format=3 uid="uid://dmg0putetptq4"]
 
 [ext_resource type="Script" path="res://GameButton.gd" id="1_rw82v"]
 [ext_resource type="Theme" uid="uid://tg7ina762c6q" path="res://resources/themes/UITheme.tres" id="2_d7fav"]
@@ -10,19 +10,11 @@
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1y7m7"]
 bg_color = Color(0, 0, 0, 0.156863)
 border_color = Color(0.901961, 0.901961, 0.901961, 1)
-corner_radius_top_left = 50
-corner_radius_top_right = 50
-corner_radius_bottom_right = 50
-corner_radius_bottom_left = 50
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
 shadow_color = Color(1, 1, 1, 0.6)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pru8h"]
-bg_color = Color(0, 0, 0, 0.235294)
-border_color = Color(1, 1, 1, 1)
-corner_radius_top_left = 50
-corner_radius_top_right = 50
-corner_radius_bottom_right = 50
-corner_radius_bottom_left = 50
 
 [node name="GameButton" type="MarginContainer"]
 anchors_preset = 10
@@ -33,16 +25,12 @@ mouse_filter = 0
 script = ExtResource("1_rw82v")
 
 [node name="Panel" type="Panel" parent="."]
-visible = false
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_1y7m7")
 
 [node name="Button" type="Button" parent="."]
 layout_mode = 2
 theme = ExtResource("2_d7fav")
-theme_override_styles/normal = SubResource("StyleBoxFlat_1y7m7")
-theme_override_styles/hover = SubResource("StyleBoxFlat_1y7m7")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_pru8h")
 
 [node name="Margin" type="MarginContainer" parent="."]
 layout_mode = 2

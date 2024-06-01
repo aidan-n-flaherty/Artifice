@@ -19,10 +19,12 @@ public:
     MineOrder(){};
     MineOrder(double timestamp, int senderID, int outpostID, int referenceID) :
         Order(timestamp, senderID, referenceID), outpostID(outpostID) {}
-    MineOrder(int id, double timestamp, int senderID, int outpostID, int referenceID) :
-        Order(id, timestamp, senderID, referenceID), outpostID(outpostID) {}
+    MineOrder(int id, double timestamp, int senderID, int outpostID, int referenceID, bool canceled) :
+        Order(id, timestamp, senderID, referenceID, canceled), outpostID(outpostID) {}
 
-    Event* convert(Game* game) override {
+    Order* copy() override { return new MineOrder(*this); }
+
+    Event* converted(Game* game) override {
         if(!game->hasPlayer(getSenderID()) || !game->hasOutpost(outpostID)) return nullptr;
         
         Player* player = game->getPlayer(getSenderID());

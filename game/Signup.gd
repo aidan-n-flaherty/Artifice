@@ -8,10 +8,11 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	$MarginContainer/VBoxContainer/Continue.disabled = len($MarginContainer/VBoxContainer/HBoxContainer/PhoneNumber.text) < 5
+	pass
 
 
 func _on_continue_pressed():
+	$MarginContainer/VBoxContainer/Continue.disabled = true
 	var number = $MarginContainer/VBoxContainer/HBoxContainer/CountryCode.text + $MarginContainer/VBoxContainer/HBoxContainer/PhoneNumber.text
 	var result = ""
 	
@@ -19,14 +20,21 @@ func _on_continue_pressed():
 		if number.unicode_at(i) >= 48 and number.unicode_at(i) <= 57:
 			result += number[i]
 	
-	var response = await GameData.requestCode(result)
-	if response:
-		var node = preload("res://SMSCode.tscn").instantiate()
-		if response.has("rejectionReason") and response["rejectionReason"] == "used":
-			node.setShare(true)
+	if len(result) > 5:
+		var response = await GameData.requestCode(result)
+		if response:
+			var node = preload("res://SMSCode.tscn").instantiate()
+			if response is Dictionary and response.has("rejectionReason") and response["rejectionReason"] == "used":
+				node.setShare(true)
+			
+			node.setPhoneNumber(result)
 		
-		node.setPhoneNumber(result)
+			GameData.goto_node(node)
+		else:
+			$MarginContainer/VBoxContainer/Label.text = "Invalid phone number."
 	
-		GameData.goto_node(node)
-	else:
-		$MarginContainer/VBoxContainer/Label.text = "Invalid phone number."
+	$MarginContainer/VBoxContainer/Continue.disabled = false
+
+
+func _on_phone_number_text_changed(new_text):
+	$MarginContainer/VBoxContainer/Continue.disabled = len($MarginContainer/VBoxContainer/HBoxContainer/PhoneNumber.text) < 5 or len($MarginContainer/VBoxContainer/HBoxContainer/CountryCode.text) == 0

@@ -21,25 +21,47 @@ func init(outpost, gameID):
 func _process(delta):
 	if not outpost.isInRadar():
 		$VBoxContainer/OutOfRange.show()
+		$VBoxContainer/HBoxContainer.hide()
 		$VBoxContainer/HBoxContainer2.hide()
 	else:
 		$VBoxContainer/OutOfRange.hide()
+		$VBoxContainer/HBoxContainer.show()
 		$VBoxContainer/HBoxContainer2.show()
+	
+	get_parent().color = outpost.getColor()
+	if outpost.getOwnerID() != -1:
+		get_parent().playerName = game.getPlayer(outpost.getOwnerID()).getName()
+	else:
+		get_parent().playerName = "Neutral"
 	
 	$Images/HBoxContainer/Factory.visible = (outpost.isInRadar() or outpost.canViewType()) and outpost.isFactory()
 	$Images/HBoxContainer/Generator.visible = (outpost.isInRadar() or outpost.canViewType()) and outpost.isGenerator()
 	$Images/HBoxContainer/Mine.visible = (outpost.isInRadar() or outpost.canViewType()) and outpost.isMine()
-		
-	if outpost.isFactory():
+	
+	if not (outpost.isInRadar() or outpost.canViewType()):
+		$VBoxContainer/HBoxContainer/Jump.hide()
+		$Images/HBoxContainer/Mine.hide()
+		$VBoxContainer/HBoxContainer/Cancel.hide()
+		$VBoxContainer/HBoxContainer/BattleForecast.hide()
+		return
+	elif outpost.isFactory():
 		$VBoxContainer/Type.text = "Factory"
-		$VBoxContainer/HBoxContainer/Spacer1.show()
-		$VBoxContainer/HBoxContainer/Jump.show()
-		$VBoxContainer/HBoxContainer2/VBoxContainer/Production.text = "+" + str(outpost.getProductionAmount()) + " in " + Utilities.timeToStr(game.getNextProductionEvent(outpost.getID()) - game.getTime())
+		if outpost.getOwnerID() != -1:
+			$VBoxContainer/HBoxContainer/Spacer1.show()
+			$VBoxContainer/HBoxContainer/Jump.show()
+			$VBoxContainer/HBoxContainer2/VBoxContainer/Production.text = "+" + str(outpost.getProductionAmount()) + " in " + Utilities.timeToStr(game.getNextProductionEvent(outpost.getID()) - game.getTime())
+		else:
+			$VBoxContainer/HBoxContainer/Spacer1.hide()
+			$VBoxContainer/HBoxContainer/Jump.hide()
 	elif outpost.isMine():
 		$VBoxContainer/Type.text = "Mine"
-		$VBoxContainer/HBoxContainer/Spacer1.show()
-		$VBoxContainer/HBoxContainer/Jump.show()
-		$VBoxContainer/HBoxContainer2/VBoxContainer/Production.text = ""
+		if outpost.getOwnerID() != -1:
+			$VBoxContainer/HBoxContainer/Spacer1.show()
+			$VBoxContainer/HBoxContainer/Jump.show()
+			$VBoxContainer/HBoxContainer2/VBoxContainer/Production.text = "+1 in " + Utilities.timeToStr(game.getNextProductionEvent(outpost.getID()) - game.getTime())
+		else:
+			$VBoxContainer/HBoxContainer/Spacer1.hide()
+			$VBoxContainer/HBoxContainer/Jump.hide()
 	elif outpost.isGenerator():
 		$VBoxContainer/Type.text = "Generator"
 		$VBoxContainer/HBoxContainer/Spacer1.hide()
@@ -72,7 +94,7 @@ func _process(delta):
 		$VBoxContainer/HBoxContainer/Cancel.hide()
 	
 	var battle = game.getNextBattleEvent(outpost.getID())
-	if battle >= 0:
+	if battle >= 0 and outpost.isInRadar():
 		$VBoxContainer/HBoxContainer/Spacer3.show()
 		$VBoxContainer/HBoxContainer/BattleForecast.show()
 	else: 
@@ -80,11 +102,6 @@ func _process(delta):
 		$VBoxContainer/HBoxContainer/BattleForecast.hide()
 	
 	$VBoxContainer/HBoxContainer2/Units.text = str(outpost.getUnits())
-	get_parent().color = outpost.getColor()
-	if outpost.getOwnerID() != -1:
-		get_parent().playerName = game.getPlayer(outpost.getOwnerID()).getName()
-	else:
-		get_parent().playerName = "Neutral"
 
 
 func _on_jump_pressed():

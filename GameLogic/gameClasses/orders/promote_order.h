@@ -21,10 +21,12 @@ public:
     PromoteOrder(){};
     PromoteOrder(double timestamp, int senderID, int specialistID, int promoteID, int referenceID) :
         Order(timestamp, senderID, referenceID), specialistID(specialistID), specialistTypeID(promoteID) {}
-    PromoteOrder(int id, double timestamp, int senderID, int specialistID, int promoteID, int referenceID) :
-        Order(id, timestamp, senderID, referenceID), specialistID(specialistID), specialistTypeID(promoteID) {}
+    PromoteOrder(int id, double timestamp, int senderID, int specialistID, int promoteID, int referenceID, bool canceled) :
+        Order(id, timestamp, senderID, referenceID, canceled), specialistID(specialistID), specialistTypeID(promoteID) {}
 
-    Event* convert(Game* game) override {
+    Order* copy() override { return new PromoteOrder(*this); }
+
+    Event* converted(Game* game) override {
         if(!game->hasPlayer(getSenderID())) return nullptr;
         
         Player* player = game->getPlayer(getSenderID());

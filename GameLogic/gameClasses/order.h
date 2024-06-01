@@ -32,13 +32,15 @@ private:
 
     int senderID = -1;
 
+    bool canceled = false;
+
 public:
     Order() : ID(counter++), referenceID(-1) {};
     Order(double timestamp, int senderID) : ID(counter++), timestamp(timestamp), senderID(senderID), referenceID(-1) {}
     Order(double timestamp, int senderID, int referenceID) : ID(counter++), timestamp(timestamp), senderID(senderID), referenceID(referenceID) {}
-    Order(int id, double timestamp, int senderID, int referenceID) : ID(id), timestamp(timestamp), senderID(senderID), referenceID(referenceID) {}
+    Order(int id, double timestamp, int senderID, int referenceID, bool canceled) : ID(id), timestamp(timestamp), senderID(senderID), referenceID(referenceID), canceled(canceled) {}
 
-    virtual void adjustIDs(int createdID) {}
+    virtual void adjustIDs(int createdID, int amount) {}
 
     void updateOrders(Game* game, const std::multiset<Order*, OrderOrder> &orders) const;
 
@@ -50,11 +52,19 @@ public:
 
     int getReferenceID() const { return referenceID; }
 
+    virtual int objIDDisplacement() { return 0; }
+
+    void setCanceled(bool canceled) { this->canceled = canceled; }
+
     /* IMPORTANT: All order validity preprocessing occurs in this function.
     ** It should be expected that no error checking occurs after the order is
     ** processed and converted to an event.
     */
-    virtual Event* convert(Game* game) { return nullptr; }
+    virtual Event* converted(Game* game) { return nullptr; }
+
+    virtual Event* convert(Game* game);
+
+    virtual Order* copy() { return new Order(*this); }
 
     virtual std::string getType() { return ""; }
 

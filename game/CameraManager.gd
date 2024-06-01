@@ -19,9 +19,9 @@ var zoom = 0
 
 var zoomStart = 0
 
-@export var maxZoom = 2.0
+@export var maxZoom = 1.8
 
-@export var minZoom = 0.5
+@export var minZoom = 0.6
 
 var selectedNode = null
 

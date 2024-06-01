@@ -7,10 +7,10 @@
 bg_color = Color(0, 0, 0, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_03yan"]
-content_margin_left = 5.0
-content_margin_top = 5.0
-content_margin_right = 5.0
-content_margin_bottom = 5.0
+content_margin_left = 15.0
+content_margin_top = 15.0
+content_margin_right = 15.0
+content_margin_bottom = 15.0
 bg_color = Color(0.116741, 0.116741, 0.116741, 1)
 corner_radius_top_left = 10
 corner_radius_top_right = 10
@@ -31,13 +31,9 @@ layout_mode = 2
 theme = ExtResource("1_0osbg")
 theme_override_styles/panel = SubResource("StyleBoxFlat_mkvc7")
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
+[node name="MarginContainer" type="CenterContainer" parent="."]
 layout_mode = 2
 theme = ExtResource("1_0osbg")
-theme_override_constants/margin_left = 300
-theme_override_constants/margin_top = 100
-theme_override_constants/margin_right = 300
-theme_override_constants/margin_bottom = 100
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
@@ -48,8 +44,24 @@ theme_override_constants/separation = 20
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme = ExtResource("1_0osbg")
-text = "Enter your phone number:"
+text = "Enter your phone number to receive a one-time passcode on your mobile device, which will link your phone number to your account:"
 horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Label2" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("1_0osbg")
+theme_override_colors/font_color = Color(0.57098, 0.57098, 0.57098, 1)
+text = "Message and data rates may apply. One message is sent per account authorization, and no subscription to future messages takes place. Reply 'HELP' for help, reply 'STOP' to cancel."
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+bbcode_enabled = true
+text = "[center][color=#7dcde8][url=https://sites.google.com/view/artifice-game/privacy-policy]privacy policy[/url][/color]     [color=#7dcde8][url=https://sites.google.com/view/artifice-game/terms-and-conditions]terms of service[/url][/color][/center]"
+fit_content = true
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -73,6 +85,7 @@ alignment = 1
 max_length = 3
 
 [node name="PhoneNumber" type="LineEdit" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(400, 2.08165e-12)
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("1_0osbg")
@@ -88,4 +101,6 @@ size_flags_horizontal = 4
 theme = ExtResource("1_0osbg")
 text = "Continue"
 
+[connection signal="text_changed" from="MarginContainer/VBoxContainer/HBoxContainer/CountryCode" to="." method="_on_phone_number_text_changed"]
+[connection signal="text_changed" from="MarginContainer/VBoxContainer/HBoxContainer/PhoneNumber" to="." method="_on_phone_number_text_changed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/Continue" to="." method="_on_continue_pressed"]

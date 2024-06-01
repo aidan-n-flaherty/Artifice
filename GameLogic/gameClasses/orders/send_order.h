@@ -22,20 +22,24 @@ private:
 
 public:
     SendOrder(){};
-    SendOrder(double timestamp, int senderID, int numUnits, std::list<int> specialistIDs, int originID, int targetID, int referenceID) :
+    SendOrder(double timestamp, int senderID, int numUnits, std::list<int> specialistIDs, int originID, int targetID, int referenceID, bool canceled) :
         Order(timestamp, senderID, referenceID), numUnits(numUnits), specialistIDs(specialistIDs),
         originID(originID), targetID(targetID) {}
-    SendOrder(int id, double timestamp, int senderID, int numUnits, std::list<int> specialistIDs, int originID, int targetID, int referenceID) :
-        Order(id, timestamp, senderID, referenceID), numUnits(numUnits), specialistIDs(specialistIDs),
+    SendOrder(int id, double timestamp, int senderID, int numUnits, std::list<int> specialistIDs, int originID, int targetID, int referenceID, bool canceled) :
+        Order(id, timestamp, senderID, referenceID, canceled), numUnits(numUnits), specialistIDs(specialistIDs),
         originID(originID), targetID(targetID) {}
 
-    void adjustIDs(int createdID) override {
-        if(originID >= createdID) originID++;
-        if(targetID >= createdID) targetID++;
-        for(int& specialistID : specialistIDs) if(specialistID >= createdID) specialistID++;
+    Order* copy() override { return new SendOrder(*this); }
+
+    void adjustIDs(int createdID, int amount) override {
+        if(originID >= createdID) originID += amount;
+        if(targetID >= createdID) targetID += amount;
+        for(int& specialistID : specialistIDs) if(specialistID >= createdID) specialistID += amount;
     }
 
-    Event* convert(Game* game) override {
+    int objIDDisplacement() override { return 1; }
+
+    Event* converted(Game* game) override {
         if(!game->hasPlayer(getSenderID()) || game->getPlayer(getSenderID())->hasLost()) {
             std::cout << "ORDER ERROR: player has lost" << std::endl;
             return nullptr;
@@ -46,7 +50,10 @@ public:
             return nullptr;
         }
 
-        if(originID == targetID) return nullptr;
+        if(originID == targetID) {
+            std::cout << "ORDER ERROR: cannot send to self" << std::endl;
+            return nullptr;
+        }
 
         Outpost* outpost = game->getOutpost(originID);
         PositionalObject* target = game->getPosObject(targetID);
@@ -57,6 +64,8 @@ public:
         }
 
         if(!outpost->canRemoveSpecialists(specialistIDs) || !outpost->canRemoveUnits(numUnits)) {
+            for(int i : specialistIDs) std::cout << i << " ";
+            std::cout << std::endl;
             std::cout << "ORDER ERROR: insufficient specialists or units" << std::endl;
 
             return nullptr;
@@ -86,8 +95,6 @@ public:
                 return nullptr;
             }
         }
-
-        updateOrders(game, game->getOrders());
 
         return new SendEvent(this, getTimestamp(), numUnits, specialists, outpost, target);
     }

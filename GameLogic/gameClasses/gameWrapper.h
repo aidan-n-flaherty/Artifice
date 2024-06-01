@@ -8,7 +8,7 @@ extern "C" {
   void addGameSetting(cGameSettings, char*, void*);
   cGame initGame(cGameSettings, int, double, int[], int, int);
   void freeGame(cGame);
-  void addOrder(cGame, char*, int, int, double, int, int[], int);
+  void addOrder(cGame, char*, int, int, int, double, int, int[], int);
   int runGame(cGame, int[]);
   int runGameWithNotifications(cGame, int[], double, double[], int[]);
 #ifdef __cplusplus

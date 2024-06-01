@@ -35,6 +35,8 @@ private:
 
 	bool viewType = false;
 
+	bool selfOwned = false;
+
 protected:
 	static void _bind_methods();
 	
@@ -61,6 +63,10 @@ public:
 	int getOwnerID() { return obj->getOwnerID(); }
 
 	int getUnits() { return obj != nullptr ? obj->getUnitsAt(timeDiff) : -1; }
+
+	void setSelfOwned(bool value) { selfOwned = value; }
+
+	bool getSelfOwned() { return selfOwned; }
 	
 	void select(Camera3D *camera, const Ref<InputEvent> &event, const Vector3 &position, const Vector3 &normal, int32_t shape_idx);
 	

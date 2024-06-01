@@ -34,6 +34,9 @@ func init(gameID):
 	self.gameID = gameID
 	game = GameData.getGame(gameID)
 	game.connect("moveTo", moveTo)
+	
+	$Horizontal/Measurement/VBoxContainer/HBoxContainer/Buffer.button_pressed = game.getBuff()
+	$Vertical/MarginContainer/VBoxContainer/Buffer.button_pressed = game.getBuff()
 
 func setVertical():
 	$Vertical.show()
@@ -56,10 +59,10 @@ func _process(delta):
 			change = target
 		game.setTime(time_start_pos - change)
 		
-		if userControlled and abs((time_start_pos - change) - Time.get_unix_time_from_system()) < 3600.0 / game.getSimulationSpeed():
-			change = time_start_pos - Time.get_unix_time_from_system() + 0.01
-			target = time_start_pos - Time.get_unix_time_from_system() + 0.01
-			game.setTime(Time.get_unix_time_from_system() + 0.01)
+		if userControlled and abs((time_start_pos - change) - game.getBuffTime()) < 3600.0 / game.getSimulationSpeed():
+			change = time_start_pos - game.getBuffTime() + 0.1
+			target = time_start_pos - game.getBuffTime() + 0.1
+			game.setTime(game.getBuffTime() + 0.1)
 			
 			userControlled = dragging
 	
@@ -77,11 +80,11 @@ func _process(delta):
 		for i in len($Horizontal/TimeIndicators/Markers.get_children()):
 			var pos = size.x/2 - 2.5 + 8 * diff + i * get_viewport_rect().size.x / 60.0
 			
-			while pos > get_viewport_rect().size.x:
-				pos -= get_viewport_rect().size.x
+			if pos > get_viewport_rect().size.x:
+				pos -= int(pos / get_viewport_rect().size.x) * get_viewport_rect().size.x
 				
-			while pos < 0:
-				pos += int(get_viewport_rect().size.x)
+			if pos < 0:
+				pos += int(ceil(abs(pos / get_viewport_rect().size.x))) * get_viewport_rect().size.x
 			
 			get_node("Horizontal/TimeIndicators/Markers/Panel" + str(i + 1)).position.x = pos
 			get_node("Horizontal/TimeIndicators/Markers/Panel" + str(i + 1)).size.y = 20 if i % 4 == 0 else 10
@@ -90,19 +93,19 @@ func _process(delta):
 		for i in len($Vertical/TimeIndicators/Markers.get_children()):
 			var pos = size.y/2 - 2.5 - 8 * diff + i * get_viewport_rect().size.y / 60.0
 			
-			while pos > get_viewport_rect().size.y:
-				pos -= get_viewport_rect().size.y
+			if pos > get_viewport_rect().size.y:
+				pos -= int(pos / get_viewport_rect().size.y) * get_viewport_rect().size.y
 				
-			while pos < 0:
-				pos += int(get_viewport_rect().size.y)
+			if pos < 0:
+				pos += int(ceil(abs(pos / get_viewport_rect().size.y))) * get_viewport_rect().size.y
 			
 			get_node("Vertical/TimeIndicators/Markers/Panel" + str(i + 1)).position.y = pos
 			get_node("Vertical/TimeIndicators/Markers/Panel" + str(i + 1)).size.x = 20 if i % 4 == 0 else 10
 			get_node("Vertical/TimeIndicators/Markers/Panel" + str(i + 1)).modulate = Color(0.3, 0.3, 0.3) if i % 4 == 0 else Color(0.2, 0.2, 0.2)
 
-		if abs(Time.get_unix_time_from_system() - game.getTime()) > 0.05:
-			$Horizontal/Measurement/VBoxContainer/HBoxContainer/Label.text = Utilities.timeToStr(game.getTime()-Time.get_unix_time_from_system())
-			$Vertical/Measurement/Label.text = Utilities.timeToStr(game.getTime()-Time.get_unix_time_from_system())
+		if abs(Time.get_unix_time_from_system() - game.getTime()) > 0.25:
+			$Horizontal/Measurement/VBoxContainer/HBoxContainer/Label.text = Utilities.timeToStr(round(game.getTime() - Time.get_unix_time_from_system()))
+			$Vertical/Measurement/Label.text = Utilities.timeToStr(round(game.getTime()-Time.get_unix_time_from_system()))
 		else:
 			$Horizontal/Measurement/VBoxContainer/HBoxContainer/Label.text = ""
 			$Vertical/Measurement/Label.text = ""
@@ -118,10 +121,10 @@ func _gui_input(event):
 			speed = 0.1
 			cap = -1
 			speedScale = 1
-			userControlled = true
 		else:
 			dragging = false
 	elif event is InputEventMouseMotion and dragging:
+		userControlled = true
 		if $Horizontal.visible:
 			speedScale = 1 / (1 + max(0, -0.5 + 0.1 * abs(event.position.y - mouse_start_pos.y)))
 			target = 0.125 * 3600.0 / game.getSimulationSpeed() * (event.position.x - mouse_start_pos.x)
@@ -157,3 +160,13 @@ func _on_back_pressed():
 
 func _on_forward_pressed():
 	moveTo(game.getTime() + 60.0 / game.getSimulationSpeed())
+
+
+func _on_buffer_toggled(value: bool):
+	game.setBuff(value)
+	
+	$Horizontal/Measurement/VBoxContainer/HBoxContainer/Buffer.text = "Buffer On" if value else "Buffer Off"
+	$Horizontal/Measurement/VBoxContainer/HBoxContainer/Spacer.text = "Buffer On" if value else "Buffer Off"
+	
+	$Vertical/MarginContainer/VBoxContainer/Buffer.text = "On" if value else "Off"
+	$Vertical/MarginContainer/VBoxContainer/Spacer.text = "On" if value else "Off"

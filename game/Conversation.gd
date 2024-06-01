@@ -39,7 +39,6 @@ func _ready():
 	$MarginContainer/VBoxContainer/ScrollContainer.get_v_scroll_bar().connect("value_changed", scroll_changed)
 	
 func scroll_to_bottom():
-	print("resizing...")
 	container.set_deferred("scroll_vertical",container.get_v_scroll_bar().max_value)
 		
 
@@ -120,6 +119,16 @@ func refresh(messageList):
 		$MarginContainer/VBoxContainer/ScrollContainer/MessageContainer.move_child(messageNode, index)
 	
 	GameData.readChat(chatID)
+	
+	var anyUnread = false
+	for chat in GameData.getChats(gameID):
+		if len(chat.messages) > 0 and chat.messages[len(chat.messages) - 1].timestamp > chat.readTimestamp:
+			anyUnread = true
+			break
+			
+	if not anyUnread:
+		var details = GameData.getGameDetails(gameID)
+		details.gameData.hasChatNotifications = false
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -146,6 +155,8 @@ func _on_send_pressed():
 	if $MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/TextEdit.text == "":
 		return
 	
+	$MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/Send.disabled = true
+	
 	if !chatID:
 		var playerIDs = PackedInt32Array()
 		for tag in playerTags:
@@ -157,10 +168,13 @@ func _on_send_pressed():
 		if tmp:
 			chatID = int(tmp)
 		else:
+			$MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/Send.disabled = false
 			return
 	
 	if await GameData.sendMessage(chatID, $MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/TextEdit.text):
 		$MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/TextEdit.clear()
+	
+	$MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/Send.disabled = false
 
 func scroll_changed(value):
 	atBottom = container.scroll_vertical == container.get_v_scroll_bar().max_value - container.size.y
@@ -207,16 +221,6 @@ func _on_text_edit_text_changed():
 		$MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/TextEdit.custom_minimum_size.y = prevTextEditSize
 		$MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/TextEdit.scroll_fit_content_height = false
 
-func _on_text_edit_gui_input(event):
-	if event is InputEventMouseButton and event.pressed:
-		received = true
-		$MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/TextEdit.grab_focus()
 
-func _input(event):
-	if event is InputEventMouseButton and event.pressed and not received:
-		$MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/TextEdit.release_focus()
-		
-	received = false
-
-func _on_send_focus_entered():
-	$MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/TextEdit.grab_focus()
+func _on_resized():
+	call_deferred("scroll_to_bottom")

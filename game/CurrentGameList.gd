@@ -15,7 +15,7 @@ func initList():
 func generateButton(id):
 	var gameDetails = GameData.getGameDetails(id)
 	var button = preload("res://GameButton.tscn").instantiate()
-	button.init(id, true)
+	button.init(id, true, gameDetails.gameData.finished)
 	return button
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

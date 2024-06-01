@@ -10,7 +10,7 @@
 [ext_resource type="Texture2D" uid="uid://c5xpe873eaaqs" path="res://resources/gameMenuIcons/Account.png" id="8_6pyp5"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_82ple"]
-bg_color = Color(0.0470588, 0.0941176, 0.137255, 1)
+bg_color = Color(0, 0, 0, 0.392157)
 corner_radius_top_left = 100
 corner_radius_top_right = 100
 corner_radius_bottom_right = 100
@@ -228,6 +228,7 @@ ignore_texture_size = true
 stretch_mode = 5
 
 [node name="Fade" type="Panel" parent="."]
+modulate = Color(1, 1, 1, 0)
 layout_mode = 2
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_i0dqg")

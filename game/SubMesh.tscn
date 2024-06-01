@@ -1,8 +1,7 @@
-[gd_scene load_steps=11 format=3 uid="uid://c80qrqpvv8oji"]
+[gd_scene load_steps=12 format=3 uid="uid://c80qrqpvv8oji"]
 
 [ext_resource type="Script" path="res://SubMesh.gd" id="1_qc4jq"]
-[ext_resource type="PackedScene" uid="uid://bc5oass3i8nm1" path="res://resources/airship/airship3.blend" id="2_qppo0"]
-[ext_resource type="PackedScene" uid="uid://bx72dwns5kvru" path="res://resources/airship/airshipAlternate.blend" id="3_kpwf6"]
+[ext_resource type="ArrayMesh" uid="uid://btdfbn0k46bx5" path="res://resources/airship/submarine.obj" id="3_d4jy6"]
 [ext_resource type="PackedScene" uid="uid://c3ctitj3875oy" path="res://Counter.tscn" id="4_bhkel"]
 [ext_resource type="Texture2D" uid="uid://dc54tlteq11rj" path="res://resources/icons/Gift.png" id="5_8xxne"]
 [ext_resource type="ArrayMesh" uid="uid://d3qsofbw0d26t" path="res://resources/airship/counter.obj" id="6_j1yfp"]
@@ -10,6 +9,16 @@
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_s31l7"]
 radius = 1.676
 height = 10.351
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gxw2d"]
+emission_enabled = true
+emission = Color(1, 1, 1, 1)
+emission_energy_multiplier = 2.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_d3v57"]
+emission_enabled = true
+emission = Color(1, 1, 1, 1)
+emission_energy_multiplier = 2.0
 
 [sub_resource type="FontVariation" id="FontVariation_o1pwa"]
 
@@ -32,12 +41,11 @@ script = ExtResource("1_qc4jq")
 transform = Transform3D(-4.37114e-08, 1, -4.37114e-08, 0, -4.37114e-08, -1, -1, -4.37114e-08, 1.91069e-15, 0, 0, 0)
 shape = SubResource("CapsuleShape3D_s31l7")
 
-[node name="Submarine2" parent="." instance=ExtResource("2_qppo0")]
-transform = Transform3D(-4.37114e-08, 3.48787e-16, 1, 3.48787e-16, 1, -3.48787e-16, -1, 3.48787e-16, -4.37114e-08, 0, 0, 0)
-visible = false
-
-[node name="Submarine" parent="." instance=ExtResource("3_kpwf6")]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
+[node name="Submarine" type="MeshInstance3D" parent="."]
+transform = Transform3D(-5.7699e-08, 0, -1.2, 0, 1.2, 0, 1.32, 0, -5.24537e-08, 0.808121, -0.291222, 0)
+mesh = ExtResource("3_d4jy6")
+surface_material_override/1 = SubResource("StandardMaterial3D_gxw2d")
+surface_material_override/4 = SubResource("StandardMaterial3D_d3v57")
 
 [node name="RotationInvariant" type="Node3D" parent="."]
 

@@ -64,6 +64,7 @@ public:
     int getRating() const { return rating; }
 
     double getFractionalProduction() const { return fractionalProduction; }
+    double getFractionalResources() const { return fractionalResProduction; }
     double getFractionalHires() const { return fractionalHires; }
 
     double globalSpeed() const;

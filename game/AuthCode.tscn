@@ -1,0 +1,75 @@
+[gd_scene load_steps=5 format=3 uid="uid://4s71uawbcn1e"]
+
+[ext_resource type="Script" path="res://AuthCode.gd" id="1_s3txp"]
+[ext_resource type="Theme" uid="uid://tg7ina762c6q" path="res://resources/themes/UITheme.tres" id="2_vwgox"]
+[ext_resource type="PackedScene" uid="uid://buw7agokt5fd6" path="res://Code.tscn" id="3_tc3bi"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sbuoj"]
+bg_color = Color(0, 0, 0, 1)
+
+[node name="AuthCode" type="MarginContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_s3txp")
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 2
+theme = ExtResource("2_vwgox")
+theme_override_styles/panel = SubResource("StyleBoxFlat_sbuoj")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme = ExtResource("2_vwgox")
+theme_override_constants/margin_left = 100
+theme_override_constants/margin_top = 100
+theme_override_constants/margin_right = 100
+theme_override_constants/margin_bottom = 100
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+custom_minimum_size = Vector2(500, 2.08165e-12)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme = ExtResource("2_vwgox")
+theme_override_constants/separation = 20
+
+[node name="Label2" type="Label" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(100, 2.08165e-12)
+layout_mode = 2
+theme = ExtResource("2_vwgox")
+theme_override_colors/font_color = Color(0.509286, 0.509286, 0.509286, 1)
+text = "If you have been logged out of your account on all devices, contact artifice.help@gmail.com"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(100, 2.08165e-12)
+layout_mode = 2
+theme = ExtResource("2_vwgox")
+text = "Press the 'Share Account' button on a device where this account is already logged in. Enter the code that is displayed:"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Code" parent="MarginContainer/VBoxContainer" instance=ExtResource("3_tc3bi")]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/separation = 20
+
+[node name="Continue" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme = ExtResource("2_vwgox")
+text = "Continue"
+
+[node name="Cancel" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Cancel"
+
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/Continue" to="." method="_on_continue_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/Cancel" to="." method="_on_cancel_pressed"]

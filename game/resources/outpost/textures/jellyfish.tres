@@ -1,24 +1,31 @@
-[gd_resource type="ShaderMaterial" load_steps=6 format=3 uid="uid://drd5gammj8ar3"]
+[gd_resource type="ShaderMaterial" load_steps=7 format=3 uid="uid://drd5gammj8ar3"]
 
 [ext_resource type="Shader" path="res://Jellyfish.gdshader" id="1_ky0kb"]
 
 [sub_resource type="Gradient" id="Gradient_nfgpy"]
-interpolation_mode = 2
+offsets = PackedFloat32Array(0, 0.330882, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0.518379, 0.518379, 0.518379, 1, 1, 1, 1, 1)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_mcbs2"]
 gradient = SubResource("Gradient_nfgpy")
-fill_from = Vector2(1, 0.386364)
-fill_to = Vector2(1, 0.568182)
+fill_from = Vector2(1, 0.170455)
+fill_to = Vector2(1, 0.594697)
+
+[sub_resource type="Gradient" id="Gradient_ravpn"]
+offsets = PackedFloat32Array(0, 0.838235)
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_2a1bw"]
 noise_type = 2
+frequency = 0.0391
 cellular_distance_function = 1
+cellular_jitter = 1.04
 cellular_return_type = 6
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_lwynq"]
 width = 128
 height = 128
 seamless = true
+color_ramp = SubResource("Gradient_ravpn")
 noise = SubResource("FastNoiseLite_2a1bw")
 
 [resource]
@@ -27,5 +34,6 @@ render_priority = 0
 shader = ExtResource("1_ky0kb")
 shader_parameter/speed = 0.01
 shader_parameter/dark = false
+shader_parameter/id = 0
 shader_parameter/screen_texture = SubResource("NoiseTexture2D_lwynq")
 shader_parameter/gradient = SubResource("GradientTexture2D_mcbs2")

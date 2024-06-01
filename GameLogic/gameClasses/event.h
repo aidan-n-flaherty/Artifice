@@ -5,6 +5,7 @@
 #include <cmath>
 #include <time.h>
 #include <memory>
+#include <iostream>
 #include "gameObjects/positional_object.h"
 #include "order.h"
 
@@ -28,7 +29,7 @@ public:
     Event() : ID(counter++) {}
     Event(Order* o, double timestamp) : originatingOrder(o), timestamp(timestamp), ID(counter++) {}
 
-    virtual void updatePointers(Game *game) {}
+    virtual void updatePointers(Game *game);
 
     virtual void run(Game* game) {}
 

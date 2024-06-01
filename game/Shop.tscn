@@ -1,11 +1,19 @@
-[gd_scene load_steps=6 format=3 uid="uid://cqdpj2uw0cloc"]
+[gd_scene load_steps=8 format=3 uid="uid://cqdpj2uw0cloc"]
 
 [ext_resource type="Script" path="res://Shop.gd" id="1_6ppg6"]
 [ext_resource type="Theme" uid="uid://tg7ina762c6q" path="res://resources/themes/UITheme.tres" id="1_47hv1"]
+[ext_resource type="Texture2D" uid="uid://c1f04o6gimvxl" path="res://resources/images/whiteCircle.png" id="3_0bmna"]
 [ext_resource type="PackedScene" uid="uid://dg4lhqpoy431" path="res://CustomScroll.tscn" id="3_kvthc"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_o6jli"]
 font_size = 40
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5nywj"]
+bg_color = Color(1, 1, 1, 0.117647)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
 
 [sub_resource type="LabelSettings" id="LabelSettings_a85vc"]
 font_size = 20
@@ -31,13 +39,45 @@ mouse_filter = 0
 mouse_force_pass_scroll_events = false
 theme = ExtResource("1_47hv1")
 
-[node name="Title" type="Label" parent="VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="VBoxContainer/HBoxContainer"]
 layout_mode = 2
 mouse_filter = 0
 mouse_force_pass_scroll_events = false
 theme = ExtResource("1_47hv1")
 text = "Shop"
 label_settings = SubResource("LabelSettings_o6jli")
+horizontal_alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer/HBoxContainer/MarginContainer"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 2
+texture = ExtResource("3_0bmna")
+expand_mode = 2
+stretch_mode = 4
+
+[node name="Panel" type="Panel" parent="VBoxContainer/HBoxContainer/MarginContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_5nywj")
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/HBoxContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/MarginContainer/MarginContainer"]
+layout_mode = 2
+theme = ExtResource("1_47hv1")
+text = "999"
 horizontal_alignment = 1
 
 [node name="Label" type="Label" parent="VBoxContainer"]

@@ -14,6 +14,7 @@ void GameSettings::loadDefaults() {
     GameSettings::simulationSpeed = 60 * 60; // each hour is a second
     GameSettings::factoryDensity = 0.5;
     GameSettings::resourcesToWin = 200;
+    GameSettings::outpostsToWin = -1;
     GameSettings::gameMode = MINING;
     GameSettings::eloKValue = 32;
     GameSettings::defaultSonar = 60;

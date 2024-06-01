@@ -51,10 +51,10 @@ void freeGame(cGame game) {
   delete g;
 }
 
-void addOrder(cGame game, char* type, int ID, int referenceID, double timestamp, int senderID, int argumentIDs[], int argCount) {
+void addOrder(cGame game, char* type, int ID, int referenceID, int canceled, double timestamp, int senderID, int argumentIDs[], int argCount) {
   Game* g = (Game*)game;
 
-  g->addOrder(std::string(type), ID, referenceID, timestamp, senderID, argumentIDs, argCount);
+  g->addOrder(std::string(type), ID, referenceID, canceled != 0, timestamp, senderID, argumentIDs, argCount);
 }
 
 int runGame(cGame game, int* playerChanges) {

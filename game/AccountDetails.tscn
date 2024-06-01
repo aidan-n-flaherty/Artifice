@@ -1,9 +1,10 @@
-[gd_scene load_steps=13 format=3 uid="uid://chwn0jkvlrsvw"]
+[gd_scene load_steps=15 format=3 uid="uid://chwn0jkvlrsvw"]
 
 [ext_resource type="Theme" uid="uid://tg7ina762c6q" path="res://resources/themes/UITheme.tres" id="1_j5sq6"]
 [ext_resource type="Script" path="res://AccountDetails.gd" id="2_1f10q"]
 [ext_resource type="PackedScene" uid="uid://dg4lhqpoy431" path="res://CustomScroll.tscn" id="3_4a50u"]
 [ext_resource type="PackedScene" uid="uid://ca2km7m7ec3av" path="res://PastGameList.tscn" id="3_d3vco"]
+[ext_resource type="FontFile" uid="uid://bt7qlnun0cepj" path="res://resources/fonts/nasalization-free/nasalization-rg.otf" id="4_6h237"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b4f1s"]
 bg_color = Color(0, 0, 0, 0.156863)
@@ -43,6 +44,11 @@ corner_radius_top_left = 10
 corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
+
+[sub_resource type="FontVariation" id="FontVariation_l1fdh"]
+base_font = ExtResource("4_6h237")
+spacing_top = 6
+spacing_bottom = 6
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vp8r8"]
 bg_color = Color(0, 0, 0, 0.392157)
@@ -460,24 +466,28 @@ layout_mode = 2
 [node name="Delete" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer"]
 layout_mode = 2
 theme = ExtResource("1_j5sq6")
+theme_override_fonts/font = SubResource("FontVariation_l1fdh")
 theme_override_font_sizes/font_size = 21
 text = "Delete Account"
 
 [node name="Report" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer"]
 layout_mode = 2
 theme = ExtResource("1_j5sq6")
+theme_override_fonts/font = SubResource("FontVariation_l1fdh")
 theme_override_font_sizes/font_size = 21
 text = "Report User"
 
 [node name="Block" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer"]
 layout_mode = 2
 theme = ExtResource("1_j5sq6")
+theme_override_fonts/font = SubResource("FontVariation_l1fdh")
 theme_override_font_sizes/font_size = 21
 text = "Block User"
 
 [node name="Restore" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer"]
 layout_mode = 2
 theme = ExtResource("1_j5sq6")
+theme_override_fonts/font = SubResource("FontVariation_l1fdh")
 theme_override_font_sizes/font_size = 21
 text = "Share Account"
 

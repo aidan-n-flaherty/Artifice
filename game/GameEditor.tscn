@@ -1,8 +1,9 @@
-[gd_scene load_steps=13 format=3 uid="uid://biekuv7dddk3m"]
+[gd_scene load_steps=16 format=3 uid="uid://biekuv7dddk3m"]
 
 [ext_resource type="Theme" uid="uid://tg7ina762c6q" path="res://resources/themes/UITheme.tres" id="1_sjo5m"]
 [ext_resource type="Script" path="res://GameEditor.gd" id="2_ymahp"]
 [ext_resource type="PackedScene" uid="uid://dg4lhqpoy431" path="res://CustomScroll.tscn" id="3_l4xqo"]
+[ext_resource type="FontFile" uid="uid://bt7qlnun0cepj" path="res://resources/fonts/nasalization-free/nasalization-rg.otf" id="4_qo8y8"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tpxmc"]
 bg_color = Color(0.0392157, 0.0392157, 0.0392157, 0.156863)
@@ -33,6 +34,16 @@ font_color = Color(0.45098, 0.45098, 0.45098, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_61g4f"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="FontVariation" id="FontVariation_w86xw"]
+base_font = ExtResource("4_qo8y8")
+spacing_top = 10
+spacing_bottom = 10
+
+[sub_resource type="FontVariation" id="FontVariation_311ai"]
+base_font = ExtResource("4_qo8y8")
+spacing_top = 10
+spacing_bottom = 10
 
 [node name="GameEditor" type="MarginContainer"]
 anchors_preset = 15
@@ -1127,11 +1138,15 @@ placeholder_text = "Enter Password Here!"
 
 [node name="Activate" type="Button" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
+theme = ExtResource("1_sjo5m")
+theme_override_fonts/font = SubResource("FontVariation_w86xw")
 text = "Create"
 
 [node name="Secondary" type="Button" parent="MarginContainer/VBoxContainer"]
 visible = false
 layout_mode = 2
+theme = ExtResource("1_sjo5m")
+theme_override_fonts/font = SubResource("FontVariation_311ai")
 text = "Start"
 
 [connection signal="pressed" from="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/AdvancedButton" to="." method="_on_advanced_button_pressed"]

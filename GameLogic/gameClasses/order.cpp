@@ -1,4 +1,5 @@
 #include "order.h"
+#include "event.h"
 #include "game_object.h"
 #include "game.h"
 
@@ -16,10 +17,10 @@ int Order::counter = 0;
 void Order::updateOrders(Game* game, const std::multiset<Order*, OrderOrder> &orders) const {
     for(auto &order : orders) {
         // if the order's reference order has already been run, then this order must have not been seen
-        if(order->getReferenceID() != getID() && order->getSenderID() != getSenderID() && std::find_if(orders.begin(), orders.end(), [&order](Order* o) {
+        if((order->getReferenceID() != getID() && order->getSenderID() != getSenderID() && std::find_if(orders.begin(), orders.end(), [&order](Order* o) {
             return o->getID() == order->getReferenceID();
-        }) == orders.end()) {
-            order->adjustIDs(game->getObjCounter());
+        }) == orders.end()) || (order->getSenderID() == getSenderID() && order->getID() < getID())) {
+            order->adjustIDs(game->getObjCounter(), 1);
         }
     }
 }
@@ -28,4 +29,22 @@ bool OrderOrder::operator()(Order* lhs, Order* rhs) const
 {
     double diff = lhs->getTimestamp() - rhs->getTimestamp();
     return diff == 0 ? lhs->getID() < rhs->getID() : diff < 0;
+}
+
+Event* Order::convert(Game* game) { 
+    Event* e = nullptr;
+
+    if(!canceled) e = converted(game);
+
+    for(int i = 0; i < objIDDisplacement(); i++) {
+        updateOrders(game, game->getOrders());
+    }
+    
+    if(!e) {
+        for(int i = 0; i < objIDDisplacement(); i++) {
+            game->incrementObjCounter();
+        }
+    }
+
+    return e;
 }

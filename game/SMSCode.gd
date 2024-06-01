@@ -28,9 +28,9 @@ func _on_continue_pressed():
 		if share:
 			if not await GameData.getShare($MarginContainer/VBoxContainer/Code.getText()):
 				$MarginContainer/VBoxContainer/Label.text = "Invalid code. Try again."
-		else:
-			if not await GameData.signup(phoneNumber, $MarginContainer/VBoxContainer/Code.getText()):
-				$MarginContainer/VBoxContainer/Label.text = "Invalid code. Try again."
+		#else:
+			#if not await GameData.signup(phoneNumber, $MarginContainer/VBoxContainer/Code.getText()):
+				#$MarginContainer/VBoxContainer/Label.text = "Invalid code. Try again."
 
 func _on_cancel_pressed():
 	GameData.goto_scene("res://Signup.tscn")

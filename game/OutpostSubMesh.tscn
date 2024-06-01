@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://b01b6amie746a"]
+[gd_scene load_steps=13 format=3 uid="uid://b01b6amie746a"]
 
 [ext_resource type="PackedScene" uid="uid://be40a30mo8arh" path="res://JellyfishMesh.tscn" id="1_lpng5"]
 [ext_resource type="PackedScene" uid="uid://c3032y2mt7g1i" path="res://resources/outpost/factoryComponent1.glb" id="2_hfe6p"]
@@ -8,26 +8,9 @@
 [ext_resource type="PackedScene" uid="uid://2hf820xak3rf" path="res://resources/outpost/generatorComponent2.blend" id="6_4x5ke"]
 [ext_resource type="PackedScene" uid="uid://tk76ksppk2n" path="res://resources/outpost/mine.blend" id="7_bo7nc"]
 
-[sub_resource type="Gradient" id="Gradient_lsgta"]
-offsets = PackedFloat32Array(0, 0.00694444, 0.0138889, 0.979167)
-colors = PackedColorArray(0.230315, 0.230315, 0.230315, 0.0776188, 0, 0, 0, 0.35412, 0.215902, 0.215902, 0.215902, 1, 0.689285, 0.689285, 0.689285, 1)
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_kye7d"]
-noise_type = 2
-frequency = 0.04
-cellular_distance_function = 1
-cellular_return_type = 6
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ifuhw"]
-width = 128
-height = 128
-seamless = true
-color_ramp = SubResource("Gradient_lsgta")
-noise = SubResource("FastNoiseLite_kye7d")
-
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ccc40"]
 shading_mode = 0
-albedo_texture = SubResource("NoiseTexture2D_ifuhw")
+albedo_color = Color(0, 0, 0, 1)
 disable_receive_shadows = true
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_ac0u5"]

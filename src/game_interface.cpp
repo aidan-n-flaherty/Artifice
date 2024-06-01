@@ -56,11 +56,15 @@ void GameInterface::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("projectedTime", "x", "y"), &GameInterface::projectedTime);
 	ClassDB::bind_method(D_METHOD("setMouse", "x", "y"), &GameInterface::setMouse);
 	ClassDB::bind_method(D_METHOD("setDrag", "drag"), &GameInterface::setDrag);
+	ClassDB::bind_method(D_METHOD("getWinCondition"), &GameInterface::getWinCondition);
 	ClassDB::bind_method(D_METHOD("init", "gameID", "userID", "seed", "startTime", "playerCap", "players", "settingOverrides"), &GameInterface::init);
 	ClassDB::bind_method(D_METHOD("startAtEnd"), &GameInterface::startAtEnd);
 	ClassDB::bind_method(D_METHOD("setTempTime", "t"), &GameInterface::setTempTime);
 	ClassDB::bind_method(D_METHOD("setTime", "t"), &GameInterface::setTime);
 	ClassDB::bind_method(D_METHOD("getTime"), &GameInterface::getTime);
+	ClassDB::bind_method(D_METHOD("getBuffTime"), &GameInterface::getBuffTime);
+	ClassDB::bind_method(D_METHOD("setBuff"), &GameInterface::setBuff);
+	ClassDB::bind_method(D_METHOD("getBuff"), &GameInterface::getBuff);
 	ClassDB::bind_method(D_METHOD("getClientTime"), &GameInterface::getTime);
 	ClassDB::bind_method(D_METHOD("clientToGameTime", "t"), &GameInterface::clientToGameTime);
 	ClassDB::bind_method(D_METHOD("gameToClientTime", "t"), &GameInterface::gameToClientTime);
@@ -253,10 +257,7 @@ GameSettings GameInterface::loadSettings() {
 		const void* value;
 		std::string str = "";
 
-		if(Variant::can_convert(settingOverrides[keys[i]].get_type(), Variant::FLOAT)) {
-			value = new double(settingOverrides[keys[i]]);
-			allocated = true;
-		} else if(Variant::can_convert(settingOverrides[keys[i]].get_type(), Variant::ARRAY)) {
+		if(Variant::can_convert(settingOverrides[keys[i]].get_type(), Variant::ARRAY)) {
 			Array arr = Array(settingOverrides[keys[i]]);
 
 			for(int j = 0; j < arr.size(); j++) {
@@ -267,8 +268,13 @@ GameSettings GameInterface::loadSettings() {
 			}
 
 			value = str.c_str();
-		} else if(Variant::can_convert(settingOverrides[keys[i]].get_type(), Variant::STRING)) {
-			value = String(settingOverrides[keys[i]]).utf8().get_data();
+		} else if(settingOverrides[keys[i]].get_type() == Variant::STRING) {
+			value = calloc(64, sizeof(char));
+			allocated = true;
+			strncpy((char*)value, String(settingOverrides[keys[i]]).utf8().get_data(), 63);
+		} else if(Variant::can_convert(settingOverrides[keys[i]].get_type(), Variant::FLOAT)) {
+			value = new double(settingOverrides[keys[i]]);
+			allocated = true;
 		} else {
 			value = nullptr;
 		}
@@ -278,6 +284,8 @@ GameSettings GameInterface::loadSettings() {
 		if(allocated) delete value;
 	}
 
+	std::cout << "Game mode " << settings.gameMode << std::endl;
+
 	return settings;
 }
 
@@ -285,7 +293,12 @@ void GameInterface::_process(double delta) {
 	Node::_process(delta);
 	
 	double time = getTimeMillis();
-	if(future && current < time) current = time;
+	if(future) {
+		if(buffer) {
+			double buffTime = getBuffTime();
+			if(current < buffTime) current = buffTime;
+		} else if(current < time) current = time;
+	}
 	
 	update();
 	
@@ -302,20 +315,22 @@ void GameInterface::_process(double delta) {
 		
 		for(const auto& pair : vessels) {
 			pair.second->setDiff(t, timeDiff);
+			pair.second->setSelfOwned(pair.second->getOwnerID() == userGameID && userGameID >= 0);
 			pair.second->setInRadar(finished || (p ? visibilityGame->withinRange(p, pair.second->getObj(), timeDiff) : false));
 			pair.second->set_visible(finished || (p ? visibilityGame->withinRange(p, pair.second->getObj(), timeDiff) : false));
 		}
 		
 		for(const auto& pair : outposts) {
 			pair.second->setDiff(t, timeDiff);
+			pair.second->setSelfOwned(pair.second->getOwnerID() == userGameID && userGameID >= 0);
 			pair.second->setInRadar(finished || (p ? visibilityGame->withinRange(p, pair.second->getObj(), timeDiff) : false));
 			pair.second->set_visible(true);
 			pair.second->setViewType(finished || (p ? p->controlsSpecialist(SpecialistType::INTELLIGENCE_OFFICER) : false));
 		}
 
-		//for(const auto& pair : players) pair.second->setDiff(t, timeDiff);
+		for(const auto& pair : players) pair.second->setDiff(t, timeDiff);
 
-		if(selected >= 0 && getNode(selected)->isInRadar()) selectedUnits = getSelected()->getUnitsAt(timeDiff);
+		if(selected >= 0 && getNode(selected) && getNode(selected)->isInRadar()) selectedUnits = getSelected()->getUnitsAt(timeDiff);
 		else selectedUnits = -1;
 
 		floorDisplay->setDiff(timeDiff, simulatedDiff);
@@ -631,11 +646,11 @@ void GameInterface::setSelectedSpecialist(int id) {
 	}
 }
 
-void GameInterface::bulkAddOrder(const String &type, uint32_t ID, int32_t referenceID, double timestamp, uint32_t senderID, PackedInt32Array arguments, uint32_t argCount) {
+void GameInterface::bulkAddOrder(const String &type, uint32_t ID, int32_t referenceID, bool canceled, double timestamp, uint32_t senderID, PackedInt32Array arguments, uint32_t argCount) {
 	int arr[argCount];
 	for(int i = 0; i < argCount; i++) arr[i] = arguments[i];
 
-	completeGame = completeGame->processOrder(std::string(type.utf8().get_data()), ID, referenceID, settings.clientToGameTime(timestamp), senderID, arr, argCount);
+	completeGame = completeGame->processOrder(std::string(type.utf8().get_data()), ID, referenceID, canceled, settings.clientToGameTime(timestamp), senderID, arr, argCount);
 }
 
 void GameInterface::endBulkAdd() {
@@ -651,11 +666,11 @@ void GameInterface::endBulkAdd() {
 	}
 }
 
-void GameInterface::addOrder(const String &type, uint32_t ID, int32_t referenceID, double timestamp, uint32_t senderID, PackedInt32Array arguments, uint32_t argCount) {
+void GameInterface::addOrder(const String &type, uint32_t ID, int32_t referenceID, bool canceled, double timestamp, uint32_t senderID, PackedInt32Array arguments, uint32_t argCount) {
 	int arr[argCount];
 	for(int i = 0; i < argCount; i++) arr[i] = arguments[i];
 
-	completeGame = completeGame->processOrder(std::string(type.utf8().get_data()), ID, referenceID, settings.clientToGameTime(timestamp), senderID, arr, argCount);
+	completeGame = completeGame->processOrder(std::string(type.utf8().get_data()), ID, referenceID, canceled, settings.clientToGameTime(timestamp), senderID, arr, argCount);
 	completeGame->run();
 	game = nullptr;
 	simulatedGame = nullptr;
@@ -771,7 +786,7 @@ Array GameInterface::getPlayers() {
 
 Array GameInterface::getSortedPlayers() {
 	Array arr;
-	std::vector<Player*> sortedPlayers = game->sortedPlayers();
+	std::vector<Player*> sortedPlayers = game->sortedPlayers(settings.clientToGameTime(getTime()) - game->getTime());
 
 	for(Player* player_ : sortedPlayers) {
 		arr.push_back(players[player_->getID()]);
@@ -782,7 +797,7 @@ Array GameInterface::getSortedPlayers() {
 
 Array GameInterface::getCurrentSortedPlayers() {
 	Array arr;
-	std::vector<Player*> sortedPlayers = currentGame->sortedPlayers();
+	std::vector<Player*> sortedPlayers = currentGame->sortedPlayers(settings.clientToGameTime(getTimeMillis()) - game->getTime());
 
 	for(Player* p : sortedPlayers) {
 		arr.push_back(players[p->getID()]);
@@ -844,19 +859,30 @@ int GameInterface::getSpecialistHireAmount(int specialistNum) {
 }
 
 String GameInterface::getNextVictoryMessage() {
-	double timeDiff = settings.clientToGameTime(getCurrent()) - game->getTime();
+	double timeDiff = settings.clientToGameTime(getTime()) - game->getTime();
 
-	Player* victor = game->sortedPlayers().front();
+	Player* victor = game->sortedPlayers(timeDiff).front();
 	std::string res = victor->getName();
 
 	if(settings.gameMode == Mode::CONQUEST) {
-		if((1 + (game->getPlayers().size() / 2)) * settings.outpostsPerPlayer - victor->getOutposts().size() > 0) res += " needs " + std::to_string((1 + (game->getPlayers().size() / 2)) * settings.outpostsPerPlayer - victor->getOutposts().size()) + " more outposts to win";
+		if(settings.outpostsToWin - victor->getOutposts().size() > 0 && !game->simulationEnded()) res += " needs " + std::to_string((1 + (game->getPlayers().size() / 2)) * settings.outpostsPerPlayer - victor->getOutposts().size()) + " more outposts to win";
 		else res += " has won";
 	} else if(settings.gameMode == Mode::MINING) {
-		if(settings.resourcesToWin - victor->getResourcesAt(timeDiff) > 0) res += " needs " + std::to_string(settings.resourcesToWin - victor->getResourcesAt(timeDiff)) + " more resources to win";
-		else res += " has won";
+		const WinConditionEvent* e = completeGame->nextWinCondition(clientToGameTime(getTime()));
+
+		if(e) {
+			victor = game->getPlayer(e->getPlayerID());
+			res = victor->getName();
+		} else if(!completeGame->simulationEnded()) return "";
+
+		if(e && settings.resourcesToWin - victor->getResourcesAt(timeDiff) > 0 && !game->simulationEnded()) {
+			char str[16];
+			sprintf(str, "%.2lf", (e->getTimestamp() - getTime()) / (60 * 60));
+			res += " needs " + std::to_string(settings.resourcesToWin - victor->getResourcesAt(timeDiff)) + " more resources and will win in " + std::string(str) + " hours";
+		} else res += " has won";
 	} else {
-		return "";
+		if(game->simulationEnded()) res += " has won";
+		else return "";
 	}
 
 	return String(res.c_str());

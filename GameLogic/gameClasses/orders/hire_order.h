@@ -19,10 +19,24 @@ public:
     HireOrder(){};
     HireOrder(double timestamp, int senderID, int specialistTypeID, int referenceID) :
         Order(timestamp, senderID, referenceID), specialistTypeID(specialistTypeID) {}
-    HireOrder(int id, double timestamp, int senderID, int specialistTypeID, int referenceID) :
-        Order(id, timestamp, senderID, referenceID), specialistTypeID(specialistTypeID) {}
+    HireOrder(int id, double timestamp, int senderID, int specialistTypeID, int referenceID, bool canceled) :
+        Order(id, timestamp, senderID, referenceID, canceled), specialistTypeID(specialistTypeID) {}
 
-    Event* convert(Game* game) override {
+    Order* copy() override { return new HireOrder(*this); }
+
+    int objIDDisplacement() override {
+        SpecialistType t;
+
+        try {
+            t = SpecialistType(specialistTypeID);
+        } catch(...) {
+            return 0;
+        }
+
+        return Specialist::hireAmount(t);
+    }
+
+    Event* converted(Game* game) override {
         if(!game->hasPlayer(getSenderID())) return nullptr;
         
         Player* player = game->getPlayer(getSenderID());
@@ -55,14 +69,7 @@ public:
         }
         if(!canHire) return nullptr;
 
-        updateOrders(game, game->getOrders());
-
-        std::list<Specialist*> specialists;
-        for(int i = 0; i < Specialist::hireAmount(t); i++) {
-            specialists.push_back(new Specialist(game->incrementObjCounter(), game->getSettings(), t));
-        }
-
-        return new HireEvent(this, getTimestamp(), player, specialists);
+        return new HireEvent(this, getTimestamp(), player, t);
     }
 
     std::string getType() override { return "Hire"; }

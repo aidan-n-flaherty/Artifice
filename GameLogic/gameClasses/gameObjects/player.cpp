@@ -33,14 +33,11 @@ int Player::getResourcesAt(double& fractionalResProduction, double timeDiff) con
 
     int resources = this->resources;
 
-    // while loops necessary in case a tick doesn't happen for several hours
-    fractionalResProduction += timeDiff * resourceProductionSpeed();
-    while(fractionalResProduction >= 1) {
-        fractionalResProduction -= 1;
-        resources += 1;
-    }
+    fractionalResProduction += timeDiff * resourceProductionSpeed() * (1.0 / (24 * 60 * 60));
+    resources += int(fractionalResProduction);
+    fractionalResProduction -= int(fractionalResProduction);
 
-    return resources;
+    return std::max(resources, 0);
 }
 
 int Player::getHiresAt(double& fractionalHires, double timeDiff) const {
@@ -52,7 +49,7 @@ int Player::getHiresAt(double& fractionalHires, double timeDiff) const {
     hires += int(fractionalHires);
     fractionalHires -= int(fractionalHires);
 
-    return hires;
+    return std::max(hires, 0);
 }
 
 void Player::update(double timeDiff) {
@@ -105,7 +102,7 @@ std::list<Outpost*> Player::sortedOutposts(const PositionalObject* obj) {
 
 void Player::projectedVictory(Player* player, double timestamp, std::multiset<Event*, EventOrder> &events) {
     if(getSettings()->gameMode == Mode::MINING && resourceProductionSpeed() > 0) {
-        int diff = ceil((getSettings()->resourcesToWin - (getResources() + fractionalProduction)) / resourceProductionSpeed());
+        int diff = ceil((getSettings()->resourcesToWin - (getResources() + fractionalProduction)) / (resourceProductionSpeed() / (24.0 * 60 * 60 / getSettings()->simulationSpeed)));
         if(diff < 0) return;
         events.insert(new WinConditionEvent(timestamp + diff, player));
     }
@@ -120,7 +117,7 @@ double Player::resourceProductionSpeed() const {
         outpostCount++;
     }
 
-    return (mineCount * outpostCount) / (24.0 * 60.0 * 60.0);
+    return (mineCount * outpostCount);
 }
 
 double Player::globalSpeed() const {

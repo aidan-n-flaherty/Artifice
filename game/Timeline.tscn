@@ -116,6 +116,14 @@ icon = ExtResource("2_lgopp")
 flat = true
 expand_icon = true
 
+[node name="Spacer" type="Button" parent="Horizontal/Measurement/VBoxContainer/HBoxContainer"]
+modulate = Color(1, 1, 1, 0)
+custom_minimum_size = Vector2(2.08165e-12, 2.08165e-12)
+layout_mode = 2
+theme = ExtResource("3_pyl2o")
+toggle_mode = true
+text = "Buffer Off"
+
 [node name="Label" type="Label" parent="Horizontal/Measurement/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(2.08165e-12, 40)
 layout_mode = 2
@@ -123,6 +131,13 @@ size_flags_horizontal = 3
 theme = ExtResource("3_pyl2o")
 text = "testing"
 horizontal_alignment = 1
+
+[node name="Buffer" type="Button" parent="Horizontal/Measurement/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(2.08165e-12, 2.08165e-12)
+layout_mode = 2
+theme = ExtResource("3_pyl2o")
+toggle_mode = true
+text = "Buffer Off"
 
 [node name="Forward" type="Button" parent="Horizontal/Measurement/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(60, 60)
@@ -226,9 +241,24 @@ icon = ExtResource("4_bt6hn")
 flat = true
 expand_icon = true
 
+[node name="Buffer" type="Button" parent="Vertical/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(2.08165e-12, 2.08165e-12)
+layout_mode = 2
+theme = ExtResource("3_pyl2o")
+toggle_mode = true
+text = "On"
+
 [node name="Control" type="Control" parent="Vertical/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
+
+[node name="Spacer" type="Button" parent="Vertical/MarginContainer/VBoxContainer"]
+modulate = Color(1, 1, 1, 0)
+custom_minimum_size = Vector2(2.08165e-12, 2.08165e-12)
+layout_mode = 2
+theme = ExtResource("3_pyl2o")
+toggle_mode = true
+text = "On"
 
 [node name="Back" type="Button" parent="Vertical/MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(60, 60)
@@ -285,6 +315,8 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_u6mta")
 [connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
 [connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]
 [connection signal="pressed" from="Horizontal/Measurement/VBoxContainer/HBoxContainer/Back" to="." method="_on_back_pressed"]
+[connection signal="toggled" from="Horizontal/Measurement/VBoxContainer/HBoxContainer/Buffer" to="." method="_on_buffer_toggled"]
 [connection signal="pressed" from="Horizontal/Measurement/VBoxContainer/HBoxContainer/Forward" to="." method="_on_forward_pressed"]
 [connection signal="pressed" from="Vertical/MarginContainer/VBoxContainer/Forward" to="." method="_on_forward_pressed"]
+[connection signal="toggled" from="Vertical/MarginContainer/VBoxContainer/Buffer" to="." method="_on_buffer_toggled"]
 [connection signal="pressed" from="Vertical/MarginContainer/VBoxContainer/Back" to="." method="_on_back_pressed"]

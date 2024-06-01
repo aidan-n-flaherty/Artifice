@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://nglncmsgw3a6"]
+[gd_scene load_steps=13 format=3 uid="uid://nglncmsgw3a6"]
 
 [ext_resource type="Theme" uid="uid://tg7ina762c6q" path="res://resources/themes/UITheme.tres" id="1_3e6o8"]
 [ext_resource type="Script" path="res://PlayerStatus.gd" id="1_oj4yj"]
@@ -15,6 +15,13 @@ corner_radius_bottom_left = 20
 
 [sub_resource type="LabelSettings" id="LabelSettings_1s5qg"]
 font_size = 24
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0ciff"]
+bg_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4deaq"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
@@ -83,11 +90,31 @@ layout_mode = 2
 theme = ExtResource("1_3e6o8")
 text = "Team #0"
 
-[node name="ResourcesProgress" type="ProgressBar" parent="MarginContainer/HBoxContainer/VBoxName"]
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/VBoxName"]
+layout_mode = 2
+
+[node name="WinProgress" type="ProgressBar" parent="MarginContainer/HBoxContainer/VBoxName/MarginContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_vertical = 2
+size_flags_vertical = 1
 theme = ExtResource("1_3e6o8")
+theme_override_styles/background = SubResource("StyleBoxFlat_0ciff")
+max_value = 1.0
+step = 2.08165e-12
+value = 0.57
+show_percentage = false
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/VBoxName/MarginContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/VBoxName/MarginContainer/MarginContainer"]
+layout_mode = 2
+text = "0 of 0"
+horizontal_alignment = 1
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer"]
 layout_mode = 2

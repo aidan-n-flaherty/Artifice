@@ -37,6 +37,7 @@ func resize():
 		
 		$Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/HSeparator.add_child(element)
 		$Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/HSeparator.add_child(tab)
+		$Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/HSeparator.move_child($Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/HSeparator/Spacer, 2)
 	else:
 		element.get_parent().remove_child(element)
 		tab.get_parent().remove_child(tab)
@@ -152,9 +153,18 @@ func init(gameID):
 func _process(delta):
 	var details = GameData.getGameDetails(gameID)
 	
+	if get_viewport().size.x < get_viewport().size.y:
+		if $Viewport/GameOverlay/VMenuBar.get_child_count() > 0:
+			get_node("Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer/ChatContainer/ChatNotification").visible = details.gameData.hasChatNotifications
+			get_node("Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer/ShopContainer/ShopNotification").visible = game.getHires() > 0
+	else:
+		if $Viewport/GameOverlay/MarginContainer/HBoxContainer/HMenuBar.get_child_count() > 0:
+			get_node("Viewport/GameOverlay/MarginContainer/HBoxContainer/HMenuBar/Tabs/VBoxContainer/ChatContainer/ChatNotification").visible = details.gameData.hasChatNotifications
+			get_node("Viewport/GameOverlay/MarginContainer/HBoxContainer/HMenuBar/Tabs/VBoxContainer/ShopContainer/ShopNotification").visible = game.getHires() > 0
+	
 	var message = game.getNextVictoryMessage()
 	
-	if message != "" and not GameData.isFinished(gameID):
+	if message != "" and not (message.contains("has won") and GameData.isFinished(gameID)):
 		$Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/VBoxContainer/VictoryMessage.show()
 		$Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/VBoxContainer/VictoryMessage.text = message
 	else:
@@ -188,10 +198,10 @@ func _process(delta):
 	if game.hasEnded():
 		if not viewingEnd:
 			viewingEnd = true
+			await GameData.viewEnd(gameID)
 	
 			if not GameData.isFinished(gameID):
 				if await GameData.verifyEnd(gameID):
-					await GameData.viewEnd(gameID)
 					$Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/EndGame.init(gameID)
 					$Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/EndGame.show()
 			else:

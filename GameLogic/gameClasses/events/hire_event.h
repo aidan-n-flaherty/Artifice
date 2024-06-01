@@ -14,21 +14,25 @@ class HireEvent : public Event
 {
 private:
     Player* owner;
-    std::list<Specialist*> specialists;
+    SpecialistType type;
 
 public:
     HireEvent(){};
-    HireEvent(Order* o, double timestamp, Player* owner, std::list<Specialist*> specialists) : Event(o, timestamp), owner(owner), specialists(specialists) {}
+    HireEvent(Order* o, double timestamp, Player* owner, SpecialistType type) : Event(o, timestamp), owner(owner), type(type) {}
     
     Event* copy() override { return new HireEvent(*this); }
 
     void updatePointers(Game *game) override {
         Event::updatePointers(game);
         owner = game->getPlayer(owner->getID());
-        for(Specialist* &specialist : specialists) specialist = game->getSpecialist(specialist->getID());
     }
 
     void run(Game* game) override {
+        std::list<Specialist*> specialists;
+        for(int i = 0; i < Specialist::hireAmount(type); i++) {
+            specialists.push_back(new Specialist(game->incrementObjCounter(), game->getSettings(), type));
+        }
+
         for(Specialist* specialist : specialists) {
             specialist->setOriginatingOrder(getOriginatingOrder());
             game->addSpecialist(specialist);

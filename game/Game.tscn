@@ -1,4 +1,4 @@
-[gd_scene load_steps=60 format=3 uid="uid://cfaaort7dldjk"]
+[gd_scene load_steps=61 format=3 uid="uid://cfaaort7dldjk"]
 
 [ext_resource type="Script" path="res://Game.gd" id="1_s53r2"]
 [ext_resource type="PackedScene" uid="uid://b14auts774043" path="res://Shaders.tscn" id="2_qvr2g"]
@@ -23,30 +23,30 @@
 [ext_resource type="Texture2D" uid="uid://bii0y133mrmt8" path="res://resources/gameMenuIcons/Shop.png" id="23_6yf1s"]
 [ext_resource type="Texture2D" uid="uid://dbcj7cu7grmhb" path="res://resources/gameMenuIcons/Editor.png" id="24_ghpbf"]
 
-[sub_resource type="Gradient" id="Gradient_uj453"]
-interpolation_mode = 2
-offsets = PackedFloat32Array(0, 0.566766)
-colors = PackedColorArray(0, 0, 0, 0.8, 0, 0, 0, 0)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_hsfy0"]
-gradient = SubResource("Gradient_uj453")
-fill_to = Vector2(0.5, 2.08165e-12)
-repeat = 2
-
 [sub_resource type="Gradient" id="Gradient_kjhc4"]
 interpolation_mode = 2
-offsets = PackedFloat32Array(0, 0.5, 1)
-colors = PackedColorArray(0.0524926, 0.15142, 0.265055, 0.666667, 0.28841, 0.530683, 0.774408, 0.266667, 0.315607, 0.621631, 0.995135, 0.239216)
+offsets = PackedFloat32Array(0, 0.514706, 1)
+colors = PackedColorArray(0.0329629, 0.168775, 0.274236, 0.666667, 0.258824, 0.607843, 0.898039, 0.235294, 0.266667, 0.592157, 0.878431, 0.313726)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_hhq1x"]
 gradient = SubResource("Gradient_kjhc4")
 width = 256
 height = 256
 fill_from = Vector2(1, 0)
-fill_to = Vector2(1, 1)
+fill_to = Vector2(0.992424, 1)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_oik6c"]
 texture = SubResource("GradientTexture2D_hhq1x")
+
+[sub_resource type="Gradient" id="Gradient_uj453"]
+interpolation_mode = 2
+offsets = PackedFloat32Array(0, 0.15, 0.566766)
+colors = PackedColorArray(0, 0, 0, 0.698039, 0, 0, 0, 0.266667, 0, 0, 0, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_hsfy0"]
+gradient = SubResource("Gradient_uj453")
+fill_to = Vector2(0.5, 2.08165e-12)
+repeat = 2
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_xxia2"]
 shader = ExtResource("3_w0fl0")
@@ -244,6 +244,13 @@ shader_parameter/lod = 4.0
 [sub_resource type="ButtonGroup" id="ButtonGroup_kxx00"]
 allow_unpress = true
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dpdlm"]
+bg_color = Color(0.264584, 0.481893, 1, 1)
+corner_radius_top_left = 30
+corner_radius_top_right = 30
+corner_radius_bottom_right = 30
+corner_radius_bottom_left = 30
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v3lbm"]
 bg_color = Color(0, 0, 0, 1)
 
@@ -338,20 +345,15 @@ theme = ExtResource("10_ww8tb")
 layout_mode = 2
 theme = ExtResource("10_ww8tb")
 
+[node name="Panel2" type="Panel" parent="Viewport"]
+layout_mode = 2
+theme = ExtResource("10_ww8tb")
+theme_override_styles/panel = SubResource("StyleBoxTexture_oik6c")
+
 [node name="Panel" type="TextureRect" parent="Viewport"]
 layout_mode = 2
 theme = ExtResource("10_ww8tb")
 texture = SubResource("GradientTexture2D_hsfy0")
-
-[node name="Panel2" type="Panel" parent="Viewport/Panel"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme = ExtResource("10_ww8tb")
-theme_override_styles/panel = SubResource("StyleBoxTexture_oik6c")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Viewport"]
 layout_mode = 2
@@ -670,6 +672,10 @@ mouse_filter = 2
 theme = ExtResource("10_ww8tb")
 theme_override_constants/separation = 40
 
+[node name="Spacer" type="Control" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/HSeparator"]
+custom_minimum_size = Vector2(20, 2.08165e-12)
+layout_mode = 2
+
 [node name="HTimeline" type="MarginContainer" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay"]
 custom_minimum_size = Vector2(2.08165e-12, 2.08165e-12)
 layout_mode = 2
@@ -799,6 +805,14 @@ ignore_texture_size = true
 stretch_mode = 5
 script = ExtResource("21_1xrt5")
 
+[node name="ChatNotification" type="Panel" parent="Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer/ChatContainer"]
+visible = false
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_dpdlm")
+
 [node name="ShopContainer" type="MarginContainer" parent="Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -818,6 +832,14 @@ texture_normal = ExtResource("23_6yf1s")
 ignore_texture_size = true
 stretch_mode = 5
 script = ExtResource("21_1xrt5")
+
+[node name="ShopNotification" type="Panel" parent="Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer/ShopContainer"]
+visible = false
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_dpdlm")
 
 [node name="EditorContainer" type="MarginContainer" parent="Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer"]
 layout_mode = 2

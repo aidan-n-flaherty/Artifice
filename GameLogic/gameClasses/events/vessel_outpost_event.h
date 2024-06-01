@@ -59,7 +59,7 @@ public:
         BattleEvent::run(game);
 
         if(outpost->getOwnerID() == vessel->getOwnerID() || vessel->isGift() || (((game->getSettings())->number_of_teams > 1) && same_team(outpost, vessel))) {
-            if(outpost->hasOwner() && vessel->isGift() && outpost->getOwnerID() != vessel->getOwnerID()) {
+            if(outpost->hasOwner() && outpost->getOwnerID() != vessel->getOwnerID()) {
                 for(Specialist* s : vessel->getSpecialists()) {
                     if(s->hasOwner() && s->getOwnerID() == vessel->getOwnerID()) {
                         outpost->getOwner()->addSpecialist(s);

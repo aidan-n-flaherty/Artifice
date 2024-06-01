@@ -16,10 +16,12 @@ private:
 
 public:
     ReleaseOrder(){};
-    ReleaseOrder(int id, double timestamp, int senderID, int specialistID, int referenceID) :
-        Order(id, timestamp, senderID, referenceID), specialistID(specialistID) {}
-
-    Event* convert(Game* game) override {
+    ReleaseOrder(int id, double timestamp, int senderID, int specialistID, int referenceID, bool canceled) :
+        Order(id, timestamp, senderID, referenceID, canceled), specialistID(specialistID) {}
+    
+    Order* copy() override { return new ReleaseOrder(*this); }
+    
+    Event* converted(Game* game) override {
         if(!game->hasPlayer(getSenderID())) return nullptr;
         
         Player* player = game->getPlayer(getSenderID());

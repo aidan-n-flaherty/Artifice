@@ -12,6 +12,7 @@
 using namespace godot;
 
 void PlayerNode::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("getWinCount"), &PlayerNode::getWinCount);
 	ClassDB::bind_method(D_METHOD("getUnits"), &PlayerNode::getUnits);
 	ClassDB::bind_method(D_METHOD("getCapacity"), &PlayerNode::getCapacity);
 	ClassDB::bind_method(D_METHOD("getRating"), &PlayerNode::getRating);

@@ -3,6 +3,7 @@
 [ext_resource type="Shader" path="res://OceanFloor.gdshader" id="1_8nsvi"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_yhlki"]
+frequency = 0.2
 domain_warp_enabled = true
 domain_warp_amplitude = 10.0
 domain_warp_frequency = 0.1
@@ -11,7 +12,7 @@ domain_warp_frequency = 0.1
 width = 1024
 height = 1024
 as_normal_map = true
-bump_strength = 32.0
+bump_strength = 6.0
 noise = SubResource("FastNoiseLite_yhlki")
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_f8wul"]
@@ -53,7 +54,7 @@ color_ramp = SubResource("Gradient_ma67u")
 noise = SubResource("FastNoiseLite_kaoh2")
 
 [sub_resource type="Gradient" id="Gradient_8awpg"]
-offsets = PackedFloat32Array(0, 0.667568)
+offsets = PackedFloat32Array(0, 0.631944)
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_umqgp"]
 noise_type = 2
@@ -125,12 +126,12 @@ height = 2048
 noise = SubResource("FastNoiseLite_lhojt")
 
 [sub_resource type="Gradient" id="Gradient_pg2eg"]
-offsets = PackedFloat32Array(0, 0.32973)
+interpolation_mode = 2
+metadata/_snap_enabled = true
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_bhkpf"]
-noise_type = 2
-frequency = 0.02
-domain_warp_enabled = true
+frequency = 0.0058
+fractal_octaves = 3
 domain_warp_type = 1
 domain_warp_frequency = 0.04
 domain_warp_fractal_octaves = 1
@@ -151,7 +152,7 @@ noise = SubResource("FastNoiseLite_bhkpf")
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_fcawy"]
 frequency = 0.005
-fractal_octaves = 2
+fractal_octaves = 1
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ryqbk"]
 width = 1024
@@ -161,7 +162,7 @@ noise = SubResource("FastNoiseLite_fcawy")
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_14um6"]
 seed = 1
 frequency = 0.005
-fractal_octaves = 2
+fractal_octaves = 1
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_sbgyu"]
 width = 1024

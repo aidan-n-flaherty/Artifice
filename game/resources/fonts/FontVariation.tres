@@ -1,0 +1,7 @@
+[gd_resource type="FontVariation" load_steps=2 format=3 uid="uid://b4wtidwf33ldq"]
+
+[ext_resource type="FontFile" uid="uid://bt7qlnun0cepj" path="res://resources/fonts/nasalization-free/nasalization-rg.otf" id="1_e27nh"]
+
+[resource]
+base_font = ExtResource("1_e27nh")
+variation_embolden = 4.16334e-17

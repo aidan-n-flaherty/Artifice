@@ -81,9 +81,10 @@ func _process(delta):
 	if game.getSpecialistType(specialistID) != specialistNum:
 		init(specialistID, gameID)
 	
-	$MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/NextHire.visible = specialistName == "Queen"
-	$MarginContainer/HBoxContainer/HBoxContainer/VBoxContainer/NextHireLabel.visible = specialistName == "Queen"
-	$MarginContainer/HBoxContainer/HBoxContainer/VBoxContainer/NextHireLabel.text = "Next hire in " + Utilities.timeToStr(game.getNextHireEvent() - game.getTime())
+	$MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/NextHire.visible = specialistName == "Queen" and owns
+	$MarginContainer/HBoxContainer/HBoxContainer/VBoxContainer/NextHireLabel.visible = specialistName == "Queen" and owns
+	if specialistName == "Queen" and owns:
+		$MarginContainer/HBoxContainer/HBoxContainer/VBoxContainer/NextHireLabel.text = "%d hire%s available, next hire in %s" % [game.getHires(), "s" if game.getHires() != 1 else "", Utilities.timeToStr(game.getNextHireEvent() - game.getTime())]
 	
 	$MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/Shop.visible = canHire and specialistName == "Queen"
 	

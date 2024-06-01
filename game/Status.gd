@@ -10,7 +10,7 @@ var playerStatuses = []
 func update():
 
 	var players = game.getSortedPlayers()
-	var win = 200
+	var win = game.getWinCondition()
 	var largestCapacity = 0
 	
 	for p in players: #determine largest capacity
@@ -30,7 +30,7 @@ func update():
 		var capacity = p.getCapacity()
 		
 		var outposts = p.getOutposts()
-		var resources = p.getResources()
+		var winCount = p.getWinCount()
 		
 		var factories = p.getFactories()
 		var mines = p.getMines()
@@ -41,11 +41,11 @@ func update():
 		
 		if playerStatuses[i] != null:
 			playerStatus = playerStatuses[i]
-			playerStatus.init(game, p, username, dailyProduction, units, capacity, resources, largestCapacity, win, outposts, factories, generators, mines, color)
+			playerStatus.init(game, p, username, dailyProduction, units, capacity, winCount, win, largestCapacity, outposts, factories, generators, mines, color)
 			$MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer.move_child(playerStatus,i)
 		else:
 			playerStatus = preload("res://PlayerStatus.tscn").instantiate()
-			playerStatus.init(game, p, username, dailyProduction, units, capacity, resources, largestCapacity, win, outposts, factories, generators, mines, color)
+			playerStatus.init(game, p, username, dailyProduction, units, capacity, winCount, win, largestCapacity, outposts, factories, generators, mines, color)
 			playerStatuses[i] = playerStatus
 			$MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer.add_child(playerStatus)
 		i += 1

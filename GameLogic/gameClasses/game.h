@@ -76,6 +76,7 @@ private:
     std::multiset<Order*, OrderOrder> orders;
     std::list<Event*> simulatedEvents;
     std::list<Order*> invalidOrders;
+    std::list<Order*> simulatedOrders;
 
     std::multiset<std::shared_ptr<Game>, GameOrder> cache;
 
@@ -99,12 +100,14 @@ public:
     std::list<std::pair<int, int>> getScores();
 
     // sorts players by how close they are to victory
-    std::vector<Player*> sortedPlayers() const;
+    std::vector<Player*> sortedPlayers(double timeDiff) const;
 
     bool hasEnded() const;
+    bool simulationEnded() { return ended; }
 
     void endGame();
 
+    Order* getOrder(const int id);
     Player* getPlayer(const int id) { return hasPlayer(id) ? players[id] : nullptr; }
     Vessel* getVessel(const int id) { return hasVessel(id) ? vessels[id] : nullptr; }
     Outpost* getOutpost(const int id) { return hasOutpost(id) ? outposts[id] : nullptr; }
@@ -139,12 +142,11 @@ public:
     void addNotification(AttackNotification* n);
 
     std::shared_ptr<Game> removeOrder(int ID);
-    void addOrder(const std::string &type, int ID, int referenceID, double timestamp, int senderID, int argumentIDs[], int argCount);
-    std::shared_ptr<Game> processOrder(const std::string &type, int ID, int referenceID, double timestamp, int senderID, int argumentIDs[], int argCount);
+    void addOrder(const std::string &type, int ID, int referenceID, bool canceled, double timestamp, int senderID, int argumentIDs[], int argCount);
+    std::shared_ptr<Game> processOrder(const std::string &type, int ID, int referenceID, bool canceled, double timestamp, int senderID, int argumentIDs[], int argCount);
     
     void removeVessel(Vessel* v);
     void removeSpecialist(Specialist* s);
-    void removeOrder(Order* o);
 
     void setEndTime(double t) { endTime = t; }
     

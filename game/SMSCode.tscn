@@ -23,22 +23,38 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_sbuoj")
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
 theme = ExtResource("1_wh4om")
-theme_override_constants/margin_left = 300
+theme_override_constants/margin_left = 100
 theme_override_constants/margin_top = 100
-theme_override_constants/margin_right = 300
+theme_override_constants/margin_right = 100
 theme_override_constants/margin_bottom = 100
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+custom_minimum_size = Vector2(500, 2.08165e-12)
 layout_mode = 2
+size_flags_horizontal = 4
 size_flags_vertical = 4
 theme = ExtResource("1_wh4om")
 theme_override_constants/separation = 20
+
+[node name="Label2" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("1_wh4om")
+theme_override_colors/font_color = Color(0.57098, 0.57098, 0.57098, 1)
+text = "Message and data rates may apply. One message is sent per account authorization, and no subscription to future messages takes place. Reply 'HELP' for help, reply 'STOP' to cancel."
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+bbcode_enabled = true
+text = "[center][color=#7dcde8][url=https://sites.google.com/view/artifice-game/privacy-policy]privacy policy[/url][/color]     [color=#7dcde8][url=https://sites.google.com/view/artifice-game/terms-and-conditions]terms of service[/url][/color][/center]"
+fit_content = true
 
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(100, 2.08165e-12)
 layout_mode = 2
 theme = ExtResource("1_wh4om")
-text = "Enter SMS code:"
+text = "Enter SMS code to confirm the phone number you previously entered:"
 horizontal_alignment = 1
 autowrap_mode = 3
 

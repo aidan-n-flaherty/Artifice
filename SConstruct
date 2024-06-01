@@ -52,7 +52,7 @@ env = SConscript("godot-cpp/SConstruct", {"env": env, "customs": customs})
 
 env.Append(CPPPATH=["src/"])
 env.Append(CCFLAGS=["-w"])
-env.Append(CXXFLAGS=["-fexceptions"])
+env.Append(CXXFLAGS=["-fexceptions", "-std=c++17"])
 sources = glob.glob("src/*.cpp") + glob.glob('GameLogic/**/*.cpp', recursive=True)
 
 file = "{}{}{}".format(libname, env["suffix"], env["SHLIBSUFFIX"])
@@ -61,11 +61,10 @@ if env["platform"] == "macos":
     platlibname = "{}.{}.{}".format(libname, env["platform"], env["target"])
     file = "{}.framework/lib{}".format(platlibname, platlibname)
 
-
 libraryfile = "bin/{}/{}".format(env["platform"], file)
 library = env.SharedLibrary(
     libraryfile,
-    source=sources,
+    source=sources
 )
 
 copy = env.InstallAs("{}/bin/{}/lib{}".format(projectdir, env["platform"], file), library)

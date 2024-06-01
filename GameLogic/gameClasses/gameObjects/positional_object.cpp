@@ -5,6 +5,7 @@
 
 void PositionalObject::updatePointers(Game* game) {
     Possessable::updatePointers(game);
+    if(getOriginatingOrder()) setOriginatingOrder(game->getOrder(getOriginatingOrder()->getID()));
     for(Specialist* &a : this->specialists) a = game->getSpecialist(a->getID());
 }
 

@@ -14,12 +14,14 @@ class SurrenderOrder : public Order
 {
 public:
     SurrenderOrder(){};
-    SurrenderOrder(double timestamp, int senderID, int referenceID) :
+    SurrenderOrder(double timestamp, int senderID, int referenceID, bool canceled) :
         Order(timestamp, senderID, referenceID) {}
-    SurrenderOrder(int id, double timestamp, int senderID, int referenceID) :
-        Order(id, timestamp, senderID, referenceID) {}
+    SurrenderOrder(int id, double timestamp, int senderID, int referenceID, bool canceled) :
+        Order(id, timestamp, senderID, referenceID, canceled) {}
 
-    Event* convert(Game* game) override {
+    Order* copy() override { return new SurrenderOrder(*this); }
+
+    Event* converted(Game* game) override {
         if(!game->hasPlayer(getSenderID())) return nullptr;
         
         Player* player = game->getPlayer(getSenderID());

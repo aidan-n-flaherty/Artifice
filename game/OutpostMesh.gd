@@ -25,7 +25,7 @@ func _ready():
 func rot(node):
 	node.get_node("City/Factory").rotation_degrees.y = 45 + 90 * get_parent().getID()
 	node.get_node("City/Generator").rotation_degrees.y = 45 + 90 * get_parent().getID()
-	node.get_node("JellyfishMesh").rotation_degrees.y = 360 * sin(get_parent().getID())
+	node.get_node("JellyfishMesh").setID(get_parent().getID())
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -48,6 +48,7 @@ func _process(delta):
 			
 			if not get_node_or_null("Outpost"):
 				var node = preload("res://OutpostSubMesh.tscn").instantiate()
+				destroyed = null
 				node.name = "Outpost"
 				rot(node)
 				add_child(node)
@@ -62,7 +63,7 @@ func _process(delta):
 			get_node("SubViewportTemp/OutpostInfo").setShield(get_parent().getShield(), get_parent().getMaxShield())
 	if outpostName != get_parent().getName():
 		$Name.text = get_parent().getName()
-	if destroyed != get_parent().isBroken():
+	if (get_parent().canViewType() or get_parent().isInRadar()) and destroyed != get_parent().isBroken():
 		$Outpost/JellyfishMesh.setDark(get_parent().isBroken())
 	if selected != get_parent().isSelected():
 		if get_parent().isSelected():
@@ -78,25 +79,36 @@ func _process(delta):
 	if color != get_parent().getColor():
 		$FlagSprite.modulate = get_parent().getColor()
 	
+	$FlagSprite/FlagSprite2.visible = get_parent().getSelfOwned()
+	
 	units = get_parent().getUnits()
 	shield = get_parent().getShield()
 	selected = get_parent().isSelected()
 	color = get_parent().getColor()
 	outpostName = get_parent().getName()
-	destroyed = get_parent().isBroken()
 	
-	if (not get_parent().isInRadar() and get_parent().canViewType()) or get_parent().isInRadar():
+	if get_parent().canViewType() or get_parent().isInRadar():
+		destroyed = get_parent().isBroken()
+	
+	$Outpost/JellyfishMesh.showLights(not get_parent().isInRadar() and not get_parent().canViewType())
+	
+	if get_parent().canViewType() or get_parent().isInRadar():
 		$RotationInvariant.show()
+		$Shadow.show()
 		if not get_parent().isBroken():
 			$Outpost/City.show()
 			$Outpost/ring.show()
+			$Outpost/floor.show()
 		else:
 			$Outpost/City.hide()
 			$Outpost/ring.hide()
+			$Outpost/floor.hide()
 	else:
+		$Shadow.hide()
 		$RotationInvariant.hide()
 		$Outpost/City.hide()
 		$Outpost/ring.hide()
+		$Outpost/floor.hide()
 	
 	if not get_parent().isInRadar():
 		$FloorSprite.hide()
@@ -117,7 +129,7 @@ func _process(delta):
 	$Outpost/City/Mine.visible = get_parent().isMine()
 	
 func addViewport():
-	if not get_node_or_null("SubViewport") and false:
+	if not get_node_or_null("SubViewport"):
 		viewportAdded = true
 		var outpostInfo = get_node("SubViewportTemp/OutpostInfo")
 		$SubViewportTemp.remove_child(outpostInfo)

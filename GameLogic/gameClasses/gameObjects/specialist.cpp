@@ -5,6 +5,7 @@
 
 void Specialist::updatePointers(Game *game) {
     Possessable::updatePointers(game);
+    if(getOriginatingOrder()) setOriginatingOrder(game->getOrder(getOriginatingOrder()->getID()));
     if(container != nullptr) container = game->getPosObject(container->getID());
 }
 

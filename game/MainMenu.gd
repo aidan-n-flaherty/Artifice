@@ -19,6 +19,8 @@ var buttons
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	$Fade.modulate = Color(0.0, 0.0, 0.0, 1.0)
+	
 	buttons = [
 		$VSplitContainer/MarginContainer/MarginContainer/HBoxContainer/Play/Play,
 		$VSplitContainer/MarginContainer/MarginContainer/HBoxContainer/Search/Search,
@@ -116,5 +118,4 @@ func _on_animation_player_animation_finished(anim_name):
 	if anim_name == "fade_to_game":
 		GameData.viewGameCompletion(gameID, past)
 	elif anim_name == "fade_to_game_detail":
-		print("ended")
 		GameData.viewGameDetailCompletion(gameID)

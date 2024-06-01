@@ -66,11 +66,13 @@ func _on_back_button_pressed():
 	$AnimationPlayer.play("fade_to_black")
 
 func _on_button_pressed():
+	$MarginContainer/VBoxContainer/GameEditor.getActivationButton().disabled = true
 	if not inGame:
 		await GameData.joinGame(self.gameID, $MarginContainer/VBoxContainer/GameEditor/MarginContainer/VBoxContainer/Passworded/PasswordText.text)
 	else:
 		if await GameData.leaveGame(self.gameID):
 			$AnimationPlayer.play("fade_to_current")
+	$MarginContainer/VBoxContainer/GameEditor.getActivationButton().disabled = false
 
 func viewUser(userID: int):
 	self.userID = userID

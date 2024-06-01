@@ -90,6 +90,7 @@ func _apn_device(value):
 	mutex.unlock()
 	
 func _ready():
+	current_scene = get_tree().current_scene
 	#if Engine.has_singleton("APN"):
 	#	var _apn = Engine.get_singleton("APN");
 	#	_apn.connect("device_address_changed", _apn_device);
@@ -98,8 +99,8 @@ func _ready():
 	
 	if Engine.has_singleton("ByteBrew"):
 		byteBrew = Engine.get_singleton("ByteBrew")
-		#if OS.get_name() == "Android":
-		#	byteBrew.InitializeByteBrew("ANDROID GAME ID", "ANDROID GAME KEY", Engine.get_version_info().string, "1.0")
+		if OS.get_name() == "Android":
+			byteBrew.InitializeByteBrew("scIQdIELG", "qmTQjInepgltlGwoUfjx879xOLUSPbQ4r0NDxFFYObYo/ya7jpreFl5eJ91vfORd", Engine.get_version_info().string, "1.0")
 		if OS.get_name() == "iOS":
 			byteBrew.InitializeByteBrew("eKK1bQDm1", "9LQjPNIHxho60LGa5IleSrpbB3iSmBE+Zr+mWcNW2oBETMQjc3xIj0l94S5kmAO+", Engine.get_version_info().string, "1.0")
 			byteBrew.StartPushNotifications()
@@ -126,6 +127,22 @@ func _ready():
 func resize():
 	get_tree().get_root().content_scale_factor = max(max(1.0, min(1.25, (baseResolution.x * 1.0 / baseResolution.y) / (get_viewport().size.x * 1.0 / get_viewport().size.y))), min(2.0, get_viewport().size.x * 1.0 / get_viewport().size.y))
 
+func goto_login():
+	call_deferred("_deferred_goto_login")
+
+func _deferred_goto_login():
+	if current_scene:
+		get_tree().get_root().remove_child(current_scene)
+		current_scene.queue_free()
+
+	var s = ResourceLoader.load("res://MainMenu.tscn")
+	current_scene = s.instantiate()
+
+	get_tree().get_root().add_child(current_scene)
+	get_tree().set_current_scene(current_scene)
+	
+	await login()
+	
 func goto_scene(path):
 	call_deferred("_deferred_goto_scene", path)
 
@@ -209,9 +226,7 @@ func getShare(code: String):
 		
 		storeAuth(authObj)
 		
-		goto_scene("res://MainMenu.tscn")
-		
-		await login()
+		goto_login()
 		
 		return true
 	
@@ -222,9 +237,7 @@ func requestCode(phoneNumber: String):
 		"phoneNumber": phoneNumber
 	}, false)
 
-func signup(phoneNumber: String, code: String):
-	print("phone ", phoneNumber)
-	print("code ", code)
+func signup():
 	print("Signing up...")
 	var username = "unnamed"
 	password = ""
@@ -243,8 +256,8 @@ func signup(phoneNumber: String, code: String):
 		"username": username,
 		"password": password
 	}, {
-		"phoneNumber": phoneNumber,
-		"code": code
+		#"phoneNumber": phoneNumber,
+		#"code": code
 	}, false)
 	
 	print(response)
@@ -262,9 +275,7 @@ func signup(phoneNumber: String, code: String):
 	
 	print("Signed up!")
 	
-	goto_scene("res://MainMenu.tscn")
-	
-	await login()
+	goto_login()
 
 func deleteAccount():
 	print("Deleting account...")
@@ -279,8 +290,8 @@ func deleteAccount():
 		var iCloud = Engine.get_singleton("ICloud")
 		
 		iCloud.remove_key("auth")
-	else:
-		var file = FileAccess.open("user://artifice_data.save", FileAccess.WRITE)
+	
+	var file = FileAccess.open("user://artifice_data.save", FileAccess.WRITE)
 		
 	goto_scene("res://EULA.tscn")
 
@@ -317,6 +328,7 @@ func login():
 		gameUsers.clear()
 		for arr in currentGameIDs:
 			loadGameUsers(arr[0])
+			updateOrders(arr[0])
 			loadChats(arr[0])
 		
 		if not WebSocketManager.hasSocket():
@@ -736,7 +748,7 @@ func loadGameState(id: int):
 
 func bulkAddOrders(gameID: int, game, orders):
 	for order in orders:
-		game.bulkAddOrder(order.type, int(order.id), int(order.referenceID), float(order.timestamp), int(order.senderID), PackedInt32Array(order.argumentIDs), int(order.argumentIDs.size()))
+		game.bulkAddOrder(order.type, int(order.id), int(order.referenceID), bool(order.canceled), float(order.timestamp), int(order.senderID), PackedInt32Array(order.argumentIDs), int(order.argumentIDs.size()))
 	game.endBulkAdd()
 	
 	if len(orders) > 0 and gameDetails.has(gameID) and not gameID in currentGameIDs:
@@ -754,14 +766,12 @@ func addOrder(gameID: int, type, referenceID, timestamp, arguments):
 	}, {
 		"gameID": gameID
 	})
-	if(order):
-		print(order)
-	else:
-		print("failed to recieve order")
+	
+	print(order)
 
 	if(!order): return;
 	
-	game.addOrder(order.type, int(order.id), int(order.referenceID), float(order.timestamp), int(order.senderID), PackedInt32Array(order.argumentIDs), int(order.argumentIDs.size()))
+	game.addOrder(order.type, int(order.id), int(order.referenceID), bool(order.canceled), float(order.timestamp), int(order.senderID), PackedInt32Array(order.argumentIDs), int(order.argumentIDs.size()))
 	
 	print("Order registered")
 
@@ -854,6 +864,11 @@ func verifyEnd(gameID: int):
 	
 func viewEnd(gameID: int):
 	WebSocketManager.sendMessage("[VIEWGAMEEND]" + str(gameID))
+	
+	if openGameIDs.has(gameID):
+		openGameIDs.erase(gameID)
+		if not pastUserGameIDs.has(gameID):
+			pastUserGameIDs[gameID] = true
 	
 	emit_signal("gamesChanged")
 

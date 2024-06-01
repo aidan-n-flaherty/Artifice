@@ -7,7 +7,7 @@ var capacity = 0
 func _ready():
 	pass # Replace with function body.
 
-func init(game, player, username, dailyProduction, units, capacity, resources, largest, win, outposts, factories, generators, mines, color):
+func init(game, player, username, dailyProduction, units, capacity, winCount, winTarget, largest, outposts, factories, generators, mines, color):
 	$MarginContainer/HBoxContainer/VBoxName/Name.text = str(username)
 	$MarginContainer/HBoxContainer/MarginContainer/MarginContainer/VBox/HBox2/DailyProduction.text = "+%d / day" % dailyProduction
 	$MarginContainer/HBoxContainer/MarginContainer/MarginContainer/VBox/HBox2/Units.text = str(units)
@@ -19,8 +19,12 @@ func init(game, player, username, dailyProduction, units, capacity, resources, l
 	$MarginContainer/HBoxContainer/MarginContainer/MarginContainer/VBox/HBox2/Units.text = str(units)
 	$MarginContainer/HBoxContainer/MarginContainer/MarginContainer/VBox/HBox2/Capacity.text = str(capacity)
 	
-	$MarginContainer/HBoxContainer/VBoxName/ResourcesProgress.value = resources
-	$MarginContainer/HBoxContainer/VBoxName/ResourcesProgress.max_value = win
+	$MarginContainer/HBoxContainer/VBoxName/MarginContainer.visible = winTarget != -1
+	
+	if winTarget != -1:
+		$MarginContainer/HBoxContainer/VBoxName/MarginContainer/WinProgress.value = winCount
+		$MarginContainer/HBoxContainer/VBoxName/MarginContainer/WinProgress.max_value = winTarget
+		$MarginContainer/HBoxContainer/VBoxName/MarginContainer/MarginContainer/Label.text = str(winCount) + " of " + str(winTarget)
 	
 	self.units = units
 	$MarginContainer/HBoxContainer/MarginContainer/Units.max_value = largest
@@ -36,6 +40,8 @@ func init(game, player, username, dailyProduction, units, capacity, resources, l
 	
 	if(game.getUserGameID() != player.getID()):
 		$Panel.modulate = Color(0.0, 0.0, 0.0)
+	else:
+		$Panel.modulate = Color(1.0, 1.0, 1.0)
 	
 	if game.getNumTeams() > 1:
 		$MarginContainer/HBoxContainer/VBoxName/Team.show()

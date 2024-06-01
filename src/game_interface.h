@@ -74,6 +74,8 @@ private:
 	
 	bool future = true;
 
+	bool buffer = true;
+
 	double simulationBuffer = 96 * 60 * 60;
 
 	double percent = 1.0;
@@ -133,6 +135,9 @@ public:
 	}
 	
 	double getTimeMillis();
+	double getBuffTime() { return buffer ? getTimeMillis() + 10 * 60 / settings.simulationSpeed : getTimeMillis(); }
+	void setBuff(bool value) { buffer = value; }
+	bool getBuff() { return buffer; }
 	bool simulatingFuture() { return future; }
 	bool willSendWith(SpecialistType type);
 	void setSelectedSpecialist(int id);
@@ -160,7 +165,7 @@ public:
 	PositionalObject* getObj(int id) { return simulatedGame->getPosObject(id); }
 	PositionalNode* getNode(int id);
 	
-	void startAtEnd() { if(completeGame && completeGame->hasEnded()) {setTime(completeGame->getGameEndTime());}};
+	void startAtEnd() { if(completeGame && completeGame->hasEnded()) setTime(completeGame->getGameEndTime()); };
 	void shiftToTime(double t);
 	void setTime(double t);
 	void setTempTime(double t) { tempTime = t; }
@@ -243,15 +248,16 @@ public:
 	double getStartTime() { return completeGame->getStartTime(); }
 	int getReferenceID() { return completeGame->getReferenceID(); }
 
+	int getWinCondition() { return settings.gameMode == Mode::MINING ? settings.resourcesToWin : settings.gameMode == Mode::CONQUEST ? settings.outpostsToWin : -1; }
 	int getNumTeams() { return settings.number_of_teams; }
 	double getSimulationSpeed() { return settings.simulationSpeed; }
 	int getWidth() { return settings.width; }
 	int getHeight() { return settings.height; }
 		
-	void bulkAddOrder(const String &type, uint32_t ID, int32_t referenceID, double timestamp, uint32_t senderID, PackedInt32Array arguments, uint32_t argCount);
+	void bulkAddOrder(const String &type, uint32_t ID, int32_t referenceID, bool canceled, double timestamp, uint32_t senderID, PackedInt32Array arguments, uint32_t argCount);
 	void endBulkAdd();
 		
-	void addOrder(const String &type, uint32_t ID, int32_t referenceID, double timestamp, uint32_t senderID, PackedInt32Array arguments, uint32_t argCount);
+	void addOrder(const String &type, uint32_t ID, int32_t referenceID, bool canceled, double timestamp, uint32_t senderID, PackedInt32Array arguments, uint32_t argCount);
 
 	void cancelOrder(uint32_t ID);
 };

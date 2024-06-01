@@ -44,7 +44,7 @@ func _draw():
 		var radius = size.x * 3/7
 		var angle_from = 45
 		var angle_to = angle_from + 160
-		var color = Color(0.0, 0.0, 0.0, 0.5)
+		var color = Color(0.0, 0.0, 0.0, 0.75)
 		var width = 25
 		draw_arc(center, radius, deg_to_rad(angle_from), deg_to_rad(angle_to), 32, color, width)
 		
@@ -68,7 +68,7 @@ func _draw():
 		var angle_from = 45
 		var angle_to = angle_from + 160
 		
-		var color = Color(0.0, 0.0, 0.0, 0.5)
+		var color = Color(0.0, 0.0, 0.0, 0.75)
 		var width = 5
 		draw_arc(center, radius, deg_to_rad(angle_from), deg_to_rad(angle_to), 32, color, width)
 

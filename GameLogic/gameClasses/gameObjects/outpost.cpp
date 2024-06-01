@@ -18,12 +18,13 @@ int Outpost::getShieldAt(double timeDiff) const {
 }
 
 double Outpost::nextProductionEvent(double timeDiff) const {
-    if(!hasOwner()) return -1;
+    if(!hasOwner() || !(type == OutpostType::FACTORY || type == OutpostType::MINE)) return -1;
 
     int i = 1;
     double time;
     do {
-        time = (i++ - getOwner()->getFractionalProduction()) / (getOwner()->globalProductionSpeed() * getSettings()->simulationSpeed / (8.0 * 60 * 60));
+        if(type == OutpostType::FACTORY) time = (i++ - getOwner()->getFractionalProduction()) / (getOwner()->globalProductionSpeed() * getSettings()->simulationSpeed / (8.0 * 60 * 60));
+        else time = (i++ - getOwner()->getFractionalResources()) / (getOwner()->resourceProductionSpeed() * getSettings()->simulationSpeed / (24.0 * 60 * 60));
     } while(time < timeDiff);
 
     return time;

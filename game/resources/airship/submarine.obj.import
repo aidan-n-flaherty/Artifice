@@ -1,0 +1,22 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://btdfbn0k46bx5"
+path="res://.godot/imported/submarine.obj-fb16223e92b4d135a40ae151adb0df8f.mesh"
+
+[deps]
+
+files=["res://.godot/imported/submarine.obj-fb16223e92b4d135a40ae151adb0df8f.mesh"]
+
+source_file="res://resources/airship/submarine.obj"
+dest_files=["res://.godot/imported/submarine.obj-fb16223e92b4d135a40ae151adb0df8f.mesh", "res://.godot/imported/submarine.obj-fb16223e92b4d135a40ae151adb0df8f.mesh"]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+optimize_mesh=true
+force_disable_mesh_compression=false

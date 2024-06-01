@@ -55,6 +55,8 @@ public:
 
 	int getID() { return player->getID(); }
 
+	int getWinCount() { return player->getSettings()->gameMode == Mode::MINING ? player->getResourcesAt(timeDiff) : player->getSettings()->gameMode == Mode::CONQUEST ? player->getOutposts().size() : -1; }
+
 	int getDailyProduction() { return player->dailyProductionRate(); }
 
 	int getResources() { return player->getResourcesAt(timeDiff); }

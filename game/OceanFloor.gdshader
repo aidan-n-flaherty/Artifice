@@ -120,7 +120,7 @@ void fragment() {
 	
 	float sunlight = 0.5 * getTexture(pos + speed * TIME * vec2(1.0), sunlightTexture1).r + 0.5 * getTexture(pos + speed * TIME * vec2(1.0, -1.0), sunlightTexture2).r;
 	
-	float lightStrength = 0.5 * getTexture(pos + speed * 0.5 * TIME * vec2(1.0), lightTexture1).r + 0.5 * getTexture(pos + speed * 0.5 * TIME * vec2(1.0, -1.0), lightTexture2).r;
+	float lightStrength = 0.75 * getTexture(pos + speed * 0.5 * TIME * vec2(1.0), lightTexture1).r + 0.5 * getTexture(pos + speed * 0.5 * TIME * vec2(1.0, -1.0), lightTexture2).r;
 	
 	float val = 0.01 * stone + 0.02 * rock - 0.08 * ravine * ravine;
 	
@@ -144,6 +144,8 @@ void fragment() {
 	}
 	
 	ALBEDO = vec3(val);
+	
+	ALBEDO *= vec3(0.8, 1.0, 1.2);
 	
 	NORMAL_MAP = normal;
 }

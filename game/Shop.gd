@@ -29,6 +29,7 @@ func init(gameID):
 func _process(delta):
 	var hires = game.getHires()
 	$VBoxContainer/Label.text = "You can hire " + str(hires) + " specialist" + ("" if hires == 1 else "s")
+	$VBoxContainer/HBoxContainer/MarginContainer/MarginContainer/Label.text = str(hires)
 
 func hired():
 	emit_signal("deselectShop")

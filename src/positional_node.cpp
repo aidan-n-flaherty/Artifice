@@ -33,6 +33,7 @@ void PositionalNode::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("getUnits"), &PositionalNode::getUnits);
 	ClassDB::bind_method(D_METHOD("getOwnerID"), &PositionalNode::getOwnerID);
 	ClassDB::bind_method(D_METHOD("select"), &PositionalNode::select);
+	ClassDB::bind_method(D_METHOD("getSelfOwned"), &PositionalNode::getSelfOwned);
 	ClassDB::bind_method(D_METHOD("isSelected"), &PositionalNode::isSelected);
 	ClassDB::bind_method(D_METHOD("isInRadar"), &PositionalNode::isInRadar);
 	ClassDB::bind_method(D_METHOD("canViewType"), &PositionalNode::canViewType);
