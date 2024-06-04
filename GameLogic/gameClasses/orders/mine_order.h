@@ -35,10 +35,12 @@ public:
 
         if(outpost->getUnits() < player->getMineCost() || outpost->getType() == OutpostType::MINE || outpost->getType() == OutpostType::BROKEN || outpost->getOwnerID() != getSenderID()) return nullptr;
 
+        setDescription(std::string("Convert ") + outpost->getName() + std::string(" to a mine"));
+
         return new MineEvent(this, getTimestamp(), outpost);
     }
 
-    std::string getType() override { return "Mine"; }
+    std::string getType() const override { return "Mine"; }
 };
 
 #endif

@@ -37,6 +37,8 @@ private:
 
 	bool selfOwned = false;
 
+	bool loaded = false;
+
 protected:
 	static void _bind_methods();
 	
@@ -103,6 +105,8 @@ public:
 	int getOriginatingOrder() { return canUndo() ? obj->getOriginatingOrder()->getID() : -1; }
 
 	String getOriginatingOrderType() { return canUndo() ? String(obj->getOriginatingOrder()->getType().c_str()) : ""; }
+
+	bool isLoaded() { return loaded; }
 };
 
 }

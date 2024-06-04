@@ -32,6 +32,9 @@ public:
     Outpost(unsigned int ID, GameSettings* settings, OutpostType type, int numUnits, double x, double y) : PositionalObject(ID, settings, x, y, numUnits), shieldCharge(0),
         maxShieldCharge(settings->defaultMaxShield), fractionalShield(0), type(type) {}
 
+    std::string getName() const {
+        return getSettings()->outpostNames[getID() % getSettings()->outpostNames.size()];
+    }
     OutpostType getType() const { return type; }
     void setType(OutpostType type) { this->type = type; }
 

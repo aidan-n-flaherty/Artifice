@@ -40,10 +40,12 @@ public:
 
         updateOrders(game, game->getOrders());
 
+        setDescription(std::string("Release ") + s->typeAsString() + std::string(" from ") + o->getName());
+
         return new ReleaseEvent(this, getTimestamp(), s, o);
     }
 
-    std::string getType() override { return "Release"; }
+    std::string getType() const override { return "Release"; }
 };
 
 #endif

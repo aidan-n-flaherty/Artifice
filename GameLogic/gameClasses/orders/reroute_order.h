@@ -45,10 +45,15 @@ public:
         if(!vessel->controlsSpecialist(SpecialistType::NAVIGATOR)) return nullptr;
         if(game->hasVessel(targetID) && !vessel->controlsSpecialist(SpecialistType::PIRATE)) return nullptr;
 
+        Outpost* targetOutpost = dynamic_cast<Outpost*>(target);
+
+        if(targetOutpost) setDescription(std::string("Reroute submarine to " + targetOutpost->getName()));
+        else setDescription(std::string("Reroute submarine to target an enemy submarine"));
+
         return new RerouteEvent(this, getTimestamp(), vessel, target);
     }
 
-    std::string getType() override { return "Reroute"; }
+    std::string getType() const override { return "Reroute"; }
 };
 
 #endif

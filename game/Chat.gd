@@ -23,7 +23,7 @@ func refresh(newChats):
 	newChats.sort_custom(func(a, b):
 		var lastMessageA = a.messages[len(a.messages) - 1] if len(a.messages) > 0 else null
 		var lastMessageB = b.messages[len(b.messages) - 1] if len(b.messages) > 0 else null
-		return (lastMessageA != null and lastMessageB != null and lastMessageA.timestamp > lastMessageB.readTimestamp) or (lastMessageA != null and lastMessageB == null)
+		return (lastMessageA != null and lastMessageB != null and lastMessageA.timestamp > lastMessageB.timestamp) or (lastMessageA != null and lastMessageB == null)
 	)
 	
 	var pos = 0

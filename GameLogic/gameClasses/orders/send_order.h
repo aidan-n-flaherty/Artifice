@@ -96,10 +96,18 @@ public:
             }
         }
 
+        Outpost* targetOutpost = dynamic_cast<Outpost*>(target);
+
+        if(targetOutpost) {
+            setDescription(std::string("Send ") + std::to_string(numUnits) + std::string(" units from ") + outpost->getName() + " to " + targetOutpost->getName());
+        } else {
+            setDescription(std::string("Send ") + std::to_string(numUnits) + std::string(" units from ") + outpost->getName() + " to an enemy submarine");
+        }
+
         return new SendEvent(this, getTimestamp(), numUnits, specialists, outpost, target);
     }
 
-    std::string getType() override { return "Send"; }
+    std::string getType() const override { return "Send"; }
 };
 
 #endif

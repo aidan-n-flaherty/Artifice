@@ -39,6 +39,5 @@ void OutpostNode::_process(double delta) {
 String OutpostNode::getName() {
 	if (outpost == nullptr) return "";
 	//return the name of an outpost (currently based on its ID)
-	std::string outpostStr = outpost->getSettings()->outpostNames[outpost->getID() % outpost->getSettings()->outpostNames.size()];
-	return String(outpostStr.c_str());
+	return String(outpost->getName().c_str());
 }

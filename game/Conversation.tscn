@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://cs4iuge3b5026"]
+[gd_scene load_steps=9 format=3 uid="uid://cs4iuge3b5026"]
 
 [ext_resource type="Script" path="res://Conversation.gd" id="1_yay6w"]
 [ext_resource type="Texture2D" uid="uid://dlqmq6fklb6q8" path="res://resources/images/back_arrow.png" id="2_mslj0"]
@@ -28,6 +28,8 @@ corner_detail = 16
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_30bys"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_du4kl"]
+
 [node name="Conversation" type="MarginContainer"]
 anchors_preset = 15
 anchor_right = 1.0
@@ -36,6 +38,10 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 0
 script = ExtResource("1_yay6w")
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 2
+size_flags_horizontal = 0
 
 [node name="Panel" type="Panel" parent="."]
 layout_mode = 2
@@ -49,10 +55,13 @@ theme_override_constants/margin_top = 30
 theme_override_constants/margin_right = 30
 theme_override_constants/margin_bottom = 30
 
+[node name="Button" type="Button" parent="MarginContainer"]
+layout_mode = 2
+flat = true
+
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
-focus_mode = 2
-mouse_filter = 0
+mouse_filter = 2
 theme_override_constants/separation = 20
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
@@ -79,16 +88,18 @@ alignment = 2
 
 [node name="ScrollContainer" parent="MarginContainer/VBoxContainer" instance=ExtResource("3_c8xu0")]
 layout_mode = 2
+mouse_filter = 2
 horizontal_scroll_mode = 0
 
 [node name="MessageContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 10
-mouse_filter = 0
+mouse_filter = 2
 
 [node name="Control" type="Control" parent="MarginContainer/VBoxContainer/ScrollContainer/MessageContainer"]
 layout_mode = 2
+mouse_filter = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -111,16 +122,14 @@ theme_override_constants/margin_bottom = 20
 layout_mode = 2
 mouse_filter = 0
 
-[node name="TextEdit" type="TextEdit" parent="MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer"]
+[node name="TextEdit" type="LineEdit" parent="MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer"]
 custom_minimum_size = Vector2(2.08165e-12, 2.08165e-12)
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/background_color = Color(0, 0, 0, 0)
 theme_override_styles/normal = SubResource("StyleBoxFlat_30bys")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_du4kl")
 placeholder_text = "Write a message..."
 drag_and_drop_selection_enabled = false
-wrap_mode = 1
-scroll_fit_content_height = true
 
 [node name="Send" type="TextureButton" parent="MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer"]
 custom_minimum_size = Vector2(50, 50)
@@ -132,8 +141,9 @@ texture_normal = ExtResource("3_8uh7s")
 ignore_texture_size = true
 stretch_mode = 0
 
-[connection signal="resized" from="." to="." method="_on_resized"]
+[connection signal="resized" from="Control" to="." method="_on_resized"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/Back" to="." method="_on_back_pressed"]
+[connection signal="resized" from="MarginContainer/VBoxContainer/ScrollContainer" to="." method="_on_text_edit_resized"]
 [connection signal="resized" from="MarginContainer/VBoxContainer/ScrollContainer/MessageContainer" to="." method="_on_message_container_resized"]
 [connection signal="text_changed" from="MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/TextEdit" to="." method="_on_text_edit_text_changed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/Send" to="." method="_on_send_pressed"]

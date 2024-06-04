@@ -20,7 +20,7 @@ void Vessel::updatePointers(Game* game) {
 */
 const Point Vessel::getTargetPos() const {
     // return the target position if the target does not move
-    Point targetPos = getPosition().closest(target->getPosition());
+    Point targetPos = getPosition().closest(target->getStartPosition());
     if(getSpeed() == 0 || target->getSpeed() == 0) return targetPos;
 
     Point returnVal;
@@ -39,7 +39,20 @@ const Point Vessel::getTargetPos() const {
 
         double lambda = b * b - 4 * a * c;
         if(lambda < 0) continue;
-        double t = a == 0 && b == 0 ? -1 : a == 0 ? -c/b : std::max((-b + sqrt(lambda))/(2 * a), (-b - sqrt(lambda))/(2 * a));
+        double t = -1;
+        
+        if(a == 0 && b == 0) t = -1;
+        else if(a == 0) t = -c/b;
+        else {
+            double candidateA = (-b + sqrt(lambda))/(2 * a);
+            double candidateB = (-b - sqrt(lambda))/(2 * a);
+
+            if(candidateA >= 0 && candidateB >= 0) {
+                t = std::min(candidateA, candidateB);
+            } else {
+                t = std::max(candidateA, candidateB);
+            }
+        }
         if(t < 0) continue;
 
         returnVal = targetPos + targetDelta * t;
@@ -50,7 +63,7 @@ const Point Vessel::getTargetPos() const {
         else if(i == 1) return Point();
 
         targetTarget = getPosition().closest(target->getTargetPos());
-        targetPos = targetTarget.closest(target->getPosition());
+        targetPos = targetTarget.closest(target->getStartPosition());
     }
 
     return returnVal;
@@ -81,7 +94,7 @@ double Vessel::getSpeed(double speed, double simulationSpeed, Player* p, const s
     if(specialists.empty() && p->controlsSpecialist(SpecialistType::ADMIRAL)) speed = fmax(speed, 1.0 + 0.5 * p->expSpecialistEffect(SpecialistType::ADMIRAL));
     if(controlsSpecialist(p, specialists, SpecialistType::ADMIRAL)) speed = fmax(speed, 2);
     if(controlsSpecialist(p, specialists, SpecialistType::HELMSMAN)) speed = fmax(speed, 2);
-    if(controlsSpecialist(p, specialists, SpecialistType::PIRATE) && (target && dynamic_cast<Vessel*>(target))) speed = fmax(speed, 2);
+    if(controlsSpecialist(p, specialists, SpecialistType::PIRATE)) speed = fmax(speed, 2);
     if(controlsSpecialist(p, specialists, SpecialistType::SMUGGLER) && target && target->getOwnerID() == p->getID()) speed = fmax(speed, 3);
 
     return speed * (simulationSpeed * 2.0 / (60 * 60));

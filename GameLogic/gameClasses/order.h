@@ -34,6 +34,8 @@ private:
 
     bool canceled = false;
 
+    std::string description = "";
+
 public:
     Order() : ID(counter++), referenceID(-1) {};
     Order(double timestamp, int senderID) : ID(counter++), timestamp(timestamp), senderID(senderID), referenceID(-1) {}
@@ -56,6 +58,8 @@ public:
 
     void setCanceled(bool canceled) { this->canceled = canceled; }
 
+    bool isCanceled() { return canceled; }
+
     /* IMPORTANT: All order validity preprocessing occurs in this function.
     ** It should be expected that no error checking occurs after the order is
     ** processed and converted to an event.
@@ -66,7 +70,11 @@ public:
 
     virtual Order* copy() { return new Order(*this); }
 
-    virtual std::string getType() { return ""; }
+    virtual std::string getType() const { return ""; }
+
+    void setDescription(const std::string& str) { this->description = str; }
+
+    std::string getDescription() const { return description != "" ? description : getType(); }
 
     bool operator<(const Order& other) const
     {

@@ -1,0 +1,63 @@
+[gd_scene load_steps=5 format=3 uid="uid://raexiph2jfyy"]
+
+[ext_resource type="Theme" uid="uid://tg7ina762c6q" path="res://resources/themes/UITheme.tres" id="1_vv0m7"]
+[ext_resource type="Script" path="res://Orders.gd" id="2_gp4qn"]
+[ext_resource type="PackedScene" uid="uid://dg4lhqpoy431" path="res://CustomScroll.tscn" id="3_ekkj1"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_mhwgp"]
+font_size = 40
+
+[node name="Orders" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_vv0m7")
+script = ExtResource("2_gp4qn")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_vv0m7")
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 50
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme = ExtResource("1_vv0m7")
+theme_override_constants/separation = 0
+
+[node name="Control" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("1_vv0m7")
+
+[node name="Title" type="Label" parent="MarginContainer/VBoxContainer/Control"]
+layout_mode = 2
+theme = ExtResource("1_vv0m7")
+text = "Orders"
+label_settings = SubResource("LabelSettings_mhwgp")
+horizontal_alignment = 1
+
+[node name="Spacer" type="Control" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+theme = ExtResource("1_vv0m7")
+
+[node name="ScrollContainer" parent="MarginContainer/VBoxContainer" instance=ExtResource("3_ekkj1")]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_vv0m7")
+
+[connection signal="tree_entered" from="." to="." method="_on_tree_entered"]
+[connection signal="tree_exited" from="." to="." method="_on_tree_exited"]

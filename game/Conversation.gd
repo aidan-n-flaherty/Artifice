@@ -35,12 +35,11 @@ var received = false
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	GameData.chatChanged.connect(chatChanged)
-	container.set_deferred("scroll_vertical",9999999)
+	scroll_to_bottom()
 	$MarginContainer/VBoxContainer/ScrollContainer.get_v_scroll_bar().connect("value_changed", scroll_changed)
 	
 func scroll_to_bottom():
 	container.set_deferred("scroll_vertical",container.get_v_scroll_bar().max_value)
-		
 
 
 func initTemp(gameID):
@@ -93,6 +92,17 @@ func refresh(messageList):
 	for player in game.getPlayers():
 		players[player.getUserID()] = player
 	
+	for id in messages.keys():
+		var messageExists = false
+		
+		for message in messageList:
+			if message.id == id:
+				messageExists = true
+				break
+		
+		if not messageExists:
+			messages.erase(id)
+	
 	for index in len(messageList):
 		var message = messageList[index]
 		
@@ -139,6 +149,7 @@ func _process(delta):
 			break
 	
 	$MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/Send.disabled = not canSend
+	$MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/Send.modulate = Color(0.9, 0.9, 0.9) if not canSend else Color(1.0, 1.0, 1.0)
 
 func chatChanged(chatID: int):
 	if chat and chatID == chat.id:
@@ -156,6 +167,7 @@ func _on_send_pressed():
 		return
 	
 	$MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/Send.disabled = true
+	$MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/Send.modulate = Color(0.9, 0.9, 0.9)
 	
 	if !chatID:
 		var playerIDs = PackedInt32Array()
@@ -168,16 +180,22 @@ func _on_send_pressed():
 		if tmp:
 			chatID = int(tmp)
 		else:
+			$MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/Send.modulate = Color(1.0, 1.0, 1.0)
 			$MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/Send.disabled = false
 			return
 	
-	if await GameData.sendMessage(chatID, $MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/TextEdit.text):
+	var content = $MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/TextEdit.text
+	if await GameData.sendMessage(chatID, content):
 		$MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/TextEdit.clear()
 	
+	$MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/Send.modulate = Color(1.0, 1.0, 1.0)
 	$MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/Send.disabled = false
 
 func scroll_changed(value):
 	atBottom = container.scroll_vertical == container.get_v_scroll_bar().max_value - container.size.y
+	
+	if atBottom:
+		maintainScroll = false
 	
 	if not atTop and container.scroll_vertical < container.get_v_scroll_bar().min_value + 40:
 		atTop = true
@@ -192,22 +210,25 @@ func _on_scroll_container_scroll_ended():
 	#see the new message at the bottom only if the bar is already at the bottom
 	print("scroll_vertical is ",container.scroll_vertical,", Y-size is ",container.size.y)
 
-
 func _on_message_container_resized():
 	if atBottom:
-		print("Debug: scrolling to the bottom")
 		call_deferred("scroll_to_bottom")
 	elif maintainScroll:
-		maintainScroll = false
-		container.set_deferred("scroll_vertical", container.scroll_vertical + $MarginContainer/VBoxContainer/ScrollContainer/MessageContainer.size.y - prevSize)
+		container.set_deferred("scroll_vertical", $MarginContainer/VBoxContainer/ScrollContainer/MessageContainer.size.y - prevSize)
 		
-		container.swipe_start = Vector2(container.get_h_scroll(), container.scroll_vertical + $MarginContainer/VBoxContainer/ScrollContainer/MessageContainer.size.y - prevSize)
+		container.swipe_start = Vector2(container.get_h_scroll(), $MarginContainer/VBoxContainer/ScrollContainer/MessageContainer.size.y - prevSize)
 		container.swipe_mouse_start = get_global_mouse_position()
 		container.swipe_mouse_times = [Time.get_ticks_msec()]
 		container.swipe_mouse_positions = [container.swipe_mouse_start]
 
 
-func _on_text_edit_text_changed():
+func _on_text_edit_text_changed(new_text: String):
+	if len($MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/TextEdit.text) > 255:
+		$MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/TextEdit["theme_override_colors/font_color"] = Color.FIREBRICK
+	else:
+		$MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/TextEdit["theme_override_colors/font_color"] = Color.WHITE
+	
+	return
 	var lines = 0
 	
 	for i in range(0, $MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/TextEdit.get_line_count()):
@@ -224,3 +245,8 @@ func _on_text_edit_text_changed():
 
 func _on_resized():
 	call_deferred("scroll_to_bottom")
+
+
+func _on_text_edit_resized():
+	if container and atBottom:
+		call_deferred("scroll_to_bottom")

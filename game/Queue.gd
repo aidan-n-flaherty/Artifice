@@ -20,10 +20,7 @@ func setValues():
 	$Unselected.visible = not inQueue
 	$Joining.visible = false
 	
-	if inQueue:
-		$Margin/Title.text = queue.queueName + ", " + str(queue.playerCount) + " out of " + str(queue.playerCap)
-	else:
-		$Margin/Title.text = queue.queueName
+	$Margin/Title.text = queue.queueName + ", " + str(queue.playerCount) + " out of " + str(queue.playerCap)
 
 func _on_selected_pressed():
 	GameData.leaveQueue(queueName)

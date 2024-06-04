@@ -77,10 +77,12 @@ public:
         }
         if(!canPromote) return nullptr;
 
+        setDescription(std::string("Promote ") + specialist->typeAsString() + std::string(" to ") + Specialist::typeAsString(t));
+
         return new PromoteEvent(this, getTimestamp(), specialist, t);
     }
 
-    std::string getType() override { return "Promote"; }
+    std::string getType() const override { return "Promote"; }
 };
 
 #endif

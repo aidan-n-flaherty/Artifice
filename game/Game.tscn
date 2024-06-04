@@ -1,4 +1,4 @@
-[gd_scene load_steps=61 format=3 uid="uid://cfaaort7dldjk"]
+[gd_scene load_steps=63 format=3 uid="uid://cfaaort7dldjk"]
 
 [ext_resource type="Script" path="res://Game.gd" id="1_s53r2"]
 [ext_resource type="PackedScene" uid="uid://b14auts774043" path="res://Shaders.tscn" id="2_qvr2g"]
@@ -16,12 +16,14 @@
 [ext_resource type="PackedScene" uid="uid://symsrj5sm6dt" path="res://Status.tscn" id="13_20fpi"]
 [ext_resource type="PackedScene" uid="uid://clqpri4b5a2y0" path="res://EndGame.tscn" id="13_iadse"]
 [ext_resource type="PackedScene" uid="uid://c7rmgavx0p0po" path="res://Chat.tscn" id="14_xpy25"]
+[ext_resource type="PackedScene" uid="uid://raexiph2jfyy" path="res://Orders.tscn" id="17_jx1np"]
 [ext_resource type="Texture2D" uid="uid://cnur8wtjik1dq" path="res://resources/gameMenuIcons/Status.png" id="20_e0joe"]
 [ext_resource type="PackedScene" uid="uid://c0o7lbwqyauwq" path="res://Battle Forecast.tscn" id="20_x2ppo"]
 [ext_resource type="Script" path="res://IconButton.gd" id="21_1xrt5"]
 [ext_resource type="Texture2D" uid="uid://b0mlod72vurw8" path="res://resources/gameMenuIcons/Chat.png" id="22_rm0rt"]
 [ext_resource type="Texture2D" uid="uid://bii0y133mrmt8" path="res://resources/gameMenuIcons/Shop.png" id="23_6yf1s"]
 [ext_resource type="Texture2D" uid="uid://dbcj7cu7grmhb" path="res://resources/gameMenuIcons/Editor.png" id="24_ghpbf"]
+[ext_resource type="Texture2D" uid="uid://cmsp8amwswdeo" path="res://resources/gameMenuIcons/Orders.png" id="24_scp3h"]
 
 [sub_resource type="Gradient" id="Gradient_kjhc4"]
 interpolation_mode = 2
@@ -473,6 +475,7 @@ theme_override_constants/margin_bottom = 50
 [node name="TextureRect" type="TextureRect" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/VBoxContainer/TopSpacer/MarginContainer"]
 modulate = Color(1, 1, 1, 0)
 layout_mode = 2
+size_flags_horizontal = 0
 theme = ExtResource("10_ww8tb")
 texture = ExtResource("9_4ris4")
 expand_mode = 2
@@ -482,6 +485,7 @@ stretch_mode = 4
 modulate = Color(0, 0, 0, 1)
 custom_minimum_size = Vector2(125, 125)
 layout_mode = 2
+size_flags_horizontal = 0
 theme = ExtResource("10_ww8tb")
 texture_normal = ExtResource("10_n5ogc")
 ignore_texture_size = true
@@ -666,6 +670,10 @@ layout_mode = 2
 visible = false
 layout_mode = 2
 
+[node name="Orders" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/VSeparator/TabDisplay/Panel" instance=ExtResource("17_jx1np")]
+visible = false
+layout_mode = 2
+
 [node name="HSeparator" type="HBoxContainer" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay"]
 layout_mode = 2
 mouse_filter = 2
@@ -769,10 +777,10 @@ theme = ExtResource("10_ww8tb")
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("10_ww8tb")
-theme_override_constants/margin_left = 50
-theme_override_constants/margin_top = 50
-theme_override_constants/margin_right = 50
-theme_override_constants/margin_bottom = 50
+theme_override_constants/margin_left = 35
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_right = 35
+theme_override_constants/margin_bottom = 40
 
 [node name="StatusButton" type="TextureButton" parent="Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer/StatusContainer"]
 custom_minimum_size = Vector2(80, 80)
@@ -789,10 +797,10 @@ script = ExtResource("21_1xrt5")
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("10_ww8tb")
-theme_override_constants/margin_left = 50
-theme_override_constants/margin_top = 50
-theme_override_constants/margin_right = 50
-theme_override_constants/margin_bottom = 50
+theme_override_constants/margin_left = 35
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_right = 35
+theme_override_constants/margin_bottom = 40
 
 [node name="ChatButton" type="TextureButton" parent="Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer/ChatContainer"]
 custom_minimum_size = Vector2(80, 80)
@@ -817,10 +825,10 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_dpdlm")
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("10_ww8tb")
-theme_override_constants/margin_left = 50
-theme_override_constants/margin_top = 50
-theme_override_constants/margin_right = 50
-theme_override_constants/margin_bottom = 50
+theme_override_constants/margin_left = 35
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_right = 35
+theme_override_constants/margin_bottom = 40
 
 [node name="ShopButton" type="TextureButton" parent="Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer/ShopContainer"]
 custom_minimum_size = Vector2(80, 80)
@@ -845,10 +853,10 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_dpdlm")
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("10_ww8tb")
-theme_override_constants/margin_left = 50
-theme_override_constants/margin_top = 50
-theme_override_constants/margin_right = 50
-theme_override_constants/margin_bottom = 50
+theme_override_constants/margin_left = 35
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_right = 35
+theme_override_constants/margin_bottom = 40
 
 [node name="EditorButton" type="TextureButton" parent="Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer/EditorContainer"]
 custom_minimum_size = Vector2(80, 80)
@@ -857,6 +865,26 @@ theme = ExtResource("10_ww8tb")
 toggle_mode = true
 button_group = SubResource("ButtonGroup_kxx00")
 texture_normal = ExtResource("24_ghpbf")
+ignore_texture_size = true
+stretch_mode = 5
+script = ExtResource("21_1xrt5")
+
+[node name="OrderContainer" type="MarginContainer" parent="Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("10_ww8tb")
+theme_override_constants/margin_left = 35
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_right = 35
+theme_override_constants/margin_bottom = 40
+
+[node name="OrderButton" type="TextureButton" parent="Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer/OrderContainer"]
+custom_minimum_size = Vector2(80, 80)
+layout_mode = 2
+theme = ExtResource("10_ww8tb")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_kxx00")
+texture_normal = ExtResource("24_scp3h")
 ignore_texture_size = true
 stretch_mode = 5
 script = ExtResource("21_1xrt5")
@@ -904,4 +932,5 @@ libraries = {
 [connection signal="pressed" from="Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer/ChatContainer/ChatButton" to="." method="_on_chat_button_pressed"]
 [connection signal="pressed" from="Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer/ShopContainer/ShopButton" to="." method="_on_shop_button_pressed"]
 [connection signal="pressed" from="Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer/EditorContainer/EditorButton" to="." method="_on_editor_button_pressed"]
+[connection signal="pressed" from="Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer/OrderContainer/OrderButton" to="." method="_on_order_button_pressed"]
 [connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_animation_player_animation_finished"]

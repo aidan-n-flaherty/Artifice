@@ -47,6 +47,8 @@ void PositionalNode::_bind_methods() {
 }
 
 PositionalNode::PositionalNode(const StringName &file, PositionalObject* obj) {
+	set_visible(false);
+
 	Ref<PackedScene> mesh = ResourceLoader::get_singleton()->load(file);
 
 	for(int i = -1; i <= 1; i++) for(int j = -1; j <= 1; j++) {
@@ -56,8 +58,6 @@ PositionalNode::PositionalNode(const StringName &file, PositionalObject* obj) {
 		n->set_position(Vector3(obj->getSettings()->width * i, 0, obj->getSettings()->height * j));
   		add_child(n);
 	}
-
-	set_visible(false);
 }
 
 void PositionalNode::_process(double delta) {
@@ -66,6 +66,8 @@ void PositionalNode::_process(double delta) {
 	if(obj == nullptr) return;
 
 	timePassed += delta;
+
+	if(timePassed > 0.01) loaded = true;
 }
 
 void PositionalNode::select(Camera3D *camera, const Ref<InputEvent> &event, const Vector3 &position, const Vector3 &normal, int32_t shape_idx) {

@@ -60,11 +60,13 @@ func _process(delta):
 		game.setTime(time_start_pos - change)
 		
 		if userControlled and abs((time_start_pos - change) - game.getBuffTime()) < 3600.0 / game.getSimulationSpeed():
-			change = time_start_pos - game.getBuffTime() + 0.1
 			target = time_start_pos - game.getBuffTime() + 0.1
 			game.setTime(game.getBuffTime() + 0.1)
 			
 			userControlled = dragging
+			
+			if not dragging:
+				change = time_start_pos - game.getBuffTime() + 0.1
 	
 	var diff = (Time.get_unix_time_from_system() - game.getTime()) * game.getSimulationSpeed() / 3600.0
 
@@ -72,13 +74,13 @@ func _process(delta):
 		prevDiff = diff
 		
 		$Horizontal/TimeIndicators/ActualTime.position.x = size.x/2
-		$Horizontal/TimeIndicators/CurrentTime.position.x = size.x/2 - $Horizontal/TimeIndicators/CurrentTime.size.x + 8 * diff
+		$Horizontal/TimeIndicators/CurrentTime.position.x = size.x/2 - $Horizontal/TimeIndicators/CurrentTime.size.x + 16 * diff
 		$Vertical/Measurement/Label.position.y = size.y/2
 		$Vertical/TimeIndicators/ActualTime.position.y = size.y/2
-		$Vertical/TimeIndicators/CurrentTime.position.y = size.y/2 + $Vertical/TimeIndicators/ActualTime.size.x- 8 * diff
+		$Vertical/TimeIndicators/CurrentTime.position.y = size.y/2 + $Vertical/TimeIndicators/ActualTime.size.x- 16 * diff
 		
 		for i in len($Horizontal/TimeIndicators/Markers.get_children()):
-			var pos = size.x/2 - 2.5 + 8 * diff + i * get_viewport_rect().size.x / 60.0
+			var pos = size.x/2 - 2.5 + 16 * diff + i * get_viewport_rect().size.x / 60.0
 			
 			if pos > get_viewport_rect().size.x:
 				pos -= int(pos / get_viewport_rect().size.x) * get_viewport_rect().size.x
@@ -91,7 +93,7 @@ func _process(delta):
 			get_node("Horizontal/TimeIndicators/Markers/Panel" + str(i + 1)).modulate = Color(0.3, 0.3, 0.3) if i % 4 == 0 else Color(0.2, 0.2, 0.2)
 		
 		for i in len($Vertical/TimeIndicators/Markers.get_children()):
-			var pos = size.y/2 - 2.5 - 8 * diff + i * get_viewport_rect().size.y / 60.0
+			var pos = size.y/2 - 2.5 - 16 * diff + i * get_viewport_rect().size.y / 60.0
 			
 			if pos > get_viewport_rect().size.y:
 				pos -= int(pos / get_viewport_rect().size.y) * get_viewport_rect().size.y
@@ -125,12 +127,13 @@ func _gui_input(event):
 			dragging = false
 	elif event is InputEventMouseMotion and dragging:
 		userControlled = true
+		speed = 1.0
 		if $Horizontal.visible:
 			speedScale = 1 / (1 + max(0, -0.5 + 0.1 * abs(event.position.y - mouse_start_pos.y)))
-			target = 0.125 * 3600.0 / game.getSimulationSpeed() * (event.position.x - mouse_start_pos.x)
+			target = 0.0625 * 3600.0 / game.getSimulationSpeed() * (event.position.x - mouse_start_pos.x)
 		else:
 			speedScale = 1 / (1 + max(0, -0.5 + 0.1 * abs(event.position.x - mouse_start_pos.x)))
-			target = 0.125 * 3600.0 / game.getSimulationSpeed() * -(event.position.y - mouse_start_pos.y)
+			target = 0.0625 * 3600.0 / game.getSimulationSpeed() * -(event.position.y - mouse_start_pos.y)
 	
 	if dragging:
 		accept_event()

@@ -77,12 +77,6 @@ void GameInterface::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("getHires"), &GameInterface::getHires);
 	ClassDB::bind_method(D_METHOD("getStartTime"), &GameInterface::getStartTime);
 	ClassDB::bind_method(D_METHOD("hasLost"), &GameInterface::hasLost);
-	ClassDB::bind_method(D_METHOD("canHire"), &GameInterface::canHire);
-	ClassDB::bind_method(D_METHOD("canRelease", "specialistID"), &GameInterface::canRelease);
-	ClassDB::bind_method(D_METHOD("canPromote", "specialistID"), &GameInterface::canPromote);
-	ClassDB::bind_method(D_METHOD("canUndoSpecialist", "specialistID"), &GameInterface::canUndoSpecialist);
-	ClassDB::bind_method(D_METHOD("getSpecialistOriginatingOrder", "specialistID"), &GameInterface::getSpecialistOriginatingOrder);
-	ClassDB::bind_method(D_METHOD("getSpecialistOriginatingOrderType", "specialistID"), &GameInterface::getSpecialistOriginatingOrderType);
 	ClassDB::bind_method(D_METHOD("isMining"), &GameInterface::isMining);
 	ClassDB::bind_method(D_METHOD("isConquest"), &GameInterface::isConquest);
 	ClassDB::bind_method(D_METHOD("isElimination"), &GameInterface::isElimination);
@@ -98,6 +92,8 @@ void GameInterface::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("getNextVictoryPlayer"), &GameInterface::getNextVictoryPlayer);
 	ClassDB::bind_method(D_METHOD("getNextArrivalEvent"), &GameInterface::getNextArrivalEvent);
 	ClassDB::bind_method(D_METHOD("getNextProductionEvent"), &GameInterface::getNextProductionEvent);
+
+	// battles
 	ClassDB::bind_method(D_METHOD("getNextBattleEvent"), &GameInterface::getNextBattleEvent);
 	ClassDB::bind_method(D_METHOD("canViewNextBattle", "objID"), &GameInterface::canViewNextBattle);
 	ClassDB::bind_method(D_METHOD("getBattlePhases"), &GameInterface::getBattlePhases);
@@ -110,10 +106,10 @@ void GameInterface::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("getNextBattleVictor", "objID"), &GameInterface::getNextBattleVictor);
 	ClassDB::bind_method(D_METHOD("getNextBattleVictorUnits", "objID"), &GameInterface::getNextBattleVictorUnits);
 	ClassDB::bind_method(D_METHOD("getNextBattleCaptures", "objID"), &GameInterface::getNextBattleCaptures);
+
 	ClassDB::bind_method(D_METHOD("getOutpostPositions"), &GameInterface::getOutpostPositions);
-	ClassDB::bind_method(D_METHOD("getAllSpecialists"), &GameInterface::getAllSpecialists);
-	ClassDB::bind_method(D_METHOD("getShopOptions"), &GameInterface::getShopOptions);
-	ClassDB::bind_method(D_METHOD("getPromotionOptions"), &GameInterface::getPromotionOptions);
+
+	// players
 	ClassDB::bind_method(D_METHOD("getPlayerIDs"), &GameInterface::getPlayerIDs);
 	ClassDB::bind_method(D_METHOD("getPlayers"), &GameInterface::getPlayers);
 	ClassDB::bind_method(D_METHOD("getPlayer"), &GameInterface::getPlayer);
@@ -121,10 +117,29 @@ void GameInterface::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("getCurrentSortedPlayers"), &GameInterface::getCurrentSortedPlayers);
 	ClassDB::bind_method(D_METHOD("getScore", "userID"), &GameInterface::getScore);
 	ClassDB::bind_method(D_METHOD("getColor", "userID"), &GameInterface::getColor);
+
+	// specialists
+	ClassDB::bind_method(D_METHOD("canHire"), &GameInterface::canHire);
+	ClassDB::bind_method(D_METHOD("canRelease", "specialistID"), &GameInterface::canRelease);
+	ClassDB::bind_method(D_METHOD("canPromote", "specialistID"), &GameInterface::canPromote);
+	ClassDB::bind_method(D_METHOD("canUndoSpecialist", "specialistID"), &GameInterface::canUndoSpecialist);
+	ClassDB::bind_method(D_METHOD("getSpecialistOriginatingOrder", "specialistID"), &GameInterface::getSpecialistOriginatingOrder);
+	ClassDB::bind_method(D_METHOD("getSpecialistOriginatingOrderType", "specialistID"), &GameInterface::getSpecialistOriginatingOrderType);
+	ClassDB::bind_method(D_METHOD("getAllSpecialists"), &GameInterface::getAllSpecialists);
+	ClassDB::bind_method(D_METHOD("getShopOptions"), &GameInterface::getShopOptions);
+	ClassDB::bind_method(D_METHOD("getPromotionOptions"), &GameInterface::getPromotionOptions);
 	ClassDB::bind_method(D_METHOD("getSpecialistName"), &GameInterface::getSpecialistName);
 	ClassDB::bind_method(D_METHOD("getSpecialistDescription"), &GameInterface::getSpecialistDescription);
 	ClassDB::bind_method(D_METHOD("getSpecialistHireAmount"), &GameInterface::getSpecialistHireAmount);
 	ClassDB::bind_method(D_METHOD("getSpecialistType"), &GameInterface::getSpecialistType);
+
+	// orders
+	ClassDB::bind_method(D_METHOD("getOrderIDs"), &GameInterface::getOrderIDs);
+	ClassDB::bind_method(D_METHOD("getInvalidOrderIDs"), &GameInterface::getInvalidOrderIDs);
+	ClassDB::bind_method(D_METHOD("getOrderTimestamp"), &GameInterface::getOrderTimestamp);
+	ClassDB::bind_method(D_METHOD("getOrderDescription"), &GameInterface::getOrderDescription);
+	ClassDB::bind_method(D_METHOD("canUndoOrder"), &GameInterface::canUndoOrder);
+
 	ClassDB::bind_method(D_METHOD("getNumTeams"), &GameInterface::getNumTeams);
 	ClassDB::bind_method(D_METHOD("getFloorDisplay"), &GameInterface::getFloorDisplay);
 	ClassDB::bind_method(D_METHOD("getNode", "id"), &GameInterface::getNode);
@@ -317,7 +332,7 @@ void GameInterface::_process(double delta) {
 			pair.second->setDiff(t, timeDiff);
 			pair.second->setSelfOwned(pair.second->getOwnerID() == userGameID && userGameID >= 0);
 			pair.second->setInRadar(finished || (p ? visibilityGame->withinRange(p, pair.second->getObj(), timeDiff) : false));
-			pair.second->set_visible(finished || (p ? visibilityGame->withinRange(p, pair.second->getObj(), timeDiff) : false));
+			if(pair.second->isLoaded()) pair.second->set_visible(finished || (p ? visibilityGame->withinRange(p, pair.second->getObj(), timeDiff) : false));
 		}
 		
 		for(const auto& pair : outposts) {
@@ -330,7 +345,7 @@ void GameInterface::_process(double delta) {
 
 		for(const auto& pair : players) pair.second->setDiff(t, timeDiff);
 
-		if(selected >= 0 && getNode(selected) && getNode(selected)->isInRadar()) selectedUnits = getSelected()->getUnitsAt(timeDiff);
+		if(selected >= 0 && getNode(selected) && getNode(selected)->isInRadar()) selectedUnits = getSelected()->getUnitsAt(simulatedDiff);
 		else selectedUnits = -1;
 
 		floorDisplay->setDiff(timeDiff, simulatedDiff);
@@ -773,6 +788,26 @@ PackedInt32Array GameInterface::getPlayerIDs() {
 	return arr;
 }
 
+PackedInt32Array GameInterface::getOrderIDs() {
+	PackedInt32Array arr;
+
+	for(const auto& order : game->getOrders()) {
+		if(order->getSenderID() == getUserGameID() && !order->isCanceled()) arr.push_back(uint32_t(order->getID()));
+	}
+
+	return arr;
+}
+
+PackedInt32Array GameInterface::getInvalidOrderIDs() {
+	PackedInt32Array arr;
+
+	for(const auto& order : completeGame->getInvalid()) {
+		if(order->getSenderID() == getUserGameID() && !order->isCanceled()) arr.push_back(uint32_t(order->getID()));
+	}
+
+	return arr;
+}
+
 Array GameInterface::getPlayers() {
 	Array arr;
 
@@ -865,7 +900,8 @@ String GameInterface::getNextVictoryMessage() {
 	std::string res = victor->getName();
 
 	if(settings.gameMode == Mode::CONQUEST) {
-		if(settings.outpostsToWin - victor->getOutposts().size() > 0 && !game->simulationEnded()) res += " needs " + std::to_string((1 + (game->getPlayers().size() / 2)) * settings.outpostsPerPlayer - victor->getOutposts().size()) + " more outposts to win";
+		if(settings.outpostsToWin - victor->getOutposts().size() > 0) res += " needs " + std::to_string((1 + (game->getPlayers().size() / 2)) * settings.outpostsPerPlayer - victor->getOutposts().size()) + " more outposts to win";
+		else if(!game->simulationEnded()) return "";
 		else res += " has won";
 	} else if(settings.gameMode == Mode::MINING) {
 		const WinConditionEvent* e = completeGame->nextWinCondition(clientToGameTime(getTime()));
@@ -873,7 +909,7 @@ String GameInterface::getNextVictoryMessage() {
 		if(e) {
 			victor = game->getPlayer(e->getPlayerID());
 			res = victor->getName();
-		} else if(!completeGame->simulationEnded()) return "";
+		} else if(!game->simulationEnded()) return "";
 
 		if(e && settings.resourcesToWin - victor->getResourcesAt(timeDiff) > 0 && !game->simulationEnded()) {
 			char str[16];
@@ -1116,3 +1152,22 @@ Color GameInterface::getColor(int userID) {
 	return Color(0.0, 0.0, 0.0);
 }
 
+double GameInterface::getOrderTimestamp(int orderID) {
+	const Order* o = completeGame->getOrder(orderID);
+
+	return o ? settings.gameToClientTime(o->getTimestamp()) : -1;
+}
+
+String GameInterface::getOrderDescription(int orderID) {
+	const Order* o = completeGame->getOrder(orderID);
+
+	return String(o ? o->getDescription().c_str() : "");
+}
+
+bool GameInterface::canUndoOrder(int orderID) {
+	double t = settings.clientToGameTime(getTimeMillis());
+
+	const Order* o = completeGame->getOrder(orderID);
+
+	return o && o->getTimestamp() > t;
+}

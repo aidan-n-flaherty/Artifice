@@ -36,7 +36,7 @@ void GameSettings::loadDefaults() {
     GameSettings::specialistDescriptions = {
         { QUEEN, "If you lose your Queen, you lose the game. Maximum shield charge of the Queen's outpost is increased by 20. All hired specialists spawn at the Queen's outpost, and cannot be hired in transit. If you acquire another Queen, she becomes a Princess."},
         { PRINCESS, "The sonar range of the local outpost is increased by 50% of the base value for the first Princess, 25% for the second Princess, etc. If you lose your Queen, the nearest Princess will replace her."},
-        { PIRATE, "A Pirate can target an enemy submarine in transit. When targeting a submarine, movement speed is 2x the base value. Upon a successful attack, the Pirate returns at 4x base movement speed to the nearest friendly outpost."},
+        { PIRATE, "A Pirate can target an enemy submarine in transit. Movement speed is 2x the base value. Upon a successful attack, the Pirate returns at 4x base movement speed to the nearest friendly outpost."},
         { ADMIRAL, "Movement speed is 2x the base value. Increases speed of all your subs that aren't carrying specialists by 50% for the first Admiral, 25% for the next Admiral, etc." },
         { NAVIGATOR, "A submarine carrying a Navigator can be redirected during transit." },
         { ASSASSIN, "Kills any enemy specialists it encounters in combat." },

@@ -546,6 +546,9 @@ void Game::updateState(double timestamp) {
     for(auto& pair : outposts) pair.second->update(secondsElapsed);
     for(auto& pair : players) pair.second->update(secondsElapsed);
 
+    for(auto& pair : vessels) pair.second->endUpdate();
+    for(auto& pair : outposts) pair.second->endUpdate();
+
     stateTime = timestamp;
 }
 
@@ -862,6 +865,7 @@ Order* Game::getOrder(int ID) {
     std::list<Order*> allOrders;
     allOrders.insert(allOrders.end(), orders.begin(), orders.end());
     allOrders.insert(allOrders.end(), simulatedOrders.begin(), simulatedOrders.end());
+    allOrders.insert(allOrders.end(), invalidOrders.begin(), invalidOrders.end());
 
     for(Order* o : allOrders) {
         if(o->getID() == ID) return o;

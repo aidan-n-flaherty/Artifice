@@ -36,10 +36,12 @@ public:
 
         if(vessel->getOwnerID() != getSenderID()) return nullptr;
 
+        setDescription(std::string("Convert vessel to gift"));
+
         return new GiftEvent(this, getTimestamp(), vessel);
     }
 
-    std::string getType() override { return "Gift"; }
+    std::string getType() const override { return "Gift"; }
 };
 
 #endif

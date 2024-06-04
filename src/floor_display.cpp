@@ -36,7 +36,7 @@ void FloorDisplay::_draw() {
 
     // draw_arc(const Vector2 &center, double radius, double start_angle, double end_angle, int32_t point_count, const Color &color, double width = -1.0, bool antialiased = false)
 
-    draw_rect(Rect2(0, 0, viewport->get_size().x, viewport->get_size().y), Color(0.0, 0.0, 0.8, 1.0));
+    draw_rect(Rect2(0, 0, viewport->get_size().x, viewport->get_size().y), Color(0.0, 0.0, 0.9, 1.0));
 
     Player* p = gameInterface->simulatingFuture() ? current->getPlayer(gameInterface->getUserGameID()) : game->getPlayer(gameInterface->getUserGameID());
 
@@ -53,7 +53,8 @@ void FloorDisplay::_draw() {
                 double x1 = pair.second->getPositionAt(getDiff()).getX();
                 double y1 = pair.second->getPositionAt(getDiff()).getY();
 
-                draw_circle(Vector2(x1 - x, y1 - y) * pixels, pair.second->getSonarRange() * pixels, Color(0.0, 0.0, 0.4));
+                //draw_circle(Vector2(x1 - x, y1 - y) * pixels, pair.second->getSonarRange() * pixels, Color(0.0, 0.0, 0.4));
+                draw_arc(Vector2(x1 - x, y1 - y) * pixels, pair.second->getSonarRange() * pixels - 10, 0, UtilityFunctions::deg_to_rad(360), 32, Color(0.0, 0.0, 0.4), 20, false);
             }
         }
     }
@@ -69,7 +70,8 @@ void FloorDisplay::_draw() {
                 double x1 = pair.second->getPositionAt(getDiff()).getX();
                 double y1 = pair.second->getPositionAt(getDiff()).getY();
 
-                draw_circle(Vector2(x1 - x, y1 - y) * pixels, pair.second->getSonarRange() * pixels - 20, Color(0.0, 0.0, 0.0));
+                //draw_circle(Vector2(x1 - x, y1 - y) * pixels, pair.second->getSonarRange() * pixels - 20, Color(0.0, 0.0, 0.0));
+                draw_arc(Vector2(x1 - x, y1 - y) * pixels, (pair.second->getSonarRange() * pixels - 20)/2, 0, UtilityFunctions::deg_to_rad(360), 32, Color(0.0, 0.0, 0.0), (pair.second->getSonarRange() * pixels - 20), false);
             }
         }
     }
@@ -86,7 +88,8 @@ void FloorDisplay::_draw() {
                     double x1 = pair.second->getPositionAt(getDiff()).getX();
                     double y1 = pair.second->getPositionAt(getDiff()).getY();
 
-                    draw_circle(Vector2(x1 - x, y1 - y) * pixels, pair.second->getSonarRange() * pixels - 20, Color(1.0, 1.0, 0.01));
+                    //draw_circle(Vector2(x1 - x, y1 - y) * pixels, pair.second->getSonarRange() * pixels - 20, Color(1.0, 1.0, 0.01));
+                    draw_arc(Vector2(x1 - x, y1 - y) * pixels, (pair.second->getSonarRange() * pixels - 20)/2, 0, UtilityFunctions::deg_to_rad(360), 32, Color(1.0, 1.0, 0.01), (pair.second->getSonarRange() * pixels - 20), false);
                 }
             }
         }

@@ -130,11 +130,12 @@ func init(gameID):
 	$Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer/ChatContainer.visible = game.getUserGameID() != -1
 	
 	$Viewport/GameOverlay/MarginContainer/VTimeline/Timeline.init(gameID)
-	tabDisplay().get_node("Panel/Status").init(gameID)
 	$Viewport/Viewport3D/CameraManager.init(gameID)
 	
+	tabDisplay().get_node("Panel/Status").init(gameID)
 	tabDisplay().get_node("Panel/Shop").init(gameID)
 	tabDisplay().get_node("Panel/Chat").init(gameID)
+	tabDisplay().get_node("Panel/Orders").init(gameID)
 	
 	var details = GameData.getGameDetails(gameID)
 	
@@ -329,6 +330,9 @@ func _on_shop_button_pressed():
 
 func _on_editor_button_pressed():
 	setMenuDisplay(tabDisplay().get_node("Panel/GameEditor"), true)
+
+func _on_order_button_pressed():
+	setMenuDisplay(tabDisplay().get_node("Panel/Orders"), true)
 	
 func _on_back_button_pressed():
 	$AnimationPlayer.play("fade_to_black")

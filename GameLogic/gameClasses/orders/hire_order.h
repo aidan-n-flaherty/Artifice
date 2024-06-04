@@ -69,10 +69,12 @@ public:
         }
         if(!canHire) return nullptr;
 
+        setDescription(std::string("Hire ") + Specialist::typeAsString(t));
+
         return new HireEvent(this, getTimestamp(), player, t);
     }
 
-    std::string getType() override { return "Hire"; }
+    std::string getType() const override { return "Hire"; }
 };
 
 #endif

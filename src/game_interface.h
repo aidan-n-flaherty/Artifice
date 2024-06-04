@@ -188,6 +188,8 @@ public:
 	PositionalNode* getTarget(double x, double y);
 	double projectedTime(double x, double y);
 	PackedInt32Array getPlayerIDs();
+	PackedInt32Array getOrderIDs();
+	PackedInt32Array getInvalidOrderIDs();
 	PackedVector2Array getOutpostPositions();
 	PackedInt32Array getAllSpecialists();
 	PackedInt32Array getShopOptions();
@@ -197,6 +199,10 @@ public:
 	Array getCurrentSortedPlayers();
 	int getScore(int userID);
 	Color getColor(int userID);
+
+	double getOrderTimestamp(int orderID);
+	String getOrderDescription(int orderID);
+	bool canUndoOrder(int orderID);
 
 	int getSpecialistType(int specialistID) { return game->hasSpecialist(specialistID) ? game->getSpecialist(specialistID)->getType() : 0; };
 	PlayerNode* getPlayer(int id);
@@ -239,7 +245,7 @@ public:
 	int getNextBattleVictorUnits(int objID);
 	Array getNextBattleCaptures(int objID);
 
-	bool canHire() { return game && game->hasPlayer(userGameID) && game->getPlayer(userGameID)->getHiresAt(settings.clientToGameTime(getCurrent()) - game->getTime()) >= 0 && dynamic_cast<Outpost*>(game->getPlayer(userGameID)->getSpawnLocation()) && game->getPlayer(userGameID)->getSpawnLocation()->getOwnerID() == userGameID; }
+	bool canHire() { return game && game->hasPlayer(userGameID) && game->getPlayer(userGameID)->getHiresAt(settings.clientToGameTime(getCurrent()) - game->getTime()) >= 0 && dynamic_cast<Outpost*>(game->getPlayer(userGameID)->getSpawnLocation()) && game->getPlayer(userGameID)->getSpawnLocation()->getOwnerID() == userGameID && future; }
 	bool hasStarted() { return current >= game->getStartTime(); }
 	bool hasEnded() { return game->hasEnded() && currentGame->hasEnded(); }
 	bool hasLost() { return game && game->hasPlayer(userGameID) && game->getPlayer(userGameID)->hasLost() && currentGame->getPlayer(userGameID)->hasLost(); }

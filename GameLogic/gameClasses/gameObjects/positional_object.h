@@ -23,16 +23,21 @@ private:
 
     Point position;
 
+    Point startPosition;
+
     std::list<Specialist*> specialists;
 
 public:
-    PositionalObject(unsigned int ID, GameSettings* settings, const Point &position, int numUnits) : GameObject(ID, settings), numUnits(numUnits), position(position) {}
-    PositionalObject(unsigned int ID, GameSettings* settings, const Point &position, int numUnits, const std::list<Specialist*> &specialists) : GameObject(ID, settings), numUnits(numUnits), position(position) { addSpecialists(specialists); }
-    PositionalObject(unsigned int ID, GameSettings* settings, double x, double y, int numUnits) : GameObject(ID, settings), numUnits(numUnits), position(settings, x, y) {}
-    PositionalObject(unsigned int ID, GameSettings* settings, double x, double y, int numUnits, const std::list<Specialist*> &specialists) : GameObject(ID, settings), numUnits(numUnits), position(settings, x, y), specialists(specialists) { addSpecialists(specialists); }
+    PositionalObject(unsigned int ID, GameSettings* settings, const Point &position, int numUnits) : GameObject(ID, settings), numUnits(numUnits), position(position) { startPosition = Point(settings, position.getX(), position.getY()); }
+    PositionalObject(unsigned int ID, GameSettings* settings, const Point &position, int numUnits, const std::list<Specialist*> &specialists) : GameObject(ID, settings), numUnits(numUnits), position(position) { addSpecialists(specialists); startPosition = Point(settings, position.getX(), position.getY()); }
+    PositionalObject(unsigned int ID, GameSettings* settings, double x, double y, int numUnits) : GameObject(ID, settings), numUnits(numUnits), position(settings, x, y) { startPosition = Point(settings, position.getX(), position.getY()); }
+    PositionalObject(unsigned int ID, GameSettings* settings, double x, double y, int numUnits, const std::list<Specialist*> &specialists) : GameObject(ID, settings), numUnits(numUnits), position(settings, x, y), specialists(specialists) { addSpecialists(specialists); startPosition = Point(settings, position.getX(), position.getY()); }
 
     void updatePointers(Game* game) override;
 
+    void endUpdate() { startPosition = Point(getSettings(), position.getX(), position.getY()); }
+
+    const Point& getStartPosition() const { return startPosition; }
     const Point& getPosition() const { return position; }
     virtual const Point getPositionAt(double timeDiff) const { return getPosition(); }
     virtual const Point getTargetPos() const { return getPosition(); }

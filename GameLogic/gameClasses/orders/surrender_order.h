@@ -28,10 +28,12 @@ public:
         
         if(player->hasLost()) return nullptr;
 
+        setDescription("Surrender");
+
         return new SurrenderEvent(this, getTimestamp(), player);
     }
 
-    std::string getType() override { return "Surrender"; }
+    std::string getType() const override { return "Surrender"; }
 };
 
 #endif

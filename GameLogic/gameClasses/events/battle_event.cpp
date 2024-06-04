@@ -97,7 +97,7 @@ void BattleEvent::postSpecialistPhase(Game* game) {
     }
 
     for(int i = 0; i < a->ownerSpecialistCount(SpecialistType::KING); i++) {
-        addMessage(a->getOwnerID(), a->getOwner()->getName() + "'s King kills " + std::to_string(b->removeUnits(int(unitsA * 1.0 / (i + 4)))) + " units");
+        addMessage(a->getOwnerID(), a->getOwner()->getName() + "'s King kills " + std::to_string(b->removeUnits(int(unitsA * 1.0 / (2 * i + 4)))) + " units");
     }
 
     for(int i = 0; i < b->ownerSpecialistCount(SpecialistType::KING); i++) {

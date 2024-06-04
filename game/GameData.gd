@@ -74,7 +74,7 @@ var pushTokenSet = false
 
 var iCloudEnabled = true
 
-func _apn_device(value):
+"""func _apn_device(value):
 	pushToken = value
 	print("Push token: ", pushToken)
 	
@@ -87,7 +87,7 @@ func _apn_device(value):
 		})
 		
 		print("Push token update: ", returnVal)
-	mutex.unlock()
+	mutex.unlock()"""
 	
 func _ready():
 	current_scene = get_tree().current_scene
@@ -331,6 +331,9 @@ func login():
 			updateOrders(arr[0])
 			loadChats(arr[0])
 		
+		for id in chats:
+			refreshMessages(id)
+		
 		if not WebSocketManager.hasSocket():
 			WebSocketManager.init(token)
 		
@@ -500,6 +503,14 @@ func loadChats(gameID: int):
 		self.chatGroups[gameID] = []
 	
 	return getChats(gameID)
+
+func refreshMessages(chatID: int):
+	var chat = getChat(chatID)
+	
+	if chat:
+		chat.messages = []
+		
+		await loadMessages(chatID)
 
 func loadMessages(chatID: int):
 	var chat = getChat(chatID)
@@ -865,10 +876,10 @@ func verifyEnd(gameID: int):
 func viewEnd(gameID: int):
 	WebSocketManager.sendMessage("[VIEWGAMEEND]" + str(gameID))
 	
-	if openGameIDs.has(gameID):
-		openGameIDs.erase(gameID)
-		if not pastUserGameIDs.has(gameID):
-			pastUserGameIDs[gameID] = true
+	if ongoingGameIDs.has(gameID):
+		ongoingGameIDs.erase(gameID)
+	if not pastUserGameIDs.has(gameID):
+		pastUserGameIDs[gameID] = true
 	
 	emit_signal("gamesChanged")
 
