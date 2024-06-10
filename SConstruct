@@ -57,9 +57,9 @@ sources = glob.glob("src/*.cpp") + glob.glob('GameLogic/**/*.cpp', recursive=Tru
 
 file = "{}{}{}".format(libname, env["suffix"], env["SHLIBSUFFIX"])
 
-if env["platform"] == "macos":
-    platlibname = "{}.{}.{}".format(libname, env["platform"], env["target"])
-    file = "{}.framework/lib{}".format(platlibname, platlibname)
+#if env["platform"] == "macos":
+#    platlibname = "{}.{}.{}".format(libname, env["platform"], env["target"])
+#    file = "{}.framework/lib{}".format(platlibname, platlibname)
 
 libraryfile = "bin/{}/{}".format(env["platform"], file)
 library = env.SharedLibrary(

@@ -71,7 +71,7 @@ void fragment() {
 	
 	grad *= grad + (1.0 - grad) * texture(noise4, uv).r;
 	
-	COLOR.rgb = vec3(0.04, 0.06, 0.1) * 1.5 + COLOR.rgb * 0.1;
+	COLOR.rgb = vec3(0.04, 0.06, 0.1) * 2.0 + COLOR.rgb * 0.1;
 	
 	//COLOR.rgb += 1.0 * texture(noise6, vec2(uv.x, 1.0 - uv.y)).rgb * texture(noise6, vec2(uv.x, 1.0 - uv.y)).rgb;
 	

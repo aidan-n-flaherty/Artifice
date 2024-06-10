@@ -39,6 +39,8 @@ public:
 		}
 	}
 
+	int getSourceOrder() { return canUndo() && vessel ? vessel->getSourceOrder()->getID() : -1; }
+
 	Vessel* getVessel() { return vessel; }
 };
 

@@ -8,6 +8,10 @@ var vessel: VesselNode
 
 var vesselID: int
 
+var submittedChange = false
+
+var oldUnits = null
+
 signal battleForecastToggle(vessel)
 
 # Called when the node enters the scene tree for the first time.
@@ -30,6 +34,19 @@ func _process(delta):
 		else:
 			$VBoxContainer/HBoxContainer2/VBoxContainer/Arrival.text = ""
 			return
+	
+	var unitsChanged = false
+	
+	if oldUnits != vessel.getUnits():
+		unitsChanged = true
+		oldUnits = vessel.getUnits()
+	
+	if submittedChange and unitsChanged:
+		$VBoxContainer/HBoxContainer2/Units.release_focus()
+		submittedChange = false
+	
+	if not $VBoxContainer/HBoxContainer2/Units.has_focus():
+		$VBoxContainer/HBoxContainer2/Units.text = str(vessel.getUnits())
 	
 	var arrival = game.getNextArrivalEvent(vessel.getID())
 	if arrival >= 0:
@@ -55,9 +72,17 @@ func _process(delta):
 		$VBoxContainer/HBoxContainer/Cancel.text = "Undo '" + vessel.getOriginatingOrderType() + "'"
 		$VBoxContainer/HBoxContainer/Spacer2.show()
 		$VBoxContainer/HBoxContainer/Cancel.show()
+		$VBoxContainer/HBoxContainer2/AlterOrder.show()
+		$VBoxContainer/HBoxContainer2/Units.editable = true
+		$VBoxContainer/HBoxContainer2/Units.virtual_keyboard_enabled = true
+		$VBoxContainer/HBoxContainer2/Units.focus_mode = FOCUS_ALL
 	else:
 		$VBoxContainer/HBoxContainer/Spacer2.hide()
 		$VBoxContainer/HBoxContainer/Cancel.hide()
+		$VBoxContainer/HBoxContainer2/AlterOrder.hide()
+		$VBoxContainer/HBoxContainer2/Units.editable = false
+		$VBoxContainer/HBoxContainer2/Units.virtual_keyboard_enabled = false
+		$VBoxContainer/HBoxContainer2/Units.focus_mode = FOCUS_NONE
 	
 	get_parent().color = vessel.getColor()
 	
@@ -82,3 +107,30 @@ func _on_gift_pressed():
 
 func _on_battle_forecast_pressed():
 	emit_signal("battleForecastToggle", vessel)
+
+
+func _on_increment_pressed():
+	if vessel.canUndo():
+		game.incrementSend(vessel.getSourceOrder())
+
+
+func _on_decrement_pressed():
+	if vessel.canUndo():
+		game.decrementSend(vessel.getSourceOrder())
+
+
+func _on_units_text_submitted(new_text):
+	if vessel.canUndo() and new_text.is_valid_int():
+		game.alterSend(vessel.getSourceOrder(), new_text.to_int())
+		submittedChange = true
+	else:
+		$VBoxContainer/HBoxContainer2/Units.release_focus()
+
+
+func _on_units_focus_entered():
+	if not $VBoxContainer/HBoxContainer2/Units.editable:
+		$VBoxContainer/HBoxContainer2/Units.release_focus()
+
+func _on_units_focus_exited():
+	if DisplayServer.has_feature(DisplayServer.FEATURE_VIRTUAL_KEYBOARD):
+		DisplayServer.virtual_keyboard_hide()

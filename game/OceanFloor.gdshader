@@ -26,8 +26,10 @@ uniform sampler2D lightTexture2;
 
 uniform float speed = 0.1;
 
-vec4 getTexture(vec2 pos, sampler2D tex) {
-	if(resolution <= 0.0) return vec4(0.0);
+uniform bool simple = false;
+
+vec4 getTextureRes(vec2 pos, sampler2D tex, float res) {
+	if(res <= 0.0) return vec4(0.0);
 	
 	vec2 size = vec2(textureSize(tex, 0));
 	
@@ -46,7 +48,7 @@ vec4 getTexture(vec2 pos, sampler2D tex) {
 	while(pos.y >= mapHeight) pos.y -= mapHeight;
 	while(pos.y < 0.0) pos.y += mapHeight;
 	
-	pos /= resolution;
+	pos /= res;
 	vec2 pos2 = pos;
 	
 	while(pos.x >= 0.8 * size.x) pos.x -= 0.8 * size.x;
@@ -72,19 +74,19 @@ vec4 getTexture(vec2 pos, sampler2D tex) {
 		float n = 0.0;
 		
 		if(displacement.x != pos.x) {
-			if(pos2.x < 0.2 * size.x) val2 += a * texelFetch(tex, ivec2((int(pos.x) + int(widthDist / resolution)) % int(0.8 * size.x), int(pos.y)), 0);
+			if(pos2.x < 0.2 * size.x) val2 += a * texelFetch(tex, ivec2((int(pos.x) + int(widthDist / res)) % int(0.8 * size.x), int(pos.y)), 0);
 			else val2 += a * texelFetch(tex, ivec2(int(displacement.x), int(pos.y)), 0);
 			n += a;
 		}
 		
 		if(displacement.y != pos.y) {
-			if(pos2.y < 0.2 * size.y) val2 += b * texelFetch(tex, ivec2(int(pos.x), (int(pos.y) + int(heightDist / resolution)) % int(0.8 * size.y)), 0);
+			if(pos2.y < 0.2 * size.y) val2 += b * texelFetch(tex, ivec2(int(pos.x), (int(pos.y) + int(heightDist / res)) % int(0.8 * size.y)), 0);
 			else val2 += b * texelFetch(tex, ivec2(int(pos.x), int(displacement.y)), 0);
 			n += b;
 		}
 		
 		if(displacement.x != pos.x && displacement.y != pos.y) {
-			if(pos2.x < 0.2 * size.x && pos2.y < 0.2 * size.y) val2 += 2.0 * min(a, b) * texelFetch(tex, ivec2((int(pos.x) + int(widthDist / resolution)) % int(0.8 * size.x), (int(pos.y) + int(heightDist / resolution)) % int(0.8 * size.y)), 0);
+			if(pos2.x < 0.2 * size.x && pos2.y < 0.2 * size.y) val2 += 2.0 * min(a, b) * texelFetch(tex, ivec2((int(pos.x) + int(widthDist / res)) % int(0.8 * size.x), (int(pos.y) + int(heightDist / res)) % int(0.8 * size.y)), 0);
 			else val2 += 2.0 * min(a, b) * texelFetch(tex, ivec2(int(displacement.x), int(displacement.y)), 0);
 			n += 2.0 * min(a, b);
 		}
@@ -105,18 +107,23 @@ vec4 getTexture(vec2 pos, sampler2D tex) {
 	return val;
 }
 
+vec4 getTexture(vec2 pos, sampler2D tex) {
+	return getTextureRes(pos, tex, resolution);
+}
+
 void fragment() {
 	float x = (UV.x - 0.5) * cameraSize - NODE_POSITION_WORLD.x;
 	float y = (UV.y - 0.5) * cameraSize * meshHeight/meshWidth - NODE_POSITION_WORLD.z;
 	vec2 pos = vec2(x, y);
 
+	if(!simple) {
 	float rock = getTexture(pos, rockTexture).r;
 	
 	float ravine = getTexture(pos, ravineTexture).r;
 	
 	float stone = getTexture(pos, stoneTexture).r;
 	
-	float shelf = getTexture(pos, shelfTexture).r;
+	float shelf = getTextureRes(pos, shelfTexture, resolution * 2.0).r;
 	
 	float sunlight = 0.5 * getTexture(pos + speed * TIME * vec2(1.0), sunlightTexture1).r + 0.5 * getTexture(pos + speed * TIME * vec2(1.0, -1.0), sunlightTexture2).r;
 	
@@ -148,4 +155,10 @@ void fragment() {
 	ALBEDO *= vec3(0.8, 1.0, 1.2);
 	
 	NORMAL_MAP = normal;
+	} else {
+		float curve = getTexture(pos, sunlightTexture1).r;
+		curve = float(int(curve * 5.0))/5.0;
+		ALBEDO = vec3(0.4, 0.5, 0.6) * (0.5 + 0.5 * curve);
+		METALLIC = 1.0;
+	}
 }

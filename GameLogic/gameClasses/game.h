@@ -142,6 +142,7 @@ public:
     void addNotification(AttackNotification* n);
 
     std::shared_ptr<Game> removeOrder(int ID);
+    std::shared_ptr<Game> adjustUnits(int orderID, int units);
     void addOrder(const std::string &type, int ID, int referenceID, bool canceled, double timestamp, int senderID, int argumentIDs[], int argCount);
     std::shared_ptr<Game> processOrder(const std::string &type, int ID, int referenceID, bool canceled, double timestamp, int senderID, int argumentIDs[], int argCount);
     
@@ -165,8 +166,11 @@ public:
 
     // The functions below should only be used by the client
 
+    std::shared_ptr<Game> setSimulateOrder(int ID, bool simulate);
+    std::list<int> ignoredOrders();
     bool withinRange(Player* p, PositionalObject* obj, double timeDiff) const;
     std::shared_ptr<Game> lastState(double timestamp);
+    std::shared_ptr<Game> stateBefore(int orderID);
     double nextState(double timestamp);
     double getNextEndState() const { return nextEndState; }
     Event* nextAssociatedEvent(double timestamp, int id);

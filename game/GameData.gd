@@ -20,7 +20,7 @@ signal loadGame(gameID, past)
 
 signal loadGameDetail(gameID)
 
-var version = "1.1"
+var version = "1.5"
 
 var needsUpdate = false
 
@@ -74,6 +74,8 @@ var pushTokenSet = false
 
 var iCloudEnabled = true
 
+var localSettings = {}
+
 """func _apn_device(value):
 	pushToken = value
 	print("Push token: ", pushToken)
@@ -110,7 +112,27 @@ func _ready():
 	
 	var response = await HTTPManager.getReq("/version", {}, false)
 	
-	if response and response["version"] != version:
+	var versionArr = response["version"].split(".") if response and response["version"] else "1.0"
+	var currentVersionArr = GameData.version.split(".")
+	
+	var outdated = false
+	
+	while len(versionArr) < len(currentVersionArr):
+		versionArr.append("0")
+		
+	while len(currentVersionArr) < len(versionArr):
+		currentVersionArr.append("0")
+	
+	for i in range(len(currentVersionArr)):
+		if versionArr[i].to_int() > currentVersionArr[i].to_int():
+			outdated = true
+			break
+		elif versionArr[i].to_int() < currentVersionArr[i].to_int():
+			break
+
+	loadLocalSettings()
+
+	if outdated:
 		needsUpdate = true
 		goto_scene("res://OutdatedVersion.tscn")
 	else:
@@ -169,6 +191,18 @@ func _deferred_goto_node(node) -> void:
 
 	get_tree().get_root().add_child(current_scene)
 	get_tree().set_current_scene(current_scene)
+
+func loadLocalSettings():
+	var file = FileAccess.open("user://artifice_settings.save", FileAccess.READ)
+		
+	if file:
+		localSettings = JSON.parse_string(file.get_as_text())
+	
+	return localSettings
+
+func saveLocalSettings():
+	var file = FileAccess.open("user://artifice_settings.save", FileAccess.WRITE)
+	file.store_string(JSON.stringify(localSettings))
 
 func storeAuth(authObj):
 	if iCloudEnabled and OS.get_name() == "iOS" and Engine.has_singleton("ICloud"):
@@ -297,6 +331,7 @@ func deleteAccount():
 
 func login():
 	print("Logging in...")
+	
 	var auth = getAuth()
 
 	if auth and int(auth.id) != 0 and str(auth.password) != "":
@@ -653,7 +688,12 @@ func leaveGame(id: int):
 		"gameID": id
 	})
 	
-	return response
+	if response:
+		if ongoingGameIDs.has(int(id)):
+			ongoingGameIDs.erase(int(id))
+		return true
+	
+	return false
 
 func openQuickMatch(id: int, password = ""):
 	var game = await HTTPManager.getReq("/fetchGameDetails", {
@@ -785,6 +825,28 @@ func addOrder(gameID: int, type, referenceID, timestamp, arguments):
 	game.addOrder(order.type, int(order.id), int(order.referenceID), bool(order.canceled), float(order.timestamp), int(order.senderID), PackedInt32Array(order.argumentIDs), int(order.argumentIDs.size()))
 	
 	print("Order registered")
+
+func replaceOrder(orderID: int, gameID: int, type, referenceID, timestamp, arguments):
+	var game = getGame(gameID)
+	
+	print(game.getTime())
+	var order = await HTTPManager.putReq("/updateOrder", {
+		"id": orderID,
+		"type": type,
+		"referenceID": referenceID,
+		"timestamp": timestamp,
+		"argumentIDs": arguments
+	}, {
+		"gameID": gameID
+	})
+	
+	print(order)
+
+	if(!order): return;
+	
+	game.addOrder(order.type, int(order.id), int(order.referenceID), bool(order.canceled), float(order.timestamp), int(order.senderID), PackedInt32Array(order.argumentIDs), int(order.argumentIDs.size()))
+	
+	print("Order re-registered")
 
 func cancelOrder(gameID: int, orderID: int):
 	var game = getGame(gameID)

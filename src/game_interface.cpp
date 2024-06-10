@@ -62,6 +62,7 @@ void GameInterface::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("setTempTime", "t"), &GameInterface::setTempTime);
 	ClassDB::bind_method(D_METHOD("setTime", "t"), &GameInterface::setTime);
 	ClassDB::bind_method(D_METHOD("getTime"), &GameInterface::getTime);
+	ClassDB::bind_method(D_METHOD("setCurrent"), &GameInterface::setCurrent);
 	ClassDB::bind_method(D_METHOD("getBuffTime"), &GameInterface::getBuffTime);
 	ClassDB::bind_method(D_METHOD("setBuff"), &GameInterface::setBuff);
 	ClassDB::bind_method(D_METHOD("getBuff"), &GameInterface::getBuff);
@@ -149,7 +150,11 @@ void GameInterface::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("endBulkAdd"), &GameInterface::endBulkAdd);
 	ClassDB::bind_method(D_METHOD("addOrder", "type", "ID", "referenceID", "timestamp", "senderID", "arguments", "argCount"), &GameInterface::addOrder);
 	ClassDB::bind_method(D_METHOD("cancelOrder", "ID"), &GameInterface::cancelOrder);
+	ClassDB::bind_method(D_METHOD("incrementSend", "orderID"), &GameInterface::incrementSend);
+	ClassDB::bind_method(D_METHOD("decrementSend", "orderID"), &GameInterface::decrementSend);
+	ClassDB::bind_method(D_METHOD("alterSend", "orderID"), &GameInterface::alterSend);
 	ADD_SIGNAL(MethodInfo("addOrder", PropertyInfo(Variant::STRING, "type"), PropertyInfo(Variant::INT, "referenceID"), PropertyInfo(Variant::INT, "timestamp"), PropertyInfo(Variant::PACKED_INT32_ARRAY, "arguments")));
+	ADD_SIGNAL(MethodInfo("replaceOrder", PropertyInfo(Variant::INT, "ID"), PropertyInfo(Variant::STRING, "type"), PropertyInfo(Variant::INT, "referenceID"), PropertyInfo(Variant::INT, "timestamp"), PropertyInfo(Variant::PACKED_INT32_ARRAY, "arguments")));
 	ADD_SIGNAL(MethodInfo("selectVessel", PropertyInfo(Variant::OBJECT, "vessel")));
 	ADD_SIGNAL(MethodInfo("selectOutpost", PropertyInfo(Variant::OBJECT, "outpost")));
 	ADD_SIGNAL(MethodInfo("selectSpecialist", PropertyInfo(Variant::INT, "specialist")));
@@ -160,6 +165,7 @@ void GameInterface::_bind_methods() {
 
 void GameInterface::suspend() {
 	this->game = nullptr;
+	this->fullGame = nullptr;
 	this->simulatedGame = nullptr;
 
 	for(auto it = vessels.begin(); it != vessels.end();) {
@@ -186,6 +192,9 @@ void GameInterface::resume() {
 
 void GameInterface::init(int gameID, int userID, int seed, int startTime, bool finished, int playerCap, Dictionary players, Dictionary settingOverrides) {
 	// RESET MEMBER VARIABLES
+	this->fullCompleteGame = nullptr;
+	this->fullGame = nullptr;
+
 	this->completeGame = nullptr;
 	this->game = nullptr;
 	this->currentGame = nullptr;
@@ -249,11 +258,14 @@ void GameInterface::init(int gameID, int userID, int seed, int startTime, bool f
 	settings = loadSettings();
 	settings.startTime = startTime;
 	completeGame = std::shared_ptr<Game>(new Game(settings, userID, startTime, settings.clientToGameTime(startTime + simulationBuffer / settings.simulationSpeed), playerMap, seed, true));
+	fullCompleteGame = std::shared_ptr<Game>(new Game(settings, userID, startTime, settings.clientToGameTime(startTime + simulationBuffer / settings.simulationSpeed), playerMap, seed, true));
 
 	settings = *(completeGame->getSettings());
 
 	completeGame->run();
+	fullCompleteGame->run();
 	nextEndState = completeGame->getNextEndState();
+	nextFullEndState = fullCompleteGame->getNextEndState();
 
 	userGameID = completeGame->getSimulatorID();
 
@@ -299,8 +311,6 @@ GameSettings GameInterface::loadSettings() {
 		if(allocated) delete value;
 	}
 
-	std::cout << "Game mode " << settings.gameMode << std::endl;
-
 	return settings;
 }
 
@@ -316,6 +326,70 @@ void GameInterface::_process(double delta) {
 	}
 	
 	update();
+
+	if(fullCompleteGame != nullptr && fullGame != nullptr && completeGame != nullptr) {
+		double fullDiff = settings.clientToGameTime(time) - fullGame->getTime();
+
+		Player* p = fullGame->getPlayer(getUserGameID());
+
+		if(p) {
+			bool anyChanged = false;
+
+			std::list<int> ignoredOrders;
+
+			for(const auto& pair : fullGame->getVessels()) {
+				Order* o = pair.second->getSourceOrder();
+
+				if(o && !fullGame->withinRange(p, pair.second, fullDiff)) {
+					ignoredOrders.push_back(o->getID());
+				}
+			}
+			std::list<int> gameIgnored = completeGame->ignoredOrders();
+
+			for(int i : ignoredOrders) {
+				bool found = false;
+
+				for(int j : gameIgnored) {
+					if(i == j) {
+						found = true;
+						break;
+					}
+				}
+
+				if(!found) {
+					completeGame = completeGame->setSimulateOrder(i, false);
+					anyChanged = true;
+				}
+			}
+
+			for(int i : gameIgnored) {
+				bool found = false;
+
+				for(int j : ignoredOrders) {
+					if(i == j) {
+						found = true;
+						break;
+					}
+				}
+
+				if(!found) {
+					completeGame = completeGame->setSimulateOrder(i, true);
+					anyChanged = true;
+				}
+			}
+
+			if(anyChanged) {
+				std::cout << "Updating simulated game" << std::endl;
+				completeGame->run();
+
+				game = nullptr;
+				simulatedGame = nullptr;
+				currentGame = nullptr;
+
+				update();
+			}
+		}
+	}
 	
 	if(game != nullptr && simulatedGame != nullptr && currentGame != nullptr) {
 		double t = settings.clientToGameTime(time);
@@ -353,6 +427,15 @@ void GameInterface::_process(double delta) {
 	}
 }
 
+void GameInterface::setCurrent() {
+	double time = getTimeMillis();
+	future = true;
+	if(buffer) {
+		double buffTime = getBuffTime();
+		current = buffTime;
+	} else current = time;
+}
+
 void GameInterface::shiftToTime(double t) {
 	emit_signal("moveTo", t);
 }
@@ -368,8 +451,11 @@ void GameInterface::update() {
 	double time = settings.clientToGameTime(getTime());
 	double currentTime = settings.clientToGameTime(getCurrent());
 	double timeMillis = settings.clientToGameTime(getTimeMillis());
+
+	bool shouldUnselect = false;
 	
 	if(game == nullptr || time + simulationBuffer / settings.simulationSpeed > nextEndState) {
+		std::cout << "Running game" << std::endl;
 		if(time > nextEndState) game = nullptr;
 
 		completeGame = completeGame->lastState(nextEndState);
@@ -378,16 +464,29 @@ void GameInterface::update() {
 		nextEndState = completeGame->getNextEndState();
 	}
 
+	if(fullGame == nullptr || time + simulationBuffer / settings.simulationSpeed > nextFullEndState) {
+		std::cout << "Running full game" << std::endl;
+		fullCompleteGame = fullCompleteGame->lastState(nextFullEndState);
+		fullCompleteGame->setEndTime(nextFullEndState);
+		fullCompleteGame->run();
+		nextFullEndState = fullCompleteGame->getNextEndState();
+	}
+
 	if(currentGame == nullptr || timeMillis >= nextCurrentState) {
 		currentGame = completeGame->lastState(timeMillis);
 		nextCurrentState = completeGame->nextState(timeMillis);
+	}
+
+	if(fullGame == nullptr || timeMillis >= nextFullState) {
+		fullGame = fullCompleteGame->lastState(timeMillis);
+		nextFullState = fullCompleteGame->nextState(timeMillis);
 	}
 
 	if(simulatedGame == nullptr || currentTime < simulatedGame->getTime() || currentTime >= nextSimulatedState) {
 		simulatedGame = completeGame->lastState(currentTime);
 		nextSimulatedState = completeGame->nextState(currentTime);
 
-		if(selected >= 0 && !getSelected()) unselect();
+		if(selected >= 0 && !getSelected()) shouldUnselect = true;
 	}
 
 	if(game == nullptr || time < game->getTime() || time >= nextState) {
@@ -463,8 +562,10 @@ void GameInterface::update() {
 			} else it++;
 		}
 
-		if(selected >= 0 && !getSelected()) unselect();
+		if(selected >= 0 && !getSelected()) shouldUnselect = true;
 	}
+
+	if(shouldUnselect) unselect();
 }
 
 PositionalNode* GameInterface::getNode(int id) {
@@ -569,7 +670,7 @@ void GameInterface::select(int id) {
 	}
 
 	justSelect = true;
-
+	
 	if(getSelected() && (id == getSelected()->getID() || hasSpecialist)) {
 		Vessel* v1 = dynamic_cast<Vessel*>(getSelected());
 
@@ -581,7 +682,6 @@ void GameInterface::select(int id) {
 	if(hasSpecialist) return;
 
 	Vessel* v1 = dynamic_cast<Vessel*>(getObj(id));
-
 	setSelected(id);
 	
 	if(v1) startDrag = willSendWith(SpecialistType::NAVIGATOR);
@@ -666,16 +766,20 @@ void GameInterface::bulkAddOrder(const String &type, uint32_t ID, int32_t refere
 	for(int i = 0; i < argCount; i++) arr[i] = arguments[i];
 
 	completeGame = completeGame->processOrder(std::string(type.utf8().get_data()), ID, referenceID, canceled, settings.clientToGameTime(timestamp), senderID, arr, argCount);
+	fullCompleteGame = fullCompleteGame->processOrder(std::string(type.utf8().get_data()), ID, referenceID, canceled, settings.clientToGameTime(timestamp), senderID, arr, argCount);
 }
 
 void GameInterface::endBulkAdd() {
+	fullCompleteGame->run();
 	completeGame->run();
+
 	game = nullptr;
 	simulatedGame = nullptr;
 	
 	current += epsilon;
 	
 	if(!paused) {
+		fullGame = nullptr;
 		currentGame = nullptr;
 		update();
 	}
@@ -685,11 +789,16 @@ void GameInterface::addOrder(const String &type, uint32_t ID, int32_t referenceI
 	int arr[argCount];
 	for(int i = 0; i < argCount; i++) arr[i] = arguments[i];
 
+	fullCompleteGame = fullCompleteGame->processOrder(std::string(type.utf8().get_data()), ID, referenceID, canceled, settings.clientToGameTime(timestamp), senderID, arr, argCount);
+	fullCompleteGame->run();
+	fullGame = nullptr;
+
 	completeGame = completeGame->processOrder(std::string(type.utf8().get_data()), ID, referenceID, canceled, settings.clientToGameTime(timestamp), senderID, arr, argCount);
 	completeGame->run();
+	currentGame = nullptr;
+
 	game = nullptr;
 	simulatedGame = nullptr;
-	currentGame = nullptr;
 
 	current += epsilon;
 	
@@ -697,14 +806,94 @@ void GameInterface::addOrder(const String &type, uint32_t ID, int32_t referenceI
 }
 
 void GameInterface::cancelOrder(uint32_t ID) {
+	fullCompleteGame = fullCompleteGame->removeOrder(ID);
+	fullCompleteGame->run();
+	fullGame = nullptr;
+
 	completeGame = completeGame->removeOrder(ID);
 	completeGame->run();
-	game = nullptr;
-	simulatedGame = nullptr;
 	currentGame = nullptr;
+
+	simulatedGame = nullptr;
+	game = nullptr;
 	
 	update();
 }
+
+void GameInterface::incrementSend(int orderID) {
+	Order* o = completeGame->getOrder(orderID);
+
+	if(!o) return;
+
+	SendOrder* order = dynamic_cast<SendOrder*>(o);
+
+	if(order) {
+		std::shared_ptr<Game> gameAtOrder = completeGame->stateBefore(orderID);
+
+		Outpost* outpost = gameAtOrder->getOutpost(order->getOriginID());
+
+		if(outpost && outpost->getUnitsAt(order->getTimestamp() - gameAtOrder->getTime()) >= order->getUnits() + 1) {
+			uint32_t parameters[] = { uint32_t(order->getUnits() + 1), uint32_t(order->getOriginID()), uint32_t(order->getTargetID()) };
+			Array arguments;
+
+			for(int i = 0; i < 3; i++) arguments.push_back(parameters[i]);
+			for(int id : order->getSpecialistIDs()) arguments.push_back(uint32_t(id));
+
+			emit_signal("replaceOrder", orderID, "SEND", order->getReferenceID(), order->getTimestamp(), arguments);
+		}
+	}
+}
+
+void GameInterface::decrementSend(int orderID) {
+	Order* o = completeGame->getOrder(orderID);
+
+	if(!o) return;
+
+	SendOrder* order = dynamic_cast<SendOrder*>(o);
+
+	if(order) {
+		std::shared_ptr<Game> gameAtOrder = completeGame->stateBefore(orderID);
+
+		Outpost* outpost = gameAtOrder->getOutpost(order->getOriginID());
+
+		if(outpost && order->getUnits() > 1) {
+			uint32_t parameters[] = { uint32_t(order->getUnits() - 1), uint32_t(order->getOriginID()), uint32_t(order->getTargetID()) };
+			Array arguments;
+
+			for(int i = 0; i < 3; i++) arguments.push_back(parameters[i]);
+			for(int id : order->getSpecialistIDs()) arguments.push_back(uint32_t(id));
+
+			emit_signal("replaceOrder", orderID, "SEND", order->getReferenceID(), order->getTimestamp(), arguments);
+		}
+	}
+}
+
+void GameInterface::alterSend(int orderID, int units) {
+	Order* o = completeGame->getOrder(orderID);
+
+	if(!o) return;
+
+	SendOrder* order = dynamic_cast<SendOrder*>(o);
+
+	if(order) {
+		std::shared_ptr<Game> gameAtOrder = completeGame->stateBefore(orderID);
+
+		Outpost* outpost = gameAtOrder->getOutpost(order->getOriginID());
+
+		if(outpost) {
+			if(units < 1) units = 1;
+			if(units > outpost->getUnitsAt(order->getTimestamp() - gameAtOrder->getTime())) units = outpost->getUnitsAt(order->getTimestamp() - gameAtOrder->getTime());
+			uint32_t parameters[] = { uint32_t(units), uint32_t(order->getOriginID()), uint32_t(order->getTargetID()) };
+			Array arguments;
+
+			for(int i = 0; i < 3; i++) arguments.push_back(parameters[i]);
+			for(int id : order->getSpecialistIDs()) arguments.push_back(uint32_t(id));
+
+			emit_signal("replaceOrder", orderID, "SEND", order->getReferenceID(), order->getTimestamp(), arguments);
+		}
+	}
+}
+
 
 PositionalNode* GameInterface::getTarget(double x, double y) {
 	PositionalNode* target = nullptr;

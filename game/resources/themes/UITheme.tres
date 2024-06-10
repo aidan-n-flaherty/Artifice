@@ -127,7 +127,7 @@ spacing_bottom = 1
 [sub_resource type="ImageTexture" id="ImageTexture_v25u4"]
 
 [resource]
-Button/colors/font_color = Color(0.808998, 0.808998, 0.808998, 1)
+Button/colors/font_color = Color(1, 1, 1, 0.745098)
 Button/colors/font_pressed_color = Color(1, 1, 1, 1)
 Button/colors/icon_disabled_color = Color(1, 1, 1, 0.4)
 Button/font_sizes/font_size = 25

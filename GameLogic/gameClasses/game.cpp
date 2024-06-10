@@ -592,7 +592,7 @@ std::list<std::pair<int, int>> Game::run(bool pastEnd) {
             orders.erase(orderIt);
             Event* converted = order->convert(this);
 
-            if(order->getID() > referenceID && order->getSenderID() != simulatorID) referenceID = order->getID();
+            if(order->getSenderID() != simulatorID) referenceID = order->getID();
             lastExecutedOrder = order->getID();
 
             if(!converted) {
@@ -722,7 +722,6 @@ bool Game::hasEnded() const {
     case Mode::MINING:
         return sorted.front()->getResources() >= settings->resourcesToWin;
     case Mode::CONQUEST: {
-
         return sorted.front()->getOutposts().size() >= settings->outpostsToWin;
     }
     default: return false;
@@ -767,6 +766,23 @@ std::list<std::pair<int, int>> Game::getScores() {
     }
 
     return scores;
+}
+
+std::shared_ptr<Game> Game::stateBefore(int orderID) {
+    std::shared_ptr<Game> returnVal = shared_from_this();
+
+    if(cache.begin() != cache.end()) returnVal = *cache.begin();
+    else return returnVal;
+    for(auto it = cache.begin(); it != cache.end(); it++) {
+       const std::multiset<Order*, OrderOrder> &cacheOrders = (*it)->getOrders();
+
+        if(std::find_if(cacheOrders.begin(), cacheOrders.end(), [&orderID](Order* o) {
+            return o->getID() == orderID;
+        }) == cacheOrders.end()) break;
+        else returnVal = *it;
+    }
+
+    return returnVal;
 }
 
 std::shared_ptr<Game> Game::lastState(double timestamp) {
@@ -896,6 +912,30 @@ std::shared_ptr<Game> Game::removeOrder(int ID) {
     return returnVal;
 }
 
+std::shared_ptr<Game> Game::adjustUnits(int orderID, int units) {
+    std::shared_ptr<Game> returnVal = shared_from_this();
+
+    for(auto it = cache.begin(); it != cache.end(); it++) {
+        const std::multiset<Order*, OrderOrder> &cacheOrders = (*it)->getOrders();
+
+        if(std::find_if(cacheOrders.begin(), cacheOrders.end(), [&orderID](Order* o) {
+            return o->getID() == orderID;
+        }) == cacheOrders.end()) break;
+        else returnVal = *it;
+
+        for(Order* o : cacheOrders) {
+            if(o->getID() == orderID) {
+                SendOrder* order = dynamic_cast<SendOrder*>(o);
+
+                if(order) order->setUnits(units);
+                break;
+            }
+        }
+    }
+
+    return returnVal;
+}
+
 void Game::addOrder(const std::string &type, int ID, int referenceID, bool canceled, double timestamp, int senderID, int arguments[], int argCount) {
     double time = timestamp;
 
@@ -949,11 +989,16 @@ std::shared_ptr<Game> Game::processOrder(const std::string &type, int ID, int re
     std::list<int> argumentIDs;
     for(int i = 0; i < argCount; i++) argumentIDs.push_back(arguments[i]);
 
-    std::shared_ptr<Game> game = lastState(timestamp);
+    Order* o = getOrder(ID);
+    if(o) {
 
-    for(Order* o : orders) {
-        if(o->getID() == ID) return game;
+        SendOrder* order = dynamic_cast<SendOrder*>(o);
+        if(order && argCount >= 3) adjustUnits(ID, arguments[0]);
+        
+        return stateBefore(ID);
     }
+
+    std::shared_ptr<Game> game = lastState(timestamp);
 
     game->addOrder(type, ID, referenceID, canceled, timestamp, senderID, arguments, argCount);
 
@@ -1051,6 +1096,41 @@ bool Game::withinRange(Player* p, PositionalObject* obj, double timeDiff) const 
     }
 
     return false;
+}
+
+std::shared_ptr<Game> Game::setSimulateOrder(int ID, bool simulate) {
+    std::shared_ptr<Game> returnVal = shared_from_this();
+
+    for(auto it = cache.begin(); it != cache.end(); it++) {
+        const std::multiset<Order*, OrderOrder> &cacheOrders = (*it)->getOrders();
+
+        if(std::find_if(cacheOrders.begin(), cacheOrders.end(), [&ID](Order* o) {
+            return o->getID() == ID;
+        }) == cacheOrders.end()) break;
+        else returnVal = *it;
+
+        Order* o = (*it)->getOrder(ID);
+        if(o) o->setSimulated(simulate);
+    }
+
+    return returnVal;
+}
+
+std::list<int> Game::ignoredOrders() {
+    std::list<int> arr;
+    
+    std::list<Order*> allOrders;
+    allOrders.insert(allOrders.end(), orders.begin(), orders.end());
+    allOrders.insert(allOrders.end(), simulatedOrders.begin(), simulatedOrders.end());
+    allOrders.insert(allOrders.end(), invalidOrders.begin(), invalidOrders.end());
+
+    for(Order* o : allOrders) {
+        if(!o->isSimulated()) {
+            arr.push_back(o->getID());
+        }
+    }
+
+    return arr;
 }
 
 bool GameOrder::operator()(const std::shared_ptr<Game> &lhs, const std::shared_ptr<Game> &rhs) const {

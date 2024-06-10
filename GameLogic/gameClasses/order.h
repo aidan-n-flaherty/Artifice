@@ -34,6 +34,8 @@ private:
 
     bool canceled = false;
 
+    bool simulated = true;
+
     std::string description = "";
 
 public:
@@ -58,7 +60,11 @@ public:
 
     void setCanceled(bool canceled) { this->canceled = canceled; }
 
-    bool isCanceled() { return canceled; }
+    bool isCanceled() { return canceled || !simulated; }
+
+    void setSimulated(bool simulated) { this->simulated = simulated; }
+
+    bool isSimulated() { return simulated; }
 
     /* IMPORTANT: All order validity preprocessing occurs in this function.
     ** It should be expected that no error checking occurs after the order is
@@ -80,10 +86,10 @@ public:
     {
         double diff = other.getTimestamp() - getTimestamp();
         if(diff == 0) {
-            double diff1 = other.getSenderID() > getSenderID();
+            int diff1 = other.getSenderID() - getSenderID();
 
             if(diff1 == 0) {
-                return other.getID() - getID();
+                return other.getID() > getID();
             } else return diff1 > 0;
         } else return diff > 0;
     }

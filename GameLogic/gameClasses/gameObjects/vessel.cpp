@@ -9,6 +9,7 @@
 
 void Vessel::updatePointers(Game* game) {
     PositionalObject::updatePointers(game);
+    if(getSourceOrder()) setSourceOrder(game->getOrder(getSourceOrder()->getID()));
 
     returnOutpost = game->getOutpost(returnOutpost->getID());
     origin = game->getOutpost(getOriginID());

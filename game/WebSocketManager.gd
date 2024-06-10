@@ -106,8 +106,25 @@ func _process(delta):
 			
 			if socket:
 				var response = await HTTPManager.getReq("/version", {}, false)
+				var versionArr = response["version"].split(".") if response and response["version"] else "1.0"
+				var currentVersionArr = GameData.version.split(".")
+				
+				var outdated = false
+				
+				while len(versionArr) < len(currentVersionArr):
+					versionArr.append("0")
+					
+				while len(currentVersionArr) < len(versionArr):
+					currentVersionArr.append("0")
+				
+				for i in range(len(currentVersionArr)):
+					if versionArr[i].to_int() > currentVersionArr[i].to_int():
+						outdated = true
+						break
+					elif versionArr[i].to_int() < currentVersionArr[i].to_int():
+						break
 	
-				if response and response["version"] != GameData.version:
+				if outdated:
 					GameData.needsUpdate = true
 					GameData.goto_scene("res://OutdatedVersion.tscn")
 				else:

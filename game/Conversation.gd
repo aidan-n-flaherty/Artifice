@@ -32,6 +32,8 @@ var maintainScroll = false
 
 var received = false
 
+var sending = false
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	GameData.chatChanged.connect(chatChanged)
@@ -56,7 +58,7 @@ func initTemp(gameID):
 		
 		playerTag.init(player, false, true)
 		playerTags.push_back(playerTag)
-		$MarginContainer/VBoxContainer/HBoxContainer/PlayerList.add_child(playerTag)
+		$MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/PlayerList.add_child(playerTag)
 
 func init(gameID: int, chatID: int):
 	temporary = false
@@ -65,7 +67,7 @@ func init(gameID: int, chatID: int):
 	self.gameID = gameID
 	
 	for tag in playerTags:
-		$MarginContainer/VBoxContainer/HBoxContainer/PlayerList.remove_child(tag)
+		$MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/PlayerList.remove_child(tag)
 		tag.queue_free()
 	playerTags.clear()
 	
@@ -78,7 +80,7 @@ func init(gameID: int, chatID: int):
 		
 			playerTag.init(player, true, false)
 			playerTags.push_back(playerTag)
-			$MarginContainer/VBoxContainer/HBoxContainer/PlayerList.add_child(playerTag)
+			$MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/PlayerList.add_child(playerTag)
 	
 	refresh(chat.messages)
 	
@@ -113,7 +115,11 @@ func refresh(messageList):
 			messageNode = messages[message.id]
 		else:
 			messageNode = preload("res://Message.tscn").instantiate()
-			messageNode.init(message, players[int(message.senderID)].getColor())
+			if players.has(int(message.senderID)):
+				messageNode.init(message, players[int(message.senderID)].getColor())
+			else:
+				messageNode.init(message, Color.DIM_GRAY)
+			
 			$MarginContainer/VBoxContainer/ScrollContainer/MessageContainer.add_child(messageNode)
 			
 		messageNode.displayName(lastSenderID != message.senderID or message.timestamp > lastTimestamp + 10 * 60)
@@ -148,8 +154,8 @@ func _process(delta):
 			canSend = true
 			break
 	
-	$MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/Send.disabled = not canSend
-	$MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/Send.modulate = Color(0.9, 0.9, 0.9) if not canSend else Color(1.0, 1.0, 1.0)
+	$MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/Send.disabled = not canSend or sending
+	$MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/Send.modulate = Color(0.9, 0.9, 0.9) if (not canSend or sending) else Color(1.0, 1.0, 1.0)
 
 func chatChanged(chatID: int):
 	if chat and chatID == chat.id:
@@ -166,9 +172,10 @@ func _on_send_pressed():
 	if $MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/TextEdit.text == "":
 		return
 	
+	sending = true
 	$MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/Send.disabled = true
-	$MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/Send.modulate = Color(0.9, 0.9, 0.9)
 	
+	print("disabled ", $MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/Send.disabled)
 	if !chatID:
 		var playerIDs = PackedInt32Array()
 		for tag in playerTags:
@@ -180,16 +187,14 @@ func _on_send_pressed():
 		if tmp:
 			chatID = int(tmp)
 		else:
-			$MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/Send.modulate = Color(1.0, 1.0, 1.0)
-			$MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/Send.disabled = false
+			sending = false
 			return
 	
 	var content = $MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/TextEdit.text
 	if await GameData.sendMessage(chatID, content):
 		$MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/TextEdit.clear()
 	
-	$MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/Send.modulate = Color(1.0, 1.0, 1.0)
-	$MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/Send.disabled = false
+	sending = false
 
 func scroll_changed(value):
 	atBottom = container.scroll_vertical == container.get_v_scroll_bar().max_value - container.size.y

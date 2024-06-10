@@ -65,6 +65,12 @@ func updateUser(userID):
 	$MarginContainer/ScrollContainer/VBoxContainer/GridContainer/ChatPushNotificationButtons/PushOn.set_pressed_no_signal(user.chatPushEnabled)
 	$MarginContainer/ScrollContainer/VBoxContainer/GridContainer/ChatPushNotificationButtons/PushOff.set_pressed_no_signal(not user.chatPushEnabled)
 	
+	var settings = GameData.loadLocalSettings()
+	$MarginContainer/ScrollContainer/VBoxContainer/GridContainer/Graphics.visible = isSelf
+	$MarginContainer/ScrollContainer/VBoxContainer/GridContainer/GraphicsButtons.visible = isSelf
+	$MarginContainer/ScrollContainer/VBoxContainer/GridContainer/GraphicsButtons/PushOn.set_pressed_no_signal(not settings.has("graphics") or settings["graphics"] == "advanced")
+	$MarginContainer/ScrollContainer/VBoxContainer/GridContainer/GraphicsButtons/PushOff.set_pressed_no_signal(settings.has("graphics") and settings["graphics"] == "simple")
+	
 	$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/Delete.visible = isSelf
 
 
@@ -155,3 +161,13 @@ func _on_done_pressed():
 func _on_block_pressed():
 	if await GameData.blockUser(self.userID):
 		$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/Block.visible = false
+
+
+func _on_graphics_push_on_toggled(toggled_on):
+	GameData.localSettings["graphics"] = "advanced"
+	GameData.saveLocalSettings()
+
+
+func _on_graphics_push_off_toggled(toggled_on):
+	GameData.localSettings["graphics"] = "simple"
+	GameData.saveLocalSettings()

@@ -33,12 +33,20 @@ class GameInterface : public Node3D {
 
 private:
 	// stores all future game states
+	std::shared_ptr<Game> fullCompleteGame = nullptr;
+	double nextFullEndState = 0.0;
+
+	// game at the current time
+	std::shared_ptr<Game> fullGame = nullptr;
+	double nextFullState = 0.0;
+
+	// stores all future game states
 	std::shared_ptr<Game> completeGame = nullptr;
+	double nextEndState = 0.0;
 
 	// game at the current time
 	std::shared_ptr<Game> game = nullptr;
 	double nextState = 0.0;
-	double nextEndState = 0.0;
 
 	// game at the start of drag
 	std::shared_ptr<Game> currentGame = nullptr;
@@ -130,20 +138,22 @@ public:
 	int getUserGameID() { return userGameID; }
 
 	int getHires() {
-		double timeDiff = settings.clientToGameTime(current) - game->getTime();
-		return game && game->hasPlayer(userGameID) ? game->getPlayer(userGameID)->getHiresAt(timeDiff) : -1;
+		return game && game->hasPlayer(userGameID) ? game->getPlayer(userGameID)->getHiresAt(settings.clientToGameTime(current) - game->getTime()) : -1;
 	}
 	
 	double getTimeMillis();
 	double getBuffTime() { return buffer ? getTimeMillis() + 10 * 60 / settings.simulationSpeed : getTimeMillis(); }
+	void setCurrent();
 	void setBuff(bool value) { buffer = value; }
 	bool getBuff() { return buffer; }
 	bool simulatingFuture() { return future; }
 	bool willSendWith(SpecialistType type);
 	void setSelectedSpecialist(int id);
 	void select(int id);
+
 	void sendTo(int id);
 	void release(int id);
+	
 	void setSelected(int id);
 	void unselect();
 	bool canStartDrag() { return startDrag; }
@@ -260,6 +270,10 @@ public:
 	int getWidth() { return settings.width; }
 	int getHeight() { return settings.height; }
 		
+	void incrementSend(int orderID);
+	void decrementSend(int orderID);
+	void alterSend(int orderID, int units);
+
 	void bulkAddOrder(const String &type, uint32_t ID, int32_t referenceID, bool canceled, double timestamp, uint32_t senderID, PackedInt32Array arguments, uint32_t argCount);
 	void endBulkAdd();
 		

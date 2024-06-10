@@ -173,3 +173,7 @@ func _on_buffer_toggled(value: bool):
 	
 	$Vertical/MarginContainer/VBoxContainer/Buffer.text = "On" if value else "Off"
 	$Vertical/MarginContainer/VBoxContainer/Spacer.text = "On" if value else "Off"
+
+
+func _on_revert_to_current_pressed():
+	game.setCurrent()

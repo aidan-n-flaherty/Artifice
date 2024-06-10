@@ -78,12 +78,17 @@ texture_normal = ExtResource("2_mslj0")
 ignore_texture_size = true
 stretch_mode = 4
 
-[node name="PlayerList" type="FlowContainer" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="ScrollContainer" parent="MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_c8xu0")]
 layout_mode = 2
 size_flags_horizontal = 3
+horizontal_scroll_mode = 1
+
+[node name="PlayerList" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 mouse_filter = 0
-theme_override_constants/h_separation = 20
-theme_override_constants/v_separation = 20
+theme_override_constants/separation = 10
 alignment = 2
 
 [node name="ScrollContainer" parent="MarginContainer/VBoxContainer" instance=ExtResource("3_c8xu0")]
@@ -137,6 +142,7 @@ layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 8
 focus_mode = 0
+disabled = true
 texture_normal = ExtResource("3_8uh7s")
 ignore_texture_size = true
 stretch_mode = 0

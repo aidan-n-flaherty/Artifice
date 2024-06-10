@@ -5,14 +5,14 @@ compatibility_minimum = 4.1
 
 [libraries]
 
-macos.debug = "res://bin/macos/libgdgamelogic.macos.template_debug.framework/libgdgamelogic.macos.template_debug"
-macos.release = "res://bin/macos/libgdgamelogic.macos.template_release.framework/libgdgamelogic.macos.template_debug"
-windows.debug.x86_32 = "res://bin/libgdgamelogic.windows.template_debug.x86_32.dll"
-windows.release.x86_32 = "res://bin/libgdgamelogic.windows.template_release.x86_32.dll"
-windows.debug.x86_64 = "res://bin/libgdgamelogic.windows.template_debug.x86_64.dll"
-windows.release.x86_64 = "res://bin/libgdgamelogic.windows.template_release.x86_64.dll"
-windows.debug.arm64 = "res://bin/libgdgamelogic.windows.template_debug.arm64.dll"
-windows.release.arm64 = "res://bin/libgdgamelogic.windows.template_release.arm64.dll"
+macos.debug = "res://bin/macos/libgdgamelogic.macos.template_debug.universal.dylib"
+macos.release = "res://bin/macos/libgdgamelogic.macos.template_release.universal.dylib"
+windows.debug.x86_32 = "res://bin/windows/libgdgamelogic.windows.template_debug.x86_32.dll"
+windows.release.x86_32 = "res://bin/windows/libgdgamelogic.windows.template_release.x86_32.dll"
+windows.debug.x86_64 = "res://bin/windows/libgdgamelogic.windows.template_debug.x86_64.dll"
+windows.release.x86_64 = "res://bin/windows/libgdgamelogic.windows.template_release.x86_64.dll"
+windows.debug.arm64 = "res://bin/windows/libgdgamelogic.windows.template_debug.arm64.dll"
+windows.release.arm64 = "res://bin/windows/libgdgamelogic.windows.template_release.arm64.dll"
 linux.debug.x86_32 = "res://bin/libgdgamelogic.linux.template_debug.x86_32.so"
 linux.release.x86_32 = "res://bin/libgdgamelogic.linux.template_release.x86_32.so"
 linux.debug.x86_64 = "res://bin/libgdgamelogic.linux.template_debug.x86_64.so"

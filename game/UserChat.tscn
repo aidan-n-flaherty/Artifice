@@ -21,6 +21,7 @@ corner_radius_bottom_left = 30
 anchors_preset = 10
 anchor_right = 1.0
 grow_horizontal = 2
+size_flags_horizontal = 3
 theme = ExtResource("2_i6hew")
 script = ExtResource("1_fna5p")
 
@@ -50,6 +51,7 @@ theme = ExtResource("2_i6hew")
 layout_mode = 2
 theme = ExtResource("2_i6hew")
 text = "Test, test, and test"
+text_overrun_behavior = 3
 
 [node name="LastMessage" type="Label" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2

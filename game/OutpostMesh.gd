@@ -25,6 +25,7 @@ func _ready():
 func rot(node):
 	node.get_node("City/Factory").rotation_degrees.y = 45 + 90 * get_parent().getID()
 	node.get_node("City/Generator").rotation_degrees.y = 45 + 90 * get_parent().getID()
+	
 	node.get_node("JellyfishMesh").setID(get_parent().getID())
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -32,9 +33,16 @@ func _process(delta):
 	var camera = get_viewport().get_camera_3d()
 	
 	if camera:
+		var scaleAmount = 1.0 + (camera.size - 240 * min(1, get_viewport().size.x * 1.0 / get_viewport().size.y))/(240 * min(1, get_viewport().size.x * 1.0 / get_viewport().size.y)) if camera.size > 240 * min(1, get_viewport().size.x * 1.0 / get_viewport().size.y) else 1.0
+		
+		$RotationInvariant.scale = Vector3(1.0, 1.0, 1.0) * scaleAmount
+		
 		var actualPos = get_parent().position + position
-		var pos = camera.unproject_position(actualPos)
-		if pos.x < -get_viewport().size.x * 0.2 || pos.x > get_viewport().size.x * 1.2 || pos.y < -get_viewport().size.y * 0.2 || pos.y > get_viewport().size.y * 1.2:
+		
+		var pos = Vector2(actualPos.x - camera.get_camera_transform().origin.x, actualPos.z - (camera.get_camera_transform().origin.z + 200))
+		pos.y /= sqrt(2)
+		
+		if pos.x < -camera.size/2 - 25 || pos.x > camera.size/2 + 25 || pos.y < -get_viewport().size.y * 1.0 / get_viewport().size.x * camera.size/2 - 25 || pos.y > get_viewport().size.y * 1.0 / get_viewport().size.x * camera.size/2 + 25:
 			visible = false
 			
 			if get_node_or_null("Outpost"):
@@ -72,9 +80,9 @@ func _process(delta):
 			color = null
 	
 	if selected:
-		$Outpost.position.y = 0.9 * $Outpost.position.y + 2 * 0.1
+		$Outpost.position.y = 0.8 * $Outpost.position.y + 2 * 0.2
 	else:
-		$Outpost.position.y = 0.9 * $Outpost.position.y
+		$Outpost.position.y = 0.8 * $Outpost.position.y
 	
 	if color != get_parent().getColor():
 		$FlagSprite.modulate = get_parent().getColor()
