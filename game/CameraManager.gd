@@ -62,6 +62,11 @@ func init(gameID: int):
 	$Terrain.mesh.material.set_shader_parameter("mapWidth", game.getWidth())
 	$Terrain.mesh.material.set_shader_parameter("mapHeight", game.getHeight())
 	
+	if GameData.localSettings.has("graphics") and GameData.localSettings["graphics"] == "simple":
+		$Terrain.mesh.material.set_shader_parameter("simple", true)
+	else:
+		$Terrain.mesh.material.set_shader_parameter("simple", false)
+	
 	$FloorDisplay.add_child(game.getFloorDisplay())
 	
 	var startPos = self.game.getSpawnLocation()

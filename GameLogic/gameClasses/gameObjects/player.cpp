@@ -255,6 +255,7 @@ void Player::removeOutpost(Outpost* outpost) {
             if(outpost->getType() == OutpostType::MINE) {
                 resources *= 1.0 - getSettings()->resourceReductionAmount;
                 fractionalProduction = 0;
+                setRefresh(true);
             }
 
             outposts.erase(it);

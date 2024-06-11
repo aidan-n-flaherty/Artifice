@@ -1,5 +1,7 @@
 extends Control
 
+signal surrender
+
 var gameID
 
 var game
@@ -72,4 +74,4 @@ func _process(delta):
 
 
 func _on_surrender_button_pressed():
-	GameData.addOrder(gameID, "SURRENDER", int(game.getReferenceID()), game.getTime(), [])
+	emit_signal("surrender")

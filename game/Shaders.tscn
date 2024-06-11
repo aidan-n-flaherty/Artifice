@@ -19,6 +19,7 @@ shader_parameter/meshWidth = null
 shader_parameter/meshHeight = null
 shader_parameter/resolution = null
 shader_parameter/speed = 0.1
+shader_parameter/simple = false
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_llsqg"]
 render_priority = 0

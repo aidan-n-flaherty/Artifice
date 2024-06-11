@@ -102,7 +102,9 @@ public:
                 outpost->addSpecialists(vessel->removeSpecialists());
 
                 if(vesselWins) {
-                    vesselOwner->addOutpost(outpost);
+                    if(vesselOwner) vesselOwner->addOutpost(outpost);
+                    else if(outpostOwner) outpostOwner->removeOutpost(outpost);
+                    
                     outpost->addUnits(vessel->getUnits() - outpost->getUnits());
                 }
             }

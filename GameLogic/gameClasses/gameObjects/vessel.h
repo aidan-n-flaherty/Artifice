@@ -24,6 +24,8 @@ private:
     Outpost* origin;
     PositionalObject* target;
 
+    Order* sourceOrder;
+
     bool gift = false;
 
     double speedModifier = 1.0;
@@ -66,6 +68,9 @@ public:
     void returnHome();
 
     void update(double timeDiff);
+    
+    void setSourceOrder(Order* o) { sourceOrder = o; }
+    Order* getSourceOrder() { return sourceOrder; }
 };
 
 #endif

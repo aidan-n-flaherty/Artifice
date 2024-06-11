@@ -35,6 +35,7 @@ public:
     void run(Game* game) override {
         Vessel* vessel = new Vessel(game->incrementObjCounter(), game->getSettings(), outpost->getOwner(), outpost->getPosition(), outpost, target, outpost->removeUnits(numUnits), outpost->removeSpecialists(specialists));
         vessel->setOriginatingOrder(getOriginatingOrder());
+        vessel->setSourceOrder(getOriginatingOrder());
 
         game->addVessel(vessel);
         if(target->hasOwner() && outpost->hasOwner() && target->getOwnerID() != outpost->getOwnerID() && (!game->teamGame() || target->getOwner()->getTeamID() != outpost->getOwner()->getTeamID())) game->addNotification(new AttackNotification(getTimestamp(), vessel->getID(), target->getOwnerID()));

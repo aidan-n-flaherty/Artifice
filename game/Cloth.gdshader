@@ -1,7 +1,6 @@
 shader_type spatial;
 
 render_mode unshaded;
-render_mode cull_disabled;
 
 uniform bool dark;
 
@@ -21,7 +20,7 @@ void fragment() {
 	if(dark) ALBEDO = vec3(-1.0);
 	else {
 		ALBEDO = vec3(1.5);
-		ALPHA = 0.1;
+		ALPHA = 0.2;
 	}
 }
 

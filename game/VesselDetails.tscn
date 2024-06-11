@@ -1,12 +1,17 @@
-[gd_scene load_steps=5 format=3 uid="uid://cfc57qmlyevna"]
+[gd_scene load_steps=8 format=3 uid="uid://cfc57qmlyevna"]
 
 [ext_resource type="Theme" uid="uid://tg7ina762c6q" path="res://resources/themes/UITheme.tres" id="1_114fm"]
 [ext_resource type="Script" path="res://VesselDetails.gd" id="1_hboua"]
 [ext_resource type="Texture2D" uid="uid://cvstgystgdo1l" path="res://resources/icons/Submarine.png" id="3_dkfxk"]
+[ext_resource type="Texture2D" uid="uid://dsi1rwxwn272" path="res://resources/icons/chevron-up-large.png" id="4_k8mmo"]
+[ext_resource type="Texture2D" uid="uid://bq38gxufpsvf7" path="res://resources/icons/chevron-down-large.png" id="5_u305m"]
+[ext_resource type="FontFile" uid="uid://bt7qlnun0cepj" path="res://resources/fonts/nasalization-free/nasalization-rg.otf" id="6_vus34"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_hxsdd"]
-line_spacing = 0.0
-font_size = 55
+[sub_resource type="FontVariation" id="FontVariation_ble0v"]
+base_font = ExtResource("6_vus34")
+variation_embolden = 0.5
+spacing_top = -6
+spacing_bottom = -10
 
 [node name="VesselDetails" type="MarginContainer"]
 anchors_preset = 15
@@ -50,13 +55,42 @@ theme = ExtResource("1_114fm")
 layout_mode = 2
 theme = ExtResource("1_114fm")
 
-[node name="Units" type="Label" parent="VBoxContainer/HBoxContainer2"]
+[node name="AlterOrder" type="VBoxContainer" parent="VBoxContainer/HBoxContainer2"]
+custom_minimum_size = Vector2(40, 2.08165e-12)
 layout_mode = 2
-size_flags_vertical = 1
+
+[node name="Control" type="Control" parent="VBoxContainer/HBoxContainer2/AlterOrder"]
+visible = false
+custom_minimum_size = Vector2(2.08165e-12, 8)
+layout_mode = 2
+
+[node name="Increment" type="Button" parent="VBoxContainer/HBoxContainer2/AlterOrder"]
+layout_mode = 2
+size_flags_vertical = 3
+icon = ExtResource("4_k8mmo")
+flat = true
+icon_alignment = 1
+expand_icon = true
+
+[node name="Decrement" type="Button" parent="VBoxContainer/HBoxContainer2/AlterOrder"]
+layout_mode = 2
+size_flags_vertical = 3
+icon = ExtResource("5_u305m")
+flat = true
+icon_alignment = 1
+expand_icon = true
+
+[node name="Units" type="LineEdit" parent="VBoxContainer/HBoxContainer2"]
+layout_mode = 2
 theme = ExtResource("1_114fm")
+theme_override_colors/font_uneditable_color = Color(1, 1, 1, 1)
+theme_override_constants/minimum_character_width = 0
+theme_override_fonts/font = SubResource("FontVariation_ble0v")
+theme_override_font_sizes/font_size = 60
 text = "-1"
-label_settings = SubResource("LabelSettings_hxsdd")
-vertical_alignment = 3
+expand_to_text_length = true
+context_menu_enabled = false
+select_all_on_focus = true
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer2"]
 layout_mode = 2
@@ -123,6 +157,11 @@ layout_mode = 2
 theme = ExtResource("1_114fm")
 text = "Battle Forecast"
 
+[connection signal="pressed" from="VBoxContainer/HBoxContainer2/AlterOrder/Increment" to="." method="_on_increment_pressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer2/AlterOrder/Decrement" to="." method="_on_decrement_pressed"]
+[connection signal="focus_entered" from="VBoxContainer/HBoxContainer2/Units" to="." method="_on_units_focus_entered"]
+[connection signal="focus_exited" from="VBoxContainer/HBoxContainer2/Units" to="." method="_on_units_focus_exited"]
+[connection signal="text_submitted" from="VBoxContainer/HBoxContainer2/Units" to="." method="_on_units_text_submitted"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/Jump" to="." method="_on_jump_pressed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/Gift" to="." method="_on_gift_pressed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/Cancel" to="." method="_on_cancel_pressed"]

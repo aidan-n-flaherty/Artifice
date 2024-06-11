@@ -112,6 +112,7 @@ func init(gameID):
 	game.set_visible(true)
 	
 	game.connect("addOrder", addOrder)
+	game.connect("replaceOrder", replaceOrder)
 	game.connect("selectVessel", selectVessel)
 	game.connect("selectOutpost", selectOutpost)
 	game.connect("selectSpecialist", selectSpecialist)
@@ -239,6 +240,9 @@ func _process(delta):
 	
 func addOrder(type, referenceID, timestamp, arguments):
 	GameData.addOrder(gameID, type, referenceID, timestamp, arguments)
+
+func replaceOrder(id, type, referenceID, timestamp, arguments):
+	GameData.replaceOrder(id, gameID, type, referenceID, timestamp, arguments)
 
 func setDisplay(scene):
 	if detailDisplay != null:
@@ -395,3 +399,13 @@ func _on_animation_player_animation_finished(anim_name):
 
 func _on_shop_deselect_shop():
 	_on_camera_manager_unselect()
+
+func _on_confirm_surrender_pressed():
+	GameData.addOrder(gameID, "SURRENDER", int(game.getReferenceID()), game.getTime(), [])
+	$Viewport/GameOverlay/MarginContainer/SurrenderDialog.hide()
+
+func _on_cancel_surrender_pressed():
+	$Viewport/GameOverlay/MarginContainer/SurrenderDialog.hide()
+
+func _on_status_surrender():
+	$Viewport/GameOverlay/MarginContainer/SurrenderDialog.show()

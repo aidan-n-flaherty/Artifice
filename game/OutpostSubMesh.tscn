@@ -24,6 +24,7 @@ cap_bottom = false
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hejsr"]
 transparency = 4
+shading_mode = 0
 albedo_color = Color(0, 0, 0, 1)
 disable_receive_shadows = true
 
@@ -59,7 +60,6 @@ transform = Transform3D(0.707107, 1.60554e-24, 0.707107, 3.48787e-16, 1, -3.4878
 
 [node name="Factory" type="Node3D" parent="City"]
 transform = Transform3D(-0.459619, 3.65013e-16, 0.459619, 2.26712e-16, 0.74, -2.26712e-16, -0.459619, 2.55659e-22, -0.459619, 0, 14.1479, 0)
-visible = false
 
 [node name="Base" type="Node3D" parent="City/Factory"]
 

@@ -1,4 +1,4 @@
-[gd_scene load_steps=63 format=3 uid="uid://cfaaort7dldjk"]
+[gd_scene load_steps=64 format=3 uid="uid://cfaaort7dldjk"]
 
 [ext_resource type="Script" path="res://Game.gd" id="1_s53r2"]
 [ext_resource type="PackedScene" uid="uid://b14auts774043" path="res://Shaders.tscn" id="2_qvr2g"]
@@ -62,7 +62,7 @@ shader_parameter/speed = 2.0
 shader_parameter/ray1_density = 8.0
 shader_parameter/ray2_density = 32.0
 shader_parameter/ray2_intensity = 0.4
-shader_parameter/color = Vector4(0.7, 0.8, 1, 0.4)
+shader_parameter/color = Vector4(0.7, 0.8, 1, 0.25)
 shader_parameter/hdr = false
 shader_parameter/seed = 5.0
 
@@ -158,6 +158,7 @@ corner_radius_top_left = 30
 
 [sub_resource type="Animation" id="Animation_n3pi6"]
 length = 0.001
+step = 0.01
 
 [sub_resource type="Animation" id="Animation_qrm6y"]
 resource_name = "slide_down"
@@ -228,6 +229,14 @@ shader_parameter/lod = 4.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kfde1"]
 bg_color = Color(1, 1, 1, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wo1lb"]
+bg_color = Color(0, 0, 0, 0.784314)
+border_color = Color(0.743131, 0, 0.0116985, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_03jtx"]
 bg_color = Color(0, 0, 0, 1)
@@ -642,6 +651,7 @@ libraries = {
 
 [node name="Panel" type="MarginContainer" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/VSeparator/TabDisplay"]
 visible = false
+modulate = Color(1, 1, 1, 0)
 layout_mode = 2
 mouse_filter = 0
 mouse_force_pass_scroll_events = false
@@ -722,10 +732,65 @@ theme_override_constants/margin_left = 40
 theme_override_constants/margin_right = 40
 
 [node name="Timeline" parent="Viewport/GameOverlay/MarginContainer/VTimeline" instance=ExtResource("3_jhu7k")]
-custom_minimum_size = Vector2(60, 60)
+custom_minimum_size = Vector2(80, 80)
 layout_mode = 2
 theme = ExtResource("10_ww8tb")
 theme_override_constants/margin_top = 0
+
+[node name="SurrenderDialog" type="HBoxContainer" parent="Viewport/GameOverlay/MarginContainer"]
+visible = false
+layout_mode = 2
+mouse_filter = 0
+
+[node name="Spacer" type="Control" parent="Viewport/GameOverlay/MarginContainer/SurrenderDialog"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.5
+
+[node name="Dialog" type="MarginContainer" parent="Viewport/GameOverlay/MarginContainer/SurrenderDialog"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+
+[node name="Panel" type="Panel" parent="Viewport/GameOverlay/MarginContainer/SurrenderDialog/Dialog"]
+custom_minimum_size = Vector2(2.08165e-12, 2.08165e-12)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_wo1lb")
+
+[node name="MarginContainer" type="MarginContainer" parent="Viewport/GameOverlay/MarginContainer/SurrenderDialog/Dialog"]
+layout_mode = 2
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 50
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Viewport/GameOverlay/MarginContainer/SurrenderDialog/Dialog/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Label" type="Label" parent="Viewport/GameOverlay/MarginContainer/SurrenderDialog/Dialog/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Are you sure you want to surrender?"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Viewport/GameOverlay/MarginContainer/SurrenderDialog/Dialog/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="ConfirmSurrender" type="Button" parent="Viewport/GameOverlay/MarginContainer/SurrenderDialog/Dialog/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Confirm"
+
+[node name="CancelSurrender" type="Button" parent="Viewport/GameOverlay/MarginContainer/SurrenderDialog/Dialog/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Cancel"
+
+[node name="Spacer2" type="Control" parent="Viewport/GameOverlay/MarginContainer/SurrenderDialog"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.5
 
 [node name="VMenuBar" type="VBoxContainer" parent="Viewport/GameOverlay"]
 layout_mode = 2
@@ -928,6 +993,9 @@ libraries = {
 [connection signal="animation_finished" from="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/VSeparator/TabDisplay/AnimationPlayer" to="." method="_on_animation_player_animation_finished"]
 [connection signal="gui_input" from="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/VSeparator/TabDisplay/Panel" to="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/VSeparator/TabDisplay/Panel" method="_on_gui_input"]
 [connection signal="deselectShop" from="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/VSeparator/TabDisplay/Panel/Shop" to="." method="_on_shop_deselect_shop"]
+[connection signal="surrender" from="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/VSeparator/TabDisplay/Panel/Status" to="." method="_on_status_surrender"]
+[connection signal="pressed" from="Viewport/GameOverlay/MarginContainer/SurrenderDialog/Dialog/MarginContainer/VBoxContainer/HBoxContainer/ConfirmSurrender" to="." method="_on_confirm_surrender_pressed"]
+[connection signal="pressed" from="Viewport/GameOverlay/MarginContainer/SurrenderDialog/Dialog/MarginContainer/VBoxContainer/HBoxContainer/CancelSurrender" to="." method="_on_cancel_surrender_pressed"]
 [connection signal="pressed" from="Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer/StatusContainer/StatusButton" to="." method="_on_status_button_pressed"]
 [connection signal="pressed" from="Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer/ChatContainer/ChatButton" to="." method="_on_chat_button_pressed"]
 [connection signal="pressed" from="Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer/ShopContainer/ShopButton" to="." method="_on_shop_button_pressed"]

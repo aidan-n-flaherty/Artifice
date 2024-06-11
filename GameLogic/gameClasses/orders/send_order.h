@@ -39,6 +39,16 @@ public:
 
     int objIDDisplacement() override { return 1; }
 
+    int getUnits() { return numUnits; }
+
+    void setUnits(int units) { numUnits = units; }
+
+    int getOriginID() { return originID; }
+
+    int getTargetID() { return targetID; }
+
+    std::list<int> getSpecialistIDs() { return specialistIDs; }
+
     Event* converted(Game* game) override {
         if(!game->hasPlayer(getSenderID()) || game->getPlayer(getSenderID())->hasLost()) {
             std::cout << "ORDER ERROR: player has lost" << std::endl;
@@ -65,6 +75,8 @@ public:
 
         if(!outpost->canRemoveSpecialists(specialistIDs) || !outpost->canRemoveUnits(numUnits)) {
             for(int i : specialistIDs) std::cout << i << " ";
+            std::cout << std::endl;
+            for(Specialist* s : outpost->getOwner()->getSpecialists()) std::cout << s->getID() << " ";
             std::cout << std::endl;
             std::cout << "ORDER ERROR: insufficient specialists or units" << std::endl;
 
