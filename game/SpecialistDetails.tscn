@@ -143,9 +143,9 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 8
 theme = ExtResource("1_cfgj3")
-theme_override_styles/normal = SubResource("StyleBoxFlat_lefyu")
 theme_override_styles/hover = SubResource("StyleBoxFlat_lefyu")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_bfggk")
+theme_override_styles/normal = SubResource("StyleBoxFlat_lefyu")
 text = "Promote"
 
 [node name="Release" type="Button" parent="MarginContainer/HBoxContainer/MarginContainer/VBoxContainer"]
@@ -154,9 +154,9 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 8
 theme = ExtResource("1_cfgj3")
-theme_override_styles/normal = SubResource("StyleBoxFlat_lefyu")
 theme_override_styles/hover = SubResource("StyleBoxFlat_lefyu")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_bfggk")
+theme_override_styles/normal = SubResource("StyleBoxFlat_lefyu")
 text = "Release"
 
 [node name="Shop" type="Button" parent="MarginContainer/HBoxContainer/MarginContainer/VBoxContainer"]
@@ -165,9 +165,9 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 8
 theme = ExtResource("1_cfgj3")
-theme_override_styles/normal = SubResource("StyleBoxFlat_lefyu")
 theme_override_styles/hover = SubResource("StyleBoxFlat_lefyu")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_bfggk")
+theme_override_styles/normal = SubResource("StyleBoxFlat_lefyu")
 text = "Shop"
 
 [node name="Cancel" type="Button" parent="MarginContainer/HBoxContainer/MarginContainer/VBoxContainer"]
@@ -176,9 +176,9 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 8
 theme = ExtResource("1_cfgj3")
-theme_override_styles/normal = SubResource("StyleBoxFlat_lefyu")
 theme_override_styles/hover = SubResource("StyleBoxFlat_lefyu")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_bfggk")
+theme_override_styles/normal = SubResource("StyleBoxFlat_lefyu")
 text = "Cancel Hire"
 
 [node name="NextHire" type="Button" parent="MarginContainer/HBoxContainer/MarginContainer/VBoxContainer"]
@@ -187,9 +187,9 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 8
 theme = ExtResource("1_cfgj3")
-theme_override_styles/normal = SubResource("StyleBoxFlat_lefyu")
 theme_override_styles/hover = SubResource("StyleBoxFlat_lefyu")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_bfggk")
+theme_override_styles/normal = SubResource("StyleBoxFlat_lefyu")
 text = "Next Hire"
 
 [connection signal="pressed" from="MarginContainer/HBoxContainer/HBoxContainer/VBoxContainer/Back" to="." method="_on_back_pressed"]
