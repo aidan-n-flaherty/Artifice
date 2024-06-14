@@ -182,16 +182,18 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_1ul18")
 theme_override_styles/normal = SubResource("StyleBoxFlat_hk65e")
 text = "Hire 1x"
 
-[node name="HireMultiText" type="RichTextLabel" parent="VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/MarginContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/MarginContainer"]
 layout_mode = 2
-text = "   Hire Multiple:"
-fit_content = true
-scroll_active = false
+size_flags_vertical = 3
 
-[node name="HireMultiInput" type="SpinBox" parent="VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/MarginContainer"]
+[node name="Button" type="Button" parent="VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+text = "Hire"
+
+[node name="HireMultiInput" type="SpinBox" parent="VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/MarginContainer/HBoxContainer"]
 layout_mode = 2
 max_value = 10.0
-alignment = 1
+alignment = 2
 
 [node name="PromotionDisplays" type="MarginContainer" parent="VBoxContainer"]
 layout_mode = 2
@@ -201,4 +203,5 @@ theme_override_constants/margin_left = 50
 layout_mode = 2
 
 [connection signal="pressed" from="VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/MarginContainer/Hire" to="." method="_on_button_pressed"]
-[connection signal="value_changed" from="VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/MarginContainer/HireMultiInput" to="." method="_on_spin_box_value_changed"]
+[connection signal="pressed" from="VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/MarginContainer/HBoxContainer/Button" to="." method="_on_multi_hire_pressed"]
+[connection signal="value_changed" from="VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/MarginContainer/HBoxContainer/HireMultiInput" to="." method="_on_spin_box_value_changed"]

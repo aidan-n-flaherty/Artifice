@@ -74,16 +74,13 @@ func _on_button_pressed():
 	
 	emit_signal("hired")
 
-func _on_hire_3x_pressed() -> void:
-	GameData.addOrder(gameID, "HIRE", int(game.getReferenceID()), game.getTime(), [int(specialistNum)])
-	GameData.addOrder(gameID, "HIRE", int(game.getReferenceID()), game.getTime(), [int(specialistNum)])
-	GameData.addOrder(gameID, "HIRE", int(game.getReferenceID()), game.getTime(), [int(specialistNum)])
-	
-	emit_signal("hired")
-
-
 func _on_spin_box_value_changed(value: float) -> void:
 	for n in value:
 			GameData.addOrder(gameID, "HIRE", int(game.getReferenceID()), game.getTime(), [int(specialistNum)])
 	
 	emit_signal("hired")
+
+
+func _on_multi_hire_pressed() -> void:
+	
+	pass # Replace with function body.
