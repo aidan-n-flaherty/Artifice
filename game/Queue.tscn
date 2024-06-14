@@ -5,15 +5,6 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_i31q5"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pvxfr"]
-bg_color = Color(0, 0, 0, 1)
-border_color = Color(0.901961, 0.901961, 0.901961, 1)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
-shadow_color = Color(1, 1, 1, 0.6)
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5bh3u"]
 bg_color = Color(0, 0, 0, 0.901961)
 border_color = Color(0.901961, 0.901961, 0.901961, 1)
@@ -25,6 +16,15 @@ shadow_color = Color(1, 1, 1, 0.6)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_26cde"]
 bg_color = Color(0, 0, 0, 0.784314)
+border_color = Color(0.901961, 0.901961, 0.901961, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_color = Color(1, 1, 1, 0.6)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pvxfr"]
+bg_color = Color(0, 0, 0, 1)
 border_color = Color(0.901961, 0.901961, 0.901961, 1)
 corner_radius_top_left = 10
 corner_radius_top_right = 10
@@ -51,10 +51,10 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_i31q5")
 [node name="Selected" type="Button" parent="."]
 layout_mode = 2
 theme = ExtResource("1_lkiex")
-theme_override_styles/normal = SubResource("StyleBoxFlat_pvxfr")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_i31q5")
 theme_override_styles/hover = SubResource("StyleBoxFlat_5bh3u")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_26cde")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_i31q5")
+theme_override_styles/normal = SubResource("StyleBoxFlat_pvxfr")
 toggle_mode = true
 
 [node name="Margin" type="MarginContainer" parent="."]
