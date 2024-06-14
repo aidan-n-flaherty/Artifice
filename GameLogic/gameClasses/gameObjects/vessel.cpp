@@ -120,7 +120,7 @@ void Vessel::collision(Vessel* vessel, Vessel* other, double timestamp, std::mul
         float speedDiff = vessel->getSpeed() - other->getSpeed();
 
         if(speedDiff != 0) {
-            seconds = (vessel->distance(target->getPosition()) - vessel->distance(other->getPosition()))/speedDiff;
+            seconds = (vessel->distance(target->getPosition()) - other->distance(target->getPosition()))/speedDiff;
         }
     }
     // Case 2: both are heading towards each other, so they are guaranteed to collide

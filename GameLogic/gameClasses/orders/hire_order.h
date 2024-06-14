@@ -37,6 +37,18 @@ public:
     }
 
     Event* converted(Game* game) override {
+        SpecialistType t;
+
+        try {
+            t = SpecialistType(specialistTypeID);
+            std::cout << "Hiring " << Specialist::typeAsString(t) << std::endl;
+        } catch(...) {
+            std::cout << "ORDER ERROR: Cannot parse specialist type " << specialistTypeID << std::endl;
+            return nullptr;
+        }
+
+        setDescription(std::string("Hire ") + Specialist::typeAsString(t));
+
         std::cout << "Hiring..." << getSenderID() << std::endl;
         if(!game->hasPlayer(getSenderID())) {
             std::cout << "ORDER ERROR: Cannot find sender" << std::endl;
@@ -49,16 +61,6 @@ public:
         
         if(player->hasLost() || player->getHires() <= 0) {
             std::cout << "ORDER ERROR: Insufficient hires" << std::endl;
-            return nullptr;
-        }
-        
-        SpecialistType t;
-
-        try {
-            t = SpecialistType(specialistTypeID);
-            std::cout << "Hiring " << Specialist::typeAsString(t) << std::endl;
-        } catch(...) {
-            std::cout << "ORDER ERROR: Cannot parse specialist type " << specialistTypeID << std::endl;
             return nullptr;
         }
 
@@ -88,8 +90,6 @@ public:
             std::cout << "ORDER ERROR: Not in base hires" << std::endl;
             return nullptr;
         }
-
-        setDescription(std::string("Hire ") + Specialist::typeAsString(t));
 
         std::cout << "Hired " << game->getObjCounter() << std::endl;
         return new HireEvent(this, getTimestamp(), player, t);

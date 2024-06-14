@@ -20,7 +20,7 @@ signal loadGame(gameID, past)
 
 signal loadGameDetail(gameID)
 
-var version = "1.7"
+var version = "1.8"
 
 var needsUpdate = false
 

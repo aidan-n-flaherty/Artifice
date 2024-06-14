@@ -25,17 +25,19 @@ public:
     Order* copy() override { return new MineOrder(*this); }
 
     Event* converted(Game* game) override {
-        if(!game->hasPlayer(getSenderID()) || !game->hasOutpost(outpostID)) return nullptr;
+        if(!game->hasOutpost(outpostID)) return nullptr;
+
+        Outpost* outpost = game->getOutpost(outpostID);
+
+        setDescription(std::string("Convert ") + outpost->getName() + std::string(" to a mine"));
+
+        if(!game->hasPlayer(getSenderID())) return nullptr;
         
         Player* player = game->getPlayer(getSenderID());
         
         if(player->hasLost()) return nullptr;
 
-        Outpost* outpost = game->getOutpost(outpostID);
-
         if(outpost->getUnits() < player->getMineCost() || outpost->getType() == OutpostType::MINE || outpost->getType() == OutpostType::BROKEN || outpost->getOwnerID() != getSenderID()) return nullptr;
-
-        setDescription(std::string("Convert ") + outpost->getName() + std::string(" to a mine"));
 
         return new MineEvent(this, getTimestamp(), outpost);
     }
