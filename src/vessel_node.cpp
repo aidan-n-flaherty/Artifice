@@ -21,7 +21,6 @@ using namespace godot;
 void VesselNode::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("isGift"), &VesselNode::isGift);
 	ClassDB::bind_method(D_METHOD("getSourceOrder"), &VesselNode::getSourceOrder);
-	ClassDB::bind_method(D_METHOD("getSpeed"), &VesselNode::getSpeed);
 }
 
 VesselNode::VesselNode(Vessel* vessel) : PositionalNode("res://SubMesh.tscn", vessel), vessel(vessel) {

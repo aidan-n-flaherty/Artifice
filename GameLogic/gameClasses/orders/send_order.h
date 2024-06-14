@@ -50,32 +50,13 @@ public:
     std::list<int> getSpecialistIDs() { return specialistIDs; }
 
     Event* converted(Game* game) override {
-        if(!game->hasOutpost(originID)) {
-            std::cout << "ORDER ERROR: nonexistent origin" << std::endl;
-            return nullptr;
-        }
-
-        Outpost* outpost = game->getOutpost(originID);
-
-        if(!game->hasPosObject(targetID)) {
-            std::cout << "ORDER ERROR: nonexistent target" << std::endl;
-            return nullptr;
-        }
-
-        PositionalObject* target = game->getPosObject(targetID);
-
-        Outpost* targetOutpost = dynamic_cast<Outpost*>(target);
-
-        if(targetOutpost) {
-            setDescription(std::string("Send ") + std::to_string(numUnits) + std::string(" units from ") + outpost->getName() + " to " + targetOutpost->getName());
-        } else {
-            setDescription(std::string("Send ") + std::to_string(numUnits) + std::string(" units from ") + outpost->getName() + " to an enemy submarine");
-        }
-
-        if(!specialistIDs.empty()) setDescription(getDescription() + " with " + std::to_string(specialistIDs.size()) + " specialist" + (specialistIDs.size() == 1 ? "" : "s"));
-
         if(!game->hasPlayer(getSenderID()) || game->getPlayer(getSenderID())->hasLost()) {
             std::cout << "ORDER ERROR: player has lost" << std::endl;
+            return nullptr;
+        }
+
+        if(!game->hasOutpost(originID) || !game->hasPosObject(targetID)) {
+            std::cout << "ORDER ERROR: nonexistent origin or target" << std::endl;
             return nullptr;
         }
 
@@ -83,6 +64,9 @@ public:
             std::cout << "ORDER ERROR: cannot send to self" << std::endl;
             return nullptr;
         }
+
+        Outpost* outpost = game->getOutpost(originID);
+        PositionalObject* target = game->getPosObject(targetID);
 
         if(outpost->getOwnerID() != getSenderID()) {
             std::cout << "ORDER ERROR: outpost " << outpost->getID() << " is not owned by " << getSenderID() << std::endl;
@@ -122,6 +106,14 @@ public:
                 std::cout << "ORDER ERROR: cannot target vessel without pirate" << std::endl;
                 return nullptr;
             }
+        }
+
+        Outpost* targetOutpost = dynamic_cast<Outpost*>(target);
+
+        if(targetOutpost) {
+            setDescription(std::string("Send ") + std::to_string(numUnits) + std::string(" units from ") + outpost->getName() + " to " + targetOutpost->getName());
+        } else {
+            setDescription(std::string("Send ") + std::to_string(numUnits) + std::string(" units from ") + outpost->getName() + " to an enemy submarine");
         }
 
         return new SendEvent(this, getTimestamp(), numUnits, specialists, outpost, target);

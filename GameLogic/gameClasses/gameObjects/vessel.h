@@ -24,13 +24,11 @@ private:
     Outpost* origin;
     PositionalObject* target;
 
-    Order* sourceOrder = nullptr;
+    Order* sourceOrder;
 
     bool gift = false;
 
     double speedModifier = 1.0;
-
-    bool disabled = false;
 
 public:
     Vessel(unsigned int ID, GameSettings* settings, Player* owner, const Point& position, Outpost* origin, 
@@ -73,9 +71,6 @@ public:
     
     void setSourceOrder(Order* o) { sourceOrder = o; }
     Order* getSourceOrder() { return sourceOrder; }
-
-    void setDisabled(bool value) { this->disabled = value; }
-    bool getDisabled() { return disabled; }
 };
 
 #endif

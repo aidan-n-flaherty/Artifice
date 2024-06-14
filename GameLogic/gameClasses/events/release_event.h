@@ -36,17 +36,10 @@ public:
         Player* owner = specialists.front()->getOwner();
         std::list<Outpost*> outposts = owner->sortedOutposts(outpost);
         for (Specialist*& specialist : specialists) {
-            if(owner && owner->controlsSpecialist(SpecialistType::QUEEN) && specialist->getType() == SpecialistType::QUEEN && specialist->getOwnerID() == owner->getID()) specialist->setType(SpecialistType::PRINCESS);
-            
             outpost->removeSpecialist(specialist);
         }
-
-        Vessel* vessel;
-        if(getOriginatingOrder()) vessel = new Vessel(game->incrementObjCounter(), game->getSettings(), owner, outpost->getPosition(), outpost, outposts.front(), 0, specialists);
-        else vessel = new Vessel(game->incrementGeneratedCounter(), game->getSettings(), owner, outpost->getPosition(), outpost, outposts.front(), 0, specialists);
-
+        Vessel* vessel = new Vessel(game->incrementObjCounter(), game->getSettings(), owner, outpost->getPosition(), outpost, outposts.front(), 0, specialists);
         vessel->setOriginatingOrder(getOriginatingOrder());
-        vessel->setSourceOrder(getOriginatingOrder());
 
         game->addVessel(vessel);
     }

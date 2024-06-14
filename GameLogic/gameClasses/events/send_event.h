@@ -6,7 +6,6 @@
 #include "../gameObjects/outpost.h"
 #include "../gameObjects/positional_object.h"
 #include "../game.h"
-#include <iostream>
 
 class SendEvent : public Event
 {
@@ -34,13 +33,9 @@ public:
     }
 
     void run(Game* game) override {
-
-        
         Vessel* vessel = new Vessel(game->incrementObjCounter(), game->getSettings(), outpost->getOwner(), outpost->getPosition(), outpost, target, outpost->removeUnits(numUnits), outpost->removeSpecialists(specialists));
         vessel->setOriginatingOrder(getOriginatingOrder());
         vessel->setSourceOrder(getOriginatingOrder());
-
-        if(outpost->hasOwner()) outpost->getOwner()->addVesselPath(getTimestamp(), vessel->getPosition(), vessel->getTargetPos());
 
         game->addVessel(vessel);
         if(target->hasOwner() && outpost->hasOwner() && target->getOwnerID() != outpost->getOwnerID() && (!game->teamGame() || target->getOwner()->getTeamID() != outpost->getOwner()->getTeamID())) game->addNotification(new AttackNotification(getTimestamp(), vessel->getID(), target->getOwnerID()));

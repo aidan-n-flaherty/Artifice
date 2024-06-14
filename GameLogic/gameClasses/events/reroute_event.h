@@ -26,20 +26,14 @@ public:
     }
 
     void run(Game* game) override {
-        if(game->ignoreVessel(vessel->getID(), getTimestamp())) {
-            setDisabled(true);
-            return;
-        }
-
-        if(target->hasOwner() && vessel->hasOwner() && target->getOwnerID() != vessel->getOwnerID() && vessel->getTarget()->getOwnerID() != target->getOwnerID() && (!game->teamGame() || target->getOwner()->getTeamID() != vessel->getOwner()->getTeamID())) game->addNotification(new AttackNotification(getTimestamp(), vessel->getID(), target->getOwnerID()));
+         if(target->hasOwner() && vessel->hasOwner() && target->getOwnerID() != vessel->getOwnerID() && vessel->getTarget()->getOwnerID() != target->getOwnerID() && (!game->teamGame() || target->getOwner()->getTeamID() != vessel->getOwner()->getTeamID())) game->addNotification(new AttackNotification(getTimestamp(), vessel->getID(), target->getOwnerID()));
 
         vessel->setOriginatingOrder(getOriginatingOrder());
         vessel->setTarget(target);
         vessel->setOrigin(nullptr);
         vessel->setSpeedModifier(1.0);
-        if(vessel->hasOwner()) vessel->getOwner()->addVesselPath(getTimestamp(), vessel->getPosition(), vessel->getTargetPos());
 
-        for(auto& pair : game->getVessels()) {
+         for(auto& pair : game->getVessels()) {
             if(pair.second->getTargetID() == vessel->getID()) {
                 pair.second->setOrigin(nullptr);
             }

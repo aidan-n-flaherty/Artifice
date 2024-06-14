@@ -132,10 +132,8 @@ public:
 
 	std::shared_ptr<Game> getCompleteGame() { return completeGame; }
 	std::shared_ptr<Game> getGame() { return game; }
-	std::shared_ptr<Game> getSimulatedGame() { return simulatedGame; }
+	std::shared_ptr<Game> getSimulatedGame() { return currentGame; }
 	std::shared_ptr<Game> getCurrentGame() { return currentGame; }
-	std::shared_ptr<Game> getFullGame() { return fullGame; }
-
 
 	int getUserGameID() { return userGameID; }
 
@@ -216,26 +214,26 @@ public:
 	String getOrderDescription(int orderID);
 	bool canUndoOrder(int orderID);
 
-	int getSpecialistType(int specialistID) { return simulatedGame->hasSpecialist(specialistID) ? simulatedGame->getSpecialist(specialistID)->getType() : 0; };
+	int getSpecialistType(int specialistID) { return game->hasSpecialist(specialistID) ? game->getSpecialist(specialistID)->getType() : 0; };
 	PlayerNode* getPlayer(int id);
-	PlayerNode* getSpecialistOwner(int specialistID) { return simulatedGame->hasSpecialist(specialistID) && simulatedGame->hasPlayer(simulatedGame->getSpecialist(specialistID)->getOwnerID()) ? getPlayer(simulatedGame->getSpecialist(specialistID)->getOwnerID()) : nullptr; }
+	PlayerNode* getSpecialistOwner(int specialistID) { return game->hasSpecialist(specialistID) && game->hasPlayer(game->getSpecialist(specialistID)->getOwnerID()) ? getPlayer(game->getSpecialist(specialistID)->getOwnerID()) : nullptr; }
 	String getSpecialistName(int specialistNum);
 	String getSpecialistDescription(int specialistNum);
 	int getSpecialistHireAmount(int specialistNum);
 	bool canRelease(int specialistID) {
-		return simulatedGame->hasSpecialist(specialistID) && !ownsSpecialist(specialistID) && simulatedGame->getSpecialist(specialistID)->getContainer() &&
-				simulatedGame->getSpecialist(specialistID)->getContainer()->getOwnerID() == userGameID;
+		return game->hasSpecialist(specialistID) && !ownsSpecialist(specialistID) && game->getSpecialist(specialistID)->getContainer() &&
+				game->getSpecialist(specialistID)->getContainer()->getOwnerID() == userGameID;
 	}
 	bool canPromote(int specialistID) {
-		return ownsSpecialist(specialistID) && simulatedGame->getSpecialist(specialistID)->getContainer() &&
-			simulatedGame->getSpecialist(specialistID)->getContainer()->getOwnerID() == userGameID &&
-				dynamic_cast<Outpost*>(simulatedGame->getSpecialist(specialistID)->getContainer());
+		return ownsSpecialist(specialistID) && game->getSpecialist(specialistID)->getContainer() &&
+			game->getSpecialist(specialistID)->getContainer()->getOwnerID() == userGameID &&
+				dynamic_cast<Outpost*>(game->getSpecialist(specialistID)->getContainer());
 	}
-	bool canUndoSpecialist(int specialistID) { return simulatedGame->hasSpecialist(specialistID) && simulatedGame->getSpecialist(specialistID)->getOriginatingOrder() && simulatedGame->getSpecialist(specialistID)->getOriginatingOrder()->getTimestamp() > settings.clientToGameTime(getTimeMillis()); }
-	int getSpecialistOriginatingOrder(int specialistID) { return canUndoSpecialist(specialistID) ? simulatedGame->getSpecialist(specialistID)->getOriginatingOrder()->getID() : -1; }
-	String getSpecialistOriginatingOrderType(int specialistID) { return canUndoSpecialist(specialistID) ? String(simulatedGame->getSpecialist(specialistID)->getOriginatingOrder()->getType().c_str()) : ""; }
-	bool ownsSpecialist(int specialistID) { return simulatedGame->hasSpecialist(specialistID) && simulatedGame->getSpecialist(specialistID)->getOwnerID() == userGameID; }
-	bool ownsObj(int objID) { return simulatedGame->hasPosObject(objID) && simulatedGame->getPosObject(objID)->getOwnerID() == userGameID; }
+	bool canUndoSpecialist(int specialistID) { return game->hasSpecialist(specialistID) && game->getSpecialist(specialistID)->getOriginatingOrder() && game->getSpecialist(specialistID)->getOriginatingOrder()->getTimestamp() > settings.clientToGameTime(getTimeMillis()); }
+	int getSpecialistOriginatingOrder(int specialistID) { return canUndoSpecialist(specialistID) ? game->getSpecialist(specialistID)->getOriginatingOrder()->getID() : -1; }
+	String getSpecialistOriginatingOrderType(int specialistID) { return canUndoSpecialist(specialistID) ? String(game->getSpecialist(specialistID)->getOriginatingOrder()->getType().c_str()) : ""; }
+	bool ownsSpecialist(int specialistID) { return game->hasSpecialist(specialistID) && game->getSpecialist(specialistID)->getOwnerID() == userGameID; }
+	bool ownsObj(int objID) { return game->hasPosObject(objID) && game->getPosObject(objID)->getOwnerID() == userGameID; }
 
 
     String getNextVictoryMessage();

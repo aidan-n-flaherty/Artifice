@@ -21,8 +21,6 @@ private:
 
     double simulatedDiff;
 
-    double currentTime;
-
 protected:
 	static void _bind_methods() {};
 
@@ -33,17 +31,14 @@ public:
 		
     void _draw() override;
     
-    void setDiff(double timeDiff, double simulatedDiff, double currentTime) {
+    void setDiff(double timeDiff, double simulatedDiff) {
         this->timeDiff = timeDiff;
         this->simulatedDiff = simulatedDiff;
-        this->currentTime = currentTime;
     }
 	
 	double getDiff() { return timeDiff; }
 
     double getSimulatedDiff() { return simulatedDiff; }
-
-    double getCurrent() { return currentTime; }
 };
 
 }

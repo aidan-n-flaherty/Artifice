@@ -29,7 +29,6 @@
 #include <utility>
 #include <map>
 #include <list>
-#include <unordered_set>
 
 using namespace godot;
 
@@ -331,38 +330,51 @@ void GameInterface::_process(double delta) {
 	if(fullCompleteGame != nullptr && fullGame != nullptr && completeGame != nullptr) {
 		double fullDiff = settings.clientToGameTime(time) - fullGame->getTime();
 
-		double fullTime = settings.clientToGameTime(time);
-
 		Player* p = fullGame->getPlayer(getUserGameID());
 
 		if(p) {
 			bool anyChanged = false;
 
-			for(const auto& pair : fullGame->getVessels()) {
-				if(!fullGame->withinRange(p, pair.second, fullDiff)) {
-					for(const Event* e : completeGame->getSimulatedEvents()) {
-						if(!e->referencesObject(pair.first)) continue;
+			std::list<int> ignoredOrders;
 
-						if((e->getTimestamp() > fullTime && !e->getDisabled()) || (e->getTimestamp() <= fullTime && e->getDisabled())) {
-							completeGame = completeGame->setSimulateVessel(pair.first, fullTime, false);
-							anyChanged = true;
-							break;
-						}
-					}
+			for(const auto& pair : fullGame->getVessels()) {
+				Order* o = pair.second->getSourceOrder();
+
+				if(o && !fullGame->withinRange(p, pair.second, fullDiff)) {
+					ignoredOrders.push_back(o->getID());
 				}
 			}
-			
-			for(const auto& pair : completeGame->getIgnoredVessels()) {
-				if(!fullGame->hasVessel(pair.first) || fullGame->withinRange(p, fullGame->getVessel(pair.first), fullDiff)) {
-					for(const Event* e : completeGame->getSimulatedEvents()) {
-						if(!e->referencesObject(pair.first)) continue;
+			std::list<int> gameIgnored = completeGame->ignoredOrders();
 
-						if(e->getDisabled()) {
-							completeGame = completeGame->setSimulateVessel(pair.first, fullTime, true);
-							anyChanged = true;
-							break;
-						}
+			for(int i : ignoredOrders) {
+				bool found = false;
+
+				for(int j : gameIgnored) {
+					if(i == j) {
+						found = true;
+						break;
 					}
+				}
+
+				if(!found) {
+					completeGame = completeGame->setSimulateOrder(i, false);
+					anyChanged = true;
+				}
+			}
+
+			for(int i : gameIgnored) {
+				bool found = false;
+
+				for(int j : ignoredOrders) {
+					if(i == j) {
+						found = true;
+						break;
+					}
+				}
+
+				if(!found) {
+					completeGame = completeGame->setSimulateOrder(i, true);
+					anyChanged = true;
 				}
 			}
 
@@ -379,30 +391,21 @@ void GameInterface::_process(double delta) {
 		}
 	}
 	
-	if(game != nullptr && simulatedGame != nullptr && currentGame != nullptr && fullGame != nullptr) {
+	if(game != nullptr && simulatedGame != nullptr && currentGame != nullptr) {
 		double t = settings.clientToGameTime(time);
-
-		double fullDiff = settings.clientToGameTime(time) - fullGame->getTime();
 
 		double timeDiff = settings.clientToGameTime(getTime()) - game->getTime();
 
 		double simulatedDiff = settings.clientToGameTime(getCurrent()) - simulatedGame->getTime();
 
 		Player* p = future ? currentGame->getPlayer(getUserGameID()) : game->getPlayer(getUserGameID());
-
-		Player* fullPlayer = fullGame->getPlayer(getUserGameID());
     
 		std::shared_ptr<Game> visibilityGame = future ? currentGame : game;
 		
 		for(const auto& pair : vessels) {
-			Vessel* v = fullGame->getVessel(pair.first);
-
 			pair.second->setDiff(t, timeDiff);
 			pair.second->setSelfOwned(pair.second->getOwnerID() == userGameID && userGameID >= 0);
-
-            if(future && v && !fullGame->withinRange(fullPlayer, v, fullDiff)) pair.second->setInRadar(finished);
-			else pair.second->setInRadar(finished || (p ? visibilityGame->withinRange(p, pair.second->getObj(), timeDiff) : false));
-			
+			pair.second->setInRadar(finished || (p ? visibilityGame->withinRange(p, pair.second->getObj(), timeDiff) : false));
 			if(pair.second->isLoaded()) pair.second->set_visible(finished || (p ? visibilityGame->withinRange(p, pair.second->getObj(), timeDiff) : false));
 		}
 		
@@ -419,7 +422,7 @@ void GameInterface::_process(double delta) {
 		if(selected >= 0 && getNode(selected) && getNode(selected)->isInRadar()) selectedUnits = getSelected()->getUnitsAt(simulatedDiff);
 		else selectedUnits = -1;
 
-		floorDisplay->setDiff(timeDiff, simulatedDiff, t);
+		floorDisplay->setDiff(timeDiff, simulatedDiff);
 		floorDisplay->queue_redraw();
 	}
 }
@@ -484,13 +487,6 @@ void GameInterface::update() {
 		nextSimulatedState = completeGame->nextState(currentTime);
 
 		if(selected >= 0 && !getSelected()) shouldUnselect = true;
-
-		for(auto it = selectedSpecialists.begin(); it != selectedSpecialists.end();) {
-			if(!simulatedGame->hasSpecialist(*it)) {
-				setSelectedSpecialist(*it);
-				it = selectedSpecialists.begin();
-			} else it++;
-		}
 	}
 
 	if(game == nullptr || time < game->getTime() || time >= nextState) {
@@ -559,6 +555,13 @@ void GameInterface::update() {
 			}
 		}
 
+		for(auto it = selectedSpecialists.begin(); it != selectedSpecialists.end();) {
+			if(!game->hasSpecialist(*it)) {
+				setSelectedSpecialist(*it);
+				it = selectedSpecialists.begin();
+			} else it++;
+		}
+
 		if(selected >= 0 && !getSelected()) shouldUnselect = true;
 	}
 
@@ -607,7 +610,7 @@ void GameInterface::release(int id) {
 void GameInterface::sendTo(int id) {
 	PositionalObject* target = getObj(id);
 
-	double simulatedDiff = settings.clientToGameTime(getCurrent()) - simulatedGame->getTime();
+	double timeDiff = settings.clientToGameTime(getCurrent()) - game->getTime();
 
 	if(getSelected() && getSelected()->getOwnerID() == getUserGameID()) {
 		Vessel* v1 = dynamic_cast<Vessel*>(getSelected());
@@ -620,7 +623,7 @@ void GameInterface::sendTo(int id) {
 		if(o1) {
 			if(v2 && !willSendWith(SpecialistType::PIRATE)) return;
 
-			int units = getSelected()->getUnitsAt(simulatedDiff);
+			int units = getSelected()->getUnitsAt(timeDiff);
 
 			uint32_t parameters[] = { uint32_t(std::max(selectedSpecialists.empty() ? 1 : 0, int(percent * units))), uint32_t(selected), target->getID() };
 			Array arguments;
@@ -628,14 +631,12 @@ void GameInterface::sendTo(int id) {
 			for(int i = 0; i < 3; i++) arguments.push_back(parameters[i]);
 
 			while(!selectedSpecialists.empty()) {
-				if(simulatedGame->getSpecialist(*selectedSpecialists.begin())->getOwnerID() == userGameID) {
+				if(game->getSpecialist(*selectedSpecialists.begin())->getOwnerID() == userGameID) {
 					arguments.push_back(*selectedSpecialists.begin());
 					if(getNode(selected)) getNode(selected)->setSpecialistSelected(*selectedSpecialists.begin(), false);
 				}
 				selectedSpecialists.erase(selectedSpecialists.begin());
 			}
-
-			if(getNode(selected)) getNode(selected)->clearSelectedSpecialists();
 
 			emit_signal("addOrder", "SEND", game->getReferenceID(), current, arguments);
 			
@@ -715,7 +716,7 @@ void GameInterface::setSelected(int id) {
 void GameInterface::setSelectedSpecialist(int id) {
 	bool selected = selectedSpecialists.find(id) == selectedSpecialists.end();
 
-	Specialist* s = simulatedGame->getSpecialist(id);
+	Specialist* s = game->getSpecialist(id);
 
 	if(!s) {
 		for(auto& pair : vessels) if(pair.second->hasSelectedSpecialist(id)) pair.second->setSpecialistSelected(id, false);
@@ -999,8 +1000,6 @@ PackedInt32Array GameInterface::getInvalidOrderIDs() {
 Array GameInterface::getPlayers() {
 	Array arr;
 
-	if(!game) return arr;
-
 	for(const auto& pair : game->getPlayers()) {
 		arr.push_back(players[pair.second->getID()]);
 	}
@@ -1011,9 +1010,6 @@ Array GameInterface::getPlayers() {
 
 Array GameInterface::getSortedPlayers() {
 	Array arr;
-
-	if(!game) return arr;
-
 	std::vector<Player*> sortedPlayers = game->sortedPlayers(settings.clientToGameTime(getTime()) - game->getTime());
 
 	for(Player* player_ : sortedPlayers) {
@@ -1025,9 +1021,6 @@ Array GameInterface::getSortedPlayers() {
 
 Array GameInterface::getCurrentSortedPlayers() {
 	Array arr;
-
-	if(!currentGame) return arr;
-
 	std::vector<Player*> sortedPlayers = currentGame->sortedPlayers(settings.clientToGameTime(getTimeMillis()) - game->getTime());
 
 	for(Player* p : sortedPlayers) {
@@ -1038,8 +1031,6 @@ Array GameInterface::getCurrentSortedPlayers() {
 }
 
 int GameInterface::getScore(int userID) {
-	if(!game) return -1;
-
 	std::list<std::pair<int, int>> scores = game->getScores();
 
 	for(const std::pair<int, int> &p : scores) {
@@ -1092,8 +1083,6 @@ int GameInterface::getSpecialistHireAmount(int specialistNum) {
 }
 
 String GameInterface::getNextVictoryMessage() {
-	if(!game) return "";
-
 	double timeDiff = settings.clientToGameTime(getTime()) - game->getTime();
 
 	Player* victor = game->sortedPlayers(timeDiff).front();
@@ -1111,7 +1100,7 @@ String GameInterface::getNextVictoryMessage() {
 			res = victor->getName();
 		} else if(!game->simulationEnded()) return "";
 
-		if(e && victor && settings.resourcesToWin - victor->getResourcesAt(timeDiff) > 0 && !game->simulationEnded()) {
+		if(e && settings.resourcesToWin - victor->getResourcesAt(timeDiff) > 0 && !game->simulationEnded()) {
 			char str[16];
 			sprintf(str, "%.2lf", (e->getTimestamp() - getTime()) / (60 * 60));
 			res += " needs " + std::to_string(settings.resourcesToWin - victor->getResourcesAt(timeDiff)) + " more resources and will win in " + std::string(str) + " hours";

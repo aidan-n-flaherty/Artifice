@@ -24,7 +24,7 @@ public:
     
     Event* copy() override { return new WinConditionEvent(*this); }
 
-    bool referencesObject(int id) const override { return playerID == id; }
+    bool referencesObject(int id) const override { return player->getID() == id; }
 
     void updatePointers(Game *game) override {
         Event::updatePointers(game);

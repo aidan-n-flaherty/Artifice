@@ -413,7 +413,7 @@ Game::Game(GameSettings settings, int simulatorID, double startTime, double endT
     addEvent(new OutpostRangeEvent(getTime()));
 }
 
-Game::Game(const Game& game) : startTime(game.startTime), stateTime(game.stateTime), cacheEnabled(game.cacheEnabled), ended(game.ended), endTime(game.endTime), referenceID(game.referenceID), simulatorID(game.simulatorID), lastExecutedOrder(game.lastExecutedOrder), nextEndState(game.nextEndState), gameEndTime(game.gameEndTime), gameObjCounter(game.gameObjCounter), generatedObjCounter(game.generatedObjCounter), ignoredVessels(game.ignoredVessels), settings(game.settings) {
+Game::Game(const Game& game) : startTime(game.startTime), stateTime(game.stateTime), cacheEnabled(game.cacheEnabled), ended(game.ended), endTime(game.endTime), referenceID(game.referenceID), simulatorID(game.simulatorID), lastExecutedOrder(game.lastExecutedOrder), nextEndState(game.nextEndState), gameEndTime(game.gameEndTime), gameObjCounter(game.gameObjCounter), settings(game.settings) {
     for(Event* event : game.events) events.insert(event->copy());
     for(Event* event : game.simulatedEvents) simulatedEvents.push_back(event->copy());
     for(Order* order : game.orders) orders.insert(order->copy());
@@ -611,7 +611,7 @@ std::list<std::pair<int, int>> Game::run(bool pastEnd) {
 
         events.erase(event);
 
-        if(e->getTimestamp() <= endTime && dynamic_cast<OutpostRangeEvent*>(e) && std::none_of(vessels.begin(), vessels.end(), [](const std::pair<int, Vessel*>& p) { return !p.second->getDisabled(); })) {
+        if(e->getTimestamp() <= endTime && dynamic_cast<OutpostRangeEvent*>(e) && vessels.empty()) {
             if(!orders.empty() || !events.empty()) addEvent(new OutpostRangeEvent(e->getTimestamp() + getSettings()->fireRate * getSettings()->baseFireRate / getSettings()->simulationSpeed));
             continue;
         }
@@ -991,14 +991,11 @@ std::shared_ptr<Game> Game::processOrder(const std::string &type, int ID, int re
 
     Order* o = getOrder(ID);
     if(o) {
-        SendOrder* order = dynamic_cast<SendOrder*>(o);
-        if(order && argCount >= 3 && arguments[0] != order->getUnits()) {
-            adjustUnits(ID, arguments[0]);
 
-            return stateBefore(ID);
-        } else {
-            return lastState(timestamp);
-        }
+        SendOrder* order = dynamic_cast<SendOrder*>(o);
+        if(order && argCount >= 3) adjustUnits(ID, arguments[0]);
+        
+        return stateBefore(ID);
     }
 
     std::shared_ptr<Game> game = lastState(timestamp);
@@ -1099,25 +1096,6 @@ bool Game::withinRange(Player* p, PositionalObject* obj, double timeDiff) const 
     }
 
     return false;
-}
-
-std::shared_ptr<Game> Game::setSimulateVessel(int ID, double timestamp, bool simulate) {
-    setIgnoreVessel(ID, timestamp, !simulate);
-
-    std::shared_ptr<Game> returnVal = shared_from_this();
-
-    bool foundVessel = false;
-
-    for(auto it = cache.begin(); it != cache.end(); it++) {
-        if((!simulate && (*it)->getTime() >= timestamp) || (simulate && (*it)->hasVessel(ID))) break;
-        else returnVal = *it;
-
-        returnVal->setIgnoreVessel(ID, timestamp, !simulate);
-
-        if(returnVal->hasVessel(ID)) foundVessel = true;
-    }
-
-    return returnVal;
 }
 
 std::shared_ptr<Game> Game::setSimulateOrder(int ID, bool simulate) {

@@ -41,8 +41,6 @@ public:
 
 	int getSourceOrder() { return canUndo() && vessel ? vessel->getSourceOrder()->getID() : -1; }
 
-	double getSpeed() { return vessel ? vessel->getSpeed() : -1; }
-
 	Vessel* getVessel() { return vessel; }
 };
 

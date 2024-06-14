@@ -96,15 +96,13 @@ double Vessel::getSpeed(double speed, double simulationSpeed, Player* p, const s
     if(controlsSpecialist(p, specialists, SpecialistType::ADMIRAL)) speed = fmax(speed, 2);
     if(controlsSpecialist(p, specialists, SpecialistType::HELMSMAN)) speed = fmax(speed, 2);
     if(controlsSpecialist(p, specialists, SpecialistType::PIRATE)) speed = fmax(speed, 2);
-    if(controlsSpecialist(p, specialists, SpecialistType::SMUGGLER) && (!target || target->getOwnerID() == p->getID())) speed = fmax(speed, 3);
+    if(controlsSpecialist(p, specialists, SpecialistType::SMUGGLER) && target && target->getOwnerID() == p->getID()) speed = fmax(speed, 3);
 
     return speed * (simulationSpeed * 2.0 / (60 * 60));
 }
 
 // should be modified to work with specialist effects
 double Vessel::getSpeed() const {
-    if(disabled) return 0;
-    
     double speed = speedModifier;
 
     return Vessel::getSpeed(speed, getSettings()->simulationSpeed, getOwner(), getSpecialists(), getTarget());

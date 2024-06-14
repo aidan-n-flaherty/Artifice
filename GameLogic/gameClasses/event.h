@@ -25,8 +25,6 @@ private:
 
     double timestamp = 0.0;
 
-    bool disabled = false;
-
 public:
     Event() : ID(counter++) {}
     Event(Order* o, double timestamp) : originatingOrder(o), timestamp(timestamp), ID(counter++) {}
@@ -55,9 +53,6 @@ public:
     }
 
     Order* getOriginatingOrder() { return originatingOrder; }
-
-    void setDisabled(bool value) { this->disabled = value; }
-    bool getDisabled() const { return disabled; }
 };
 
 struct EventOrder

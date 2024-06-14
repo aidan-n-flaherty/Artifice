@@ -7,7 +7,6 @@
 #include "../GameLogic/gameClasses/gameObjects/player.h"
 #include <godot_cpp/variant/utility_functions.hpp>
 #include <godot_cpp/variant/string.hpp>
-#include <iostream>
 
 namespace godot {
 
@@ -42,7 +41,7 @@ public:
 
 	int getMineCost() { return outpost && outpost->getOwner() ? outpost->getOwner()->getMineCost() : -1; }
 
-	bool canMine() { return outpost && outpost->hasOwner() && outpost->getUnits() >= outpost->getOwner()->getMineCost() && outpost->getType() != OutpostType::MINE; }
+	bool canMine() { return outpost->getOwner() && outpost->getUnits() >= outpost->getOwner()->getMineCost() && outpost->getType() != OutpostType::MINE; }
 
 	bool isFactory() { return outpost->getType() == OutpostType::FACTORY; }
 
