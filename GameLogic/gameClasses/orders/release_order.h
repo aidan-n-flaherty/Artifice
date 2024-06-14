@@ -21,6 +21,12 @@ public:
     
     Order* copy() override { return new ReleaseOrder(*this); }
     
+    int objIDDisplacement() override { return 1; }
+
+    void adjustIDs(int createdID, int amount) override {
+        if(specialistID >= createdID) specialistID += amount;
+    }
+
     Event* converted(Game* game) override {
         if(!game->hasPlayer(getSenderID())) return nullptr;
         
@@ -37,8 +43,6 @@ public:
         if(!o) return nullptr;
 
         if(!game->hasPlayer(s->getOwnerID()) || game->getPlayer(s->getOwnerID())->getOutposts().empty()) return nullptr;
-
-        updateOrders(game, game->getOrders());
 
         setDescription(std::string("Release ") + s->typeAsString() + std::string(" from ") + o->getName());
 

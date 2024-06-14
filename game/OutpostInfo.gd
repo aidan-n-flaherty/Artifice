@@ -24,10 +24,11 @@ func _process(delta):
 		queue_redraw()
 	
 func setShield(shield: int, maxShield: int):
+	self.shield = shield
+	
 	if maxShield != self.maxShield:
 		queue_redraw()
-	
-	self.shield = shield
+		
 	self.maxShield = maxShield
 	$ShieldContainer/Shield.text = str(shield)
 
@@ -40,7 +41,7 @@ func _draw():
 	
 	if maxShield > 40:
 		var fill = easeShield*1.0/maxShield
-
+		
 		var radius = size.x * 3/7
 		var angle_from = 45
 		var angle_to = angle_from + 160
@@ -59,6 +60,8 @@ func _draw():
 		if angle_to >= angle_from:
 			draw_arc(center, radius, deg_to_rad(angle_from), deg_to_rad(angle_to), 32, color, width)
 
+		get_parent().render_target_update_mode = SubViewport.UPDATE_ONCE
+		
 		return
 	
 	for i in range(floor(maxShield/10)):

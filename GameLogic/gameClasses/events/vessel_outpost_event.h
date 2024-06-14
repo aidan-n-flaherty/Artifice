@@ -58,7 +58,11 @@ public:
     void run(Game* game) override {
         BattleEvent::run(game);
 
-        if(outpost->getOwnerID() == vessel->getOwnerID() || vessel->isGift() || (((game->getSettings())->number_of_teams > 1) && same_team(outpost, vessel))) {
+        if(game->ignoreVessel(vID, getTimestamp())) {
+            setDisabled(true);
+            vessel->setDisabled(true);
+            return;
+        } else if(outpost->getOwnerID() == vessel->getOwnerID() || vessel->isGift() || (((game->getSettings())->number_of_teams > 1) && same_team(outpost, vessel))) {
             if(outpost->hasOwner() && outpost->getOwnerID() != vessel->getOwnerID()) {
                 for(Specialist* s : vessel->getSpecialists()) {
                     if(s->hasOwner() && s->getOwnerID() == vessel->getOwnerID()) {
@@ -86,7 +90,7 @@ public:
             vessel->removeUnits(val);
             outpost->removeUnits(val - outpost->removeShield(val));
 
-            bool vesselWins = (outpost->getUnits() < vessel->getUnits()) || (outpost->getUnits() == vessel->getUnits() && outpost->getSpecialists().size() < vessel->getSpecialists().size());
+            bool vesselWins = (outpost->getUnits() + outpost->getShield() < vessel->getUnits()) || (outpost->getUnits() + outpost->getShield() == vessel->getUnits() && outpost->getSpecialists().size() < vessel->getSpecialists().size());
 
             setVictor(vesselWins ? vessel->getOwnerID() : outpost->getOwnerID());
 

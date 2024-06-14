@@ -112,6 +112,10 @@ layout_mode = 2
 theme = ExtResource("1_114fm")
 text = "Arrives in"
 
+[node name="Speed" type="Label" parent="VBoxContainer/HBoxContainer2/VBoxContainer"]
+layout_mode = 2
+text = "1.5x speed"
+
 [node name="Spacer" type="Control" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3

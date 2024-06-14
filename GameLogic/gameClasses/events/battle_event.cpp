@@ -195,11 +195,11 @@ void BattleEvent::postCombatSpecialistPhase(Game* game) {
     bool removeSpecialistsB = a->controlsSpecialist(SpecialistType::ASSASSIN);
 
     if(removeSpecialistsA && !a->getSpecialists().empty()) {
-        addMessage(a->getOwnerID(), a->getOwner()->getName() + "'s Assassin kills all enemy specialists.");
+        addMessage(b->getOwnerID(), b->getOwner()->getName() + "'s Assassin kills all enemy specialists.");
         while(!a->getSpecialists().empty()) game->removeSpecialist(a->getSpecialists().front());
     }
     if(removeSpecialistsB && !b->getSpecialists().empty()) {
-        addMessage(b->getOwnerID(), b->getOwner()->getName() + "'s Assassin kills all enemy specialists.");
+        addMessage(a->getOwnerID(), a->getOwner()->getName() + "'s Assassin kills all enemy specialists.");
         while(!b->getSpecialists().empty()) game->removeSpecialist(b->getSpecialists().front());
     }
 

@@ -4,6 +4,8 @@ var units = -1
 
 var shield = -1
 
+var maxShield = -1
+
 var selected = false
 
 var color = null
@@ -63,7 +65,7 @@ func _process(delta):
 	
 	if units != get_parent().getUnits():
 		$Units.text = str(get_parent().getUnits())
-	if shield != get_parent().getShield():
+	if shield != get_parent().getShield() or maxShield != get_parent().getMaxShield():
 		$Shield.text = str(get_parent().getShield())
 		if get_node_or_null("SubViewport"):
 			get_node("SubViewport/OutpostInfo").setShield(get_parent().getShield(), get_parent().getMaxShield())
@@ -91,6 +93,7 @@ func _process(delta):
 	
 	units = get_parent().getUnits()
 	shield = get_parent().getShield()
+	maxShield = get_parent().getMaxShield()
 	selected = get_parent().isSelected()
 	color = get_parent().getColor()
 	outpostName = get_parent().getName()

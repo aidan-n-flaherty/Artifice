@@ -20,7 +20,6 @@ void Order::updateOrders(Game* game, const std::multiset<Order*, OrderOrder> &or
         if((order->getReferenceID() != getID() && order->getSenderID() != getSenderID() && std::find_if(orders.begin(), orders.end(), [&order](Order* o) {
             return o->getID() == order->getReferenceID();
         }) == orders.end()) || (order->getSenderID() == getSenderID() && order->getID() < getID())) {
-            if(order->getID() == 6013) std::cout << order->getSenderID() << ", " << getSenderID() << ", " << getID() << std::endl;
             order->adjustIDs(game->getObjCounter(), 1);
         }
     }

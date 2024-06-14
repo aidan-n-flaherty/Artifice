@@ -48,6 +48,13 @@ func _process(delta):
 	if not $VBoxContainer/HBoxContainer2/Units.has_focus():
 		$VBoxContainer/HBoxContainer2/Units.text = str(vessel.getUnits())
 	
+	var speed = vessel.getSpeed() * (60.0 * 60.0) / 2.0 / game.getSimulationSpeed()
+	if abs(speed - 1.0) > 0.001:
+		$VBoxContainer/HBoxContainer2/VBoxContainer/Speed.show()
+		$VBoxContainer/HBoxContainer2/VBoxContainer/Speed.text = ("%0.1fx speed" % speed) if ("%0.2f" % speed).ends_with("0") else ("%0.2fx speed" % speed)
+	else:
+		$VBoxContainer/HBoxContainer2/VBoxContainer/Speed.hide()
+	
 	var arrival = game.getNextArrivalEvent(vessel.getID())
 	if arrival >= 0:
 		$VBoxContainer/HBoxContainer2/VBoxContainer/Arrival.text = "Arrives in " + Utilities.timeToStr(arrival - game.getTime())

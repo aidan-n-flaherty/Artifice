@@ -25,6 +25,7 @@ void FloorDisplay::_draw() {
     std::shared_ptr<Game> game = gameInterface->getGame();
     std::shared_ptr<Game> current = gameInterface->getCurrentGame();
     std::shared_ptr<Game> complete = gameInterface->getCompleteGame();
+    std::shared_ptr<Game> full = gameInterface->getFullGame();
 
     SubViewport* viewport = cast_to<SubViewport>(get_parent());
     Node3D* cameraPivot = cast_to<Node3D>(viewport->get_parent());
@@ -163,7 +164,31 @@ void FloorDisplay::_draw() {
                 draw_line(Vector2(gameInterface->getMouse().getX() - x, gameInterface->getMouse().getY() - y) * pixels, Vector2(gameInterface->getMouse().getX() + 1.5 * cos(atan2(deltaY, deltaX) - 3.14159 * 3.0/4.0) - x, gameInterface->getMouse().getY() + 1.5 * sin(atan2(deltaY, deltaX) - 3.14159 * 3.0/4.0) - y) * pixels, Color(1.0, 1.0, 1.0), 5.0);
             }
 
+            Player* player = complete->getPlayer(gameInterface->getUserGameID());
+            if(player) {
+                for(const auto& pair : player->getVesselPaths()) {
+                    double timestamp = pair.first;
+
+                    if(timestamp < game->getTime() + getDiff()) continue;
+
+                    const auto& linePositions = pair.second;
+
+                    Point position = linePositions.first;
+
+                    double x1 = position.getX();
+                    double y1 = position.getY();
+
+                    draw_dashed_line(Vector2(x1 - x, y1 - y) * pixels, Vector2(position.closest(linePositions.second).getX() - x, position.closest(linePositions.second).getY() - y) * pixels, Color(1.0, 1.0, 0.25), 4.0, 10.0);
+                }
+            }
+
+            double fullDiff = getCurrent() - full->getTime();
+
             for(const auto& pair : game->getVessels()) {
+                Vessel* v = full->getVessel(pair.first);
+
+                if(gameInterface->simulatingFuture() && v && !full->withinRange(p, v, fullDiff)) continue;
+
                 if(p && !visibilityGame->withinRange(p, pair.second, getDiff())) continue;
 
                 Point position = pair.second->getPositionAt(getDiff());
@@ -174,12 +199,16 @@ void FloorDisplay::_draw() {
                 double deltaY = position.closest(pair.second->getTargetPos()).getY() - y1;
                 double deltaMag = sqrt(deltaX * deltaX + deltaY * deltaY);
 
-                if(pair.second->getOrigin()) draw_line(Vector2(x1 - x, y1 - y) * pixels - 8 * Vector2(deltaX / deltaMag, deltaY / deltaMag), Vector2(position.closest(pair.second->getOrigin()->getPosition()).getX() - x, position.closest(pair.second->getOrigin()->getPosition()).getY() - y) * pixels, Color(1.0, 1.0, 0.5), 3.0);
+                if(pair.second->getOrigin()) draw_line(Vector2(x1 - x, y1 - y) * pixels - 8 * Vector2(deltaX / deltaMag, deltaY / deltaMag), Vector2(position.closest(pair.second->getOrigin()->getPosition()).getX() - x, position.closest(pair.second->getOrigin()->getPosition()).getY() - y) * pixels, Color(1.0, 1.0, 0.25), 4.0);
                 draw_arc(Vector2(x1 - x, y1 - y) * pixels, 8, 0, UtilityFunctions::deg_to_rad(360), 32, Color(1.0, 1.0, 1.0), 3.0, false);
                 draw_line(Vector2(x1 - x, y1 - y) * pixels + 8 * Vector2(deltaX / deltaMag, deltaY / deltaMag), Vector2(position.closest(pair.second->getTargetPos()).getX() - x, position.closest(pair.second->getTargetPos()).getY() - y) * pixels, Color(1.0, 1.0, 1.0), 5.0);
             }
 
             for(const auto& pair : game->getVessels()) {
+                Vessel* v = full->getVessel(pair.first);
+
+                if(gameInterface->simulatingFuture() && v && !full->withinRange(p, v, fullDiff)) continue;
+
                 if(p && !visibilityGame->withinRange(p, pair.second, getDiff())) continue;
 
                 double referenceTime = game->getTime();
