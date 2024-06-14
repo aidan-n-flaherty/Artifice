@@ -20,7 +20,7 @@ signal loadGame(gameID, past)
 
 signal loadGameDetail(gameID)
 
-var version = "1.5"
+var version = "1.7"
 
 var needsUpdate = false
 
@@ -363,7 +363,7 @@ func login():
 		gameUsers.clear()
 		for arr in currentGameIDs:
 			loadGameUsers(arr[0])
-			updateOrders(arr[0])
+			updateAllOrders(arr[0])
 			loadChats(arr[0])
 		
 		for id in chats:
@@ -726,6 +726,19 @@ func updateOrders(id: int):
 	
 	if len(orderData) > 0:
 		emit_signal("gameChanged", id)
+
+func updateAllOrders(id: int):
+	if not hasGame(id):
+		return
+	
+	var gameState = await HTTPManager.getReq("/fetchGameState", {
+		"gameID": id
+	})
+	
+	if not gameState:
+		return
+	
+	bulkAddOrders(id, games[id], gameState.orders)
 
 func getGameUsers(id: int):
 	if not gameUsers.has(id):

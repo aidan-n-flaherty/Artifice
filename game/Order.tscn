@@ -70,14 +70,18 @@ mouse_filter = 2
 theme_override_constants/separation = 20
 
 [node name="Description" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+custom_minimum_size = Vector2(100, 2.08165e-12)
 layout_mode = 2
 theme = ExtResource("1_hpd86")
 text = "Testing"
+autowrap_mode = 3
 
 [node name="Time" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+custom_minimum_size = Vector2(100, 2.08165e-12)
 layout_mode = 2
 theme = ExtResource("1_hpd86")
 text = "In 0 hours"
+autowrap_mode = 3
 
 [node name="Cancel" type="Button" parent="MarginContainer/HBoxContainer"]
 layout_mode = 2

@@ -57,6 +57,9 @@ int Outpost::getShieldAt(double& fractionalShield, double timeDiff) const {
     if(!hasOwner()) return shieldCharge;
 
     fractionalShield += timeDiff * (getMaxShield() / (48.0 * 60 * 60));
+
+    // SCHEDULED CHANGE:
+    // fractionalShield -= specialistCount(SpecialistType::TINKERER) * timeDiff * (3.0 / (60 * 60));
     if(controlsSpecialist(SpecialistType::TINKERER)) fractionalShield -= timeDiff * (3.0 / (60 * 60));
     while(fractionalShield >= 1) {
         fractionalShield -= 1;

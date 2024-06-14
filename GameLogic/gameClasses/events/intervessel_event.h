@@ -33,7 +33,10 @@ public:
     void run(Game* game) override {
         BattleEvent::run(game);
 
-        if(vesselA->isGift() && vesselB->getTargetID() != vesselA->getID()) {
+        if(game->ignoreVessel(vesselA->getID(), getTimestamp()) || game->ignoreVessel(vesselB->getID(), getTimestamp())) {
+            setDisabled(true);
+            return;
+        } else if(vesselA->isGift() && vesselB->getTargetID() != vesselA->getID()) {
             setFriendly();
             return;
         } else if(vesselB->isGift() && vesselA->getTargetID() != vesselB->getID()) {
