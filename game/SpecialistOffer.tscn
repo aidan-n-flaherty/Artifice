@@ -180,28 +180,18 @@ theme_override_colors/font_hover_pressed_color = Color(0, 0, 0, 1)
 theme_override_styles/hover = SubResource("StyleBoxFlat_hk65e")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_1ul18")
 theme_override_styles/normal = SubResource("StyleBoxFlat_hk65e")
-text = "Hire now"
+text = "Hire 1x"
 
-[node name="Hire 3x" type="Button" parent="VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/MarginContainer"]
-custom_minimum_size = Vector2(2.08165e-12, 2.08165e-12)
+[node name="HireMultiText" type="RichTextLabel" parent="VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/MarginContainer"]
 layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 8
-theme = ExtResource("1_tjwlt")
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_colors/font_disabled_color = Color(0, 0, 0, 1)
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
-theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
-theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
-theme_override_colors/font_hover_pressed_color = Color(0, 0, 0, 1)
-theme_override_styles/hover = SubResource("StyleBoxFlat_hk65e")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_1ul18")
-theme_override_styles/normal = SubResource("StyleBoxFlat_hk65e")
-text = "Hire 3x"
+text = "   Hire Multiple:"
+fit_content = true
+scroll_active = false
 
-[node name="SpinBox" type="SpinBox" parent="VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/MarginContainer"]
+[node name="HireMultiInput" type="SpinBox" parent="VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/MarginContainer"]
 layout_mode = 2
+max_value = 10.0
+alignment = 1
 
 [node name="PromotionDisplays" type="MarginContainer" parent="VBoxContainer"]
 layout_mode = 2
@@ -211,5 +201,4 @@ theme_override_constants/margin_left = 50
 layout_mode = 2
 
 [connection signal="pressed" from="VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/MarginContainer/Hire" to="." method="_on_button_pressed"]
-[connection signal="pressed" from="VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/MarginContainer/Hire 3x" to="." method="_on_hire_3x_pressed"]
-[connection signal="value_changed" from="VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/MarginContainer/SpinBox" to="." method="_on_spin_box_value_changed"]
+[connection signal="value_changed" from="VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/MarginContainer/HireMultiInput" to="." method="_on_spin_box_value_changed"]
