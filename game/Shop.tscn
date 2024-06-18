@@ -97,6 +97,7 @@ theme = ExtResource("1_47hv1")
 
 [node name="ScrollContainer" parent="VBoxContainer" instance=ExtResource("3_kvthc")]
 layout_mode = 2
+vertical_scroll_mode = 1
 
 [node name="Stack" type="VBoxContainer" parent="VBoxContainer/ScrollContainer"]
 layout_mode = 2

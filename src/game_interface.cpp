@@ -399,11 +399,11 @@ void GameInterface::_process(double delta) {
 
 			pair.second->setDiff(t, timeDiff);
 			pair.second->setSelfOwned(pair.second->getOwnerID() == userGameID && userGameID >= 0);
-
+			
             if(future && v && !fullGame->withinRange(fullPlayer, v, fullDiff)) pair.second->setInRadar(finished);
 			else pair.second->setInRadar(finished || (p ? visibilityGame->withinRange(p, pair.second->getObj(), timeDiff) : false));
 			
-			if(pair.second->isLoaded()) pair.second->set_visible(finished || (p ? visibilityGame->withinRange(p, pair.second->getObj(), timeDiff) : false));
+			if(pair.second->isLoaded()) pair.second->set_visible(pair.second->isInRadar());
 		}
 		
 		for(const auto& pair : outposts) {

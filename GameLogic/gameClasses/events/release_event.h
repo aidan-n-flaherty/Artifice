@@ -36,8 +36,8 @@ public:
         Player* owner = specialists.front()->getOwner();
         std::list<Outpost*> outposts = owner->sortedOutposts(outpost);
         for (Specialist*& specialist : specialists) {
-            if(owner && owner->controlsSpecialist(SpecialistType::QUEEN) && specialist->getType() == SpecialistType::QUEEN && specialist->getOwnerID() == owner->getID()) specialist->setType(SpecialistType::PRINCESS);
-            
+            if(owner->controlsSpecialist(SpecialistType::QUEEN) && specialist->getType() == SpecialistType::QUEEN && specialist->getOwnerID() == owner->getID()) specialist->setType(SpecialistType::PRINCESS);
+
             outpost->removeSpecialist(specialist);
         }
 
