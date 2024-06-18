@@ -8,6 +8,18 @@ var game
 
 var specialists
 
+var combatSpecialists
+
+var counterSpecialists
+
+var defenseSpecialists
+
+var transitSpecialists
+
+var sonarSpecialists
+
+var unitSpecialists
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	pass
@@ -57,6 +69,7 @@ func init(gameID):
 		
 		#important tool that will help us later
 		#$VBoxContainer/ScrollContainer/Stack/"Combat Specialist".hide()
+	pass
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -91,4 +104,4 @@ func _on_back_button_pressed() -> void:
 	$VBoxContainer/ScrollContainer/Stack/"Unit Specialist".show()
 	
 	#need to remove 
-	$VBoxContainer/ScrollContainer/Stack.remove_child()
+	$VBoxContainer/ScrollContainer/Stack.remove_child(item)
