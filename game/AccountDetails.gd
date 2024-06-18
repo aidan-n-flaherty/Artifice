@@ -39,6 +39,8 @@ func updateUser(userID):
 	
 	if(!user): return
 	
+	$MarginContainer/ScrollContainer/VBoxContainer/ButtonMargins.visible = isSelf
+	
 	$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/Restore.visible = isSelf
 	$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/Report.visible = not isSelf
 	$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/Block.visible = not isSelf

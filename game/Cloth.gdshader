@@ -8,7 +8,7 @@ uniform float rotation;
 
 void vertex() {
 	float amount = min(1.0, max(0.0, -4.0 - VERTEX.y));
-	
+
 	VERTEX.x += VERTEX.x * 0.01 * amount * sin(1.0 * TIME) + 0.25 * amount * sin(TIME + 2.0 * VERTEX.y);
 	VERTEX.z += VERTEX.z * 0.01 * amount * sin(1.0 * TIME) - 0.25 * amount * cos(TIME + 2.0 * VERTEX.y);
 	//VERTEX.y += 0.02 * abs(VERTEX.y) * cos(1.0 * TIME);

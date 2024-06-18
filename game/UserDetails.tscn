@@ -1,11 +1,9 @@
-[gd_scene load_steps=14 format=3 uid="uid://b8aicdxplro56"]
+[gd_scene load_steps=12 format=3 uid="uid://b8aicdxplro56"]
 
 [ext_resource type="PackedScene" uid="uid://chwn0jkvlrsvw" path="res://AccountDetails.tscn" id="1_ac8jb"]
 [ext_resource type="Script" path="res://UserDetails.gd" id="1_h0idf"]
 [ext_resource type="PackedScene" uid="uid://c04qxpqrgw5cq" path="res://Background.tscn" id="1_x55tx"]
 [ext_resource type="Texture2D" uid="uid://dlqmq6fklb6q8" path="res://resources/images/back_arrow.png" id="3_mbw8e"]
-[ext_resource type="Theme" uid="uid://c4m6lidwyxgc" path="res://resources/UITheme.tres" id="4_v4mhc"]
-[ext_resource type="FontVariation" uid="uid://b4wtidwf33ldq" path="res://resources/fonts/FontVariation.tres" id="5_f3pum"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f2vgl"]
 bg_color = Color(0, 0, 0, 1)
@@ -129,48 +127,6 @@ layout_mode = 2
 icon = ExtResource("3_mbw8e")
 flat = true
 expand_icon = true
-
-[node name="ButtonMargins" type="MarginContainer" parent="VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-size_flags_stretch_ratio = 0.05
-
-[node name="Tabs" type="HBoxContainer" parent="VBoxContainer/ButtonMargins"]
-layout_mode = 2
-size_flags_vertical = 3
-size_flags_stretch_ratio = 0.05
-theme_override_constants/separation = 0
-
-[node name="Spacer" type="Control" parent="VBoxContainer/ButtonMargins/Tabs"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_stretch_ratio = 0.2
-
-[node name="ViewProfile" type="Button" parent="VBoxContainer/ButtonMargins/Tabs"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme = ExtResource("4_v4mhc")
-theme_override_fonts/font = ExtResource("5_f3pum")
-theme_override_font_sizes/font_size = 30
-text = "View Profile"
-
-[node name="Spacer3" type="Control" parent="VBoxContainer/ButtonMargins/Tabs"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_stretch_ratio = 0.2
-
-[node name="Friends" type="Button" parent="VBoxContainer/ButtonMargins/Tabs"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme = ExtResource("4_v4mhc")
-theme_override_fonts/font = ExtResource("5_f3pum")
-theme_override_font_sizes/font_size = 30
-text = "Friends"
-
-[node name="Spacer2" type="Control" parent="VBoxContainer/ButtonMargins/Tabs"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_stretch_ratio = 0.2
 
 [node name="AccountDetails" parent="VBoxContainer" instance=ExtResource("1_ac8jb")]
 layout_mode = 2
