@@ -18,6 +18,8 @@ var promotionViews = {}
 
 var hireable: bool
 
+var hireCustomAmount = 0
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	$VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer/Title.text = specialistName.replace("_", " ")
@@ -75,12 +77,13 @@ func _on_button_pressed():
 	emit_signal("hired")
 
 func _on_spin_box_value_changed(value: float) -> void:
-	for n in value:
-			GameData.addOrder(gameID, "HIRE", int(game.getReferenceID()), game.getTime(), [int(specialistNum)])
-	
-	emit_signal("hired")
+	#game = GameData.getGame(gameID)
+	#if value > game.getHires() hireCustomAmount = 0
+	hireCustomAmount = value
 
 
 func _on_multi_hire_pressed() -> void:
+	for n in hireCustomAmount:
+		GameData.addOrder(gameID, "HIRE", int(game.getReferenceID()), game.getTime(), [int(specialistNum)])
 	
-	pass # Replace with function body.
+	emit_signal("hired")

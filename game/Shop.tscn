@@ -107,3 +107,41 @@ mouse_filter = 2
 mouse_force_pass_scroll_events = false
 theme = ExtResource("1_47hv1")
 theme_override_constants/separation = 20
+
+[node name="Combat Specialist" type="Button" parent="VBoxContainer/ScrollContainer/Stack"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "Combat Specialists"
+
+[node name="Counter Specialist" type="Button" parent="VBoxContainer/ScrollContainer/Stack"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "Counter Specialists"
+
+[node name="Defense Specialist" type="Button" parent="VBoxContainer/ScrollContainer/Stack"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "Defense Specialists"
+
+[node name="Transit Specialist" type="Button" parent="VBoxContainer/ScrollContainer/Stack"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "Transit Specialists"
+
+[node name="Sonar Specialist" type="Button" parent="VBoxContainer/ScrollContainer/Stack"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "Sonar Specialists"
+
+[node name="Unit Specialist" type="Button" parent="VBoxContainer/ScrollContainer/Stack"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "Unit Specialists"
+
+[node name="Back Button" type="Button" parent="VBoxContainer/ScrollContainer/Stack"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "Back"
+
+[connection signal="pressed" from="VBoxContainer/ScrollContainer/Stack/Combat Specialist" to="." method="_on_combat_specialist_pressed"]
+[connection signal="pressed" from="VBoxContainer/ScrollContainer/Stack/Back Button" to="." method="_on_back_button_pressed"]

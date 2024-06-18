@@ -185,13 +185,20 @@ text = "Hire 1x"
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/MarginContainer"]
 layout_mode = 2
 size_flags_vertical = 3
+size_flags_stretch_ratio = 0.75
 
 [node name="Button" type="Button" parent="VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/MarginContainer/HBoxContainer"]
 layout_mode = 2
+size_flags_horizontal = 2
+size_flags_stretch_ratio = 1.15
+theme = ExtResource("1_tjwlt")
+theme_type_variation = &"FlatButton"
 text = "Hire"
 
 [node name="HireMultiInput" type="SpinBox" parent="VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/MarginContainer/HBoxContainer"]
 layout_mode = 2
+size_flags_horizontal = 0
+size_flags_stretch_ratio = 0.2
 max_value = 10.0
 alignment = 2
 
