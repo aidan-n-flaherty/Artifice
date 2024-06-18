@@ -9,7 +9,7 @@ func _ready():
 
 func activate():
 	var game = await createGame()
-	
+
 	if game:
 		GameData.currentTab = "res://CurrentGameList.tscn"
 		GameData.goto_scene("res://MainMenu.tscn")

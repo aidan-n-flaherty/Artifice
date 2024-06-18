@@ -40,7 +40,8 @@ func _ready():
 		child.toggled.connect(on_activeTimes_modified)
 	for child in $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/TeamButtons.get_children():
 		child.toggled.connect(on_team_number_modified)
-
+	$MarginContainer/VBoxContainer/TeamMembersContainer.visible = false
+	
 func setEditable(canEdit):
 	editable = canEdit
 	$MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Editable.visible = not canEdit
@@ -410,3 +411,15 @@ func on_team_number_modified(button_pressed: bool):
 
 func _on_advanced_button_pressed():
 	$MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced.visible = not $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced.visible
+
+
+
+func onTwoTeamsPressed():
+	$MarginContainer/VBoxContainer/TeamMembersContainer.visible = true
+	$MarginContainer/VBoxContainer/TeamMembersContainer/Teamsfor2.visible = true
+	pass # Replace with function body.
+
+
+func onNoTeamsPressed():
+	$MarginContainer/VBoxContainer/TeamMembersContainer.visible = false
+	pass # Replace with function body.
