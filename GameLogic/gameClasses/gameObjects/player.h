@@ -98,6 +98,7 @@ public:
 
     std::list<Outpost*> getOutposts() const { return outposts; }
     std::list<Outpost*> sortedOutposts(const PositionalObject* obj);
+    std::list<Vessel*> sortedVessels(const PositionalObject* obj);
     void addOutpost(Outpost* outpost);
     void removeOutpost(Outpost* outpost);
 

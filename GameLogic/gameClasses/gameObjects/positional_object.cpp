@@ -24,17 +24,29 @@ int PositionalObject::removeUnits(int count) {
 }
 
 void PositionalObject::addSpecialist(Specialist* specialist) {
-    specialists.push_back(specialist);
-    specialist->setContainer(this);
+    if(specialist->getType() == SpecialistType::QUEEN && specialist->getContainer() && specialist->hasOwner() && specialist->getOwnerID() != getOwnerID()) {
+        bool assigned = false;
 
-    if(specialist->getType() == SpecialistType::QUEEN && specialist->hasOwner() && specialist->getOwnerID() != getOwnerID()) {
-        for(Outpost* outpost : specialist->getOwner()->sortedOutposts(this)) {
+        for(Outpost* outpost : specialist->getOwner()->sortedOutposts(specialist->getContainer())) {
             if(outpost->controlsSpecialist(SpecialistType::PRINCESS)) {
                 outpost->getSpecialist(SpecialistType::PRINCESS)->setType(SpecialistType::QUEEN);
+                assigned = true;
                 break;
             }
         }
+
+        if(!assigned) {
+            for(Vessel* vessel : specialist->getOwner()->sortedVessels(specialist->getContainer())) {
+                if(vessel->controlsSpecialist(SpecialistType::PRINCESS)) {
+                    vessel->getSpecialist(SpecialistType::PRINCESS)->setType(SpecialistType::QUEEN);
+                    break;
+                }
+            }
+        }
     }
+
+    specialists.push_back(specialist);
+    specialist->setContainer(this);
 }
 
 void PositionalObject::addSpecialists(std::list<Specialist*> specialists) {

@@ -283,7 +283,7 @@ func updatePlayers(gameID, settings):
 		var id = int(i)
 		var color = colors[id]
 		
-		playerViews[id].init(users[i].id, users[i].username, color, users[i].userStats.rating, settings.ranked)
+		playerViews[id].init(users[i].id, users[i].username, color, users[i].userStats.rating, gameID, settings.ranked, editable)
 
 func serialize():
 	var bias = int(Time.get_time_zone_from_system().bias/60)
