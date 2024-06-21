@@ -41,6 +41,15 @@ func updateUser(userID):
 	
 	$MarginContainer/ScrollContainer/VBoxContainer/ButtonMargins.visible = isSelf
 	
+	var banner
+	banner = preload("res://Banner.tscn").instantiate()
+	var playerSelectedBanner = 3 	#retrieve from data
+	var playerPrimaryColor = Color(1.0,0.0,0) #retrieve from data
+	var playerSecondaryColor = Color(0,1,0) #retrieve from data
+	
+	banner.init(playerSelectedBanner, playerPrimaryColor, playerSecondaryColor)
+	$MarginContainer/ScrollContainer/VBoxContainer/Banner.add_child(banner)
+	
 	$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/Restore.visible = isSelf
 	$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/Report.visible = not isSelf
 	$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/Block.visible = not isSelf

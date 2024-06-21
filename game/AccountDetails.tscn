@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://chwn0jkvlrsvw"]
+[gd_scene load_steps=18 format=3 uid="uid://chwn0jkvlrsvw"]
 
 [ext_resource type="Theme" uid="uid://tg7ina762c6q" path="res://resources/themes/UITheme.tres" id="1_j5sq6"]
 [ext_resource type="Script" path="res://AccountDetails.gd" id="2_1f10q"]
@@ -7,8 +7,6 @@
 [ext_resource type="FontFile" uid="uid://bt7qlnun0cepj" path="res://resources/fonts/nasalization-free/nasalization-rg.otf" id="4_6h237"]
 [ext_resource type="Theme" uid="uid://c4m6lidwyxgc" path="res://resources/UITheme.tres" id="4_tumqw"]
 [ext_resource type="FontVariation" uid="uid://b4wtidwf33ldq" path="res://resources/fonts/FontVariation.tres" id="5_yyilv"]
-[ext_resource type="Texture2D" uid="uid://dlvanwffe0s6y" path="res://resources/banner/diagonalstripes.png" id="6_1a4x6"]
-[ext_resource type="Texture2D" uid="uid://dc8hl3x7m03ng" path="res://resources/banner/plain.png" id="6_2fpo6"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b4f1s"]
 bg_color = Color(0, 0, 0, 0.156863)
@@ -16,14 +14,6 @@ corner_radius_bottom_right = 60
 corner_radius_bottom_left = 60
 corner_detail = 16
 expand_margin_top = 500.0
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_m45t6"]
-texture = ExtResource("6_2fpo6")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_yawga"]
-texture = ExtResource("6_1a4x6")
-axis_stretch_horizontal = 1
-axis_stretch_vertical = 1
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_6tqsn"]
 
@@ -146,14 +136,6 @@ text = "Friends"
 layout_mode = 2
 size_flags_vertical = 3
 size_flags_stretch_ratio = 0.09
-
-[node name="Secondary" type="Panel" parent="MarginContainer/ScrollContainer/VBoxContainer/Banner"]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxTexture_m45t6")
-
-[node name="Primary" type="Panel" parent="MarginContainer/ScrollContainer/VBoxContainer/Banner"]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxTexture_yawga")
 
 [node name="GridContainer" type="GridContainer" parent="MarginContainer/ScrollContainer/VBoxContainer"]
 layout_mode = 2
