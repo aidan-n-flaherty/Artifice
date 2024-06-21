@@ -8,67 +8,64 @@ var game
 
 var specialists
 
-var combatSpecialists
+var combatSpecialists = []
+var combatSpecialistsNames = ["Infiltrator", "Lieutenant", "Thief", "Martyr"]
+var combatFlag = false 
 
-var counterSpecialists
+var counterSpecialists = []
+var counterSpecialistsNames = ["Assassin", "Revered_Elder", "Diplomat", "Hypnotist"]
+var counterFlag = false 
 
-var defenseSpecialists
+var defenseSpecialists = []
+var defenseSpecialistsNames = ["Princess", "Inspector", "Saboteur", "Sentry"]
+var defenseFlag = false 
 
-var transitSpecialists
+var transitSpecialists = []
+var transitSpecialistsNames = ["Navigator", "Lieutenant", "Smuggler", "Helmsman"]
+var transitFlag = false 
 
-var sonarSpecialists
+var sonarSpecialists = []
+var sonarSpecialistsNames = ["Intelligence_Officer", "Princess"]
+var sonarFlag = false 
 
-var unitSpecialists
+var unitSpecialists = []
+var unitSpecialistsNames = ["Foreman", "Tinkerer"]
+var unitFlag = false 
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	pass
 
 func init(gameID):
-	#game = GameData.getGame(gameID)
-	#self.gameID = gameID
-	#specialists = game.getShopOptions()
+	game = GameData.getGame(gameID)
+	self.gameID = gameID
+	specialists = game.getShopOptions()
+	$VBoxContainer/ScrollContainer/Stack/"Back Button".hide()
 	
-	#list of specialists currently in the game:
-	#combat:
-		#infiltrator - drains shiled of outpost it attacks
-		#lieutenant - move 50% faster, when participating in combat kill 5 extra units
-		#thief - 15% of enemy units converted to yours when participating in combat
-		#martyr - when participating in combat destroy everything in 20% of range of sonar
-	#
-	#counter-specialists:
-		#assassin - kills enemy specialists
-		#revered elder - negate all specialist effects
-		#hypnoist - take control of captured specialists at outpost
-		#diplomat  - any captured specialists within sonar range are freed
-	#
-	#defense:
-		#inspector - while at an outpost shield is always fully charged
-		#saboteur - redirect victorious submarines away from outpost
-		#sentry - shoot enemy submarines while at outpost
-	#
-	#transit:
-		#navigator - lets submarines be redirected during transit
-		#lieutenant - move 50% faster, when participating in combat kill 5 extra units
-		#smuggler - travels to outposts you own 3x faster
-		#helmsman - movement speed is 2x base speed
-	#
-	#sonar:
-		#princess - increases range of sonar, can replace princess
-		#intelligence officer - sonar range of all outposts increased by 25%
-	#
-	#unit capacity/production:
-		#foreman - while at a factory 6 more units are produced
-		#tinkerer - maximum unit capacity increased to 3x max shield charge
-	
-	#for specialistNum in specialists:
-		#var item = ResourceLoader.load("res://SpecialistOffer.tscn").instantiate()
-		#item.init(specialistNum, gameID, true)
-		#item.hired.connect(hired)
-		#$VBoxContainer/ScrollContainer/Stack.add_child(item)
+	for specialistNum in specialists:
+		var item = ResourceLoader.load("res://SpecialistOffer.tscn").instantiate()
+		item.init(specialistNum, gameID, true)
+		item.hired.connect(hired)
+		var specialistName = game.getSpecialistName(specialistNum)
 		
-		#important tool that will help us later
-		#$VBoxContainer/ScrollContainer/Stack/"Combat Specialist".hide()
+		if specialistName in combatSpecialistsNames:
+			combatSpecialists.append(item)
+			
+		if specialistName in counterSpecialistsNames:
+			counterSpecialists.append(item)
+		
+		if specialistName in defenseSpecialistsNames:
+			defenseSpecialists.append(item)
+			
+		if specialistName in transitSpecialistsNames:
+			transitSpecialists.append(item)
+			
+		if specialistName in sonarSpecialistsNames:
+			sonarSpecialists.append(item)
+			
+		if specialistName in unitSpecialistsNames:
+			unitSpecialists.append(item)
+		
 	pass
 
 
@@ -83,16 +80,92 @@ func hired():
 
 
 func _on_combat_specialist_pressed() -> void:
+	$VBoxContainer/ScrollContainer/Stack/"Combat Specialist".hide()
 	$VBoxContainer/ScrollContainer/Stack/"Counter Specialist".hide()
 	$VBoxContainer/ScrollContainer/Stack/"Defense Specialist".hide()
 	$VBoxContainer/ScrollContainer/Stack/"Transit Specialist".hide()
 	$VBoxContainer/ScrollContainer/Stack/"Sonar Specialist".hide()
 	$VBoxContainer/ScrollContainer/Stack/"Unit Specialist".hide()
-	#for specialistNum in specialists:
-		#var item = ResourceLoader.load("res://SpecialistOffer.tscn").instantiate()
-		#item.init(specialistNum, gameID, true)
-		#item.hired.connect(hired)
-		#$VBoxContainer/ScrollContainer/Stack.add_child(item)
+	$VBoxContainer/ScrollContainer/Stack/"Back Button".show()
+	
+	for specialist in combatSpecialists:
+		$VBoxContainer/ScrollContainer/Stack.add_child(specialist)
+		
+	combatFlag = true
+
+func _on_counter_specialist_pressed() -> void:
+	$VBoxContainer/ScrollContainer/Stack/"Combat Specialist".hide()
+	$VBoxContainer/ScrollContainer/Stack/"Counter Specialist".hide()
+	$VBoxContainer/ScrollContainer/Stack/"Defense Specialist".hide()
+	$VBoxContainer/ScrollContainer/Stack/"Transit Specialist".hide()
+	$VBoxContainer/ScrollContainer/Stack/"Sonar Specialist".hide()
+	$VBoxContainer/ScrollContainer/Stack/"Unit Specialist".hide()
+	$VBoxContainer/ScrollContainer/Stack/"Back Button".show()
+	
+	for specialist in counterSpecialists:
+		$VBoxContainer/ScrollContainer/Stack.add_child(specialist)
+		
+	counterFlag = true
+
+
+func _on_defense_specialist_pressed() -> void:
+	$VBoxContainer/ScrollContainer/Stack/"Combat Specialist".hide()
+	$VBoxContainer/ScrollContainer/Stack/"Counter Specialist".hide()
+	$VBoxContainer/ScrollContainer/Stack/"Defense Specialist".hide()
+	$VBoxContainer/ScrollContainer/Stack/"Transit Specialist".hide()
+	$VBoxContainer/ScrollContainer/Stack/"Sonar Specialist".hide()
+	$VBoxContainer/ScrollContainer/Stack/"Unit Specialist".hide()
+	$VBoxContainer/ScrollContainer/Stack/"Back Button".show()
+	
+	for specialist in defenseSpecialists:
+		$VBoxContainer/ScrollContainer/Stack.add_child(specialist)
+		
+	defenseFlag = true
+
+
+func _on_transit_specialist_pressed() -> void:
+	$VBoxContainer/ScrollContainer/Stack/"Combat Specialist".hide()
+	$VBoxContainer/ScrollContainer/Stack/"Counter Specialist".hide()
+	$VBoxContainer/ScrollContainer/Stack/"Defense Specialist".hide()
+	$VBoxContainer/ScrollContainer/Stack/"Transit Specialist".hide()
+	$VBoxContainer/ScrollContainer/Stack/"Sonar Specialist".hide()
+	$VBoxContainer/ScrollContainer/Stack/"Unit Specialist".hide()
+	$VBoxContainer/ScrollContainer/Stack/"Back Button".show()
+	
+	for specialist in transitSpecialists:
+		$VBoxContainer/ScrollContainer/Stack.add_child(specialist)
+		
+	transitFlag = true
+
+
+func _on_sonar_specialist_pressed() -> void:
+	$VBoxContainer/ScrollContainer/Stack/"Combat Specialist".hide()
+	$VBoxContainer/ScrollContainer/Stack/"Counter Specialist".hide()
+	$VBoxContainer/ScrollContainer/Stack/"Defense Specialist".hide()
+	$VBoxContainer/ScrollContainer/Stack/"Transit Specialist".hide()
+	$VBoxContainer/ScrollContainer/Stack/"Sonar Specialist".hide()
+	$VBoxContainer/ScrollContainer/Stack/"Unit Specialist".hide()
+	$VBoxContainer/ScrollContainer/Stack/"Back Button".show()
+	
+	for specialist in sonarSpecialists:
+		$VBoxContainer/ScrollContainer/Stack.add_child(specialist)
+		
+	sonarFlag = true
+
+
+func _on_unit_specialist_pressed() -> void:
+	$VBoxContainer/ScrollContainer/Stack/"Combat Specialist".hide()
+	$VBoxContainer/ScrollContainer/Stack/"Counter Specialist".hide()
+	$VBoxContainer/ScrollContainer/Stack/"Defense Specialist".hide()
+	$VBoxContainer/ScrollContainer/Stack/"Transit Specialist".hide()
+	$VBoxContainer/ScrollContainer/Stack/"Sonar Specialist".hide()
+	$VBoxContainer/ScrollContainer/Stack/"Unit Specialist".hide()
+	$VBoxContainer/ScrollContainer/Stack/"Back Button".show()
+	
+	for specialist in unitSpecialists:
+		$VBoxContainer/ScrollContainer/Stack.add_child(specialist)
+		
+	unitFlag = true
 
 
 func _on_back_button_pressed() -> void:
@@ -102,6 +175,34 @@ func _on_back_button_pressed() -> void:
 	$VBoxContainer/ScrollContainer/Stack/"Transit Specialist".show()
 	$VBoxContainer/ScrollContainer/Stack/"Sonar Specialist".show()
 	$VBoxContainer/ScrollContainer/Stack/"Unit Specialist".show()
+	$VBoxContainer/ScrollContainer/Stack/"Back Button".hide()
 	
-	#need to remove 
-	$VBoxContainer/ScrollContainer/Stack.remove_child(item)
+	if combatFlag:
+		for specialist in combatSpecialists:
+			$VBoxContainer/ScrollContainer/Stack.remove_child(specialist)
+		combatFlag = false
+		
+	if defenseFlag:
+		for specialist in defenseSpecialists:
+			$VBoxContainer/ScrollContainer/Stack.remove_child(specialist)
+		defenseFlag = false
+
+	if counterFlag:
+		for specialist in counterSpecialists:
+			$VBoxContainer/ScrollContainer/Stack.remove_child(specialist)
+		counterFlag = false
+		
+	if transitFlag:
+		for specialist in transitSpecialists:
+			$VBoxContainer/ScrollContainer/Stack.remove_child(specialist)
+		transitFlag = false
+
+	if sonarFlag:
+		for specialist in sonarSpecialists:
+			$VBoxContainer/ScrollContainer/Stack.remove_child(specialist)
+		sonarFlag = false
+		
+	if unitFlag:
+		for specialist in unitSpecialists:
+			$VBoxContainer/ScrollContainer/Stack.remove_child(specialist)
+		unitFlag = false
