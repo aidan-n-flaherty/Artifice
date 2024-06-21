@@ -20,7 +20,7 @@ signal loadGame(gameID, past)
 
 signal loadGameDetail(gameID)
 
-var version = "1.8"
+var version = "2.0"
 
 var needsUpdate = false
 
@@ -75,6 +75,10 @@ var pushTokenSet = false
 var iCloudEnabled = true
 
 var localSettings = {}
+
+var in_guild
+
+var user_guild
 
 """func _apn_device(value):
 	pushToken = value
@@ -359,6 +363,8 @@ func login():
 		
 		loadSelf()
 		loadGames()
+		
+		loadGuild()
 		
 		gameUsers.clear()
 		for arr in currentGameIDs:
@@ -1011,6 +1017,12 @@ func getOngoingGames():
 
 func getPastGames(userID: int):
 	return pastUserGameIDs[userID].keys() if pastUserGameIDs.has(userID) else (await loadPastUserGames(userID)).keys()
+	
+func loadGuild():
+	self.in_guild = true
+	self.user_guild = "test_guild1"
+	#should return false if the user is not in a guild, true otherwise
+	return in_guild
 
 func _exit_tree():
 	for game in games.values():
