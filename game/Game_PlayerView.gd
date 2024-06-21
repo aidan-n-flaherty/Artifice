@@ -4,6 +4,14 @@ var userID = null
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	if $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/TeamButtons == 2:
+		print("ITS WORKING")
+	$MarginContainer/HBoxContainer/TeamSelecter.add_item("No Team")
+	$MarginContainer/HBoxContainer/TeamSelecter.add_item("Team 1 claus")
+	#while $MarginContainer/HBoxContainer/TeamSelecter.selected == 0: 
+		#print("working")
+	#while $MarginContainer/HBoxContainer/TeamSelecter.selected == -1:
+		#print("optoin 2")
 	pass # Replace with function body.
 
 func init(id, username, color, rating, ranked: bool):

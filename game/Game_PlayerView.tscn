@@ -3,6 +3,8 @@
 [ext_resource type="Theme" uid="uid://tg7ina762c6q" path="res://resources/themes/UITheme.tres" id="1_5v71y"]
 [ext_resource type="Script" path="res://Game_PlayerView.gd" id="1_qa1hm"]
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_udx5a"]
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_njarg"]
 bg_color = Color(0, 0, 0, 0.235294)
 corner_radius_top_left = 25
@@ -18,8 +20,6 @@ corner_radius_top_right = 25
 corner_radius_bottom_right = 25
 corner_radius_bottom_left = 25
 corner_detail = 9
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_udx5a"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_iv8kj"]
 bg_color = Color(0.431373, 0.431373, 0.431373, 1)
@@ -60,10 +60,10 @@ script = ExtResource("1_qa1hm")
 
 [node name="View" type="Button" parent="."]
 layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_njarg")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_udx5a")
 theme_override_styles/hover = SubResource("StyleBoxFlat_njarg")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_nec25")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_udx5a")
+theme_override_styles/normal = SubResource("StyleBoxFlat_njarg")
 
 [node name="ColorPanel" type="Panel" parent="."]
 visible = false
@@ -109,7 +109,6 @@ theme = ExtResource("1_5v71y")
 theme_override_styles/panel = SubResource("StyleBoxFlat_wssgf")
 
 [node name="Name" type="Label" parent="MarginContainer/HBoxContainer"]
-visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("1_5v71y")
@@ -124,10 +123,16 @@ theme = ExtResource("1_5v71y")
 text = "123"
 
 [node name="Spacer" type="Control" parent="MarginContainer/HBoxContainer"]
-visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 2
 theme = ExtResource("1_5v71y")
+
+[node name="TeamSelecter" type="OptionButton" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 4.03
+selected = 0
+allow_reselect = true
 
 [connection signal="pressed" from="View" to="." method="_on_view_pressed"]

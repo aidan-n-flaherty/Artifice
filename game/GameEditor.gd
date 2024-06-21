@@ -271,6 +271,7 @@ func updatePlayers(gameID, settings):
 		var playerView = preload("res://Game_PlayerView.tscn").instantiate()
 		playerViews.append(playerView)
 		$MarginContainer/VBoxContainer/Players/MarginContainer/PlayerList/GridContainer.add_child(playerView)
+		
 	
 	var users = await GameData.getGameUsers(gameID)
 	
@@ -423,3 +424,9 @@ func onTwoTeamsPressed():
 func onNoTeamsPressed():
 	$MarginContainer/VBoxContainer/TeamMembersContainer.visible = false
 	pass # Replace with function body.
+	
+	
+
+func teamSelecter():
+	$MarginContainer/HBoxContainer/TeamSelecter.add_item("No Teams")
+	$MarginContainer/HBoxContainer/TeamSelecter.add_item("Team 1")

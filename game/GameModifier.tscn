@@ -94,5 +94,5 @@ button_group = SubResource("ButtonGroup_xhxv3")
 [node name="5" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/TeamButtons" index="4"]
 button_group = SubResource("ButtonGroup_xhxv3")
 
-[node name="Activate" parent="MarginContainer/VBoxContainer" index="4"]
+[node name="Activate" parent="MarginContainer/VBoxContainer" index="5"]
 text = "Save"
