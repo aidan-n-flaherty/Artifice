@@ -83,6 +83,39 @@ void BattleEvent::specialistPhase(Game* game) {
         }
     }
 
+    bool doubleAgentA = a->controlsSpecialist(SpecialistType::DOUBLE_AGENT);
+    bool doubleAgentB = b->controlsSpecialist(SpecialistType::DOUBLE_AGENT);
+
+    if(v1 && v2 && doubleAgentA) {
+        addMessage(a->getOwnerID(), a->getOwner()->getName() + "'s Double Agent destroys all drillers on both sides and defects.");
+        a->setUnits(0);
+        b->setUnits(0);
+        Specialist* s = v1->getSpecialist(SpecialistType::DOUBLE_AGENT);
+        if(v2->hasOwner()) {
+            v2->getOwner()->addSpecialist(v1->removeSpecialist(s));
+            v2->addSpecialist(s);
+        } else {
+            v1->getOwner()->removeSpecialist(s);
+            v2->addSpecialist(s);
+        }
+        setEndCombat();
+    }
+
+    if(v1 && v2 && doubleAgentB) {
+        addMessage(b->getOwnerID(), b->getOwner()->getName() + "'s Double Agent destroys all drillers on both sides and defects.");
+        a->setUnits(0);
+        b->setUnits(0);
+        Specialist* s = v2->getSpecialist(SpecialistType::DOUBLE_AGENT);
+        if(v1->hasOwner()) {
+            v1->getOwner()->addSpecialist(s);
+            v1->addSpecialist(v2->removeSpecialist(s));
+        } else {
+            v2->getOwner()->removeSpecialist(s);
+            v1->addSpecialist(s);
+        }
+        setEndCombat();
+    }
+
     setPhaseUnits();
 }
 
@@ -186,24 +219,7 @@ void BattleEvent::defeatSpecialistPhase(Game* game) {
 void BattleEvent::postCombatSpecialistPhase(Game* game) {
     setPhase("Post-Combat Phase");
 
-    if(a->controlsSpecialist(SpecialistType::REVERED_ELDER) != b->controlsSpecialist(SpecialistType::REVERED_ELDER)) {
-        return;
-    }
-
-    // to ensure order invariance, we have to check if both vessels have assassins first
-    bool removeSpecialistsA = b->controlsSpecialist(SpecialistType::ASSASSIN);
-    bool removeSpecialistsB = a->controlsSpecialist(SpecialistType::ASSASSIN);
-
-    if(removeSpecialistsA && !a->getSpecialists().empty()) {
-        addMessage(b->getOwnerID(), b->getOwner()->getName() + "'s Assassin kills all enemy specialists.");
-        while(!a->getSpecialists().empty()) game->removeSpecialist(a->getSpecialists().front());
-    }
-    if(removeSpecialistsB && !b->getSpecialists().empty()) {
-        addMessage(a->getOwnerID(), a->getOwner()->getName() + "'s Assassin kills all enemy specialists.");
-        while(!b->getSpecialists().empty()) game->removeSpecialist(b->getSpecialists().front());
-    }
-
-    if(a->controlsSpecialist(SpecialistType::MARTYR)) {
+    if(a->controlsSpecialist(SpecialistType::MARTYR) && b->hasOwner()) {
         addMessage(a->getOwnerID(), a->getOwner()->getName() + "'s Martyr detonates.");
 
         int range = game->getSettings()->defaultSonar/5;
@@ -228,7 +244,7 @@ void BattleEvent::postCombatSpecialistPhase(Game* game) {
         }
     }
 
-    if(b->controlsSpecialist(SpecialistType::MARTYR)) {
+    if(b->controlsSpecialist(SpecialistType::MARTYR) && a->hasOwner()) {
         addMessage(a->getOwnerID(), a->getOwner()->getName() + "'s Martyr detonates.");
 
         int range = game->getSettings()->defaultSonar/5;
@@ -251,6 +267,23 @@ void BattleEvent::postCombatSpecialistPhase(Game* game) {
                 while(!o.second->getSpecialists().empty()) game->removeSpecialist(o.second->getSpecialists().front());
             }
         }
+    }
+
+    if(a->controlsSpecialist(SpecialistType::REVERED_ELDER) != b->controlsSpecialist(SpecialistType::REVERED_ELDER)) {
+        return;
+    }
+
+    // to ensure order invariance, we have to check if both vessels have assassins first
+    bool removeSpecialistsA = b->controlsSpecialist(SpecialistType::ASSASSIN);
+    bool removeSpecialistsB = a->controlsSpecialist(SpecialistType::ASSASSIN);
+
+    if(removeSpecialistsA && !a->getSpecialists().empty()) {
+        addMessage(b->getOwnerID(), b->getOwner()->getName() + "'s Assassin kills all enemy specialists.");
+        while(!a->getSpecialists().empty()) game->removeSpecialist(a->getSpecialists().front());
+    }
+    if(removeSpecialistsB && !b->getSpecialists().empty()) {
+        addMessage(a->getOwnerID(), a->getOwner()->getName() + "'s Assassin kills all enemy specialists.");
+        while(!b->getSpecialists().empty()) game->removeSpecialist(b->getSpecialists().front());
     }
 
     setPhaseUnits();

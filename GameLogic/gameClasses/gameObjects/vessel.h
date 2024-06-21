@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <cmath>
 #include <set>
+#include <vector>
 #include <algorithm>
 #include "../helpers/point.h"
 #include "positional_object.h"
@@ -40,7 +41,7 @@ public:
         returnOutpost(origin), origin(origin), target(target), gift(false) { owner->addVessel(this); addSpecialists(specialists); }
     void updatePointers(Game* game) override;
 
-    void collision(Vessel* vessel, Vessel* other, double timestamp, std::multiset<Event*, EventOrder> &events);
+    void collision(Vessel* vessel, Vessel* other, double timestamp, std::multiset<Event*, EventOrder> &events, std::vector<Event*> &simulatedEvents);
     void collision(Vessel* vessel, Outpost* other, double timestamp, std::multiset<Event*, EventOrder> &events);
 
     void specialistPhase(int& units, int& otherUnits, Vessel* other);

@@ -20,6 +20,7 @@
 #include <godot_cpp/variant/string_name.hpp>
 #include <godot_cpp/classes/label3d.hpp>
 #include <godot_cpp/variant/color.hpp>
+#include <godot_cpp/variant/packed_int32_array.hpp>
 #include <cmath>
 #include <ctime>
 #include <chrono>
@@ -27,6 +28,8 @@
 #include <tuple>
 
 using namespace godot;
+
+Ref<PackedScene> PositionalNode::sMesh = nullptr;
 
 void PositionalNode::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("getID"), &PositionalNode::getID);
@@ -40,6 +43,7 @@ void PositionalNode::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("getColor"), &PositionalNode::getColor);
 	ClassDB::bind_method(D_METHOD("selectSpecialist"), &PositionalNode::selectSpecialist);
 	ClassDB::bind_method(D_METHOD("canUndo"), &PositionalNode::canUndo);
+	ClassDB::bind_method(D_METHOD("getSpecialistIDs"), &PositionalNode::getSpecialistIDs);
 	ClassDB::bind_method(D_METHOD("getOriginatingOrder"), &PositionalNode::getOriginatingOrder);
 	ClassDB::bind_method(D_METHOD("getOriginatingOrderType"), &PositionalNode::getOriginatingOrderType);
 	ADD_SIGNAL(MethodInfo("selected", PropertyInfo(Variant::INT, "id")));
@@ -97,6 +101,8 @@ void PositionalNode::selectSpecialist(Camera3D *camera, const Ref<InputEvent> &e
 void PositionalNode::setReference(PositionalObject* obj, int specialistDisplacement) {
 	this->obj = obj;
 
+	if(sMesh == nullptr) sMesh = ResourceLoader::get_singleton()->load("res://SpecialistMesh.tscn");
+	
 	for(int i = 0; i < get_child_count(); i++) {
 		Node* n = get_child(i)->get_node_or_null("RotationInvariant");
 	
@@ -150,7 +156,6 @@ void PositionalNode::setReference(PositionalObject* obj, int specialistDisplacem
 			}
 
 			if(!contains) {
-				Ref<PackedScene> sMesh = ResourceLoader::get_singleton()->load("res://SpecialistMesh.tscn");
 				Node3D* s = cast_to<Node3D>(sMesh->instantiate());
 				s->set_name(("Specialist" + std::to_string(sp->getID())).c_str());
 				s->connect("custom_input_event", Callable(this, "selectSpecialist"), Object::CONNECT_DEFERRED);
@@ -163,11 +168,11 @@ void PositionalNode::setReference(PositionalObject* obj, int specialistDisplacem
 			}
 
 			Ref<Texture2D> img = ResourceLoader::get_singleton()->load((std::string("res://resources/specialistIcons/") + sp->typeAsString() + ".png").c_str());
-			TextureRect* texture = cast_to<TextureRect>(specialist->get_node_or_null(NodePath("SubViewport/Control/Texture")));	
-			if(texture) texture->set_texture(img);
+			MeshInstance3D* texture = cast_to<MeshInstance3D>(specialist->get_node_or_null(NodePath("Texture")));	
+			if(texture) cast_to<ShaderMaterial>(texture->get_surface_override_material(0).ptr())->set_shader_parameter("icon", img);
 
-			CanvasItem* item = cast_to<CanvasItem>(specialist->get_node_or_null("SubViewport/Control"));
-			ShaderMaterial* mat1 = cast_to<ShaderMaterial>(item->get_material().ptr());
+			//CanvasItem* item = cast_to<CanvasItem>(specialist->get_node_or_null("SubViewport/Control"));
+			ShaderMaterial* mat1 = cast_to<ShaderMaterial>(texture->get_surface_override_material(0).ptr());
 
 			MeshInstance3D* mesh = cast_to<MeshInstance3D>(specialist->get_node_or_null("Cylinder"));
 			ShaderMaterial* mat2 = cast_to<ShaderMaterial>(mesh->get_surface_override_material(0).ptr());
@@ -210,8 +215,8 @@ void PositionalNode::setSpecialistSelected(int specialistID, bool selected) {
 			Node* child = n->get_child(j);
 
 			if(child->get_name() == StringName(("Specialist" + std::to_string(specialistID)).c_str())) {
-				CanvasItem* item = cast_to<CanvasItem>(child->get_node_or_null(NodePath("SubViewport/Control")));
-				ShaderMaterial* mat1 = cast_to<ShaderMaterial>(item->get_material().ptr());
+				MeshInstance3D* texture = cast_to<MeshInstance3D>(child->get_node_or_null(NodePath("Texture")));	
+				ShaderMaterial* mat1 = cast_to<ShaderMaterial>(texture->get_surface_override_material(0).ptr());
 
 				MeshInstance3D* mesh = cast_to<MeshInstance3D>(child->get_node_or_null(NodePath("Cylinder")));
 				ShaderMaterial* mat2 = cast_to<ShaderMaterial>(mesh->get_surface_override_material(0).ptr());
@@ -258,6 +263,18 @@ void PositionalNode::setSelected(bool selected) {
 			}
 		}
 	}*/
+}
+
+PackedInt32Array PositionalNode::getSpecialistIDs() {
+	PackedInt32Array arr;
+
+	if(!obj) return arr;
+
+	for(const Specialist* s : obj->getSpecialists()) {
+		arr.push_back(s->getID());
+	}
+
+	return arr;
 }
 
 Color PositionalNode::getColor() {

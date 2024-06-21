@@ -27,9 +27,9 @@ public:
     int objIDDisplacement() override {
         SpecialistType t;
 
-        try {
+        if(specialistTypeID > int(SpecialistType::NONE) && specialistTypeID < int(SpecialistType::END)) {
             t = SpecialistType(specialistTypeID);
-        } catch(...) {
+        } else {
             return 0;
         }
 
@@ -39,10 +39,10 @@ public:
     Event* converted(Game* game) override {
         SpecialistType t;
 
-        try {
+        if(specialistTypeID > int(SpecialistType::NONE) && specialistTypeID < int(SpecialistType::END)) {
             t = SpecialistType(specialistTypeID);
             std::cout << "Hiring " << Specialist::typeAsString(t) << std::endl;
-        } catch(...) {
+        } else {
             std::cout << "ORDER ERROR: Cannot parse specialist type " << specialistTypeID << std::endl;
             return nullptr;
         }

@@ -585,9 +585,13 @@ func loadOpenGames():
 	if not openGames:
 		return
 	
+	var newOpenGameIDs = {}
+	
 	for game in openGames: 
-		openGameIDs[int(game.gameData.id)] = true
+		newOpenGameIDs[int(game.gameData.id)] = true
 		gameDetails[int(game.gameData.id)] = game
+	
+	openGameIDs = newOpenGameIDs
 
 func loadOpenGame(gameID: int):
 	var game = await HTTPManager.getReq("/fetchGameDetails", {
@@ -609,10 +613,14 @@ func loadOngoingGames():
 	
 	if not ongoingGames:
 		return
+		
+	var newOngoingGameIDs = {}
 	
 	for game in ongoingGames:
-		ongoingGameIDs[int(game.gameData.id)] = true
+		newOngoingGameIDs[int(game.gameData.id)] = true
 		gameDetails[int(game.gameData.id)] = game
+	
+	ongoingGameIDs = newOngoingGameIDs
 
 func loadPastGames():
 	var pastGames = await HTTPManager.getReq("/fetchUserGames", {
@@ -701,6 +709,12 @@ func leaveGame(id: int):
 	
 	return false
 
+func kickUser(gameID: int, userID: int) -> bool:
+	return await HTTPManager.postReq("/kickUser", {}, {
+		"gameID": gameID,
+		"userID": userID
+	})
+	
 func openQuickMatch(id: int, password = ""):
 	var game = await HTTPManager.getReq("/fetchGameDetails", {
 		"gameID": id
@@ -839,13 +853,15 @@ func addOrder(gameID: int, type, referenceID, timestamp, arguments):
 	
 	print(order)
 
-	if(!order): return;
+	if(!order): return false
 	
 	game.addOrder(order.type, int(order.id), int(order.referenceID), bool(order.canceled), float(order.timestamp), int(order.senderID), PackedInt32Array(order.argumentIDs), int(order.argumentIDs.size()))
 	
 	print("Order registered")
+	
+	return true
 
-func replaceOrder(orderID: int, gameID: int, type, referenceID, timestamp, arguments):
+func replaceOrder(orderID: int, gameID: int, type: String, referenceID: int, canceled: bool, timestamp: float, arguments: PackedInt32Array, oldArguments: PackedInt32Array):
 	var game = getGame(gameID)
 	
 	print(game.getTime())
@@ -861,11 +877,13 @@ func replaceOrder(orderID: int, gameID: int, type, referenceID, timestamp, argum
 	
 	print(order)
 
-	if(!order): return;
-	
-	game.addOrder(order.type, int(order.id), int(order.referenceID), bool(order.canceled), float(order.timestamp), int(order.senderID), PackedInt32Array(order.argumentIDs), int(order.argumentIDs.size()))
+	if(!order):
+		game.addOrder(type, orderID, referenceID, canceled, timestamp, game.getUserGameID(), oldArguments, oldArguments.size())
+		return false
 	
 	print("Order re-registered")
+	
+	return true
 
 func cancelOrder(gameID: int, orderID: int):
 	var game = getGame(gameID)

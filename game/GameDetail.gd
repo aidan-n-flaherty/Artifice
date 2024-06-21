@@ -55,6 +55,12 @@ func reload(gameID: int):
 		$AnimationPlayer.play("fade_to_game")
 	else:
 		await $MarginContainer/VBoxContainer/GameEditor.deserialize(gameID)
+	
+	if int(details.gameData.hostID) == GameData.getSelfID():
+		var gameChanger = preload("res://GameChanger.tscn").instantiate()
+		gameChanger.init(gameID)
+		
+		GameData.goto_node(gameChanger)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):

@@ -94,13 +94,12 @@ public:
 
             setVictor(vesselWins ? vessel->getOwnerID() : outpost->getOwnerID());
 
+            Player* vesselOwner = vessel->getOwner();
+            Player* outpostOwner = outpost->getOwner();
+
             defeatSpecialistPhase(game);
             victorySpecialistPhase(game);
             postCombatSpecialistPhase(game);
-
-
-            Player* vesselOwner = vessel->getOwner();
-            Player* outpostOwner = outpost->getOwner();
 
             if(!vessel->isDeleted() && !outpost->isDeleted()) {
                 outpost->addSpecialists(vessel->removeSpecialists());
@@ -113,12 +112,10 @@ public:
                 }
             }
 
-            if(vesselOwner && !vesselOwner->controlsSpecialist(SpecialistType::QUEEN)) {
-                vesselOwner->setDefeated(game);
-            }
-
-            if(outpostOwner && !outpostOwner->controlsSpecialist(SpecialistType::QUEEN)) {
-                outpostOwner->setDefeated(game);
+            for(const auto& pair : game->getPlayers()) {
+                if(!pair.second->controlsSpecialist(SpecialistType::QUEEN)) {
+                    pair.second->setDefeated(game);
+                }
             }
         }
 

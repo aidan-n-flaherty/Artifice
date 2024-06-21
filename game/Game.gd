@@ -197,10 +197,13 @@ func _process(delta):
 			
 			await GameData.viewEnd(gameID)
 	
-	if game.hasEnded():
+	if game.hasEnded() or GameData.isFinished(gameID):
 		if not viewingEnd:
 			viewingEnd = true
 			await GameData.viewEnd(gameID)
+			
+			if not game.hasEnded():
+				game.startAtBeginning()
 	
 			if not GameData.isFinished(gameID):
 				if await GameData.verifyEnd(gameID):
@@ -241,8 +244,8 @@ func _process(delta):
 func addOrder(type, referenceID, timestamp, arguments):
 	GameData.addOrder(gameID, type, referenceID, timestamp, arguments)
 
-func replaceOrder(id, type, referenceID, timestamp, arguments):
-	GameData.replaceOrder(id, gameID, type, referenceID, timestamp, arguments)
+func replaceOrder(id, type, referenceID, canceled, timestamp, arguments, oldArguments):
+	GameData.replaceOrder(id, gameID, type, referenceID, canceled, timestamp, arguments, oldArguments)
 
 func setDisplay(scene):
 	if detailDisplay != null:

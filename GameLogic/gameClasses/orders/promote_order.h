@@ -26,6 +26,10 @@ public:
 
     Order* copy() override { return new PromoteOrder(*this); }
 
+    void adjustIDs(int createdID, int amount) override {
+        if(specialistID >= createdID) specialistID += amount;
+    }
+
     Event* converted(Game* game) override {
         if(!game->hasPlayer(getSenderID())) return nullptr;
 
@@ -38,9 +42,10 @@ public:
         
         SpecialistType t;
 
-        try {
+        if(specialistTypeID > int(SpecialistType::NONE) && specialistTypeID < int(SpecialistType::END)) {
             t = SpecialistType(specialistTypeID);
-        } catch(...) {
+        } else {
+            std::cout << "Promoted to a nonexistent specialist" << std::endl;
             return nullptr;
         }
 

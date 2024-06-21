@@ -31,24 +31,28 @@ public:
     }
 
     Event* converted(Game* game) override {
-        if(!game->hasPlayer(getSenderID()) || game->getPlayer(getSenderID())->hasLost()) return nullptr;
-        
-        if(!game->hasVessel(vesselID) || !game->hasPosObject(targetID)) return nullptr;
+        if(!game->hasPosObject(targetID)) return nullptr;
 
-        if(targetID == vesselID) return nullptr;
-        
-        Vessel* vessel = game->getVessel(vesselID);
         PositionalObject* target = game->getPosObject(targetID);
-
-        if(vessel->getOwnerID() != getSenderID()) return nullptr;
-
-        if(!vessel->controlsSpecialist(SpecialistType::NAVIGATOR)) return nullptr;
-        if(game->hasVessel(targetID) && !vessel->controlsSpecialist(SpecialistType::PIRATE)) return nullptr;
 
         Outpost* targetOutpost = dynamic_cast<Outpost*>(target);
 
         if(targetOutpost) setDescription(std::string("Reroute submarine to " + targetOutpost->getName()));
         else setDescription(std::string("Reroute submarine to target an enemy submarine"));
+
+        if(!game->hasPlayer(getSenderID()) || game->getPlayer(getSenderID())->hasLost()) return nullptr;
+        
+        if(!game->hasVessel(vesselID)) return nullptr;
+
+        if(targetID == vesselID) return nullptr;
+        
+        Vessel* vessel = game->getVessel(vesselID);
+        
+
+        if(vessel->getOwnerID() != getSenderID()) return nullptr;
+
+        if(!vessel->controlsSpecialist(SpecialistType::NAVIGATOR)) return nullptr;
+        if(game->hasVessel(targetID) && !vessel->controlsSpecialist(SpecialistType::PIRATE)) return nullptr;
 
         return new RerouteEvent(this, getTimestamp(), vessel, target);
     }
