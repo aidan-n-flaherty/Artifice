@@ -137,7 +137,6 @@ func _on_transit_specialist_pressed() -> void:
 		
 	transitFlag = true
 
-
 func _on_sonar_specialist_pressed() -> void:
 	$VBoxContainer/ScrollContainer/Stack/"Combat Specialist".hide()
 	$VBoxContainer/ScrollContainer/Stack/"Counter Specialist".hide()
