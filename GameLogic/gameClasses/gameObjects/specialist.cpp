@@ -13,10 +13,22 @@ void Specialist::updatePointers(Game *game) {
 void Specialist::setOwner(Player* player) {
     if(type == SpecialistType::QUEEN && hasOwner()) {
         // find the nearest princess to turn into a queen, lose otherwise
+        bool assigned = false;
+
         for(Outpost* outpost : getOwner()->sortedOutposts(getContainer())) {
             if(outpost->controlsSpecialist(SpecialistType::PRINCESS)) {
                 outpost->getSpecialist(SpecialistType::PRINCESS)->setType(SpecialistType::QUEEN);
+                assigned = true;
                 break;
+            }
+        }
+
+        if(!assigned) {
+            for(Vessel* vessel : getOwner()->sortedVessels(getContainer())) {
+                if(vessel->controlsSpecialist(SpecialistType::PRINCESS)) {
+                    vessel->getSpecialist(SpecialistType::PRINCESS)->setType(SpecialistType::QUEEN);
+                    break;
+                }
             }
         }
     }

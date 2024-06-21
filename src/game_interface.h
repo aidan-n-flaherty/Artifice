@@ -32,6 +32,8 @@ class GameInterface : public Node3D {
     GDCLASS(GameInterface, Node3D)
 
 private:
+	std::shared_ptr<Game> tempGame = nullptr;
+	
 	// stores all future game states
 	std::shared_ptr<Game> fullCompleteGame = nullptr;
 	double nextFullEndState = 0.0;
@@ -44,15 +46,15 @@ private:
 	std::shared_ptr<Game> completeGame = nullptr;
 	double nextEndState = 0.0;
 
-	// game at the current time
+	// game at the end of drag
 	std::shared_ptr<Game> game = nullptr;
 	double nextState = 0.0;
 
-	// game at the start of drag
+	// game at current time
 	std::shared_ptr<Game> currentGame = nullptr;
 	double nextCurrentState = 0.0;
 
-	// game at the end of drag
+	// game at start of drag
 	std::shared_ptr<Game> simulatedGame = nullptr;
 	double nextSimulatedState = 0.0;
 	
@@ -69,12 +71,14 @@ private:
 	int gameID = -1; 
 
 	int userID = -1, userGameID = -1;
+
+	int maintainSelect = -1;
 	
 	int selected = -1;
 
 	int selectedUnits = -1;
 	
-	std::set<int> selectedSpecialists;
+	std::list<int> selectedSpecialists;
 	
 	double current = 0.0;
 
@@ -103,6 +107,8 @@ private:
 	bool finished = false;
 
 	bool paused = false;
+
+	int selectOrder = -1;
 
 	Point mouse;
 
@@ -178,6 +184,7 @@ public:
 	PositionalNode* getNode(int id);
 	
 	void startAtEnd() { if(completeGame && completeGame->hasEnded()) setTime(completeGame->getGameEndTime()); };
+	void startAtBeginning() { if(completeGame) setTime(completeGame->getStartTime()); };
 	void shiftToTime(double t);
 	void setTime(double t);
 	void setTempTime(double t) { tempTime = t; }
@@ -216,6 +223,7 @@ public:
 	String getOrderDescription(int orderID);
 	bool canUndoOrder(int orderID);
 
+	int getSpecialistTypeBeforeOrder(int specialistID, int orderID);
 	int getSpecialistType(int specialistID) { return simulatedGame->hasSpecialist(specialistID) ? simulatedGame->getSpecialist(specialistID)->getType() : 0; };
 	PlayerNode* getPlayer(int id);
 	PlayerNode* getSpecialistOwner(int specialistID) { return simulatedGame->hasSpecialist(specialistID) && simulatedGame->hasPlayer(simulatedGame->getSpecialist(specialistID)->getOwnerID()) ? getPlayer(simulatedGame->getSpecialist(specialistID)->getOwnerID()) : nullptr; }
@@ -257,7 +265,8 @@ public:
 	int getNextBattleVictorUnits(int objID);
 	Array getNextBattleCaptures(int objID);
 
-	bool canHire() { return game && game->hasPlayer(userGameID) && game->getPlayer(userGameID)->getHiresAt(settings.clientToGameTime(getCurrent()) - game->getTime()) >= 0 && dynamic_cast<Outpost*>(game->getPlayer(userGameID)->getSpawnLocation()) && game->getPlayer(userGameID)->getSpawnLocation()->getOwnerID() == userGameID && future; }
+	bool canGift(int vesselID) { return future && game && game->hasPlayer(userGameID) && game->hasVessel(vesselID) && !game->getVessel(vesselID)->isGift(); }
+	bool canHire() { return future && game && game->hasPlayer(userGameID) && game->getPlayer(userGameID)->getHiresAt(settings.clientToGameTime(getCurrent()) - game->getTime()) >= 0 && dynamic_cast<Outpost*>(game->getPlayer(userGameID)->getSpawnLocation()) && game->getPlayer(userGameID)->getSpawnLocation()->getOwnerID() == userGameID; }
 	bool hasStarted() { return current >= game->getStartTime(); }
 	bool hasEnded() { return game->hasEnded() && currentGame->hasEnded(); }
 	bool hasLost() { return game && game->hasPlayer(userGameID) && game->getPlayer(userGameID)->hasLost() && currentGame->getPlayer(userGameID)->hasLost(); }
@@ -272,9 +281,13 @@ public:
 	int getWidth() { return settings.width; }
 	int getHeight() { return settings.height; }
 		
+	Array possibleSpecialists(int orderID);
+	
 	void incrementSend(int orderID);
 	void decrementSend(int orderID);
 	void alterSend(int orderID, int units);
+	void addSpecialist(int orderID, int specialistID);
+	void removeSpecialist(int orderID, int specialistID);
 
 	void bulkAddOrder(const String &type, uint32_t ID, int32_t referenceID, bool canceled, double timestamp, uint32_t senderID, PackedInt32Array arguments, uint32_t argCount);
 	void endBulkAdd();
@@ -282,6 +295,8 @@ public:
 	void addOrder(const String &type, uint32_t ID, int32_t referenceID, bool canceled, double timestamp, uint32_t senderID, PackedInt32Array arguments, uint32_t argCount);
 
 	void cancelOrder(uint32_t ID);
+
+	bool getFinished() { return finished; }
 };
 
 }

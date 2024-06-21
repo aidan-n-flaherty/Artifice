@@ -20,7 +20,7 @@ using namespace godot;
 FloorDisplay::FloorDisplay(GameInterface* gameInterface) : gameInterface(gameInterface) {}
 
 void FloorDisplay::_draw() {
-    if(!gameInterface || !gameInterface->getGame() || !gameInterface->getCompleteGame() || !gameInterface->getCurrentGame()) return;
+    if(!gameInterface || !gameInterface->getGame() || !gameInterface->getCompleteGame() || !gameInterface->getCurrentGame() || !gameInterface->getFullGame()) return;
 
     std::shared_ptr<Game> game = gameInterface->getGame();
     std::shared_ptr<Game> current = gameInterface->getCurrentGame();
@@ -37,60 +37,62 @@ void FloorDisplay::_draw() {
 
     // draw_arc(const Vector2 &center, double radius, double start_angle, double end_angle, int32_t point_count, const Color &color, double width = -1.0, bool antialiased = false)
 
-    draw_rect(Rect2(0, 0, viewport->get_size().x, viewport->get_size().y), Color(0.0, 0.0, 0.9, 1.0));
+    if(gameInterface->getUserGameID() >= 0 && !gameInterface->getFinished()) draw_rect(Rect2(0, 0, viewport->get_size().x, viewport->get_size().y), Color(0.0, 0.0, 0.9, 1.0));
 
     Player* p = gameInterface->simulatingFuture() ? current->getPlayer(gameInterface->getUserGameID()) : game->getPlayer(gameInterface->getUserGameID());
 
     std::shared_ptr<Game> visibilityGame = gameInterface->simulatingFuture() ? current : game;
 
-    for(int i = -1; i <= 1; i++) {
-        for(int j = -1; j <= 1; j++) {
-            double x = rootX + i * game->getSettings()->width;
-            double y = rootY + j * game->getSettings()->height;
-
-            for(const auto& pair : (gameInterface->simulatingFuture() ? current->getOutposts() : game->getOutposts())) {
-                if(pair.second->getOwnerID() != gameInterface->getUserGameID() && (!pair.second->hasOwner() || !complete->teamGame() || pair.second->getOwner()->getTeamID() != p->getTeamID())) continue;
-
-                double x1 = pair.second->getPositionAt(getDiff()).getX();
-                double y1 = pair.second->getPositionAt(getDiff()).getY();
-
-                //draw_circle(Vector2(x1 - x, y1 - y) * pixels, pair.second->getSonarRange() * pixels, Color(0.0, 0.0, 0.4));
-                draw_arc(Vector2(x1 - x, y1 - y) * pixels, pair.second->getSonarRange() * pixels - 10, 0, UtilityFunctions::deg_to_rad(360), 32, Color(0.0, 0.0, 0.4), 20, false);
-            }
-        }
-    }
-
-    for(int i = -1; i <= 1; i++) {
-        for(int j = -1; j <= 1; j++) {
-            double x = rootX + i * game->getSettings()->width;
-            double y = rootY + j * game->getSettings()->height;
-
-            for(const auto& pair : (gameInterface->simulatingFuture() ? current->getOutposts() : game->getOutposts())) {
-                if(pair.second->getOwnerID() != gameInterface->getUserGameID() && (!pair.second->hasOwner() || !complete->teamGame() || pair.second->getOwner()->getTeamID() != p->getTeamID())) continue;
-
-                double x1 = pair.second->getPositionAt(getDiff()).getX();
-                double y1 = pair.second->getPositionAt(getDiff()).getY();
-
-                //draw_circle(Vector2(x1 - x, y1 - y) * pixels, pair.second->getSonarRange() * pixels - 20, Color(0.0, 0.0, 0.0));
-                draw_arc(Vector2(x1 - x, y1 - y) * pixels, (pair.second->getSonarRange() * pixels - 20)/2, 0, UtilityFunctions::deg_to_rad(360), 32, Color(0.0, 0.0, 0.0), (pair.second->getSonarRange() * pixels - 20), false);
-            }
-        }
-    }
-
-    if(complete->teamGame()) {
+    if(gameInterface->getUserGameID() >= 0 && !gameInterface->getFinished()) {
         for(int i = -1; i <= 1; i++) {
             for(int j = -1; j <= 1; j++) {
                 double x = rootX + i * game->getSettings()->width;
                 double y = rootY + j * game->getSettings()->height;
 
                 for(const auto& pair : (gameInterface->simulatingFuture() ? current->getOutposts() : game->getOutposts())) {
-                    if(pair.second->getOwnerID() != gameInterface->getUserGameID()) continue;
+                    if(pair.second->getOwnerID() != gameInterface->getUserGameID() && (!pair.second->hasOwner() || !complete->teamGame() || pair.second->getOwner()->getTeamID() != p->getTeamID())) continue;
 
                     double x1 = pair.second->getPositionAt(getDiff()).getX();
                     double y1 = pair.second->getPositionAt(getDiff()).getY();
 
-                    //draw_circle(Vector2(x1 - x, y1 - y) * pixels, pair.second->getSonarRange() * pixels - 20, Color(1.0, 1.0, 0.01));
-                    draw_arc(Vector2(x1 - x, y1 - y) * pixels, (pair.second->getSonarRange() * pixels - 20)/2, 0, UtilityFunctions::deg_to_rad(360), 32, Color(1.0, 1.0, 0.01), (pair.second->getSonarRange() * pixels - 20), false);
+                    //draw_circle(Vector2(x1 - x, y1 - y) * pixels, pair.second->getSonarRange() * pixels, Color(0.0, 0.0, 0.4));
+                    draw_arc(Vector2(x1 - x, y1 - y) * pixels, pair.second->getSonarRange() * pixels - 10, 0, UtilityFunctions::deg_to_rad(360), 32, Color(0.0, 0.0, 0.4), 20, false);
+                }
+            }
+        }
+
+        for(int i = -1; i <= 1; i++) {
+            for(int j = -1; j <= 1; j++) {
+                double x = rootX + i * game->getSettings()->width;
+                double y = rootY + j * game->getSettings()->height;
+
+                for(const auto& pair : (gameInterface->simulatingFuture() ? current->getOutposts() : game->getOutposts())) {
+                    if(pair.second->getOwnerID() != gameInterface->getUserGameID() && (!pair.second->hasOwner() || !complete->teamGame() || pair.second->getOwner()->getTeamID() != p->getTeamID())) continue;
+
+                    double x1 = pair.second->getPositionAt(getDiff()).getX();
+                    double y1 = pair.second->getPositionAt(getDiff()).getY();
+
+                    //draw_circle(Vector2(x1 - x, y1 - y) * pixels, pair.second->getSonarRange() * pixels - 20, Color(0.0, 0.0, 0.0));
+                    draw_arc(Vector2(x1 - x, y1 - y) * pixels, (pair.second->getSonarRange() * pixels - 20)/2, 0, UtilityFunctions::deg_to_rad(360), 32, Color(0.0, 0.0, 0.0), (pair.second->getSonarRange() * pixels - 20), false);
+                }
+            }
+        }
+
+        if(complete->teamGame()) {
+            for(int i = -1; i <= 1; i++) {
+                for(int j = -1; j <= 1; j++) {
+                    double x = rootX + i * game->getSettings()->width;
+                    double y = rootY + j * game->getSettings()->height;
+
+                    for(const auto& pair : (gameInterface->simulatingFuture() ? current->getOutposts() : game->getOutposts())) {
+                        if(pair.second->getOwnerID() != gameInterface->getUserGameID()) continue;
+
+                        double x1 = pair.second->getPositionAt(getDiff()).getX();
+                        double y1 = pair.second->getPositionAt(getDiff()).getY();
+
+                        //draw_circle(Vector2(x1 - x, y1 - y) * pixels, pair.second->getSonarRange() * pixels - 20, Color(1.0, 1.0, 0.01));
+                        draw_arc(Vector2(x1 - x, y1 - y) * pixels, (pair.second->getSonarRange() * pixels - 20)/2, 0, UtilityFunctions::deg_to_rad(360), 32, Color(1.0, 1.0, 0.01), (pair.second->getSonarRange() * pixels - 20), false);
+                    }
                 }
             }
         }
@@ -187,7 +189,9 @@ void FloorDisplay::_draw() {
             for(const auto& pair : game->getVessels()) {
                 Vessel* v = full->getVessel(pair.first);
 
-                if(gameInterface->simulatingFuture() && v && !full->withinRange(p, v, fullDiff)) continue;
+                if(gameInterface->simulatingFuture() && v && p && !full->withinRange(p, v, fullDiff)) continue;
+
+                if(pair.second->getDisabled()) continue;
 
                 if(p && !visibilityGame->withinRange(p, pair.second, getDiff())) continue;
 
@@ -207,7 +211,9 @@ void FloorDisplay::_draw() {
             for(const auto& pair : game->getVessels()) {
                 Vessel* v = full->getVessel(pair.first);
 
-                if(gameInterface->simulatingFuture() && v && !full->withinRange(p, v, fullDiff)) continue;
+                if(gameInterface->simulatingFuture() && v && p && !full->withinRange(p, v, fullDiff)) continue;
+
+                if(pair.second->getDisabled()) continue;
 
                 if(p && !visibilityGame->withinRange(p, pair.second, getDiff())) continue;
 

@@ -38,7 +38,9 @@ enum SpecialistType : unsigned int {
     MINISTER_OF_ENERGY,
     SECURITY_CHIEF,
     TYCOON,
-    WAR_HERO
+    WAR_HERO,
+    DOUBLE_AGENT,
+    END
 };
 
 class Game;
@@ -107,7 +109,8 @@ public:
             MINISTER_OF_ENERGY,
             SECURITY_CHIEF,
             TYCOON,
-            WAR_HERO
+            WAR_HERO,
+            DOUBLE_AGENT
         };
     }
 
@@ -130,7 +133,8 @@ public:
             HELMSMAN,
             HYPNOTIST,
             INTELLIGENCE_OFFICER,
-            TINKERER
+            TINKERER,
+            DOUBLE_AGENT
         };
     }
 
@@ -194,7 +198,9 @@ public:
             "Minister_Of_Energy",
             "Security_Chief",
             "Tycoon",
-            "War_Hero"
+            "War_Hero",
+            "Double_Agent",
+            "NULL"
         };
 
         return list[t];

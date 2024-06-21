@@ -60,6 +60,7 @@ void GameInterface::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("getWinCondition"), &GameInterface::getWinCondition);
 	ClassDB::bind_method(D_METHOD("init", "gameID", "userID", "seed", "startTime", "playerCap", "players", "settingOverrides"), &GameInterface::init);
 	ClassDB::bind_method(D_METHOD("startAtEnd"), &GameInterface::startAtEnd);
+	ClassDB::bind_method(D_METHOD("startAtBeginning"), &GameInterface::startAtBeginning);
 	ClassDB::bind_method(D_METHOD("setTempTime", "t"), &GameInterface::setTempTime);
 	ClassDB::bind_method(D_METHOD("setTime", "t"), &GameInterface::setTime);
 	ClassDB::bind_method(D_METHOD("getTime"), &GameInterface::getTime);
@@ -142,6 +143,8 @@ void GameInterface::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("getOrderDescription"), &GameInterface::getOrderDescription);
 	ClassDB::bind_method(D_METHOD("canUndoOrder"), &GameInterface::canUndoOrder);
 
+	ClassDB::bind_method(D_METHOD("canGift", "vesselID"), &GameInterface::canGift);
+
 	ClassDB::bind_method(D_METHOD("getNumTeams"), &GameInterface::getNumTeams);
 	ClassDB::bind_method(D_METHOD("getFloorDisplay"), &GameInterface::getFloorDisplay);
 	ClassDB::bind_method(D_METHOD("getNode", "id"), &GameInterface::getNode);
@@ -150,12 +153,19 @@ void GameInterface::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("bulkAddOrder", "type", "ID", "referenceID", "timestamp", "senderID", "arguments", "argCount"), &GameInterface::bulkAddOrder);
 	ClassDB::bind_method(D_METHOD("endBulkAdd"), &GameInterface::endBulkAdd);
 	ClassDB::bind_method(D_METHOD("addOrder", "type", "ID", "referenceID", "timestamp", "senderID", "arguments", "argCount"), &GameInterface::addOrder);
+
 	ClassDB::bind_method(D_METHOD("cancelOrder", "ID"), &GameInterface::cancelOrder);
 	ClassDB::bind_method(D_METHOD("incrementSend", "orderID"), &GameInterface::incrementSend);
 	ClassDB::bind_method(D_METHOD("decrementSend", "orderID"), &GameInterface::decrementSend);
 	ClassDB::bind_method(D_METHOD("alterSend", "orderID"), &GameInterface::alterSend);
+	ClassDB::bind_method(D_METHOD("addSpecialist", "orderID", "specialistID"), &GameInterface::addSpecialist);
+	ClassDB::bind_method(D_METHOD("removeSpecialist", "orderID", "specialistID"), &GameInterface::removeSpecialist);
+
+	ClassDB::bind_method(D_METHOD("possibleSpecialists", "orderID"), &GameInterface::possibleSpecialists);
+	ClassDB::bind_method(D_METHOD("getSpecialistTypeBeforeOrder", "specialistID", "orderID"), &GameInterface::getSpecialistTypeBeforeOrder);
+
 	ADD_SIGNAL(MethodInfo("addOrder", PropertyInfo(Variant::STRING, "type"), PropertyInfo(Variant::INT, "referenceID"), PropertyInfo(Variant::INT, "timestamp"), PropertyInfo(Variant::PACKED_INT32_ARRAY, "arguments")));
-	ADD_SIGNAL(MethodInfo("replaceOrder", PropertyInfo(Variant::INT, "ID"), PropertyInfo(Variant::STRING, "type"), PropertyInfo(Variant::INT, "referenceID"), PropertyInfo(Variant::INT, "timestamp"), PropertyInfo(Variant::PACKED_INT32_ARRAY, "arguments")));
+	ADD_SIGNAL(MethodInfo("replaceOrder", PropertyInfo(Variant::INT, "ID"), PropertyInfo(Variant::STRING, "type"), PropertyInfo(Variant::INT, "referenceID"), PropertyInfo(Variant::BOOL, "canceled"), PropertyInfo(Variant::INT, "timestamp"), PropertyInfo(Variant::PACKED_INT32_ARRAY, "arguments"), PropertyInfo(Variant::PACKED_INT32_ARRAY, "arguments")));
 	ADD_SIGNAL(MethodInfo("selectVessel", PropertyInfo(Variant::OBJECT, "vessel")));
 	ADD_SIGNAL(MethodInfo("selectOutpost", PropertyInfo(Variant::OBJECT, "outpost")));
 	ADD_SIGNAL(MethodInfo("selectSpecialist", PropertyInfo(Variant::INT, "specialist")));
@@ -260,6 +270,7 @@ void GameInterface::init(int gameID, int userID, int seed, int startTime, bool f
 	settings.startTime = startTime;
 	completeGame = std::shared_ptr<Game>(new Game(settings, userID, startTime, settings.clientToGameTime(startTime + simulationBuffer / settings.simulationSpeed), playerMap, seed, true));
 	fullCompleteGame = std::shared_ptr<Game>(new Game(settings, userID, startTime, settings.clientToGameTime(startTime + simulationBuffer / settings.simulationSpeed), playerMap, seed, true));
+	tempGame = std::shared_ptr<Game>(new Game(settings, userID, startTime, settings.clientToGameTime(getTimeMillis() - 4 * 60 * 60), playerMap, seed, false));
 
 	settings = *(completeGame->getSettings());
 
@@ -328,7 +339,7 @@ void GameInterface::_process(double delta) {
 	
 	update();
 
-	if(fullCompleteGame != nullptr && fullGame != nullptr && completeGame != nullptr) {
+	if(fullCompleteGame != nullptr && fullGame != nullptr && completeGame != nullptr && game != nullptr) {
 		double fullDiff = settings.clientToGameTime(time) - fullGame->getTime();
 
 		double fullTime = settings.clientToGameTime(time);
@@ -338,27 +349,79 @@ void GameInterface::_process(double delta) {
 		if(p) {
 			bool anyChanged = false;
 
-			for(const auto& pair : fullGame->getVessels()) {
-				if(!fullGame->withinRange(p, pair.second, fullDiff)) {
-					for(const Event* e : completeGame->getSimulatedEvents()) {
-						if(!e->referencesObject(pair.first)) continue;
+			std::unordered_set<int> collectedVessels;
 
-						if((e->getTimestamp() > fullTime && !e->getDisabled()) || (e->getTimestamp() <= fullTime && e->getDisabled())) {
-							completeGame = completeGame->setSimulateVessel(pair.first, fullTime, false);
+			std::shared_ptr<Game> modifiedCompleteGame;
+			
+			for(const auto& pair : fullGame->getVessels()) {
+				bool isVisible = fullGame->withinRange(p, pair.second, fullDiff);
+
+				for(const Event* e : completeGame->getSimulatedEvents()) {
+					if(!e->referencesObject(pair.first)) continue;
+
+					// must either be in the future and simulated, or in the past and not simulated, to trigger update
+					if((e->getTimestamp() > fullTime && !e->getDisabled()) || (e->getTimestamp() < fullTime && e->getDisabled())) {
+						bool simulate = isVisible;
+
+						if(simulate) {
+							std::shared_ptr<Game> gameBeforeEvent = fullCompleteGame->lastStateBefore(e->getTimestamp());
+
+							double gameDiff = e->getTimestamp() - gameBeforeEvent->getTime();
+
+							Vessel* v = gameBeforeEvent->getVessel(pair.first);
+
+							if(v && !fullGame->withinRange(p, v, gameDiff)) simulate = false;
+						}
+
+						// check whether the vessel is visible, don't simulate the event if it isn't
+						if(!simulate) {
+							collectedVessels.insert(pair.first);
+
+							std::shared_ptr<Game> g = completeGame->setSimulateVessel(pair.first, std::max(e->getTimestamp(), fullTime), simulate);
+							if(!modifiedCompleteGame || g->getTime() <= modifiedCompleteGame->getTime()) modifiedCompleteGame = g;
+
 							anyChanged = true;
 							break;
 						}
 					}
 				}
 			}
-			
+
+			for(const Event* e : completeGame->getSimulatedEvents()) {
+				if((e->getTimestamp() > fullTime && !e->getDisabled()) || (e->getTimestamp() < fullTime && e->getDisabled())) {
+					const VesselOutpostEvent* battle = dynamic_cast<const VesselOutpostEvent*>(e);
+					if(battle) {
+						std::shared_ptr<Game> gameBeforeEvent = fullCompleteGame->lastStateBefore(e->getTimestamp());
+
+						double gameDiff = e->getTimestamp() - gameBeforeEvent->getTime();
+						
+						PositionalObject* a = gameBeforeEvent->getPosObject(battle->getAID());
+						PositionalObject* b = gameBeforeEvent->getPosObject(battle->getBID());
+						
+						Vessel* v = dynamic_cast<Vessel*>(a);
+						if(!v) v = dynamic_cast<Vessel*>(b);
+						
+						if(v && collectedVessels.find(v->getID()) != collectedVessels.end()) continue;
+						
+						if(v && a && b && (!fullGame->withinRange(p, a, gameDiff) || !fullGame->withinRange(p, b, gameDiff))) {
+							collectedVessels.insert(v->getID());
+
+							std::shared_ptr<Game> g = completeGame->setSimulateVessel(v->getID(), std::max(e->getTimestamp(), fullTime), false);
+							if(!modifiedCompleteGame || g->getTime() <= modifiedCompleteGame->getTime()) modifiedCompleteGame = g;
+							anyChanged = true;
+						}
+					}
+				}
+			}
+
 			for(const auto& pair : completeGame->getIgnoredVessels()) {
-				if(!fullGame->hasVessel(pair.first) || fullGame->withinRange(p, fullGame->getVessel(pair.first), fullDiff)) {
+				if(fullGame->removedVessel(pair.first)) {
 					for(const Event* e : completeGame->getSimulatedEvents()) {
 						if(!e->referencesObject(pair.first)) continue;
 
 						if(e->getDisabled()) {
-							completeGame = completeGame->setSimulateVessel(pair.first, fullTime, true);
+							std::shared_ptr<Game> g = completeGame->setSimulateVessel(pair.first, fullTime, true);
+							if(!modifiedCompleteGame || g->getTime() <= modifiedCompleteGame->getTime()) modifiedCompleteGame = g;
 							anyChanged = true;
 							break;
 						}
@@ -368,6 +431,7 @@ void GameInterface::_process(double delta) {
 
 			if(anyChanged) {
 				std::cout << "Updating simulated game" << std::endl;
+				completeGame = modifiedCompleteGame;
 				completeGame->run();
 
 				game = nullptr;
@@ -375,6 +439,7 @@ void GameInterface::_process(double delta) {
 				currentGame = nullptr;
 
 				update();
+				std::cout << "Updated!" << std::endl;
 			}
 		}
 	}
@@ -400,10 +465,10 @@ void GameInterface::_process(double delta) {
 			pair.second->setDiff(t, timeDiff);
 			pair.second->setSelfOwned(pair.second->getOwnerID() == userGameID && userGameID >= 0);
 			
-            if(future && v && !fullGame->withinRange(fullPlayer, v, fullDiff)) pair.second->setInRadar(finished);
+            if(future && v && fullPlayer && !fullGame->withinRange(fullPlayer, v, fullDiff)) pair.second->setInRadar(finished);
 			else pair.second->setInRadar(finished || (p ? visibilityGame->withinRange(p, pair.second->getObj(), timeDiff) : false));
 			
-			if(pair.second->isLoaded()) pair.second->set_visible(pair.second->isInRadar());
+			if(pair.second->isLoaded()) pair.second->set_visible(pair.second->isInRadar() && !pair.second->getVessel()->getDisabled());
 		}
 		
 		for(const auto& pair : outposts) {
@@ -463,6 +528,8 @@ void GameInterface::update() {
 
 	if(fullGame == nullptr || time + simulationBuffer / settings.simulationSpeed > nextFullEndState) {
 		std::cout << "Running full game" << std::endl;
+		if(time > nextEndState) fullGame = nullptr;
+
 		fullCompleteGame = fullCompleteGame->lastState(nextFullEndState);
 		fullCompleteGame->setEndTime(nextFullEndState);
 		fullCompleteGame->run();
@@ -521,7 +588,7 @@ void GameInterface::update() {
 				it = players.erase(it);
 			} else it++;
 		}
-		
+
 		for(const auto& pair : game->getVessels()) {
 			if(vessels.find(pair.first) != vessels.end()) {
 				vessels[pair.first]->setReference(pair.second);
@@ -534,7 +601,7 @@ void GameInterface::update() {
 				add_child(newVessel);
 			}
 		}
-		
+
 		for(const auto& pair : game->getOutposts()) {
 			if(outposts.find(pair.first) != outposts.end()) {
 				outposts[pair.first]->setReference(pair.second);
@@ -559,10 +626,30 @@ void GameInterface::update() {
 			}
 		}
 
-		if(selected >= 0 && !getSelected()) shouldUnselect = true;
+		if(maintainSelect >= 0 && game->hasVessel(maintainSelect) && !game->getVessel(maintainSelect)->getDisabled()) {
+			setSelected(maintainSelect);
+			maintainSelect = -1;
+		} else if(selectOrder >= 0) {
+			for(const auto& pair : game->getVessels()) {
+				if(pair.second->getSourceOrder() && pair.second->getSourceOrder()->getID() == selectOrder) {
+					if(selected < 0 || selected != pair.first) setSelected(pair.first);
+					break;
+				}
+			}
+			
+			selectOrder = -1;
+		} else if(selected >= 0 && !getSelected()) shouldUnselect = true;
+		else if(selected >= 0) {
+			Vessel* v = dynamic_cast<Vessel*>(getSelected());
+
+			if(v && v->getDisabled()) shouldUnselect = true;
+		}
 	}
 
-	if(shouldUnselect) unselect();
+	if(shouldUnselect) {
+		maintainSelect = selected;
+		unselect();
+	}
 }
 
 PositionalNode* GameInterface::getNode(int id) {
@@ -580,7 +667,7 @@ bool GameInterface::willSendWith(SpecialistType type) {
 	Vessel* v = dynamic_cast<Vessel*>(getSelected());
 
 	for(Specialist* s : getSelected()->getSpecialists()) {
-		if(s->getType() == type && s->getOwnerID() == getUserGameID() && (v || selectedSpecialists.find(s->getID()) != selectedSpecialists.end())) {
+		if(s->getType() == type && s->getOwnerID() == getUserGameID() && (v || std::find(selectedSpecialists.begin(), selectedSpecialists.end(), s->getID()) != selectedSpecialists.end())) {
 			return true;
 		}
 	}
@@ -594,7 +681,7 @@ void GameInterface::release(int id) {
 	startDrag = false;
 
 	if(!didDrag) {
-		bool selectedSpecialist = selectedSpecialists.find(id) != selectedSpecialists.end();
+		bool selectedSpecialist = std::find(selectedSpecialists.begin(), selectedSpecialists.end(), id) != selectedSpecialists.end();
 
 		if(game->hasSpecialist(id) && selectedSpecialist && !justSelectedSpecialist) {
 			setSelectedSpecialist(id);
@@ -606,6 +693,8 @@ void GameInterface::release(int id) {
 
 void GameInterface::sendTo(int id) {
 	PositionalObject* target = getObj(id);
+
+	if(current < getStartTime()) current = getStartTime() + epsilon;
 
 	double simulatedDiff = settings.clientToGameTime(getCurrent()) - simulatedGame->getTime();
 
@@ -637,8 +726,8 @@ void GameInterface::sendTo(int id) {
 
 			if(getNode(selected)) getNode(selected)->clearSelectedSpecialists();
 
-			emit_signal("addOrder", "SEND", game->getReferenceID(), current, arguments);
-			
+			emit_signal("addOrder", "SEND", simulatedGame->getReferenceID(), current, arguments);
+
 			return;
 		} else if(v1) {
 			if(!getSelected()->controlsSpecialist(SpecialistType::NAVIGATOR)) return;
@@ -650,7 +739,7 @@ void GameInterface::sendTo(int id) {
 
 			for(int i = 0; i < 2; i++) arguments.push_back(parameters[i]);
 
-			emit_signal("addOrder", "REROUTE", game->getReferenceID(), current, arguments);
+			emit_signal("addOrder", "REROUTE", simulatedGame->getReferenceID(), current, arguments);
 			
 			return;
 		}
@@ -659,9 +748,11 @@ void GameInterface::sendTo(int id) {
 
 // event propagated from positional nodes, occurs when something is clicked on
 void GameInterface::select(int id) {
+	maintainSelect = -1;
+
 	bool hasSpecialist = game->hasSpecialist(id);
 
-	bool selectedSpecialist = hasSpecialist && selectedSpecialists.find(id) != selectedSpecialists.end();
+	bool selectedSpecialist = hasSpecialist && std::find(selectedSpecialists.begin(), selectedSpecialists.end(), id) != selectedSpecialists.end();
 
 	if(hasSpecialist && !selectedSpecialist) {
 		setSelectedSpecialist(id);
@@ -713,7 +804,7 @@ void GameInterface::setSelected(int id) {
 }
 
 void GameInterface::setSelectedSpecialist(int id) {
-	bool selected = selectedSpecialists.find(id) == selectedSpecialists.end();
+	bool selected = std::find(selectedSpecialists.begin(), selectedSpecialists.end(), id) == selectedSpecialists.end();
 
 	Specialist* s = simulatedGame->getSpecialist(id);
 
@@ -721,7 +812,7 @@ void GameInterface::setSelectedSpecialist(int id) {
 		for(auto& pair : vessels) if(pair.second->hasSelectedSpecialist(id)) pair.second->setSpecialistSelected(id, false);
 		for(auto& pair : outposts) if(pair.second->hasSelectedSpecialist(id)) pair.second->setSpecialistSelected(id, false);
 
-		selectedSpecialists.erase(id);
+		if(!selected) selectedSpecialists.erase(std::find(selectedSpecialists.begin(), selectedSpecialists.end(), id));
 		emit_signal("deselectSpecialist", id);
 
 		return;
@@ -751,10 +842,11 @@ void GameInterface::setSelectedSpecialist(int id) {
 	
 	if(selected) {
 		select(containerID);
-		selectedSpecialists.insert(id);
+		selectedSpecialists.push_back(id);
+		if(selectedSpecialists.size() > 3) setSelectedSpecialist(*selectedSpecialists.begin());
 		emit_signal("selectSpecialist", id);
 	} else {
-		selectedSpecialists.erase(id);
+		selectedSpecialists.erase(std::find(selectedSpecialists.begin(), selectedSpecialists.end(), id));
 		emit_signal("deselectSpecialist", id);
 		setSelected(containerID);
 	}
@@ -766,11 +858,13 @@ void GameInterface::bulkAddOrder(const String &type, uint32_t ID, int32_t refere
 
 	completeGame = completeGame->processOrder(std::string(type.utf8().get_data()), ID, referenceID, canceled, settings.clientToGameTime(timestamp), senderID, arr, argCount);
 	fullCompleteGame = fullCompleteGame->processOrder(std::string(type.utf8().get_data()), ID, referenceID, canceled, settings.clientToGameTime(timestamp), senderID, arr, argCount);
+	tempGame = tempGame->processOrder(std::string(type.utf8().get_data()), ID, referenceID, canceled, settings.clientToGameTime(timestamp), senderID, arr, argCount);
 }
 
 void GameInterface::endBulkAdd() {
 	fullCompleteGame->run();
 	completeGame->run();
+	std::cout << (tempGame->run()).size() << std::endl;
 
 	game = nullptr;
 	simulatedGame = nullptr;
@@ -788,6 +882,8 @@ void GameInterface::addOrder(const String &type, uint32_t ID, int32_t referenceI
 	int arr[argCount];
 	for(int i = 0; i < argCount; i++) arr[i] = arguments[i];
 
+	if(type == "SEND") selectOrder = ID;
+
 	fullCompleteGame = fullCompleteGame->processOrder(std::string(type.utf8().get_data()), ID, referenceID, canceled, settings.clientToGameTime(timestamp), senderID, arr, argCount);
 	fullCompleteGame->run();
 	fullGame = nullptr;
@@ -799,7 +895,8 @@ void GameInterface::addOrder(const String &type, uint32_t ID, int32_t referenceI
 	game = nullptr;
 	simulatedGame = nullptr;
 
-	current += epsilon;
+	if(current < gameToClientTime(completeGame->getStartTime())) current = timestamp + epsilon;
+	else current += epsilon;
 	
 	update();
 }
@@ -833,12 +930,15 @@ void GameInterface::incrementSend(int orderID) {
 
 		if(outpost && outpost->getUnitsAt(order->getTimestamp() - gameAtOrder->getTime()) >= order->getUnits() + 1) {
 			uint32_t parameters[] = { uint32_t(order->getUnits() + 1), uint32_t(order->getOriginID()), uint32_t(order->getTargetID()) };
+			Array oldArguments;
 			Array arguments;
 
 			for(int i = 0; i < 3; i++) arguments.push_back(parameters[i]);
 			for(int id : order->getSpecialistIDs()) arguments.push_back(uint32_t(id));
+			for(int id : order->getSpecialistIDs()) oldArguments.push_back(uint32_t(id));
 
-			emit_signal("replaceOrder", orderID, "SEND", order->getReferenceID(), order->getTimestamp(), arguments);
+			emit_signal("replaceOrder", orderID, "SEND", order->getReferenceID(), order->isCanceled(), order->getTimestamp(), arguments, oldArguments);
+			addOrder("SEND", orderID, order->getReferenceID(), order->isCanceled(), order->getTimestamp(), userGameID, arguments, arguments.size());
 		}
 	}
 }
@@ -857,12 +957,15 @@ void GameInterface::decrementSend(int orderID) {
 
 		if(outpost && order->getUnits() > 1) {
 			uint32_t parameters[] = { uint32_t(order->getUnits() - 1), uint32_t(order->getOriginID()), uint32_t(order->getTargetID()) };
+			Array oldArguments;
 			Array arguments;
 
 			for(int i = 0; i < 3; i++) arguments.push_back(parameters[i]);
 			for(int id : order->getSpecialistIDs()) arguments.push_back(uint32_t(id));
+			for(int id : order->getSpecialistIDs()) oldArguments.push_back(uint32_t(id));
 
-			emit_signal("replaceOrder", orderID, "SEND", order->getReferenceID(), order->getTimestamp(), arguments);
+			emit_signal("replaceOrder", orderID, "SEND", order->getReferenceID(), order->isCanceled(), order->getTimestamp(), arguments, oldArguments);
+			addOrder("SEND", orderID, order->getReferenceID(), order->isCanceled(), order->getTimestamp(), userGameID, arguments, arguments.size());
 		}
 	}
 }
@@ -883,14 +986,113 @@ void GameInterface::alterSend(int orderID, int units) {
 			if(units < 1) units = 1;
 			if(units > outpost->getUnitsAt(order->getTimestamp() - gameAtOrder->getTime())) units = outpost->getUnitsAt(order->getTimestamp() - gameAtOrder->getTime());
 			uint32_t parameters[] = { uint32_t(units), uint32_t(order->getOriginID()), uint32_t(order->getTargetID()) };
+			Array oldArguments;
 			Array arguments;
 
 			for(int i = 0; i < 3; i++) arguments.push_back(parameters[i]);
 			for(int id : order->getSpecialistIDs()) arguments.push_back(uint32_t(id));
+			for(int id : order->getSpecialistIDs()) oldArguments.push_back(uint32_t(id));
 
-			emit_signal("replaceOrder", orderID, "SEND", order->getReferenceID(), order->getTimestamp(), arguments);
+			emit_signal("replaceOrder", orderID, "SEND", order->getReferenceID(), order->isCanceled(), order->getTimestamp(), arguments, oldArguments);
+			addOrder("SEND", orderID, order->getReferenceID(), order->isCanceled(), order->getTimestamp(), userGameID, arguments, arguments.size());
 		}
 	}
+}
+
+void GameInterface::addSpecialist(int orderID, int specialistID) {
+	Order* o = completeGame->getOrder(orderID);
+
+	if(!o) return;
+
+	SendOrder* order = dynamic_cast<SendOrder*>(o);
+
+	if(order) {
+		std::shared_ptr<Game> gameAtOrder = completeGame->stateBefore(orderID);
+
+		Outpost* outpost = gameAtOrder->getOutpost(order->getOriginID());
+
+		if(outpost) {
+			uint32_t parameters[] = { uint32_t(order->getUnits()), uint32_t(order->getOriginID()), uint32_t(order->getTargetID()) };
+			Array oldArguments;
+			Array arguments;
+
+			for(int i = 0; i < 3; i++) arguments.push_back(parameters[i]);
+
+			std::list<int> specialistsToSend;
+			for(int id : order->getSpecialistIDs()) if(id != specialistID) specialistsToSend.push_back(id);
+			for(int id : order->getSpecialistIDs()) oldArguments.push_back(uint32_t(id));
+			if(gameAtOrder->hasSpecialist(specialistID)) specialistsToSend.push_back(specialistID);
+			while(specialistsToSend.size() > 3) specialistsToSend.pop_front();
+
+			for(int id : specialistsToSend) arguments.push_back(uint32_t(id));
+
+			emit_signal("replaceOrder", orderID, "SEND", order->getReferenceID(), order->isCanceled(), order->getTimestamp(), arguments, oldArguments);
+			addOrder("SEND", orderID, order->getReferenceID(), order->isCanceled(), order->getTimestamp(), userGameID, arguments, arguments.size());
+		}
+	}
+}
+
+void GameInterface::removeSpecialist(int orderID, int specialistID) {
+	Order* o = completeGame->getOrder(orderID);
+
+	if(!o) return;
+
+	SendOrder* order = dynamic_cast<SendOrder*>(o);
+
+	if(order) {
+		std::shared_ptr<Game> gameAtOrder = completeGame->stateBefore(orderID);
+
+		Outpost* outpost = gameAtOrder->getOutpost(order->getOriginID());
+
+		if(outpost) {
+			uint32_t parameters[] = { uint32_t(order->getUnits()), uint32_t(order->getOriginID()), uint32_t(order->getTargetID()) };
+			Array oldArguments;
+			Array arguments;
+
+			for(int i = 0; i < 3; i++) arguments.push_back(parameters[i]);
+			for(int id : order->getSpecialistIDs()) if(id != specialistID) arguments.push_back(uint32_t(id));
+			for(int id : order->getSpecialistIDs()) oldArguments.push_back(uint32_t(id));
+
+			emit_signal("replaceOrder", orderID, "SEND", order->getReferenceID(), order->isCanceled(), order->getTimestamp(), arguments, oldArguments);
+			addOrder("SEND", orderID, order->getReferenceID(), order->isCanceled(), order->getTimestamp(), userGameID, arguments, arguments.size());
+		}
+	}
+}
+
+Array GameInterface::possibleSpecialists(int orderID) {
+	Array arr;
+
+	Order* o = completeGame->getOrder(orderID);
+
+	if(!o) return arr;
+
+	SendOrder* order = dynamic_cast<SendOrder*>(o);
+
+	if(!order) return arr;
+
+	std::shared_ptr<Game> gameAtOrder = completeGame->stateBefore(orderID);
+
+	Outpost* outpost = gameAtOrder->getOutpost(order->getOriginID());
+
+	if(outpost) {
+		for(Specialist* s : outpost->getSpecialists()) arr.push_back(s->getID());
+	}
+
+	return arr;
+}
+
+int GameInterface::getSpecialistTypeBeforeOrder(int specialistID, int orderID) {
+	Order* o = completeGame->getOrder(orderID);
+
+	if(!o) return 0;
+
+	SendOrder* order = dynamic_cast<SendOrder*>(o);
+
+	if(!order) return 0;
+
+	std::shared_ptr<Game> gameAtOrder = completeGame->stateBefore(orderID);
+
+	return gameAtOrder->hasSpecialist(specialistID) ? gameAtOrder->getSpecialist(specialistID)->getType() : 0;
 }
 
 
@@ -914,7 +1116,7 @@ PositionalNode* GameInterface::getTarget(double x, double y) {
 
 	if(willSendWith(SpecialistType::PIRATE)) {
 		for(auto& pair : vessels) {
-			if(pair.first == selected || !pair.second->is_visible()) continue;
+			if(pair.first == selected || !pair.second->is_visible() || pair.second->getVessel()->getDisabled()) continue;
 
 			double mag = pair.second->getObj()->getPositionAt(pair.second->getDiff()).closestDistance(p);
 			if(mag < minDist) {
@@ -937,7 +1139,9 @@ double GameInterface::projectedTime(double x, double y) {
 
 	PositionalNode* target = getTarget(x, y);
 
-	double speed = getSelected()->getProjectedSpeed(target ? target->getObj() : nullptr, selectedSpecialists);
+	std::set<int> specialists(selectedSpecialists.begin(), selectedSpecialists.end());
+
+	double speed = getSelected()->getProjectedSpeed(target ? target->getObj() : nullptr, specialists);
 
 	double mag = (target ? target->getObj()->getPositionAt(target->getDiff()) : p).closestDistance(getSelected()->getPositionAt(timeDiff));
 
@@ -955,7 +1159,7 @@ PackedVector2Array GameInterface::getOutpostPositions() {
 			std::shared_ptr<Game> visibilityGame = future ? currentGame : game;
 
 			pair.second->setDiff(time, timeDiff);
-			pair.second->set_visible(visibilityGame->withinRange(p, pair.second->getObj(), timeDiff));
+			pair.second->set_visible(true);
 		}
 
 		if(!pair.second->is_visible()) continue;
@@ -1113,7 +1317,7 @@ String GameInterface::getNextVictoryMessage() {
 
 		if(e && victor && settings.resourcesToWin - victor->getResourcesAt(timeDiff) > 0 && !game->simulationEnded()) {
 			char str[16];
-			sprintf(str, "%.2lf", (e->getTimestamp() - getTime()) / (60 * 60));
+			sprintf(str, "%.2lf", ((e->getTimestamp() - clientToGameTime(getTime())) / (60 * 60)));
 			res += " needs " + std::to_string(settings.resourcesToWin - victor->getResourcesAt(timeDiff)) + " more resources and will win in " + std::string(str) + " hours";
 		} else res += " has won";
 	} else {
@@ -1159,6 +1363,7 @@ double GameInterface::getNextProductionEvent(int outpostID) {
 }
 
 double GameInterface::getNextHireEvent() {
+	if(!game->hasPlayer(userGameID)) return -1;
 	std::shared_ptr<Game> curr = game;
 
 	double next = completeGame->nextState(curr->getTime());
@@ -1192,9 +1397,9 @@ bool GameInterface::canViewNextBattle(int objID) {
 	
 	std::pair<int, int> pair = b->getBattleObjects();
 
-	if(!getObj(pair.first) || !visibilityGame->withinRange(p, getObj(pair.first), timeDiff)) return false;
+	if(getObj(pair.first) && p && !visibilityGame->withinRange(p, getObj(pair.first), timeDiff)) return false;
 
-	if(!getObj(pair.second) || !visibilityGame->withinRange(p, getObj(pair.second), timeDiff)) return false;
+	if(getObj(pair.second) && p && !visibilityGame->withinRange(p, getObj(pair.second), timeDiff)) return false;
 
 	return true;
 }

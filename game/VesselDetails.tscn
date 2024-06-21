@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://cfc57qmlyevna"]
+[gd_scene load_steps=9 format=3 uid="uid://cfc57qmlyevna"]
 
 [ext_resource type="Theme" uid="uid://tg7ina762c6q" path="res://resources/themes/UITheme.tres" id="1_114fm"]
 [ext_resource type="Script" path="res://VesselDetails.gd" id="1_hboua"]
@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://dsi1rwxwn272" path="res://resources/icons/chevron-up-large.png" id="4_k8mmo"]
 [ext_resource type="Texture2D" uid="uid://bq38gxufpsvf7" path="res://resources/icons/chevron-down-large.png" id="5_u305m"]
 [ext_resource type="FontFile" uid="uid://bt7qlnun0cepj" path="res://resources/fonts/nasalization-free/nasalization-rg.otf" id="6_vus34"]
+[ext_resource type="PackedScene" uid="uid://dg4lhqpoy431" path="res://CustomScroll.tscn" id="7_3sjyx"]
 
 [sub_resource type="FontVariation" id="FontVariation_ble0v"]
 base_font = ExtResource("6_vus34")
@@ -51,9 +52,10 @@ stretch_mode = 5
 layout_mode = 2
 theme = ExtResource("1_114fm")
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer"]
+[node name="HBoxContainer2" type="HFlowContainer" parent="VBoxContainer"]
 layout_mode = 2
 theme = ExtResource("1_114fm")
+theme_override_constants/v_separation = 20
 
 [node name="AlterOrder" type="VBoxContainer" parent="VBoxContainer/HBoxContainer2"]
 custom_minimum_size = Vector2(40, 2.08165e-12)
@@ -94,6 +96,7 @@ select_all_on_focus = true
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer2"]
 layout_mode = 2
+size_flags_vertical = 4
 theme = ExtResource("1_114fm")
 
 [node name="Spacer" type="Control" parent="VBoxContainer/HBoxContainer2/VBoxContainer"]
@@ -116,7 +119,38 @@ text = "Arrives in"
 layout_mode = 2
 text = "1.5x speed"
 
+[node name="Control" type="Control" parent="VBoxContainer/HBoxContainer2"]
+custom_minimum_size = Vector2(40, 2.08165e-12)
+layout_mode = 2
+
+[node name="Specialists" type="VBoxContainer" parent="VBoxContainer/HBoxContainer2"]
+custom_minimum_size = Vector2(200, 90)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="SpecialistOptions" type="Label" parent="VBoxContainer/HBoxContainer2/Specialists"]
+layout_mode = 2
+text = "Edit specialists:"
+
+[node name="ScrollContainer" parent="VBoxContainer/HBoxContainer2/Specialists" instance=ExtResource("7_3sjyx")]
+custom_minimum_size = Vector2(2.08165e-12, 2.08165e-12)
+layout_mode = 2
+size_flags_horizontal = 3
+vertical_scroll_mode = 0
+
+[node name="Specialists" type="HBoxContainer" parent="VBoxContainer/HBoxContainer2/Specialists/ScrollContainer"]
+layout_direction = 2
+layout_mode = 2
+size_flags_horizontal = 2
+size_flags_vertical = 3
+
 [node name="Spacer" type="Control" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme = ExtResource("1_114fm")
+
+[node name="Spacer2" type="Control" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 theme = ExtResource("1_114fm")

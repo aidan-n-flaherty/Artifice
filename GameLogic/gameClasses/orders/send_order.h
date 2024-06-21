@@ -49,6 +49,8 @@ public:
 
     std::list<int> getSpecialistIDs() { return specialistIDs; }
 
+    void setSpecialistIDs(const std::list<int>& specialistIDs) { this->specialistIDs = specialistIDs; }
+
     Event* converted(Game* game) override {
         if(!game->hasOutpost(originID)) {
             std::cout << "ORDER ERROR: nonexistent origin" << std::endl;
@@ -98,6 +100,8 @@ public:
 
             return nullptr;
         }
+
+        // TODO: add check that specialist count is 3 or less
 
         std::list<Specialist*> specialists;
         for(int specialistID : specialistIDs) specialists.push_back(game->getSpecialist(specialistID));

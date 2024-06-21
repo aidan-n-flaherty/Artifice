@@ -111,7 +111,7 @@ double Vessel::getSpeed() const {
 }
 
 // generate collision events for other vessels
-void Vessel::collision(Vessel* vessel, Vessel* other, double timestamp, std::multiset<Event*, EventOrder> &events) {
+void Vessel::collision(Vessel* vessel, Vessel* other, double timestamp, std::multiset<Event*, EventOrder> &events, std::vector<Event*> &simulatedEvents) {
     if(vessel->getOwnerID() == other->getOwnerID() || vessel->getTargetID() == -1) return;
 
     double seconds = -1;
@@ -140,6 +140,16 @@ void Vessel::collision(Vessel* vessel, Vessel* other, double timestamp, std::mul
     }
 
     if(seconds >= 0) {
+        double epsilon = 0.01;
+        if(seconds < epsilon) {
+            for(Event* event : simulatedEvents) {
+                if(std::abs(event->getTimestamp() - timestamp) < epsilon && event->referencesObject(vessel->getID()) && event->referencesObject(other->getID())) {
+                    BattleEvent* b = dynamic_cast<BattleEvent*>(event);
+                    if(b) return;
+                }
+            }
+        }
+
         events.insert(new IntervesselEvent(timestamp + seconds, vessel, other));
 
         return;

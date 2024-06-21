@@ -100,6 +100,18 @@ std::list<Outpost*> Player::sortedOutposts(const PositionalObject* obj) {
     return outposts;
 }
 
+std::list<Vessel*> Player::sortedVessels(const PositionalObject* obj) {
+    std::list<Vessel*> vessels;
+
+    for(Vessel* v : getVessels()) vessels.push_back(v);
+
+    vessels.sort([&obj](Vessel* a, Vessel* b) { 
+        return obj->distance(a->getPosition()) < obj->distance(b->getPosition()); 
+    });
+
+    return vessels;
+}
+
 void Player::projectedVictory(Player* player, double timestamp, std::multiset<Event*, EventOrder> &events) {
     if(getSettings()->gameMode == Mode::MINING && resourceProductionSpeed() > 0) {
         int diff = ceil((getSettings()->resourcesToWin - (getResources() + fractionalProduction)) / (resourceProductionSpeed() / (24.0 * 60 * 60 / getSettings()->simulationSpeed)));
@@ -250,6 +262,27 @@ void Player::addOutpost(Outpost* outpost) {
 }
 
 void Player::removeOutpost(Outpost* outpost) {
+    if(outpost->controlsSpecialist(SpecialistType::QUEEN)) {
+        bool assigned = false;
+
+        for(Outpost* o : sortedOutposts(outpost)) {
+            if(o->controlsSpecialist(SpecialistType::PRINCESS)) {
+                o->getSpecialist(SpecialistType::PRINCESS)->setType(SpecialistType::QUEEN);
+                assigned = true;
+                break;
+            }
+        }
+
+        if(!assigned) {
+            for(Vessel* v : sortedVessels(outpost)) {
+                if(v->controlsSpecialist(SpecialistType::PRINCESS)) {
+                    v->getSpecialist(SpecialistType::PRINCESS)->setType(SpecialistType::QUEEN);
+                    break;
+                }
+            }
+        }
+    }
+
     for(auto it = outposts.begin(); it != outposts.end(); it++) {
         if((*it)->getID() == outpost->getID()) {
             if(outpost->getType() == OutpostType::MINE) {
@@ -279,6 +312,27 @@ void Player::addVessel(Vessel* vessel) {
 }
 
 void Player::removeVessel(Vessel* vessel) {
+    if(vessel->controlsSpecialist(SpecialistType::QUEEN)) {
+        bool assigned = false;
+
+        for(Outpost* o : sortedOutposts(vessel)) {
+            if(o->controlsSpecialist(SpecialistType::PRINCESS)) {
+                o->getSpecialist(SpecialistType::PRINCESS)->setType(SpecialistType::QUEEN);
+                assigned = true;
+                break;
+            }
+        }
+
+        if(!assigned) {
+            for(Vessel* v : sortedVessels(vessel)) {
+                if(v->controlsSpecialist(SpecialistType::PRINCESS)) {
+                    v->getSpecialist(SpecialistType::PRINCESS)->setType(SpecialistType::QUEEN);
+                    break;
+                }
+            }
+        }
+    }
+
     for(auto it = vessels.begin(); it != vessels.end(); it++) {
         if((*it)->getID() == vessel->getID()) {
             vessels.erase(it);
