@@ -115,7 +115,6 @@ size_flags_horizontal = 3
 theme = ExtResource("4_tumqw")
 theme_override_fonts/font = ExtResource("5_yyilv")
 theme_override_font_sizes/font_size = 30
-disabled = true
 text = "Customize Profile"
 
 [node name="Spacer" type="Control" parent="MarginContainer/ScrollContainer/VBoxContainer/ButtonMargins/Tabs"]
@@ -680,6 +679,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 0.5
 
+[connection signal="pressed" from="MarginContainer/ScrollContainer/VBoxContainer/ButtonMargins/Tabs/CustomizeProfile" to="." method="_on_customize_profile_pressed"]
 [connection signal="text_changed" from="MarginContainer/ScrollContainer/VBoxContainer/GridContainer/UsernameText" to="." method="_on_username_text_text_changed"]
 [connection signal="toggled" from="MarginContainer/ScrollContainer/VBoxContainer/GridContainer/PushNotificationButtons/PushOn" to="." method="_on_push_on_toggled"]
 [connection signal="toggled" from="MarginContainer/ScrollContainer/VBoxContainer/GridContainer/PushNotificationButtons/PushOff" to="." method="_on_push_off_toggled"]

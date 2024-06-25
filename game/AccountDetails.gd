@@ -43,9 +43,11 @@ func updateUser(userID):
 	
 	var banner
 	banner = preload("res://Banner.tscn").instantiate()
-	var playerSelectedBanner = 3 	#retrieve from data
-	var playerPrimaryColor = Color(1.0,0.0,0) #retrieve from data
-	var playerSecondaryColor = Color(0,1,0) #retrieve from data
+	var playerSelectedBanner = user.bannerID 	#retrieve from data
+	var pC = user.primaryBannerColor
+	var sC = user.secondaryBannerColor
+	var playerPrimaryColor = Color(pC[0], pC[1], pC[2]) #retrieve from data
+	var playerSecondaryColor =  Color(sC[0], sC[1], sC[2])  #retrieve from data
 	
 	banner.init(playerSelectedBanner, playerPrimaryColor, playerSecondaryColor)
 	$MarginContainer/ScrollContainer/VBoxContainer/Banner.add_child(banner)
@@ -182,3 +184,10 @@ func _on_graphics_push_on_toggled(toggled_on):
 func _on_graphics_push_off_toggled(toggled_on):
 	GameData.localSettings["graphics"] = "simple"
 	GameData.saveLocalSettings()
+
+
+func _on_customize_profile_pressed() -> void:
+	var customizeProfile = preload("res://CustomizeProfile.tscn").instantiate()
+	customizeProfile.init(userID)
+	GameData.goto_node(customizeProfile)
+	

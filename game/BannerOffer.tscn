@@ -1,0 +1,198 @@
+[gd_scene load_steps=9 format=3 uid="uid://dgaortf7ormuh"]
+
+[ext_resource type="Theme" uid="uid://tg7ina762c6q" path="res://resources/themes/UITheme.tres" id="1_efxnd"]
+[ext_resource type="Script" path="res://BannerOffer.gd" id="2_jkhc4"]
+[ext_resource type="Material" uid="uid://ceshq08mjed03" path="res://resources/materials/SpecialistMesh.tres" id="3_w4xkp"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5mrol"]
+bg_color = Color(0, 0, 0, 0.235294)
+corner_radius_top_left = 30
+corner_radius_top_right = 30
+corner_radius_bottom_right = 30
+corner_radius_bottom_left = 30
+corner_detail = 16
+
+[sub_resource type="LabelSettings" id="LabelSettings_bcf4o"]
+font_size = 32
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7tyq1"]
+bg_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 25
+corner_radius_top_right = 25
+corner_radius_bottom_right = 25
+corner_radius_bottom_left = 25
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hk65e"]
+content_margin_left = 10.0
+content_margin_top = 0.0
+content_margin_right = 10.0
+content_margin_bottom = 0.0
+bg_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1ul18"]
+content_margin_left = 10.0
+content_margin_top = 0.0
+content_margin_right = 10.0
+content_margin_bottom = 0.0
+bg_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[node name="BannerOffer" type="MarginContainer"]
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 296.0
+grow_horizontal = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+theme = ExtResource("1_efxnd")
+script = ExtResource("2_jkhc4")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="Background" type="Panel" parent="VBoxContainer/MarginContainer"]
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("1_efxnd")
+theme_override_styles/panel = SubResource("StyleBoxFlat_5mrol")
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/MarginContainer"]
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("1_efxnd")
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 50
+
+[node name="HBoxContainer" type="HSplitContainer" parent="VBoxContainer/MarginContainer/MarginContainer"]
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("1_efxnd")
+dragger_visibility = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/MarginContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+theme = ExtResource("1_efxnd")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+theme = ExtResource("1_efxnd")
+theme_override_constants/separation = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+theme = ExtResource("1_efxnd")
+text = "Testing"
+label_settings = SubResource("LabelSettings_bcf4o")
+vertical_alignment = 2
+
+[node name="Multiplier" type="Label" parent="VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.772951, 0.772951, 0.772951, 1)
+
+[node name="Description" type="RichTextLabel" parent="VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("1_efxnd")
+text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+fit_content = true
+scroll_active = false
+
+[node name="MarginContainer" type="VBoxContainer" parent="VBoxContainer/MarginContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+size_flags_stretch_ratio = 0.25
+mouse_filter = 2
+theme = ExtResource("1_efxnd")
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/MarginContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 0
+
+[node name="Panel" type="Panel" parent="VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/MarginContainer/MarginContainer/MarginContainer"]
+custom_minimum_size = Vector2(120, 120)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_7tyq1")
+
+[node name="Image" type="MarginContainer" parent="VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/MarginContainer/MarginContainer/MarginContainer"]
+modulate = Color(0, 0, 0, 1)
+material = ExtResource("3_w4xkp")
+custom_minimum_size = Vector2(2.08165e-12, 2.08165e-12)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.25
+mouse_filter = 2
+theme = ExtResource("1_efxnd")
+
+[node name="Select" type="Button" parent="VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/MarginContainer"]
+custom_minimum_size = Vector2(2.08165e-12, 2.08165e-12)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 8
+theme = ExtResource("1_efxnd")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_colors/font_disabled_color = Color(0, 0, 0, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_pressed_color = Color(0, 0, 0, 1)
+theme_override_styles/hover = SubResource("StyleBoxFlat_hk65e")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_1ul18")
+theme_override_styles/normal = SubResource("StyleBoxFlat_hk65e")
+text = "Select"
+
+[node name="Purchase" type="Button" parent="VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/MarginContainer"]
+custom_minimum_size = Vector2(2.08165e-12, 2.08165e-12)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 8
+theme = ExtResource("1_efxnd")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_colors/font_disabled_color = Color(0, 0, 0, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_pressed_color = Color(0, 0, 0, 1)
+theme_override_styles/hover = SubResource("StyleBoxFlat_hk65e")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_1ul18")
+theme_override_styles/normal = SubResource("StyleBoxFlat_hk65e")
+text = "Purchase"
+
+[node name="PromotionDisplays" type="MarginContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 50
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/PromotionDisplays"]
+layout_mode = 2
+
+[connection signal="pressed" from="VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/MarginContainer/Select" to="." method="_on_select_pressed"]
+[connection signal="pressed" from="VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/MarginContainer/Purchase" to="." method="_on_purchase_pressed"]
