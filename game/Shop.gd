@@ -8,29 +8,25 @@ var game
 
 var specialists
 
+var subMenu = 0
+
 var combatSpecialists = []
 var combatSpecialistsNames = ["Infiltrator", "Lieutenant", "Thief", "Martyr"]
-var combatFlag = false 
 
 var counterSpecialists = []
 var counterSpecialistsNames = ["Assassin", "Revered_Elder", "Diplomat", "Hypnotist"]
-var counterFlag = false 
 
 var defenseSpecialists = []
 var defenseSpecialistsNames = ["Princess", "Inspector", "Saboteur", "Sentry"]
-var defenseFlag = false 
 
 var transitSpecialists = []
 var transitSpecialistsNames = ["Navigator", "Lieutenant", "Smuggler", "Helmsman"]
-var transitFlag = false 
 
 var sonarSpecialists = []
 var sonarSpecialistsNames = ["Intelligence_Officer", "Princess"]
-var sonarFlag = false 
 
 var unitSpecialists = []
 var unitSpecialistsNames = ["Foreman", "Tinkerer"]
-var unitFlag = false 
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -91,7 +87,7 @@ func _on_combat_specialist_pressed() -> void:
 	for specialist in combatSpecialists:
 		$VBoxContainer/ScrollContainer/Stack.add_child(specialist)
 		
-	combatFlag = true
+	subMenu = 1
 
 func _on_counter_specialist_pressed() -> void:
 	$VBoxContainer/ScrollContainer/Stack/"Combat Specialist".hide()
@@ -105,7 +101,7 @@ func _on_counter_specialist_pressed() -> void:
 	for specialist in counterSpecialists:
 		$VBoxContainer/ScrollContainer/Stack.add_child(specialist)
 		
-	counterFlag = true
+	subMenu = 2
 
 
 func _on_defense_specialist_pressed() -> void:
@@ -120,7 +116,7 @@ func _on_defense_specialist_pressed() -> void:
 	for specialist in defenseSpecialists:
 		$VBoxContainer/ScrollContainer/Stack.add_child(specialist)
 		
-	defenseFlag = true
+	subMenu = 3
 
 
 func _on_transit_specialist_pressed() -> void:
@@ -135,7 +131,7 @@ func _on_transit_specialist_pressed() -> void:
 	for specialist in transitSpecialists:
 		$VBoxContainer/ScrollContainer/Stack.add_child(specialist)
 		
-	transitFlag = true
+	subMenu = 4
 
 func _on_sonar_specialist_pressed() -> void:
 	$VBoxContainer/ScrollContainer/Stack/"Combat Specialist".hide()
@@ -149,7 +145,7 @@ func _on_sonar_specialist_pressed() -> void:
 	for specialist in sonarSpecialists:
 		$VBoxContainer/ScrollContainer/Stack.add_child(specialist)
 		
-	sonarFlag = true
+	subMenu = 5
 
 
 func _on_unit_specialist_pressed() -> void:
@@ -164,7 +160,7 @@ func _on_unit_specialist_pressed() -> void:
 	for specialist in unitSpecialists:
 		$VBoxContainer/ScrollContainer/Stack.add_child(specialist)
 		
-	unitFlag = true
+	subMenu = 6
 
 
 func _on_back_button_pressed() -> void:
@@ -176,32 +172,24 @@ func _on_back_button_pressed() -> void:
 	$VBoxContainer/ScrollContainer/Stack/"Unit Specialist".show()
 	$VBoxContainer/ScrollContainer/Stack/"Back Button".hide()
 	
-	if combatFlag:
-		for specialist in combatSpecialists:
-			$VBoxContainer/ScrollContainer/Stack.remove_child(specialist)
-		combatFlag = false
-		
-	if defenseFlag:
-		for specialist in defenseSpecialists:
-			$VBoxContainer/ScrollContainer/Stack.remove_child(specialist)
-		defenseFlag = false
-
-	if counterFlag:
-		for specialist in counterSpecialists:
-			$VBoxContainer/ScrollContainer/Stack.remove_child(specialist)
-		counterFlag = false
-		
-	if transitFlag:
-		for specialist in transitSpecialists:
-			$VBoxContainer/ScrollContainer/Stack.remove_child(specialist)
-		transitFlag = false
-
-	if sonarFlag:
-		for specialist in sonarSpecialists:
-			$VBoxContainer/ScrollContainer/Stack.remove_child(specialist)
-		sonarFlag = false
-		
-	if unitFlag:
-		for specialist in unitSpecialists:
-			$VBoxContainer/ScrollContainer/Stack.remove_child(specialist)
-		unitFlag = false
+	match subMenu:
+		1:
+			for specialist in combatSpecialists:
+				$VBoxContainer/ScrollContainer/Stack.remove_child(specialist)
+		2:
+			for specialist in counterSpecialists:
+				$VBoxContainer/ScrollContainer/Stack.remove_child(specialist)
+		3:
+			for specialist in defenseSpecialists:
+				$VBoxContainer/ScrollContainer/Stack.remove_child(specialist)
+		4:
+			for specialist in transitSpecialists:
+				$VBoxContainer/ScrollContainer/Stack.remove_child(specialist)
+		5:
+			for specialist in sonarSpecialists:
+				$VBoxContainer/ScrollContainer/Stack.remove_child(specialist)
+		6:
+			for specialist in unitSpecialists:
+				$VBoxContainer/ScrollContainer/Stack.remove_child(specialist)
+	
+	subMenu = 0
