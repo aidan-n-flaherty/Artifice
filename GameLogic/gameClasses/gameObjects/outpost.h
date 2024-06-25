@@ -49,9 +49,8 @@ public:
     int getMaxShield() const;
     int getUnitsAt(double timeDiff) const override;
     int getShieldAt(double timeDiff) const;
-    int getUnitsAt(double& fractionalProduction, double timeDiff) const;
     int getShieldAt(double& fractionalShield, double timeDiff) const;
-    int getProductionAmount();
+    int getProductionAmount() override;
 
     void addSpecialists(std::list<Specialist*> specialists) override;
 

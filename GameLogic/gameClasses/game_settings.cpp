@@ -29,6 +29,7 @@ void GameSettings::loadDefaults() {
     GameSettings::number_of_teams = -1;
     GameSettings::startTime = -1;
     GameSettings::resourceReductionAmount = 0.2;
+    GameSettings::giftPadding = 100;
     GameSettings::activeHours.clear();
     for(int i = 0; i < 24; i++) GameSettings::activeHours.insert(i);
     GameSettings::specialistBans.clear();
@@ -62,7 +63,8 @@ void GameSettings::loadDefaults() {
         { SECURITY_CHIEF, "All shield charges are raised by 10, and an additional 10 shield charge is added to the Security Chief's outpost." },
         { TYCOON, "Unit production speed is increased by 50%. When at a factory, 3 additional units are produced." },
         { WAR_HERO, "20 enemy units are killed when the War Hero is participating in battle." },
-        { DOUBLE_AGENT, "In sub-to-sub combat, kill all units on both sides before defecting to the opponent's side." }
+        { DOUBLE_AGENT, "In sub-to-sub combat, kill all units on both sides before defecting to the opponent's side." },
+        { RECRUITER, "While on a sub, produce units on each production tick as if it were a factory." }
     };
 
     GameSettings::playerColors = {

@@ -20,7 +20,7 @@ signal loadGame(gameID, past)
 
 signal loadGameDetail(gameID)
 
-var version = "1.12"
+var version = "1.13"
 
 var needsUpdate = false
 
@@ -424,6 +424,10 @@ func viewGame(id: int, past=false):
 	emit_signal("loadGame", id, past)
 
 func viewGameCompletion(id: int, past=false):
+	if id == -1:
+		viewOfflineGameCompletion()
+		return
+	
 	if not hasGame(id):
 		await loadGameState(id)
 	
@@ -440,6 +444,63 @@ func viewGameCompletion(id: int, past=false):
 
 	if len(currentGameIDs) == 0 or currentGameIDs[len(currentGameIDs) - 1][0] != id:	
 		currentGameIDs.push_back([id, past])
+	
+	goto_node(node)
+	
+func viewOfflineGameCompletion():
+	var id = -1
+	
+	var startTime = Time.get_unix_time_from_system()
+	
+	gameDetails[-1] = {
+		"gameData": {
+			"hostID": getSelfID(),
+			"startTime": startTime,
+			"hasChatNotifications": false,
+			"hasNotifications": false,
+			"playerCount": 2,
+			"finished": false
+		},
+		"gameSettings": {
+			"playerCap": 2
+		}
+	}
+	
+	var game = GameInterface.new()
+	game.init(id, self.id, randi_range(0, 100000), startTime, false, 2, {
+		0: {
+			"id": getSelfID(),
+			"username": getSelf().username,
+			"stats": {
+				"rating": getSelf().userStats.rating
+			}
+		},
+		1: {
+			"id": -1,
+			"username": "Bot 1",
+			"stats": {
+				"rating": 1200
+			}
+		}
+	}, {
+		"simulationSpeed": 1800
+	})
+	game.set_visible(false)
+	game.set_process(false)
+	
+	mutex.lock()
+	if games.has(id):
+		games[id].getFloorDisplay().queue_free()
+		games[id].queue_free()
+	
+	games[id] = game
+	mutex.unlock()
+	
+	var node = preload("res://Game.tscn").instantiate()
+	node.init(id, true)
+
+	if len(currentGameIDs) == 0 or currentGameIDs[len(currentGameIDs) - 1][0] != id:	
+		currentGameIDs.push_back([id, false])
 	
 	goto_node(node)
 
@@ -835,6 +896,12 @@ func bulkAddOrders(gameID: int, game, orders):
 func addOrder(gameID: int, type, referenceID, timestamp, arguments):
 	var game = getGame(gameID)
 	
+	if game.isOffline():
+		game.addOrder(type, int(game.getNextOfflineOrder()), int(referenceID), bool(false), float(timestamp), int(0), PackedInt32Array(arguments), int(arguments.size()))
+		
+		print("Order registered")
+		return
+	
 	print(game.getTime())
 	var order = await HTTPManager.putReq("/updateOrder", {
 		"type": type,
@@ -881,6 +948,12 @@ func replaceOrder(orderID: int, gameID: int, type: String, referenceID: int, can
 
 func cancelOrder(gameID: int, orderID: int):
 	var game = getGame(gameID)
+	
+	if game.isOffline():
+		game.cancelOrder(orderID)
+		
+		print("Canceled ", orderID)
+		return
 	
 	if game and orderID != -1:
 		var response = await HTTPManager.postReq("/removeOrder", {}, {

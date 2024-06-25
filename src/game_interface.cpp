@@ -95,6 +95,9 @@ void GameInterface::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("getNextVictoryPlayer"), &GameInterface::getNextVictoryPlayer);
 	ClassDB::bind_method(D_METHOD("getNextArrivalEvent"), &GameInterface::getNextArrivalEvent);
 	ClassDB::bind_method(D_METHOD("getNextProductionEvent"), &GameInterface::getNextProductionEvent);
+	ClassDB::bind_method(D_METHOD("setOffline"), &GameInterface::setOffline);
+	ClassDB::bind_method(D_METHOD("isOffline"), &GameInterface::isOffline);
+	ClassDB::bind_method(D_METHOD("getNextOfflineOrder"), &GameInterface::getNextOfflineOrder);
 
 	// battles
 	ClassDB::bind_method(D_METHOD("getNextBattleEvent"), &GameInterface::getNextBattleEvent);
@@ -270,7 +273,6 @@ void GameInterface::init(int gameID, int userID, int seed, int startTime, bool f
 	settings.startTime = startTime;
 	completeGame = std::shared_ptr<Game>(new Game(settings, userID, startTime, settings.clientToGameTime(startTime + simulationBuffer / settings.simulationSpeed), playerMap, seed, true));
 	fullCompleteGame = std::shared_ptr<Game>(new Game(settings, userID, startTime, settings.clientToGameTime(startTime + simulationBuffer / settings.simulationSpeed), playerMap, seed, true));
-	tempGame = std::shared_ptr<Game>(new Game(settings, userID, startTime, settings.clientToGameTime(getTimeMillis() - 4 * 60 * 60), playerMap, seed, false));
 
 	settings = *(completeGame->getSettings());
 
@@ -339,7 +341,7 @@ void GameInterface::_process(double delta) {
 	
 	update();
 
-	if(fullCompleteGame != nullptr && fullGame != nullptr && completeGame != nullptr && game != nullptr) {
+	if(fullCompleteGame != nullptr && fullGame != nullptr && completeGame != nullptr && game != nullptr && !isOffline()) {
 		double fullDiff = settings.clientToGameTime(time) - fullGame->getTime();
 
 		double fullTime = settings.clientToGameTime(time);
@@ -465,8 +467,8 @@ void GameInterface::_process(double delta) {
 			pair.second->setDiff(t, timeDiff);
 			pair.second->setSelfOwned(pair.second->getOwnerID() == userGameID && userGameID >= 0);
 			
-            if(future && v && fullPlayer && !fullGame->withinRange(fullPlayer, v, fullDiff)) pair.second->setInRadar(finished);
-			else pair.second->setInRadar(finished || (p ? visibilityGame->withinRange(p, pair.second->getObj(), timeDiff) : false));
+            if(future && v && fullPlayer && !fullGame->withinRange(fullPlayer, v, fullDiff)) pair.second->setInRadar(isOffline() || finished);
+			else pair.second->setInRadar(isOffline() || finished || (p ? visibilityGame->withinRange(p, pair.second->getObj(), timeDiff) : false));
 			
 			if(pair.second->isLoaded()) pair.second->set_visible(pair.second->isInRadar() && !pair.second->getVessel()->getDisabled());
 		}
@@ -474,9 +476,9 @@ void GameInterface::_process(double delta) {
 		for(const auto& pair : outposts) {
 			pair.second->setDiff(t, timeDiff);
 			pair.second->setSelfOwned(pair.second->getOwnerID() == userGameID && userGameID >= 0);
-			pair.second->setInRadar(finished || (p ? visibilityGame->withinRange(p, pair.second->getObj(), timeDiff) : false));
+			pair.second->setInRadar(isOffline() || finished || (p ? visibilityGame->withinRange(p, pair.second->getObj(), timeDiff) : false));
 			pair.second->set_visible(true);
-			pair.second->setViewType(finished || (p ? p->controlsSpecialist(SpecialistType::INTELLIGENCE_OFFICER) : false));
+			pair.second->setViewType(isOffline() || finished || (p ? p->controlsSpecialist(SpecialistType::INTELLIGENCE_OFFICER) : false));
 		}
 
 		for(const auto& pair : players) pair.second->setDiff(t, timeDiff);
@@ -698,7 +700,7 @@ void GameInterface::sendTo(int id) {
 
 	double simulatedDiff = settings.clientToGameTime(getCurrent()) - simulatedGame->getTime();
 
-	if(getSelected() && getSelected()->getOwnerID() == getUserGameID()) {
+	if(getSelected() && (getSelected()->getOwnerID() == getUserGameID() || isOffline())) {
 		Vessel* v1 = dynamic_cast<Vessel*>(getSelected());
 		Outpost* o1 = dynamic_cast<Outpost*>(getSelected());
 
@@ -712,13 +714,13 @@ void GameInterface::sendTo(int id) {
 			int units = getSelected()->getUnitsAt(simulatedDiff);
 
 			uint32_t parameters[] = { uint32_t(std::max(selectedSpecialists.empty() ? 1 : 0, int(percent * units))), uint32_t(selected), target->getID() };
-			Array arguments;
+			PackedInt32Array arguments;
 
 			for(int i = 0; i < 3; i++) arguments.push_back(parameters[i]);
 
 			while(!selectedSpecialists.empty()) {
 				if(simulatedGame->getSpecialist(*selectedSpecialists.begin())->getOwnerID() == userGameID) {
-					arguments.push_back(*selectedSpecialists.begin());
+					arguments.push_back(uint32_t(*selectedSpecialists.begin()));
 					if(getNode(selected)) getNode(selected)->setSpecialistSelected(*selectedSpecialists.begin(), false);
 				}
 				selectedSpecialists.erase(selectedSpecialists.begin());
@@ -726,7 +728,8 @@ void GameInterface::sendTo(int id) {
 
 			if(getNode(selected)) getNode(selected)->clearSelectedSpecialists();
 
-			emit_signal("addOrder", "SEND", simulatedGame->getReferenceID(), current, arguments);
+			if(!isOffline()) emit_signal("addOrder", "SEND", simulatedGame->getReferenceID(), current, arguments);
+			else addOrder("SEND", getNextOfflineOrder(), simulatedGame->getReferenceID(), false, current, isOffline() ? o1->getOwnerID() : userGameID, arguments, arguments.size());
 
 			return;
 		} else if(v1) {
@@ -735,11 +738,12 @@ void GameInterface::sendTo(int id) {
 			if(v2 && !getSelected()->controlsSpecialist(SpecialistType::PIRATE)) return;
 
 			uint32_t parameters[] = { uint32_t(selected), target->getID() };
-			Array arguments;
+			PackedInt32Array arguments;
 
 			for(int i = 0; i < 2; i++) arguments.push_back(parameters[i]);
 
-			emit_signal("addOrder", "REROUTE", simulatedGame->getReferenceID(), current, arguments);
+			if(!isOffline()) emit_signal("addOrder", "REROUTE", simulatedGame->getReferenceID(), current, arguments);
+			else addOrder("REROUTE", getNextOfflineOrder(), simulatedGame->getReferenceID(), false, current, isOffline() ? v1->getOwnerID() : userGameID, arguments, arguments.size());
 			
 			return;
 		}
@@ -822,8 +826,8 @@ void GameInterface::setSelectedSpecialist(int id) {
 	bool owned = s->getContainer() && s->getContainer()->getOwnerID() == getUserGameID();
 	PositionalNode* container = getNode(containerID);
 
-	for(auto& pair : vessels) if(pair.first != containerID || !owned) pair.second->clearSelectedSpecialists();
-	for(auto& pair : outposts) if(pair.first != containerID || !owned) pair.second->clearSelectedSpecialists();
+	for(auto& pair : vessels) if(pair.first != containerID || (!owned && !isOffline())) pair.second->clearSelectedSpecialists();
+	for(auto& pair : outposts) if(pair.first != containerID || (!owned && !isOffline())) pair.second->clearSelectedSpecialists();
 
 	if(container) {
 		container->setSpecialistSelected(id, selected);
@@ -846,7 +850,7 @@ void GameInterface::setSelectedSpecialist(int id) {
 		if(selectedSpecialists.size() > 3) setSelectedSpecialist(*selectedSpecialists.begin());
 		emit_signal("selectSpecialist", id);
 	} else {
-		selectedSpecialists.erase(std::find(selectedSpecialists.begin(), selectedSpecialists.end(), id));
+		if(std::find(selectedSpecialists.begin(), selectedSpecialists.end(), id) != selectedSpecialists.end()) selectedSpecialists.erase(std::find(selectedSpecialists.begin(), selectedSpecialists.end(), id));
 		emit_signal("deselectSpecialist", id);
 		setSelected(containerID);
 	}
@@ -858,13 +862,11 @@ void GameInterface::bulkAddOrder(const String &type, uint32_t ID, int32_t refere
 
 	completeGame = completeGame->processOrder(std::string(type.utf8().get_data()), ID, referenceID, canceled, settings.clientToGameTime(timestamp), senderID, arr, argCount);
 	fullCompleteGame = fullCompleteGame->processOrder(std::string(type.utf8().get_data()), ID, referenceID, canceled, settings.clientToGameTime(timestamp), senderID, arr, argCount);
-	tempGame = tempGame->processOrder(std::string(type.utf8().get_data()), ID, referenceID, canceled, settings.clientToGameTime(timestamp), senderID, arr, argCount);
 }
 
 void GameInterface::endBulkAdd() {
 	fullCompleteGame->run();
 	completeGame->run();
-	std::cout << (tempGame->run()).size() << std::endl;
 
 	game = nullptr;
 	simulatedGame = nullptr;
@@ -937,7 +939,7 @@ void GameInterface::incrementSend(int orderID) {
 			for(int id : order->getSpecialistIDs()) arguments.push_back(uint32_t(id));
 			for(int id : order->getSpecialistIDs()) oldArguments.push_back(uint32_t(id));
 
-			emit_signal("replaceOrder", orderID, "SEND", order->getReferenceID(), order->isCanceled(), order->getTimestamp(), arguments, oldArguments);
+			if(!isOffline()) emit_signal("replaceOrder", orderID, "SEND", order->getReferenceID(), order->isCanceled(), order->getTimestamp(), arguments, oldArguments);
 			addOrder("SEND", orderID, order->getReferenceID(), order->isCanceled(), order->getTimestamp(), userGameID, arguments, arguments.size());
 		}
 	}
@@ -964,7 +966,7 @@ void GameInterface::decrementSend(int orderID) {
 			for(int id : order->getSpecialistIDs()) arguments.push_back(uint32_t(id));
 			for(int id : order->getSpecialistIDs()) oldArguments.push_back(uint32_t(id));
 
-			emit_signal("replaceOrder", orderID, "SEND", order->getReferenceID(), order->isCanceled(), order->getTimestamp(), arguments, oldArguments);
+			if(!isOffline()) emit_signal("replaceOrder", orderID, "SEND", order->getReferenceID(), order->isCanceled(), order->getTimestamp(), arguments, oldArguments);
 			addOrder("SEND", orderID, order->getReferenceID(), order->isCanceled(), order->getTimestamp(), userGameID, arguments, arguments.size());
 		}
 	}
@@ -993,7 +995,7 @@ void GameInterface::alterSend(int orderID, int units) {
 			for(int id : order->getSpecialistIDs()) arguments.push_back(uint32_t(id));
 			for(int id : order->getSpecialistIDs()) oldArguments.push_back(uint32_t(id));
 
-			emit_signal("replaceOrder", orderID, "SEND", order->getReferenceID(), order->isCanceled(), order->getTimestamp(), arguments, oldArguments);
+			if(!isOffline()) emit_signal("replaceOrder", orderID, "SEND", order->getReferenceID(), order->isCanceled(), order->getTimestamp(), arguments, oldArguments);
 			addOrder("SEND", orderID, order->getReferenceID(), order->isCanceled(), order->getTimestamp(), userGameID, arguments, arguments.size());
 		}
 	}
@@ -1026,7 +1028,7 @@ void GameInterface::addSpecialist(int orderID, int specialistID) {
 
 			for(int id : specialistsToSend) arguments.push_back(uint32_t(id));
 
-			emit_signal("replaceOrder", orderID, "SEND", order->getReferenceID(), order->isCanceled(), order->getTimestamp(), arguments, oldArguments);
+			if(!isOffline()) emit_signal("replaceOrder", orderID, "SEND", order->getReferenceID(), order->isCanceled(), order->getTimestamp(), arguments, oldArguments);
 			addOrder("SEND", orderID, order->getReferenceID(), order->isCanceled(), order->getTimestamp(), userGameID, arguments, arguments.size());
 		}
 	}
@@ -1053,7 +1055,7 @@ void GameInterface::removeSpecialist(int orderID, int specialistID) {
 			for(int id : order->getSpecialistIDs()) if(id != specialistID) arguments.push_back(uint32_t(id));
 			for(int id : order->getSpecialistIDs()) oldArguments.push_back(uint32_t(id));
 
-			emit_signal("replaceOrder", orderID, "SEND", order->getReferenceID(), order->isCanceled(), order->getTimestamp(), arguments, oldArguments);
+			if(!isOffline()) emit_signal("replaceOrder", orderID, "SEND", order->getReferenceID(), order->isCanceled(), order->getTimestamp(), arguments, oldArguments);
 			addOrder("SEND", orderID, order->getReferenceID(), order->isCanceled(), order->getTimestamp(), userGameID, arguments, arguments.size());
 		}
 	}

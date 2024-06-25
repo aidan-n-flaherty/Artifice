@@ -77,7 +77,7 @@ func _process(delta):
 	
 	var owns = game.ownsObj(vessel.getID())
 	
-	$VBoxContainer/HBoxContainer/Gift.visible = game.canGift(vessel.getID())
+	$VBoxContainer/HBoxContainer/Gift.visible = owns and game.canGift(vessel.getID())
 	
 	if owns and vessel.canUndo():
 		$VBoxContainer/HBoxContainer/Cancel.text = "Undo '" + vessel.getOriginatingOrderType() + "'"
