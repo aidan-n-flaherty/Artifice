@@ -42,6 +42,8 @@ private:
     std::list<Outpost*> outposts;
     std::list<Vessel*> vessels;
 
+    std::list<std::pair<double, std::pair<Point, Point>>> vesselPaths;
+
     int resources = 0;
     double fractionalResProduction = 0.0;
 
@@ -96,12 +98,18 @@ public:
 
     std::list<Outpost*> getOutposts() const { return outposts; }
     std::list<Outpost*> sortedOutposts(const PositionalObject* obj);
+    std::list<Vessel*> sortedVessels(const PositionalObject* obj);
     void addOutpost(Outpost* outpost);
     void removeOutpost(Outpost* outpost);
 
     std::list<Vessel*> getVessels() const { return vessels; }
     void addVessel(Vessel* vessel);
     void removeVessel(Vessel* vessel);
+
+    void addVesselPath(double timestamp, const Point& a, const Point& b) {
+        vesselPaths.push_back(std::pair<double, std::pair<Point, Point>>(timestamp, std::pair<Point, Point>(a, b)));
+    }
+    std::list<std::pair<double, std::pair<Point, Point>>> getVesselPaths() { return vesselPaths; }
 
     int outpostsOfType(OutpostType t) const;
 
@@ -125,6 +133,8 @@ public:
     int getCapacity() const;
     int getUnits() const;
     int getMinesDrilled() const { return minesDrilled; }
+
+    void setHires(int hires) { this->hires = hires; }
 
     void addResources(int amount) { resources += amount; }
     void removeResources(int amount) { resources -= amount; }

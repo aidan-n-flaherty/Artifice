@@ -16,6 +16,16 @@ void Vessel::updatePointers(Game* game) {
     target = game->getPosObject(target->getID());
 }
 
+int Vessel::getUnitsAt(double timeDiff) const {
+    double fractionalProduction = hasOwner() ? getOwner()->getFractionalProduction() : 0;
+    
+    int units = getUnits();
+
+    if(!hasOwner() || !controlsSpecialist(SpecialistType::RECRUITER)) return units;
+
+    return units + getOwner()->calculateUnitsAt(fractionalProduction, timeDiff)[getID()];
+}
+
 /* Calculates the point that this vessel is currently targeting, taking the target's
 ** movement into account.
 */
@@ -96,20 +106,22 @@ double Vessel::getSpeed(double speed, double simulationSpeed, Player* p, const s
     if(controlsSpecialist(p, specialists, SpecialistType::ADMIRAL)) speed = fmax(speed, 2);
     if(controlsSpecialist(p, specialists, SpecialistType::HELMSMAN)) speed = fmax(speed, 2);
     if(controlsSpecialist(p, specialists, SpecialistType::PIRATE)) speed = fmax(speed, 2);
-    if(controlsSpecialist(p, specialists, SpecialistType::SMUGGLER) && target && target->getOwnerID() == p->getID()) speed = fmax(speed, 3);
+    if(controlsSpecialist(p, specialists, SpecialistType::SMUGGLER) && (!target || target->getOwnerID() == p->getID())) speed = fmax(speed, 3);
 
     return speed * (simulationSpeed * 2.0 / (60 * 60));
 }
 
 // should be modified to work with specialist effects
 double Vessel::getSpeed() const {
+    if(disabled) return 0;
+    
     double speed = speedModifier;
 
     return Vessel::getSpeed(speed, getSettings()->simulationSpeed, getOwner(), getSpecialists(), getTarget());
 }
 
 // generate collision events for other vessels
-void Vessel::collision(Vessel* vessel, Vessel* other, double timestamp, std::multiset<Event*, EventOrder> &events) {
+void Vessel::collision(Vessel* vessel, Vessel* other, double timestamp, std::multiset<Event*, EventOrder> &events, std::vector<Event*> &simulatedEvents) {
     if(vessel->getOwnerID() == other->getOwnerID() || vessel->getTargetID() == -1) return;
 
     double seconds = -1;
@@ -118,7 +130,7 @@ void Vessel::collision(Vessel* vessel, Vessel* other, double timestamp, std::mul
         float speedDiff = vessel->getSpeed() - other->getSpeed();
 
         if(speedDiff != 0) {
-            seconds = (vessel->distance(target->getPosition()) - vessel->distance(other->getPosition()))/speedDiff;
+            seconds = (vessel->distance(target->getPosition()) - other->distance(target->getPosition()))/speedDiff;
         }
     }
     // Case 2: both are heading towards each other, so they are guaranteed to collide
@@ -138,6 +150,16 @@ void Vessel::collision(Vessel* vessel, Vessel* other, double timestamp, std::mul
     }
 
     if(seconds >= 0) {
+        double epsilon = 0.01;
+        if(seconds < epsilon) {
+            for(Event* event : simulatedEvents) {
+                if(std::abs(event->getTimestamp() - timestamp) < epsilon && event->referencesObject(vessel->getID()) && event->referencesObject(other->getID())) {
+                    BattleEvent* b = dynamic_cast<BattleEvent*>(event);
+                    if(b) return;
+                }
+            }
+        }
+
         events.insert(new IntervesselEvent(timestamp + seconds, vessel, other));
 
         return;
@@ -162,4 +184,14 @@ void Vessel::collision(Vessel* vessel, Outpost* outpost, double timestamp, std::
 void Vessel::returnHome() {
     if(hasOwner() && !getOwner()->getOutposts().empty()) setTarget(getOwner()->sortedOutposts(this).front());
     else setTarget(returnOutpost);
+}
+
+int Vessel::getProductionAmount() {
+    if(!controlsSpecialist(SpecialistType::RECRUITER)) return 0;
+
+    int productionAmount = getOwner()->globalProductionAmount();
+    productionAmount += 6 * specialistCount(SpecialistType::FOREMAN);
+    productionAmount += 3 * specialistCount(SpecialistType::TYCOON);
+
+    return productionAmount;
 }

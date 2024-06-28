@@ -38,11 +38,13 @@ func _process(delta):
 	$Images/HBoxContainer/Generator.visible = (outpost.isInRadar() or outpost.canViewType()) and outpost.isGenerator()
 	$Images/HBoxContainer/Mine.visible = (outpost.isInRadar() or outpost.canViewType()) and outpost.isMine()
 	
-	if not (outpost.isInRadar() or outpost.canViewType()):
+	if not (outpost.isInRadar() or outpost.canViewType() or outpost.isMine()):
 		$VBoxContainer/HBoxContainer/Jump.hide()
 		$Images/HBoxContainer/Mine.hide()
 		$VBoxContainer/HBoxContainer/Cancel.hide()
 		$VBoxContainer/HBoxContainer/BattleForecast.hide()
+		$VBoxContainer/Type.text = "Unknown"
+		
 		return
 	elif outpost.isFactory():
 		$VBoxContainer/Type.text = "Factory"
@@ -53,6 +55,7 @@ func _process(delta):
 		else:
 			$VBoxContainer/HBoxContainer/Spacer1.hide()
 			$VBoxContainer/HBoxContainer/Jump.hide()
+			$VBoxContainer/HBoxContainer2/VBoxContainer/Production.text = ""
 	elif outpost.isMine():
 		$VBoxContainer/Type.text = "Mine"
 		if outpost.getOwnerID() != -1:
@@ -62,6 +65,7 @@ func _process(delta):
 		else:
 			$VBoxContainer/HBoxContainer/Spacer1.hide()
 			$VBoxContainer/HBoxContainer/Jump.hide()
+			$VBoxContainer/HBoxContainer2/VBoxContainer/Production.text = ""
 	elif outpost.isGenerator():
 		$VBoxContainer/Type.text = "Generator"
 		$VBoxContainer/HBoxContainer/Spacer1.hide()
@@ -74,10 +78,7 @@ func _process(delta):
 		$VBoxContainer/HBoxContainer/Jump.hide()
 		$VBoxContainer/HBoxContainer/Spacer2.hide()
 		$VBoxContainer/HBoxContainer/Mine.hide()
-		
-	if not outpost.isInRadar() and not outpost.canViewType() and not outpost.isMine():
-		$VBoxContainer/Type.text = "Unknown"
-		
+	
 	var owns = game.ownsObj(outpost.getID())
 	if owns and outpost.canMine():
 		$VBoxContainer/HBoxContainer/Mine.show()

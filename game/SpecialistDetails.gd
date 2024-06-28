@@ -86,7 +86,7 @@ func _process(delta):
 	if specialistName == "Queen" and owns:
 		$MarginContainer/HBoxContainer/HBoxContainer/VBoxContainer/NextHireLabel.text = "%d hire%s available, next hire in %s" % [game.getHires(), "s" if game.getHires() != 1 else "", Utilities.timeToStr(game.getNextHireEvent() - game.getTime())]
 	
-	$MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/Shop.visible = canHire and specialistName == "Queen"
+	$MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/Shop.visible = owns and canHire and specialistName == "Queen"
 	
 	if owns and game.canUndoSpecialist(specialistID):
 		$MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/Cancel.text = "Undo '" + game.getSpecialistOriginatingOrderType(specialistID) + "'"

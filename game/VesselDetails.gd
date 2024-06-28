@@ -12,6 +12,8 @@ var submittedChange = false
 
 var oldUnits = null
 
+var specialistOptions = {}
+
 signal battleForecastToggle(vessel)
 
 # Called when the node enters the scene tree for the first time.
@@ -48,6 +50,13 @@ func _process(delta):
 	if not $VBoxContainer/HBoxContainer2/Units.has_focus():
 		$VBoxContainer/HBoxContainer2/Units.text = str(vessel.getUnits())
 	
+	var speed = vessel.getSpeed() * (60.0 * 60.0) / 2.0 / game.getSimulationSpeed()
+	if abs(speed - 1.0) > 0.001:
+		$VBoxContainer/HBoxContainer2/VBoxContainer/Speed.show()
+		$VBoxContainer/HBoxContainer2/VBoxContainer/Speed.text = ("%0.1fx speed" % speed) if ("%0.2f" % speed).ends_with("0") else ("%0.2fx speed" % speed)
+	else:
+		$VBoxContainer/HBoxContainer2/VBoxContainer/Speed.hide()
+	
 	var arrival = game.getNextArrivalEvent(vessel.getID())
 	if arrival >= 0:
 		$VBoxContainer/HBoxContainer2/VBoxContainer/Arrival.text = "Arrives in " + Utilities.timeToStr(arrival - game.getTime())
@@ -68,6 +77,8 @@ func _process(delta):
 	
 	var owns = game.ownsObj(vessel.getID())
 	
+	$VBoxContainer/HBoxContainer/Gift.visible = owns and game.canGift(vessel.getID())
+	
 	if owns and vessel.canUndo():
 		$VBoxContainer/HBoxContainer/Cancel.text = "Undo '" + vessel.getOriginatingOrderType() + "'"
 		$VBoxContainer/HBoxContainer/Spacer2.show()
@@ -76,6 +87,45 @@ func _process(delta):
 		$VBoxContainer/HBoxContainer2/Units.editable = true
 		$VBoxContainer/HBoxContainer2/Units.virtual_keyboard_enabled = true
 		$VBoxContainer/HBoxContainer2/Units.focus_mode = FOCUS_ALL
+
+		if vessel.canUndoSource():
+			var possibleSpecialists = game.possibleSpecialists(vessel.getSourceOrder())
+			var currentSpecialists = vessel.getSpecialistIDs()
+			
+			$VBoxContainer/HBoxContainer2/Specialists.visible = len(possibleSpecialists) > 0
+			
+			var possibleSpecialistArr = []
+			
+			for specialistID in possibleSpecialists:
+				if specialistID in currentSpecialists:
+					possibleSpecialistArr.push_back(specialistID)
+			
+			for specialistID in possibleSpecialists:
+				if not specialistID in currentSpecialists:
+					possibleSpecialistArr.push_back(specialistID)
+			
+			for specialistID in possibleSpecialistArr:
+				var selected = specialistID in currentSpecialists
+				var specialistType = game.getSpecialistTypeBeforeOrder(specialistID, vessel.getSourceOrder())
+				var specialistName = game.getSpecialistName(specialistType)
+				
+				var specialist = null
+				if specialistOptions.has(specialistID):
+					specialist = specialistOptions[specialistID]
+				else:
+					specialist = preload("res://VesselSpecialist.tscn").instantiate()
+					specialist.selected.connect(toggledSpecialist)
+					specialistOptions[specialistID] = specialist
+					$VBoxContainer/HBoxContainer2/Specialists/ScrollContainer/Specialists.add_child(specialist)
+				
+				specialist.init(specialistID, specialistName, selected)
+			
+			for specialistID in specialistOptions.keys():
+				if specialistID not in possibleSpecialists:
+					$VBoxContainer/HBoxContainer2/Specialists/ScrollContainer/Specialists.remove_child(specialistOptions[specialistID])
+					specialistOptions.erase(specialistID)
+		else:
+			$VBoxContainer/HBoxContainer2/Specialists.hide()
 	else:
 		$VBoxContainer/HBoxContainer/Spacer2.hide()
 		$VBoxContainer/HBoxContainer/Cancel.hide()
@@ -83,6 +133,7 @@ func _process(delta):
 		$VBoxContainer/HBoxContainer2/Units.editable = false
 		$VBoxContainer/HBoxContainer2/Units.virtual_keyboard_enabled = false
 		$VBoxContainer/HBoxContainer2/Units.focus_mode = FOCUS_NONE
+		$VBoxContainer/HBoxContainer2/Specialists.hide()
 	
 	get_parent().color = vessel.getColor()
 	
@@ -134,3 +185,9 @@ func _on_units_focus_entered():
 func _on_units_focus_exited():
 	if DisplayServer.has_feature(DisplayServer.FEATURE_VIRTUAL_KEYBOARD):
 		DisplayServer.virtual_keyboard_hide()
+
+func toggledSpecialist(specialistID: int):
+	if specialistID in vessel.getSpecialistIDs():
+		game.removeSpecialist(vessel.getSourceOrder(), specialistID)
+	else:
+		game.addSpecialist(vessel.getSourceOrder(), specialistID)

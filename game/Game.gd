@@ -18,6 +18,8 @@ var userID: int
 
 var diff = 0
 
+var offline: bool
+
 # Called when the node enters the scene tree for the first time.
 func _ready():	
 	get_viewport().connect("size_changed", resize)
@@ -103,10 +105,13 @@ func elementDisplay():
 func tabDisplay():
 	return get_node("Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/HSeparator/TabDisplay") if get_node_or_null("Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/HSeparator/TabDisplay") else get_node("Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/VSeparator/TabDisplay")
 
-func init(gameID):
+func init(gameID: int, offline=false):
 	self.gameID = gameID
+	self.offline = offline
 	
 	game = GameData.getGame(gameID)
+	if offline:
+		game.setOffline()
 	game.resume()
 	game.set_process(true)
 	game.set_visible(true)
@@ -128,7 +133,8 @@ func init(gameID):
 	$Viewport/Viewport3D.add_child(game)
 	
 	$Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer/ShopContainer.visible = game.getUserGameID() != -1
-	$Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer/ChatContainer.visible = game.getUserGameID() != -1
+	$Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer/ChatContainer.visible = game.getUserGameID() != -1 and not game.isOffline()
+	$Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer/EditorContainer.visible = not game.isOffline()
 	
 	$Viewport/GameOverlay/MarginContainer/VTimeline/Timeline.init(gameID)
 	$Viewport/Viewport3D/CameraManager.init(gameID)
@@ -141,15 +147,16 @@ func init(gameID):
 	var details = GameData.getGameDetails(gameID)
 	
 	
-	if tabDisplay().get_node_or_null("Panel/GameEditor"):
-		tabDisplay().remove_child(tabDisplay().get_node("Panel/GameEditor"))
-	
-	var gameEditor = ResourceLoader.load("res://GameModifier.tscn").instantiate()
-	gameEditor.name = "GameEditor"
-	gameEditor.hide()
-	tabDisplay().get_node("Panel").add_child(gameEditor)
-	gameEditor.setEditable(details.gameData.hostID == GameData.id and details.gameData.startTime > Time.get_unix_time_from_system() + 2 * 365 * 24 * 60 * 60)
-	gameEditor.init(gameID)
+	if not game.isOffline():
+		if tabDisplay().get_node_or_null("Panel/GameEditor"):
+			tabDisplay().remove_child(tabDisplay().get_node("Panel/GameEditor"))
+		
+		var gameEditor = ResourceLoader.load("res://GameModifier.tscn").instantiate()
+		gameEditor.name = "GameEditor"
+		gameEditor.hide()
+		tabDisplay().get_node("Panel").add_child(gameEditor)
+		gameEditor.setEditable(details.gameData.hostID == GameData.id and details.gameData.startTime > Time.get_unix_time_from_system() + 2 * 365 * 24 * 60 * 60)
+		gameEditor.init(gameID)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -191,34 +198,38 @@ func _process(delta):
 	else:
 		$Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/VBoxContainer/HBoxContainer/Control/MarginContainer/MarginContainer/Label.text = ""
 	
-	if game.hasLost():
-		if not hasLost:
-			hasLost = true
-			
-			await GameData.viewEnd(gameID)
-	
-	if game.hasEnded():
-		if not viewingEnd:
-			viewingEnd = true
-			await GameData.viewEnd(gameID)
-	
-			if not GameData.isFinished(gameID):
-				if await GameData.verifyEnd(gameID):
+	if not game.isOffline():
+		if game.hasLost():
+			if not hasLost:
+				hasLost = true
+				
+				await GameData.viewEnd(gameID)
+		
+		if game.hasEnded() or GameData.isFinished(gameID):
+			if not viewingEnd:
+				viewingEnd = true
+				await GameData.viewEnd(gameID)
+				
+				if not game.hasEnded():
+					game.startAtBeginning()
+		
+				if not GameData.isFinished(gameID):
+					if await GameData.verifyEnd(gameID):
+						$Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/EndGame.init(gameID)
+						$Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/EndGame.show()
+				else:
 					$Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/EndGame.init(gameID)
 					$Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/EndGame.show()
-			else:
-				$Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/EndGame.init(gameID)
-				$Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/EndGame.show()
-	else:
-		viewingEnd = false
-		$Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/EndGame.hide()
-	
-	if details.gameData.hostID == GameData.id and details.gameData.startTime > Time.get_unix_time_from_system() + 2 * 365 * 24 * 60 * 60:
-		tabDisplay().get_node("Panel/GameEditor").setEditable(true)
-		tabDisplay().get_node("Panel/GameEditor").setActivatable(true)
-	else:
-		tabDisplay().get_node("Panel/GameEditor").setEditable(false)
-		tabDisplay().get_node("Panel/GameEditor").setActivatable(false)
+		else:
+			viewingEnd = false
+			$Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/EndGame.hide()
+		
+		if details.gameData.hostID == GameData.id and details.gameData.startTime > Time.get_unix_time_from_system() + 2 * 365 * 24 * 60 * 60:
+			tabDisplay().get_node("Panel/GameEditor").setEditable(true)
+			tabDisplay().get_node("Panel/GameEditor").setActivatable(true)
+		else:
+			tabDisplay().get_node("Panel/GameEditor").setEditable(false)
+			tabDisplay().get_node("Panel/GameEditor").setActivatable(false)
 	
 	var rect = $Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay.get_global_rect()
 	
@@ -241,8 +252,8 @@ func _process(delta):
 func addOrder(type, referenceID, timestamp, arguments):
 	GameData.addOrder(gameID, type, referenceID, timestamp, arguments)
 
-func replaceOrder(id, type, referenceID, timestamp, arguments):
-	GameData.replaceOrder(id, gameID, type, referenceID, timestamp, arguments)
+func replaceOrder(id, type, referenceID, canceled, timestamp, arguments, oldArguments):
+	GameData.replaceOrder(id, gameID, type, referenceID, canceled, timestamp, arguments, oldArguments)
 
 func setDisplay(scene):
 	if detailDisplay != null:

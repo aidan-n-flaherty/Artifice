@@ -24,6 +24,11 @@ public:
     }
 
     void run(Game* game) override {
+        if(game->ignoreVessel(vessel->getID(), getTimestamp())) {
+            setDisabled(true);
+            return;
+        }
+        
         vessel->setGift();
         vessel->setOriginatingOrder(getOriginatingOrder());
     }

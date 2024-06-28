@@ -33,7 +33,10 @@ public:
     void run(Game* game) override {
         BattleEvent::run(game);
 
-        if(vesselA->isGift() && vesselB->getTargetID() != vesselA->getID()) {
+        if(game->ignoreVessel(vesselA->getID(), getTimestamp()) || game->ignoreVessel(vesselB->getID(), getTimestamp())) {
+            setDisabled(true);
+            return;
+        } else if(vesselA->isGift() && vesselB->getTargetID() != vesselA->getID()) {
             setFriendly();
             return;
         } else if(vesselB->isGift() && vesselA->getTargetID() != vesselB->getID()) {
@@ -48,6 +51,8 @@ public:
         } else {
             // start with specialist phase
             specialistPhase(game);
+            if(shouldEndCombat()) return;
+
             postSpecialistPhase(game);
 
             // remove units until one vessel has nothing left
@@ -79,9 +84,6 @@ public:
                 victorySpecialistPhase(game);
                 postCombatSpecialistPhase(game);
 
-                Player* vesselAOwner = vesselA->getOwner();
-                Player* vesselBOwner = vesselB->getOwner();
-
                 if(!winner->isDeleted() && !loser->isDeleted()) {
                     if(!loser->getSpecialists().empty()) {
                         winner->getOwner()->addVessel(loser);
@@ -97,12 +99,10 @@ public:
                     }
                 }
 
-                if(vesselAOwner && !vesselAOwner->controlsSpecialist(SpecialistType::QUEEN)) {
-                    vesselAOwner->setDefeated(game);
-                }
-
-                if(vesselBOwner && !vesselBOwner->controlsSpecialist(SpecialistType::QUEEN)) {
-                    vesselBOwner->setDefeated(game);
+                for(const auto& pair : game->getPlayers()) {
+                    if(!pair.second->controlsSpecialist(SpecialistType::QUEEN)) {
+                        pair.second->setDefeated(game);
+                    }
                 }
             }
         }

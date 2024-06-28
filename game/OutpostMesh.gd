@@ -4,6 +4,8 @@ var units = -1
 
 var shield = -1
 
+var maxShield = -1
+
 var selected = false
 
 var color = null
@@ -20,7 +22,7 @@ var viewportAdded = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	rot($Outpost)
+	pass
 	
 func rot(node):
 	node.get_node("City/Factory").rotation_degrees.y = 45 + 90 * get_parent().getID()
@@ -60,10 +62,10 @@ func _process(delta):
 				node.name = "Outpost"
 				rot(node)
 				add_child(node)
-	
+
 	if units != get_parent().getUnits():
 		$Units.text = str(get_parent().getUnits())
-	if shield != get_parent().getShield():
+	if shield != get_parent().getShield() or maxShield != get_parent().getMaxShield():
 		$Shield.text = str(get_parent().getShield())
 		if get_node_or_null("SubViewport"):
 			get_node("SubViewport/OutpostInfo").setShield(get_parent().getShield(), get_parent().getMaxShield())
@@ -91,6 +93,7 @@ func _process(delta):
 	
 	units = get_parent().getUnits()
 	shield = get_parent().getShield()
+	maxShield = get_parent().getMaxShield()
 	selected = get_parent().isSelected()
 	color = get_parent().getColor()
 	outpostName = get_parent().getName()
@@ -100,8 +103,9 @@ func _process(delta):
 	
 	$Outpost/JellyfishMesh.showLights(not get_parent().isInRadar() and not get_parent().canViewType())
 	
+	$RotationInvariant.visible = get_parent().isInRadar()
+	
 	if get_parent().canViewType() or get_parent().isInRadar():
-		$RotationInvariant.show()
 		$Shadow.show()
 		if not get_parent().isBroken():
 			$Outpost/City.show()
@@ -113,7 +117,6 @@ func _process(delta):
 			$Outpost/floor.hide()
 	else:
 		$Shadow.hide()
-		$RotationInvariant.hide()
 		$Outpost/City.hide()
 		$Outpost/ring.hide()
 		$Outpost/floor.hide()

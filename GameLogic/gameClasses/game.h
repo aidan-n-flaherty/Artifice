@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <cmath>
 #include <unordered_map>
+#include <unordered_set>
 #include <list>
 #include <ctime>
 #include <set>
@@ -66,6 +67,7 @@ private:
 
     int lastExecutedOrder = -1;
     int gameObjCounter = 0;
+    int generatedObjCounter = 1000000000;
 
     std::unordered_map<int, Player*> players;
     std::unordered_map<int, Vessel*> vessels;
@@ -74,13 +76,17 @@ private:
 
     std::multiset<Event*, EventOrder> events;
     std::multiset<Order*, OrderOrder> orders;
-    std::list<Event*> simulatedEvents;
+    std::vector<Event*> simulatedEvents;
     std::list<Order*> invalidOrders;
     std::list<Order*> simulatedOrders;
 
     std::multiset<std::shared_ptr<Game>, GameOrder> cache;
 
     std::set<AttackNotification*, NotificationOrder> notifications;
+
+    std::unordered_map<int, double> ignoredVessels;
+
+    std::unordered_set<int> removedVessels;
 
     GameSettings* settings = nullptr;
 
@@ -119,9 +125,11 @@ public:
     const std::unordered_map<int, Player*>& getPlayers() const { return players; }
     const std::unordered_map<int, Specialist*>& getSpecialists() const { return specialists; }
     const std::multiset<Event*, EventOrder>& getEvents() const { return events; }
+    const std::vector<Event*>& getSimulatedEvents() const { return simulatedEvents; }
     const std::multiset<Order*, OrderOrder>& getOrders() const { return orders; }
     const std::list<Order*>& getInvalid() { return invalidOrders; }
     const std::set<AttackNotification*, NotificationOrder>& getNotifications() { return notifications; };
+    const std::unordered_map<int, double> getIgnoredVessels() { return ignoredVessels; }
     std::list<Outpost*> getTeamOutposts(int teamID) const;
     std::list<Vessel*> getTeamVessels(int teamID) const;
     
@@ -130,7 +138,9 @@ public:
     bool hasOutpost(const int id) const { return outposts.find(id) != outposts.end(); }
     bool hasSpecialist(const int id) const { return specialists.find(id) != specialists.end(); }
     bool hasPosObject(const int id) const { return hasOutpost(id) || hasVessel(id); }
+    bool ignoreVessel(const int id, double timestamp) { return ignoredVessels.find(id) != ignoredVessels.end() && timestamp >= ignoredVessels[id]; }
     int simulatedEventCount() const { return simulatedEvents.size(); }
+    int cacheSize() const { return cache.size(); }
 
 
     void addPlayer(Player* p);
@@ -142,10 +152,11 @@ public:
     void addNotification(AttackNotification* n);
 
     std::shared_ptr<Game> removeOrder(int ID);
-    std::shared_ptr<Game> adjustUnits(int orderID, int units);
+    std::shared_ptr<Game> adjustSend(int orderID, int units, const std::list<int>& specialistIDs);
     void addOrder(const std::string &type, int ID, int referenceID, bool canceled, double timestamp, int senderID, int argumentIDs[], int argCount);
     std::shared_ptr<Game> processOrder(const std::string &type, int ID, int referenceID, bool canceled, double timestamp, int senderID, int argumentIDs[], int argCount);
     
+    bool removedVessel(int vesselID) { return removedVessels.find(vesselID) != removedVessels.end(); }
     void removeVessel(Vessel* v);
     void removeSpecialist(Specialist* s);
 
@@ -155,6 +166,10 @@ public:
     double getTime() const { return stateTime; }
     double getEndTime() const { return endTime; }
     double getGameEndTime() const { return gameEndTime; }
+
+    int incrementGeneratedCounter() { return generatedObjCounter++; }
+
+    int getGeneratedCounter() { return generatedObjCounter; }
 
     int incrementObjCounter() { return gameObjCounter++; }
 
@@ -166,10 +181,14 @@ public:
 
     // The functions below should only be used by the client
 
+    void setIgnoreVessel(int ID, double timestamp, bool ignore) { if(ignore) ignoredVessels[ID] = timestamp; else ignoredVessels.erase(ID); }
+    std::shared_ptr<Game> setSimulateVessel(int ID, double timestamp, bool simulate);
     std::shared_ptr<Game> setSimulateOrder(int ID, bool simulate);
     std::list<int> ignoredOrders();
     bool withinRange(Player* p, PositionalObject* obj, double timeDiff) const;
+    bool withinRange(Player* p, const Point& pos, double timeDiff) const;
     std::shared_ptr<Game> lastState(double timestamp);
+    std::shared_ptr<Game> lastStateBefore(double timestamp);
     std::shared_ptr<Game> stateBefore(int orderID);
     double nextState(double timestamp);
     double getNextEndState() const { return nextEndState; }

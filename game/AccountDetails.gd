@@ -39,6 +39,7 @@ func updateUser(userID):
 	
 	if(!user): return
 	
+	$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/TestGame.visible = isSelf
 	$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/Restore.visible = isSelf
 	$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/Report.visible = not isSelf
 	$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/Block.visible = not isSelf
@@ -171,3 +172,7 @@ func _on_graphics_push_on_toggled(toggled_on):
 func _on_graphics_push_off_toggled(toggled_on):
 	GameData.localSettings["graphics"] = "simple"
 	GameData.saveLocalSettings()
+
+
+func _on_test_game_pressed():
+	GameData.viewGame(-1, false)

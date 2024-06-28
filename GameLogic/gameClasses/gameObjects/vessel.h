@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <cmath>
 #include <set>
+#include <vector>
 #include <algorithm>
 #include "../helpers/point.h"
 #include "positional_object.h"
@@ -24,21 +25,25 @@ private:
     Outpost* origin;
     PositionalObject* target;
 
-    Order* sourceOrder;
+    Order* sourceOrder = nullptr;
 
     bool gift = false;
 
     double speedModifier = 1.0;
+
+    bool disabled = false;
 
 public:
     Vessel(unsigned int ID, GameSettings* settings, Player* owner, const Point& position, Outpost* origin, 
         PositionalObject* target, int numUnits,
         const std::list<Specialist*> &specialists) :
         PositionalObject(ID, settings, position, numUnits),
-        returnOutpost(origin), origin(origin), target(target), gift(false) { owner->addVessel(this); addSpecialists(specialists); }
+        returnOutpost(origin), origin(origin), target(target), gift(false) { if(owner) owner->addVessel(this); addSpecialists(specialists); }
     void updatePointers(Game* game) override;
+    
+    int getUnitsAt(double timeDiff) const override;
 
-    void collision(Vessel* vessel, Vessel* other, double timestamp, std::multiset<Event*, EventOrder> &events);
+    void collision(Vessel* vessel, Vessel* other, double timestamp, std::multiset<Event*, EventOrder> &events, std::vector<Event*> &simulatedEvents);
     void collision(Vessel* vessel, Outpost* other, double timestamp, std::multiset<Event*, EventOrder> &events);
 
     void specialistPhase(int& units, int& otherUnits, Vessel* other);
@@ -71,6 +76,11 @@ public:
     
     void setSourceOrder(Order* o) { sourceOrder = o; }
     Order* getSourceOrder() { return sourceOrder; }
+
+    void setDisabled(bool value) { this->disabled = value; }
+    bool getDisabled() { return disabled; }
+
+    int getProductionAmount() override;
 };
 
 #endif

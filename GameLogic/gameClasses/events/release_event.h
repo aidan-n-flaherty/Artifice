@@ -38,8 +38,13 @@ public:
         for (Specialist*& specialist : specialists) {
             outpost->removeSpecialist(specialist);
         }
-        Vessel* vessel = new Vessel(game->incrementObjCounter(), game->getSettings(), owner, outpost->getPosition(), outpost, outposts.front(), 0, specialists);
+
+        Vessel* vessel;
+        if(getOriginatingOrder()) vessel = new Vessel(game->incrementObjCounter(), game->getSettings(), outpost->getOwner(), outpost->getPosition(), outpost, outposts.front(), 0, specialists);
+        else vessel = new Vessel(game->incrementGeneratedCounter(), game->getSettings(), outpost->getOwner(), outpost->getPosition(), outpost, outposts.front(), 0, specialists);
+
         vessel->setOriginatingOrder(getOriginatingOrder());
+        vessel->setSourceOrder(getOriginatingOrder());
 
         game->addVessel(vessel);
     }

@@ -29,6 +29,7 @@ void GameSettings::loadDefaults() {
     GameSettings::number_of_teams = -1;
     GameSettings::startTime = -1;
     GameSettings::resourceReductionAmount = 0.2;
+    GameSettings::giftPadding = 100;
     GameSettings::activeHours.clear();
     for(int i = 0; i < 24; i++) GameSettings::activeHours.insert(i);
     GameSettings::specialistBans.clear();
@@ -44,7 +45,7 @@ void GameSettings::loadDefaults() {
         { LIEUTENANT, "Moves 50% faster than the base movement speed. When directly participating in combat, kill 5 extra enemy units." },
         { THIEF, "15% of the enemy's units (rounded up) are converted to yours when directly participating in combat." },
         { INSPECTOR, "While at an outpost, the local shield is always fully charged." },
-        { MARTYR, "When participating in combat, destroy all outposts, submarines, and specialists, allied and enemy alike, within a range of 20% the default sonar value." },
+        { MARTYR, "When participating in combat against a non-neutral opponent, destroy all outposts, submarines, and specialists, allied and enemy alike, within a range of 20% the default sonar value." },
         { REVERED_ELDER, "When directly participating in combat and the opponent does not have another Revered Elder, all other specialist effects are negated (including your own)." },
         { SABOTEUR, "Redirect any victorious enemy submarine to its owner's nearest outpost." },
         { SENTRY, "While at an outpost, remove 5% of units from the highest-unit enemy vessel every 2 hours. Range is 50% of the outpost where the Sentry resides." },
@@ -61,7 +62,9 @@ void GameSettings::loadDefaults() {
         { MINISTER_OF_ENERGY, "Maximum unit capacity is raised by 300, while production is reduced by 1 every cycle." },
         { SECURITY_CHIEF, "All shield charges are raised by 10, and an additional 10 shield charge is added to the Security Chief's outpost." },
         { TYCOON, "Unit production speed is increased by 50%. When at a factory, 3 additional units are produced." },
-        { WAR_HERO, "20 enemy units are killed when the War Hero is participating in battle." }
+        { WAR_HERO, "20 enemy units are killed when the War Hero is participating in battle." },
+        { DOUBLE_AGENT, "In sub-to-sub combat, kill all units on both sides before defecting to the opponent's side." },
+        { RECRUITER, "While on a sub, produce units on each production tick as if it were a factory." }
     };
 
     GameSettings::playerColors = {
@@ -216,9 +219,9 @@ void GameSettings::addSetting(const char* type, const void* value){
             std::istringstream is( s );
             int typeNum;
             while (is >> typeNum) {
-                try {
+                if(typeNum > int(SpecialistType::NONE) && typeNum < int(SpecialistType::END)) {
                     specialistBans.insert(SpecialistType(typeNum));
-                } catch(...) {
+                } else {
                     continue;
                 }
             }

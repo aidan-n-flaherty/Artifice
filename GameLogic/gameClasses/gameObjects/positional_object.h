@@ -46,6 +46,7 @@ public:
 
     virtual int getUnitsAt(double timeDiff) const { return numUnits; }
     int getUnits() const { return numUnits; }
+    virtual int getProductionAmount() { return 0; };
 
     std::list<Specialist*> getSpecialists() const { return specialists; }
     virtual double getSpeed() const { return 0; };

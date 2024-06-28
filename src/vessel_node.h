@@ -41,6 +41,10 @@ public:
 
 	int getSourceOrder() { return canUndo() && vessel ? vessel->getSourceOrder()->getID() : -1; }
 
+	bool canUndoSource() { return vessel && vessel->getSourceOrder() && vessel->getSourceOrder()->getTimestamp() > getCurrentTime(); }
+
+	double getSpeed() { return vessel ? vessel->getSpeed() : -1; }
+
 	Vessel* getVessel() { return vessel; }
 };
 

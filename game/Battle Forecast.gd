@@ -91,14 +91,12 @@ func init(gameID:int, objectID:int):
 	$VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/Power/Player1/VBoxContainer/Power/PowerP1.text = str(p1Power)
 	$VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/Power/Player2/VBoxContainer/Power/PowerP2.text = str(p2Power)
 	
-	#final result
-	#get winner (no bind) 
-		#game.getNextBattleVictor(objectID)
 	var victor = game.getNextBattleVictor(objectID)
 	
 	var loser
 	var victorPower
 	var loserPower
+	
 	if (victor == null) or (victor.getID() == p1.getID()):
 		loser = p2
 		victorPower = p1Power
