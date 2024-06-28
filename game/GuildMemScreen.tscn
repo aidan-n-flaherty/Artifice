@@ -1,0 +1,33 @@
+[gd_scene load_steps=3 format=3 uid="uid://tclpn61qvqfa"]
+
+[ext_resource type="Script" path="res://GuildMemScreen.gd" id="1_dmpbr"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_sggsb"]
+font_size = 30
+
+[node name="GuildMemScreen" type="MarginContainer"]
+offset_right = 1080.0
+offset_bottom = 1920.0
+script = ExtResource("1_dmpbr")
+MainMenu = "res://MainMenu.tscn"
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_top = 50
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "This is placeholder text to indicate that you have successfully navigated
+ to the Guild Member view screen"
+label_settings = SubResource("LabelSettings_sggsb")
+horizontal_alignment = 1
+
+[node name="TestLeaveGuild" type="Button" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_font_sizes/font_size = 29
+text = "Click me to test leaving a guild!"

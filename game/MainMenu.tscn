@@ -107,7 +107,8 @@ playScreen = "res://CurrentGameList.tscn"
 searchScreen = "res://OpenGameList.tscn"
 settingsScreen = "res://AccountDetails.tscn"
 createScreen = "res://GameCreator.tscn"
-guildScreen = "res://GuildScreen.tscn"
+guildSearchScreen = "res://GuildSearchScreen.tscn"
+guildMemScreen = "res://GuildMemScreen.tscn"
 
 [node name="Shaders" parent="." instance=ExtResource("2_7nq6h")]
 layout_mode = 2

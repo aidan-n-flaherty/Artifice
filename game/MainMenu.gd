@@ -6,7 +6,8 @@ signal menuSelectionChanged(menuItem)
 @export_file("*.tscn") var searchScreen
 @export_file("*.tscn") var settingsScreen
 @export_file("*.tscn") var createScreen
-@export_file("*.tscn") var guildScreen
+@export_file("*.tscn") var guildSearchScreen
+@export_file("*.tscn") var guildMemScreen
 
 #Remember to go on to button and add functionality to on guildbutton pressed
 #for guild screen, and also make a placeholder guild screen
@@ -20,6 +21,7 @@ var past = false
 var uninitialized = true
 
 var buttons
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -120,7 +122,11 @@ func _on_create_pressed():
 	switch_to(createScreen)
 	
 func _on_guild_pressed():
-	switch_to(guildScreen)
+	if(GameData.loadGuild):
+		switch_to(guildMemScreen)
+	else:
+		switch_to(guildSearchScreen)
+		
 
 func _on_animation_player_animation_finished(anim_name):
 	if anim_name == "fade_to_game":

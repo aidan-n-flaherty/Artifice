@@ -1,0 +1,61 @@
+[gd_scene load_steps=6 format=3 uid="uid://dksyosmsis7cd"]
+
+[ext_resource type="Script" path="res://GuildSearchScreen.gd" id="1_cgdaj"]
+[ext_resource type="PackedScene" uid="uid://c04qxpqrgw5cq" path="res://Background.tscn" id="1_i0kki"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_mrd1e"]
+font_size = 67
+
+[sub_resource type="LabelSettings" id="LabelSettings_g5sir"]
+font_size = 30
+
+[sub_resource type="LabelSettings" id="LabelSettings_x22up"]
+font_size = 30
+
+[node name="GuildSearchScreen" type="MarginContainer"]
+offset_right = 1080.0
+offset_bottom = 1920.0
+script = ExtResource("1_cgdaj")
+
+[node name="Background" parent="." instance=ExtResource("1_i0kki")]
+visible = false
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_top = 50
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "GUILDS"
+label_settings = SubResource("LabelSettings_mrd1e")
+horizontal_alignment = 1
+
+[node name="Label2" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+text = "Guilds are in game spaces for meant for you to be able to chat, 
+hang out with, and battle other players.
+"
+label_settings = SubResource("LabelSettings_g5sir")
+horizontal_alignment = 1
+
+[node name="Label3" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "From this screen, you can join a guild! Simply choose one from the list
+below, and request to be let in."
+label_settings = SubResource("LabelSettings_x22up")
+horizontal_alignment = 1
+
+[node name="TestJoinGuild" type="Button" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_font_sizes/font_size = 29
+text = "Click me to test joining a guild!"
+
+[connection signal="pressed" from="MarginContainer/VBoxContainer/TestJoinGuild" to="." method="_on_test_join_guild_pressed"]
