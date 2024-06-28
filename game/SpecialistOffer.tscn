@@ -127,7 +127,7 @@ theme_override_constants/h_separation = 10
 layout_mode = 2
 text = "Promotion Options:"
 
-[node name="MarginContainer" type="VBoxContainer" parent="VBoxContainer/MarginContainer/MarginContainer/HBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/MarginContainer/MarginContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 0
