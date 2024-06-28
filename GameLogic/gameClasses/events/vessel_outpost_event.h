@@ -70,7 +70,7 @@ public:
                     }
                 }
 
-                outpost->addUnits(std::max(0, std::min(vessel->getUnits(), outpost->getOwner()->getCapacity() - outpost->getOwner()->getUnits())));
+                outpost->addUnits(std::max(0, std::min(vessel->getUnits(), game->getSettings()->giftPadding + outpost->getOwner()->getCapacity() - outpost->getOwner()->getUnits())));
             } else {
                 outpost->addUnits(vessel->getUnits());
             }

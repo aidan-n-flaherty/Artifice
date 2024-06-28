@@ -16,6 +16,16 @@ void Vessel::updatePointers(Game* game) {
     target = game->getPosObject(target->getID());
 }
 
+int Vessel::getUnitsAt(double timeDiff) const {
+    double fractionalProduction = hasOwner() ? getOwner()->getFractionalProduction() : 0;
+    
+    int units = getUnits();
+
+    if(!hasOwner() || !controlsSpecialist(SpecialistType::RECRUITER)) return units;
+
+    return units + getOwner()->calculateUnitsAt(fractionalProduction, timeDiff)[getID()];
+}
+
 /* Calculates the point that this vessel is currently targeting, taking the target's
 ** movement into account.
 */
@@ -174,4 +184,14 @@ void Vessel::collision(Vessel* vessel, Outpost* outpost, double timestamp, std::
 void Vessel::returnHome() {
     if(hasOwner() && !getOwner()->getOutposts().empty()) setTarget(getOwner()->sortedOutposts(this).front());
     else setTarget(returnOutpost);
+}
+
+int Vessel::getProductionAmount() {
+    if(!controlsSpecialist(SpecialistType::RECRUITER)) return 0;
+
+    int productionAmount = getOwner()->globalProductionAmount();
+    productionAmount += 6 * specialistCount(SpecialistType::FOREMAN);
+    productionAmount += 3 * specialistCount(SpecialistType::TYCOON);
+
+    return productionAmount;
 }

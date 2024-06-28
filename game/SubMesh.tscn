@@ -1,7 +1,6 @@
-[gd_scene load_steps=17 format=3 uid="uid://c80qrqpvv8oji"]
+[gd_scene load_steps=12 format=3 uid="uid://c80qrqpvv8oji"]
 
 [ext_resource type="Script" path="res://SubMesh.gd" id="1_qc4jq"]
-[ext_resource type="ArrayMesh" uid="uid://btdfbn0k46bx5" path="res://resources/airship/submarine.obj" id="3_d4jy6"]
 [ext_resource type="PackedScene" uid="uid://c3ctitj3875oy" path="res://Counter.tscn" id="4_bhkel"]
 [ext_resource type="Texture2D" uid="uid://dc54tlteq11rj" path="res://resources/icons/Gift.png" id="5_8xxne"]
 [ext_resource type="ArrayMesh" uid="uid://dyvoutps7c1tx" path="res://resources/airship/subAlternate.obj" id="6_cnn75"]
@@ -10,32 +9,6 @@
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_s31l7"]
 radius = 1.676
 height = 10.351
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7dpny"]
-albedo_color = Color(0, 0, 0, 1)
-metallic_specular = 0.0
-emission = Color(1, 1, 1, 1)
-emission_energy_multiplier = 16.0
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gxw2d"]
-emission_enabled = true
-emission = Color(1, 1, 1, 1)
-emission_energy_multiplier = 16.0
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6pxww"]
-albedo_color = Color(0, 0, 0, 1)
-metallic_specular = 0.0
-emission_enabled = true
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_d3v57"]
-resource_local_to_scene = true
-emission_enabled = true
-emission = Color(1, 1, 1, 1)
-emission_energy_multiplier = 16.0
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_avexn"]
-albedo_color = Color(0, 0, 0, 1)
-metallic_specular = 0.0
 
 [sub_resource type="FontVariation" id="FontVariation_o1pwa"]
 variation_embolden = 0.5
@@ -50,6 +23,12 @@ resource_local_to_scene = true
 shading_mode = 0
 disable_receive_shadows = true
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_c101x"]
+resource_local_to_scene = true
+albedo_color = Color(0, 0, 0, 1)
+metallic = 0.5
+roughness = 0.0
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_i8kwj"]
 emission_enabled = true
 emission = Color(1, 1, 1, 1)
@@ -63,18 +42,6 @@ script = ExtResource("1_qc4jq")
 [node name="CollisionShape" type="CollisionShape3D" parent="."]
 transform = Transform3D(-4.37114e-08, 1, -4.37114e-08, 0, -4.37114e-08, -1, -1, -4.37114e-08, 1.91069e-15, 0, 0, 0)
 shape = SubResource("CapsuleShape3D_s31l7")
-
-[node name="SubmarineOld" type="MeshInstance3D" parent="."]
-transform = Transform3D(-7.2998e-08, 0, -1.2, 0, 1.2, 0, 1.67, 0, -5.24537e-08, 0.808121, -0.291222, 0)
-visible = false
-cast_shadow = 0
-mesh = ExtResource("3_d4jy6")
-surface_material_override/0 = SubResource("StandardMaterial3D_7dpny")
-surface_material_override/1 = SubResource("StandardMaterial3D_gxw2d")
-surface_material_override/2 = SubResource("StandardMaterial3D_6pxww")
-surface_material_override/4 = SubResource("StandardMaterial3D_d3v57")
-surface_material_override/5 = SubResource("StandardMaterial3D_avexn")
-surface_material_override/6 = SubResource("StandardMaterial3D_gxw2d")
 
 [node name="RotationInvariant" type="Node3D" parent="."]
 
@@ -106,7 +73,10 @@ surface_material_override/0 = SubResource("StandardMaterial3D_5j0p0")
 [node name="Submarine" type="MeshInstance3D" parent="."]
 transform = Transform3D(-5.7699e-08, 0, -1.32, 0, 1.32, 0, 1.32, 0, -5.7699e-08, 1.3176, -0.270477, 0)
 mesh = ExtResource("6_cnn75")
+surface_material_override/0 = SubResource("StandardMaterial3D_c101x")
 surface_material_override/1 = SubResource("StandardMaterial3D_5j0p0")
+surface_material_override/2 = SubResource("StandardMaterial3D_c101x")
 surface_material_override/3 = SubResource("StandardMaterial3D_5j0p0")
+surface_material_override/4 = SubResource("StandardMaterial3D_c101x")
 surface_material_override/5 = SubResource("StandardMaterial3D_5j0p0")
 surface_material_override/6 = SubResource("StandardMaterial3D_i8kwj")

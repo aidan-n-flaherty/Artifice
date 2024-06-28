@@ -92,11 +92,9 @@ void BattleEvent::specialistPhase(Game* game) {
         b->setUnits(0);
         Specialist* s = v1->getSpecialist(SpecialistType::DOUBLE_AGENT);
         if(v2->hasOwner()) {
-            v2->getOwner()->addSpecialist(v1->removeSpecialist(s));
-            v2->addSpecialist(s);
+            v2->getOwner()->addSpecialist(s);
         } else {
             v1->getOwner()->removeSpecialist(s);
-            v2->addSpecialist(s);
         }
         setEndCombat();
     }
@@ -108,10 +106,8 @@ void BattleEvent::specialistPhase(Game* game) {
         Specialist* s = v2->getSpecialist(SpecialistType::DOUBLE_AGENT);
         if(v1->hasOwner()) {
             v1->getOwner()->addSpecialist(s);
-            v1->addSpecialist(v2->removeSpecialist(s));
         } else {
             v2->getOwner()->removeSpecialist(s);
-            v1->addSpecialist(s);
         }
         setEndCombat();
     }

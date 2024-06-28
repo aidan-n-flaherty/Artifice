@@ -134,6 +134,8 @@ public:
     int getUnits() const;
     int getMinesDrilled() const { return minesDrilled; }
 
+    void setHires(int hires) { this->hires = hires; }
+
     void addResources(int amount) { resources += amount; }
     void removeResources(int amount) { resources -= amount; }
 

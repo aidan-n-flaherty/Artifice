@@ -38,6 +38,8 @@ public:
                 if(target != nullptr) {
                     target->removeUnits(int(ceil(0.05 * target->getUnits())));
 
+                    // TODO: change to
+                    // if(target->getUnits() <= 0 && target->getSpecialists().empty()) game->removeVessel(target);
                     if(target->getUnits() <= 0) game->removeVessel(target);
                 }
             }

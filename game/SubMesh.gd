@@ -52,6 +52,7 @@ func _process(delta):
 		$RotationInvariant/Units.setColor(get_parent().getColor())
 		if not get_parent().isSelected():
 			$Color.get_surface_override_material(0).albedo_color = get_parent().getColor()
+			$Submarine.get_surface_override_material(0).albedo_color = get_parent().getColor().darkened(0.5)
 		#$Submarine.get_surface_override_material(4).emission = get_parent().getColor()
 	
 	$RotationInvariant/Gift.visible = get_parent().isGift()
