@@ -6,7 +6,7 @@ signal menuSelectionChanged(menuItem)
 @export_file("*.tscn") var searchScreen
 @export_file("*.tscn") var settingsScreen
 @export_file("*.tscn") var createScreen
-#@export_file("*.tscn") var guildScreen
+@export_file("*.tscn") var guildScreen
 
 #Remember to go on to button and add functionality to on guildbutton pressed
 #for guild screen, and also make a placeholder guild screen
@@ -119,8 +119,8 @@ func _on_search_pressed():
 func _on_create_pressed():
 	switch_to(createScreen)
 	
-#func _on_guild_pressed():
-	#switch_to(guildScreen)
+func _on_guild_pressed():
+	switch_to(guildScreen)
 
 func _on_animation_player_animation_finished(anim_name):
 	if anim_name == "fade_to_game":

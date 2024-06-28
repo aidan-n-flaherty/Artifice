@@ -107,6 +107,7 @@ playScreen = "res://CurrentGameList.tscn"
 searchScreen = "res://OpenGameList.tscn"
 settingsScreen = "res://AccountDetails.tscn"
 createScreen = "res://GameCreator.tscn"
+guildScreen = "res://GuildScreen.tscn"
 
 [node name="Shaders" parent="." instance=ExtResource("2_7nq6h")]
 layout_mode = 2
@@ -253,4 +254,5 @@ libraries = {
 [connection signal="pressed" from="VSplitContainer/MarginContainer/MarginContainer/HBoxContainer/Search/Search" to="." method="_on_search_pressed"]
 [connection signal="pressed" from="VSplitContainer/MarginContainer/MarginContainer/HBoxContainer/Create/Create" to="." method="_on_create_pressed"]
 [connection signal="pressed" from="VSplitContainer/MarginContainer/MarginContainer/HBoxContainer/Settings/Settings" to="." method="_on_settings_pressed"]
+[connection signal="pressed" from="VSplitContainer/MarginContainer/MarginContainer/HBoxContainer/Guilds/Guilds" to="." method="_on_guild_pressed"]
 [connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_animation_player_animation_finished"]
