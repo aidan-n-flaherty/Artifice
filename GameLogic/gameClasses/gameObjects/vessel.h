@@ -38,8 +38,10 @@ public:
         PositionalObject* target, int numUnits,
         const std::list<Specialist*> &specialists) :
         PositionalObject(ID, settings, position, numUnits),
-        returnOutpost(origin), origin(origin), target(target), gift(false) { owner->addVessel(this); addSpecialists(specialists); }
+        returnOutpost(origin), origin(origin), target(target), gift(false) { if(owner) owner->addVessel(this); addSpecialists(specialists); }
     void updatePointers(Game* game) override;
+    
+    int getUnitsAt(double timeDiff) const override;
 
     void collision(Vessel* vessel, Vessel* other, double timestamp, std::multiset<Event*, EventOrder> &events, std::vector<Event*> &simulatedEvents);
     void collision(Vessel* vessel, Outpost* other, double timestamp, std::multiset<Event*, EventOrder> &events);
@@ -77,6 +79,8 @@ public:
 
     void setDisabled(bool value) { this->disabled = value; }
     bool getDisabled() { return disabled; }
+
+    int getProductionAmount() override;
 };
 
 #endif

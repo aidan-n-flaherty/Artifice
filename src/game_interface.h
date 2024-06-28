@@ -33,7 +33,7 @@ class GameInterface : public Node3D {
 
 private:
 	std::shared_ptr<Game> tempGame = nullptr;
-	
+
 	// stores all future game states
 	std::shared_ptr<Game> fullCompleteGame = nullptr;
 	double nextFullEndState = 0.0;
@@ -110,6 +110,10 @@ private:
 
 	int selectOrder = -1;
 
+	bool offline = false;
+
+	int offlineOrderCounter = 0;
+
 	Point mouse;
 
 protected:
@@ -133,6 +137,19 @@ public:
     void _process(double delta) override;
 		
 	void update();
+
+	void setOffline() {
+		offline = true;
+		if(completeGame && completeGame->hasPlayer(userGameID)) {
+			completeGame = completeGame->lastState(getCurrent());
+			completeGame->getPlayer(userGameID)->setHires(1000);
+			completeGame->run();
+		}
+	}
+
+	bool isOffline() { return offline; }
+
+	int getNextOfflineOrder() { return offlineOrderCounter++; }
 
 	FloorDisplay* getFloorDisplay() { return floorDisplay; }
 
@@ -266,7 +283,7 @@ public:
 	Array getNextBattleCaptures(int objID);
 
 	bool canGift(int vesselID) { return future && game && game->hasPlayer(userGameID) && game->hasVessel(vesselID) && !game->getVessel(vesselID)->isGift(); }
-	bool canHire() { return future && game && game->hasPlayer(userGameID) && game->getPlayer(userGameID)->getHiresAt(settings.clientToGameTime(getCurrent()) - game->getTime()) >= 0 && dynamic_cast<Outpost*>(game->getPlayer(userGameID)->getSpawnLocation()) && game->getPlayer(userGameID)->getSpawnLocation()->getOwnerID() == userGameID; }
+	bool canHire() { return future && game && game->hasPlayer(userGameID) && game->getPlayer(userGameID)->getHiresAt(settings.clientToGameTime(getCurrent()) - game->getTime()) > 0 && dynamic_cast<Outpost*>(game->getPlayer(userGameID)->getSpawnLocation()) && game->getPlayer(userGameID)->getSpawnLocation()->getOwnerID() == userGameID; }
 	bool hasStarted() { return current >= game->getStartTime(); }
 	bool hasEnded() { return game->hasEnded() && currentGame->hasEnded(); }
 	bool hasLost() { return game && game->hasPlayer(userGameID) && game->getPlayer(userGameID)->hasLost() && currentGame->getPlayer(userGameID)->hasLost(); }
