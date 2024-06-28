@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://dgaortf7ormuh"]
+[gd_scene load_steps=8 format=3 uid="uid://dgaortf7ormuh"]
 
 [ext_resource type="Theme" uid="uid://tg7ina762c6q" path="res://resources/themes/UITheme.tres" id="1_efxnd"]
 [ext_resource type="Script" path="res://BannerOffer.gd" id="2_jkhc4"]
+[ext_resource type="PackedScene" uid="uid://ycxxhiua4fft" path="res://Banner.tscn" id="3_5nvl0"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5mrol"]
 bg_color = Color(0, 0, 0, 0.235294)
@@ -139,6 +140,10 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 size_flags_stretch_ratio = 0.25
 mouse_filter = 2
+
+[node name="Banner" parent="VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/MarginContainer/MarginContainer/MarginContainer/Image" instance=ExtResource("3_5nvl0")]
+visible = false
+layout_mode = 2
 
 [node name="Select" type="Button" parent="VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/MarginContainer"]
 custom_minimum_size = Vector2(2.08165e-12, 2.08165e-12)

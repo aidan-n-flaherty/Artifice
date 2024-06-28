@@ -34,7 +34,7 @@ func init(bannerID: int, primaryColor: Color, secondaryColor: Color):
 	style_box_texture.axis_stretch_vertical = StyleBoxTexture.AXIS_STRETCH_MODE_TILE
 	
 	# Apply the StyleBoxTexture to the Primary node
-	$Primary.add_theme_stylebox_override("PrimaryPattern", style_box_texture)
+	$Primary.add_theme_stylebox_override("panel", style_box_texture)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
