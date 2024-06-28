@@ -20,6 +20,8 @@ func init(bannerID: int, primaryColor: Color, secondaryColor: Color):
 		_:
 			texture_path = "res://resources/banner/plain.png"
 	
+	print(texture_path)
+	
 	var texture = load(texture_path)
 	if not texture:
 		print("Error: Texture failed to load from path: " + texture_path)

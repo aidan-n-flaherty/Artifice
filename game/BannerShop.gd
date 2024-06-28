@@ -5,7 +5,7 @@ signal deselectShop
 var userID
 
 var user
-
+var update = -1
 var banners
 
 # Called when the node enters the scene tree for the first time.
@@ -31,6 +31,12 @@ func _process(delta):
 	var banners = 5 #user.getOwnedBanners or game.getBanners or something
 	$VBoxContainer/Label.text = "You own " + str(banners) + " banner" + ("" if banners == 1 else "s")
 	$VBoxContainer/HBoxContainer/MarginContainer/MarginContainer/Label.text = str(banners)
+	
+	if update > 0:
+		update -= delta
+		
+		if update <= 0:
+			GameData.editSelf(user)
 
 func selected():
 	pass

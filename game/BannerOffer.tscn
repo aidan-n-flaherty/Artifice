@@ -1,8 +1,7 @@
-[gd_scene load_steps=9 format=3 uid="uid://dgaortf7ormuh"]
+[gd_scene load_steps=7 format=3 uid="uid://dgaortf7ormuh"]
 
 [ext_resource type="Theme" uid="uid://tg7ina762c6q" path="res://resources/themes/UITheme.tres" id="1_efxnd"]
 [ext_resource type="Script" path="res://BannerOffer.gd" id="2_jkhc4"]
-[ext_resource type="Material" uid="uid://ceshq08mjed03" path="res://resources/materials/SpecialistMesh.tres" id="3_w4xkp"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5mrol"]
 bg_color = Color(0, 0, 0, 0.235294)
@@ -14,13 +13,6 @@ corner_detail = 16
 
 [sub_resource type="LabelSettings" id="LabelSettings_bcf4o"]
 font_size = 32
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7tyq1"]
-bg_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 25
-corner_radius_top_right = 25
-corner_radius_bottom_right = 25
-corner_radius_bottom_left = 25
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hk65e"]
 content_margin_left = 10.0
@@ -136,20 +128,17 @@ theme_override_constants/margin_right = 50
 theme_override_constants/margin_bottom = 0
 
 [node name="Panel" type="Panel" parent="VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/MarginContainer/MarginContainer/MarginContainer"]
+visible = false
 custom_minimum_size = Vector2(120, 120)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_7tyq1")
 
 [node name="Image" type="MarginContainer" parent="VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/MarginContainer/MarginContainer/MarginContainer"]
-modulate = Color(0, 0, 0, 1)
-material = ExtResource("3_w4xkp")
-custom_minimum_size = Vector2(2.08165e-12, 2.08165e-12)
+custom_minimum_size = Vector2(120, 120)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 size_flags_stretch_ratio = 0.25
 mouse_filter = 2
-theme = ExtResource("1_efxnd")
 
 [node name="Select" type="Button" parent="VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/MarginContainer"]
 custom_minimum_size = Vector2(2.08165e-12, 2.08165e-12)
