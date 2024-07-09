@@ -2,6 +2,10 @@ extends Control
 
 signal deselectShop
 
+signal bannerSelected(bannerID: int)
+
+signal bannerPurchased(bannerID: int)
+
 var userID
 
 var user
@@ -38,8 +42,10 @@ func _process(delta):
 		if update <= 0:
 			GameData.editSelf(user)
 
-func selected():
-	pass
+func selected(bannerID: int):
+	update = 1
+	emit_signal("bannerSelected",bannerID)
 	
-func purchased():
-	pass
+func purchased(bannerID: int):
+	update = 1
+	emit_signal("bannerPurchased",bannerID)

@@ -1,8 +1,8 @@
 extends MarginContainer
 
-signal selected
+signal selected(bannerID:int)
 
-signal purchased
+signal purchased(bannerID:int)
 
 var bannerID
 
@@ -86,14 +86,14 @@ func _process(delta):
 		update -= delta
 		
 		if update <= 0:
-			GameData.editSelf(user)
+			#GameData.editSelf(user)
+			pass
 
 func _on_select_pressed():
-	user.bannerID = bannerID
 	update = 1
-	emit_signal("selected")
+	emit_signal("selected",bannerID)
 	
 func _on_purchase_pressed():
 	#nothin yet
 	update = 1
-	emit_signal("purchased")
+	emit_signal("purchased",bannerID)
