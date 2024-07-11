@@ -361,6 +361,20 @@ func createGame():
 	
 	print("Failed to create game")
 	return null
+	
+func createSinglePlayerGame():
+	var numPlayers = 1
+	var game = await HTTPManager.postReq("/createMatch", serialize(), {})
+	
+	if game:
+		print("Created game")
+		print(game)
+		GameData.addGame(game)
+		
+		return game
+	
+	print("Failed to create game")
+	return null
 
 func on_players_modified(button_pressed: bool):
 	if button_pressed:

@@ -424,8 +424,8 @@ func viewGame(id: int, past=false):
 	emit_signal("loadGame", id, past)
 
 func viewGameCompletion(id: int, past=false):
-	if id == -1:
-		viewOfflineGameCompletion()
+	if id < 0:
+		viewOfflineGameCompletion(id)
 		return
 	
 	if not hasGame(id):
@@ -447,11 +447,11 @@ func viewGameCompletion(id: int, past=false):
 	
 	goto_node(node)
 	
-func viewOfflineGameCompletion():
-	var id = -1
+func viewOfflineGameCompletion(id: int):
 	
 	var startTime = Time.get_unix_time_from_system()
 	
+	#sandbox
 	gameDetails[-1] = {
 		"gameData": {
 			"hostID": getSelfID(),
@@ -465,6 +465,21 @@ func viewOfflineGameCompletion():
 			"playerCap": 2
 		}
 	}
+	
+	#singleplayer
+	gameDetails[-2] = {
+	"gameData": {
+		"hostID": getSelfID(),
+		"startTime": startTime,
+		"hasChatNotifications": false,
+		"hasNotifications": false,
+		"playerCount": 8,
+		"finished": false
+	},
+	"gameSettings": {
+		"playerCap": 8
+	}
+}
 	
 	var game = GameInterface.new()
 	game.init(id, self.id, randi_range(0, 100000), startTime, false, 2, {

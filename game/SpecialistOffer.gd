@@ -75,15 +75,3 @@ func _on_button_pressed():
 	GameData.addOrder(gameID, "HIRE", int(game.getReferenceID()), game.getTime(), [int(specialistNum)])
 	
 	emit_signal("hired")
-
-func _on_spin_box_value_changed(value: float) -> void:
-	#game = GameData.getGame(gameID)
-	#if value > game.getHires() hireCustomAmount = 0
-	hireCustomAmount = value
-
-
-func _on_multi_hire_pressed() -> void:
-	for n in hireCustomAmount:
-		GameData.addOrder(gameID, "HIRE", int(game.getReferenceID()), game.getTime(), [int(specialistNum)])
-	
-	emit_signal("hired")
