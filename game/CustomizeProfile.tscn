@@ -169,6 +169,13 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("4_6biup")
 
+[node name="SpacerAboveBannerColors" type="Control" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.05
+theme = ExtResource("4_6biup")
+
 [node name="BannerColor" type="HBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
@@ -289,6 +296,12 @@ max_value = 1.0
 step = 0.01
 value = 0.5
 
+[node name="Spacer" type="Control" parent="VBoxContainer/BannerColor/VBoxContainer/BannerColorManager/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.1
+theme = ExtResource("4_6biup")
+
 [node name="Secondary" type="VBoxContainer" parent="VBoxContainer/BannerColor/VBoxContainer/BannerColorManager/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -381,6 +394,7 @@ size_flags_vertical = 3
 theme = ExtResource("4_6biup")
 
 [node name="Fade" type="Panel" parent="."]
+visible = false
 layout_mode = 2
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_f2vgl")

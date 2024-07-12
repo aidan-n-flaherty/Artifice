@@ -75,6 +75,10 @@ func init(bannerID: int, userID: int, available=false, selectable=true):
 
 func _process(delta):
 	$VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/MarginContainer/Select.visible = selectable
+	
+	user = await GameData.getUser(userID)
+	if(!user): return
+	
 	if(user.bannerID == bannerID):
 		$VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/MarginContainer/Select.disabled = true
 	else:
