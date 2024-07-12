@@ -7,7 +7,7 @@ var capacity = 0
 func _ready():
 	pass # Replace with function body.
 
-func init(game, player, username, dailyProduction, units, capacity, winCount, winTarget, largest, outposts, factories, generators, mines, color):
+func init(game, player, username, dailyProduction, units, capacity, winCount, winTarget, largest, outposts, factories, generators, mines, color, bannerID):
 	$MarginContainer/HBoxContainer/VBoxName/Name.text = str(username)
 	$MarginContainer/HBoxContainer/MarginContainer/MarginContainer/VBox/HBox2/DailyProduction.text = "+%d / day" % dailyProduction
 	$MarginContainer/HBoxContainer/MarginContainer/MarginContainer/VBox/HBox2/Units.text = str(units)
@@ -33,6 +33,12 @@ func init(game, player, username, dailyProduction, units, capacity, winCount, wi
 	self.capacity = capacity
 	$MarginContainer/HBoxContainer/MarginContainer/Capacity.max_value = largest
 	$MarginContainer/HBoxContainer/MarginContainer/Capacity.modulate = color
+	
+	var bannerColor = color.darkened(0.5)
+	var banner = preload("res://Banner.tscn").instantiate()
+	banner.init(bannerID, bannerColor, Color(1,1,1,0))
+	$MarginContainer/HBoxContainer/MarginContainer/Units.add_child(banner)
+	
 	
 	$MarginContainer/HBoxContainer/MarginContainer/MarginContainer/VBox/HBox1/factoryIcon.modulate = color
 	$MarginContainer/HBoxContainer/MarginContainer/MarginContainer/VBox/HBox1/gensIcon.modulate = color

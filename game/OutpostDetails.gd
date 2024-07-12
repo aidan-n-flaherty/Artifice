@@ -28,6 +28,7 @@ func _process(delta):
 		$VBoxContainer/HBoxContainer.show()
 		$VBoxContainer/HBoxContainer2.show()
 	
+
 	get_parent().color = outpost.getColor()
 	if outpost.getOwnerID() != -1:
 		get_parent().playerName = game.getPlayer(outpost.getOwnerID()).getName()

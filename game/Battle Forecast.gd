@@ -23,7 +23,24 @@ func init(gameID:int, objectID:int):
 		p2 = players[1]
 	
 	$VBoxContainer/ScrollContainer/HBoxContainer/p1Color.modulate = p1.getColor()
+
+#	var p1BannerColor = p1.getColor()
+#	var p1Banner = preload("res://Banner.tscn").instantiate()
+#	var p1User = await GameData.getUser(p1.getUserID())
+#	var p1BannerID = p1User.bannerID
+#	p1Banner.init(p1BannerID, p1BannerColor, Color(1,1,1,0.1))
+#	$VBoxContainer/ScrollContainer/HBoxContainer/p1Color.add_child(p1Banner)
+	
+	
 	$VBoxContainer/ScrollContainer/HBoxContainer/p2Color.modulate = p2.getColor() if p2 else Color(0.5, 0.5, 0.5)
+	
+#	var p2BannerColor = p2.getColor()
+#	var p2Banner = preload("res://Banner.tscn").instantiate()
+#	var p2User = await GameData.getUser(p2.getUserID())
+#	var p2BannerID = p2User.bannerID
+#	p2Banner.init(p2BannerID, p2BannerColor, Color(1,1,1,0.1))
+#	$VBoxContainer/ScrollContainer/HBoxContainer/p2Color.add_child(p2Banner)
+	
 	
 	#set names
 	$VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/PlayerDivide/Player1/NameP1.text = p1.getName()

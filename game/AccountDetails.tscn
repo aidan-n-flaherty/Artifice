@@ -112,17 +112,19 @@ theme_override_constants/separation = 0
 [node name="CustomizeProfile" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/ButtonMargins/Tabs"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme = ExtResource("4_tumqw")
+theme = ExtResource("1_j5sq6")
 theme_override_fonts/font = ExtResource("5_yyilv")
 theme_override_font_sizes/font_size = 30
 text = "Customize Profile"
 
 [node name="Spacer" type="Control" parent="MarginContainer/ScrollContainer/VBoxContainer/ButtonMargins/Tabs"]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 0.2
 
 [node name="Friends" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/ButtonMargins/Tabs"]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("4_tumqw")
