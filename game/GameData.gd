@@ -76,7 +76,7 @@ var iCloudEnabled = true
 
 var localSettings = {}
 
-var in_guild
+var in_guild = true
 
 var user_guild
 
@@ -1110,10 +1110,16 @@ func getPastGames(userID: int):
 	return pastUserGameIDs[userID].keys() if pastUserGameIDs.has(userID) else (await loadPastUserGames(userID)).keys()
 	
 func loadGuild():
-	self.in_guild = true
-	self.user_guild = "test_guild1"
-	#should return false if the user is not in a guild, true otherwise
-	return in_guild
+	
+	if self.in_guild == true:
+		self.user_guild = "test_guild1"
+		return true
+	else:
+		self.user_guild = -1
+		return false
+		
+	#should never reach this
+	return "test"
 
 func _exit_tree():
 	for game in games.values():

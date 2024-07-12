@@ -1,9 +1,22 @@
-[gd_scene load_steps=3 format=3 uid="uid://tclpn61qvqfa"]
+[gd_scene load_steps=6 format=3 uid="uid://tclpn61qvqfa"]
 
 [ext_resource type="Script" path="res://GuildMemScreen.gd" id="1_dmpbr"]
+[ext_resource type="Theme" uid="uid://c4m6lidwyxgc" path="res://resources/UITheme.tres" id="2_3u3c2"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5bkhp"]
+bg_color = Color(0.0980392, 0.0980392, 0.0980392, 0.501961)
+expand_margin_top = 20.0
+expand_margin_bottom = 20.0
 
 [sub_resource type="LabelSettings" id="LabelSettings_sggsb"]
 font_size = 30
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_n0k2f"]
+content_margin_left = 25.0
+content_margin_top = 10.0
+content_margin_right = 25.0
+content_margin_bottom = 10.0
+bg_color = Color(0.588235, 0.160784, 0.0784314, 1)
 
 [node name="GuildMemScreen" type="MarginContainer"]
 offset_right = 1080.0
@@ -13,12 +26,34 @@ MainMenu = "res://MainMenu.tscn"
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
+theme = ExtResource("2_3u3c2")
 theme_override_constants/margin_top = 50
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
 
+[node name="TitleBox" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 50
+
+[node name="Panel" type="Panel" parent="MarginContainer/VBoxContainer/TitleBox"]
+visible = false
+modulate = Color(1, 1, 1, 0.545098)
+layout_mode = 2
+theme = ExtResource("2_3u3c2")
+
+[node name="UserGuild" type="Label" parent="MarginContainer/VBoxContainer/TitleBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 39
+theme_override_styles/normal = SubResource("StyleBoxFlat_5bkhp")
+text = "Placeholder"
+horizontal_alignment = 1
+
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer"]
+visible = false
 layout_mode = 2
 text = "This is placeholder text to indicate that you have successfully navigated
  to the Guild Member view screen"
@@ -30,4 +65,7 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 theme_override_font_sizes/font_size = 29
-text = "Click me to test leaving a guild!"
+theme_override_styles/normal = SubResource("StyleBoxFlat_n0k2f")
+text = "Leave Guild"
+
+[connection signal="pressed" from="MarginContainer/VBoxContainer/TestLeaveGuild" to="." method="_on_test_leave_guild_pressed"]

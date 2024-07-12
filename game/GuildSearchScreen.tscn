@@ -1,10 +1,16 @@
-[gd_scene load_steps=6 format=3 uid="uid://dksyosmsis7cd"]
+[gd_scene load_steps=8 format=3 uid="uid://dksyosmsis7cd"]
 
 [ext_resource type="Script" path="res://GuildSearchScreen.gd" id="1_cgdaj"]
 [ext_resource type="PackedScene" uid="uid://c04qxpqrgw5cq" path="res://Background.tscn" id="1_i0kki"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4p8pc"]
+bg_color = Color(0, 0, 0, 0.419608)
+
 [sub_resource type="LabelSettings" id="LabelSettings_mrd1e"]
 font_size = 67
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rt6w4"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
 
 [sub_resource type="LabelSettings" id="LabelSettings_g5sir"]
 font_size = 30
@@ -28,25 +34,52 @@ theme_override_constants/margin_top = 50
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 25
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/MarginContainer"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_4p8pc")
 text = "GUILDS"
 label_settings = SubResource("LabelSettings_mrd1e")
 horizontal_alignment = 1
 
-[node name="Label2" type="Label" parent="MarginContainer/VBoxContainer"]
+[node name="GuildExplanation" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 20
+
+[node name="Panel" type="Panel" parent="MarginContainer/VBoxContainer/GuildExplanation"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/GuildExplanation"]
+layout_mode = 2
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_bottom = 15
+
+[node name="ExplanationVbox" type="VBoxContainer" parent="MarginContainer/VBoxContainer/GuildExplanation/MarginContainer"]
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="MarginContainer/VBoxContainer/GuildExplanation/MarginContainer/ExplanationVbox"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 0
+theme_override_styles/normal = SubResource("StyleBoxFlat_rt6w4")
 text = "Guilds are in game spaces for meant for you to be able to chat, 
-hang out with, and battle other players.
+hang out with, 
+and battle other players.
 "
 label_settings = SubResource("LabelSettings_g5sir")
 horizontal_alignment = 1
 
-[node name="Label3" type="Label" parent="MarginContainer/VBoxContainer"]
+[node name="Label3" type="Label" parent="MarginContainer/VBoxContainer/GuildExplanation/MarginContainer/ExplanationVbox"]
 layout_mode = 2
-text = "From this screen, you can join a guild! Simply choose one from the list
+text = "From this screen, 
+you can join a guild! Simply choose one from the list
 below, and request to be let in."
 label_settings = SubResource("LabelSettings_x22up")
 horizontal_alignment = 1

@@ -14,7 +14,7 @@ func _ready():
 	GameData.gameChanged.connect(reload)
 	GameData.loadUserDetail.connect(viewUser)
 
-func init(gameID):
+func _init(gameID):
 	self.gameID = gameID
 	
 	$MarginContainer/VBoxContainer/GameEditor.setEditable(false)

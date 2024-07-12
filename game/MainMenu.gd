@@ -56,6 +56,8 @@ func init():
 			$VSplitContainer/MarginContainer/MarginContainer/HBoxContainer/Create/Create.set_pressed_no_signal(true)
 		elif GameData.currentTab == settingsScreen:
 			$VSplitContainer/MarginContainer/MarginContainer/HBoxContainer/Settings/Settings.set_pressed_no_signal(true)
+		elif (GameData.currentTab == guildMemScreen) || (GameData.currentTab == guildSearchScreen):
+			$VSplitContainer/MarginContainer/MarginContainer/HBoxContainer/Guilds/Guilds.set_pressed_no_signal(true)
 		
 		switch_to(GameData.currentTab)
 		
@@ -86,6 +88,14 @@ func switch_to(scene):
 	
 	if scene == settingsScreen:
 		current.init(GameData.getSelfID())
+		
+	elif scene == guildMemScreen:
+		current.init(GameData.user_guild)
+		current.guild_status_update.connect(_on_guild_left)
+		
+	elif scene == guildSearchScreen:
+		current.init(GameData.user_guild)
+		current.guild_status_update.connect(_on_guild_joined)
 	
 	for button in buttons:
 		if not button.button_pressed:
@@ -120,13 +130,23 @@ func _on_search_pressed():
 
 func _on_create_pressed():
 	switch_to(createScreen)
-	
+
+
+#There is a small visual glitch that needs to be patched at some point where
+#the previous button option does not appear deselected when you choose the
+#guild menu
+
 func _on_guild_pressed():
 	if(GameData.loadGuild):
 		switch_to(guildMemScreen)
 	else:
 		switch_to(guildSearchScreen)
 		
+func _on_guild_left():
+	switch_to(guildSearchScreen)
+
+func _on_guild_joined():
+	switch_to(guildMemScreen)
 
 func _on_animation_player_animation_finished(anim_name):
 	if anim_name == "fade_to_game":
