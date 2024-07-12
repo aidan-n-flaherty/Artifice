@@ -172,11 +172,3 @@ func _on_graphics_push_on_toggled(toggled_on):
 func _on_graphics_push_off_toggled(toggled_on):
 	GameData.localSettings["graphics"] = "simple"
 	GameData.saveLocalSettings()
-
-
-func _on_test_game_pressed():
-	GameData.viewGame(-1, false)
-
-
-func _on_singleplayer_pressed() -> void:
-	GameData.viewGame(-2, false)

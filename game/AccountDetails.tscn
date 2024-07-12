@@ -487,25 +487,6 @@ text = "-1"
 custom_minimum_size = Vector2(2.08165e-12, 80)
 layout_mode = 2
 
-[node name="TestGame" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer"]
-layout_mode = 2
-theme = ExtResource("1_j5sq6")
-theme_override_constants/h_separation = 0
-theme_override_constants/outline_size = 2
-theme_override_fonts/font = SubResource("FontVariation_l1fdh")
-theme_override_font_sizes/font_size = 21
-text = "Sandbox"
-
-[node name="Singleplayer" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer"]
-custom_minimum_size = Vector2(0, 44)
-layout_mode = 2
-theme = ExtResource("1_j5sq6")
-theme_override_constants/h_separation = 0
-theme_override_constants/outline_size = 2
-theme_override_fonts/font = ExtResource("4_6h237")
-theme_override_font_sizes/font_size = 21
-text = "Singleplayer"
-
 [node name="Spacer2" type="Control" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer"]
 custom_minimum_size = Vector2(2.08165e-12, 80)
 layout_mode = 2
@@ -669,8 +650,6 @@ size_flags_stretch_ratio = 0.5
 [connection signal="toggled" from="MarginContainer/ScrollContainer/VBoxContainer/GridContainer/ChatPushNotificationButtons/PushOff" to="." method="_on_chat_push_off_toggled"]
 [connection signal="toggled" from="MarginContainer/ScrollContainer/VBoxContainer/GridContainer/GraphicsButtons/PushOn" to="." method="_on_graphics_push_on_toggled"]
 [connection signal="toggled" from="MarginContainer/ScrollContainer/VBoxContainer/GridContainer/GraphicsButtons/PushOff" to="." method="_on_graphics_push_off_toggled"]
-[connection signal="pressed" from="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/TestGame" to="." method="_on_test_game_pressed"]
-[connection signal="pressed" from="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/Singleplayer" to="." method="_on_singleplayer_pressed"]
 [connection signal="pressed" from="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/Delete" to="." method="_on_delete_pressed"]
 [connection signal="pressed" from="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/Report" to="." method="_on_report_pressed"]
 [connection signal="pressed" from="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/Block" to="." method="_on_block_pressed"]
