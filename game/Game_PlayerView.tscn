@@ -128,11 +128,4 @@ size_flags_horizontal = 3
 mouse_filter = 2
 theme = ExtResource("1_5v71y")
 
-[node name="TeamSelecter" type="OptionButton" parent="MarginContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_stretch_ratio = 4.03
-selected = 0
-allow_reselect = true
-
 [connection signal="pressed" from="View" to="." method="_on_view_pressed"]

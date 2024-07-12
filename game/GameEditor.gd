@@ -40,7 +40,7 @@ func _ready():
 		child.toggled.connect(on_activeTimes_modified)
 	for child in $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/TeamButtons.get_children():
 		child.toggled.connect(on_team_number_modified)
-	$MarginContainer/VBoxContainer/TeamMembersContainer.visible = false
+	
 	
 func setEditable(canEdit):
 	editable = canEdit
@@ -264,12 +264,31 @@ func updatePlayers(gameID, settings):
 	var playerViews = []
 	
 	for n in $MarginContainer/VBoxContainer/Players/MarginContainer/PlayerList/GridContainer.get_children():
+		
 		$MarginContainer/VBoxContainer/Players/MarginContainer/PlayerList/GridContainer.remove_child(n)
 		n.queue_free() 
-	
+		
+		
+
 	for	i in range(int(settings.playerCap)):
 		var playerView = preload("res://Game_PlayerView.tscn").instantiate()
+		var opButton = preload("res://optionButton.tscn").instantiate();
 		playerViews.append(playerView)
+		$MarginContainer/VBoxContainer/Players/MarginContainer/PlayerList/GridContainer.add_child(opButton)
+		#if ($"MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/TeamButtons/0".toggled):
+			#opButton.get_child(1).get_child(0).clear()
+		if ($"MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/TeamButtons/2".toggled):
+			#opButton.get_child(1).get_child(0).clear()
+			opButton.get_child(1).get_child(0).add_item("1")
+			opButton.get_child(1).get_child(0).add_item("2")
+		elif ($"MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/TeamButtons/5".toggled):
+			#opButton.get_child(1).get_child(0).clear()
+			opButton.get_child(1).get_child(0).add_item("1")
+			opButton.get_child(1).get_child(0).add_item("2")
+			opButton.get_child(1).get_child(0).add_item("3")
+			opButton.get_child(1).get_child(0).add_item("4")
+			opButton.get_child(1).get_child(0).add_item("5")
+		
 		$MarginContainer/VBoxContainer/Players/MarginContainer/PlayerList/GridContainer.add_child(playerView)
 		
 	
@@ -284,7 +303,6 @@ func updatePlayers(gameID, settings):
 	for	i in userKeys:
 		var id = int(i)
 		var color = colors[id]
-		
 		playerViews[id].init(users[i].id, users[i].username, color, users[i].userStats.rating, settings.ranked)
 
 func serialize():
@@ -413,20 +431,7 @@ func on_team_number_modified(button_pressed: bool):
 func _on_advanced_button_pressed():
 	$MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced.visible = not $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced.visible
 
-
-
-func onTwoTeamsPressed():
-	$MarginContainer/VBoxContainer/TeamMembersContainer.visible = true
-	$MarginContainer/VBoxContainer/TeamMembersContainer/Teamsfor2.visible = true
-	pass # Replace with function body.
-
-
-func onNoTeamsPressed():
-	$MarginContainer/VBoxContainer/TeamMembersContainer.visible = false
-	pass # Replace with function body.
 	
-	
-
 func teamSelecter():
 	$MarginContainer/HBoxContainer/TeamSelecter.add_item("No Teams")
 	$MarginContainer/HBoxContainer/TeamSelecter.add_item("Team 1")

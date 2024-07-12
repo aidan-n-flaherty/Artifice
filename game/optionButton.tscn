@@ -1,0 +1,22 @@
+[gd_scene format=3 uid="uid://0cnavv1phwjl"]
+
+[node name="OptionButton" type="MarginContainer"]
+modulate = Color(0, 1, 1, 1)
+anchors_preset = -1
+anchor_right = 0.991
+anchor_bottom = 0.086
+offset_right = -0.280029
+offset_bottom = 0.87999
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="view" type="Button" parent="."]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+
+[node name="OptionButton" type="OptionButton" parent="MarginContainer"]
+modulate = Color(0, 1, 1, 1)
+self_modulate = Color(0.47674, 1, 0.703874, 1)
+layout_mode = 2

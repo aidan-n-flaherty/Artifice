@@ -1094,6 +1094,44 @@ layout_mode = 2
 theme = ExtResource("1_sjo5m")
 theme_override_styles/panel = SubResource("StyleBoxFlat_61g4f")
 
+[node name="TeamMembersContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Teamsfor2" type="VBoxContainer" parent="MarginContainer/VBoxContainer/TeamMembersContainer"]
+layout_mode = 2
+
+[node name="Team1" type="Label" parent="MarginContainer/VBoxContainer/TeamMembersContainer/Teamsfor2"]
+layout_mode = 2
+text = "Team 1"
+
+[node name="Team2" type="Label" parent="MarginContainer/VBoxContainer/TeamMembersContainer/Teamsfor2"]
+layout_mode = 2
+text = "Team 2"
+
+[node name="Teamsfor5" type="VBoxContainer" parent="MarginContainer/VBoxContainer/TeamMembersContainer"]
+visible = false
+layout_mode = 2
+
+[node name="Team1" type="Label" parent="MarginContainer/VBoxContainer/TeamMembersContainer/Teamsfor5"]
+layout_mode = 2
+text = "Team 1"
+
+[node name="Team2" type="Label" parent="MarginContainer/VBoxContainer/TeamMembersContainer/Teamsfor5"]
+layout_mode = 2
+text = "Team 2"
+
+[node name="Team3" type="Label" parent="MarginContainer/VBoxContainer/TeamMembersContainer/Teamsfor5"]
+layout_mode = 2
+text = "Team 3"
+
+[node name="Team4" type="Label" parent="MarginContainer/VBoxContainer/TeamMembersContainer/Teamsfor5"]
+layout_mode = 2
+text = "Team 4"
+
+[node name="Team5" type="Label" parent="MarginContainer/VBoxContainer/TeamMembersContainer/Teamsfor5"]
+layout_mode = 2
+text = "Team 5"
+
 [node name="Players" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme = ExtResource("1_sjo5m")
@@ -1149,5 +1187,7 @@ theme = ExtResource("1_sjo5m")
 theme_override_fonts/font = SubResource("FontVariation_311ai")
 text = "Start"
 
+[connection signal="pressed" from="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/TeamButtons/0" to="." method="onNoTeamsPressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/TeamButtons/2" to="." method="onTwoTeamsPressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/AdvancedButton" to="." method="_on_advanced_button_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/Activate" to="." method="activate"]
