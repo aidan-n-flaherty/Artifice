@@ -424,8 +424,12 @@ func viewGame(id: int, past=false):
 	emit_signal("loadGame", id, past)
 
 func viewGameCompletion(id: int, past=false):
-	if id < 0:
-		viewOfflineGameCompletion(id)
+	if id == -1:
+		viewSandboxGameCompletion(-1)
+		return
+	
+	if id == -2:
+		viewSinglePlayerGameCompletion(-1)
 		return
 	
 	if not hasGame(id):
@@ -447,11 +451,9 @@ func viewGameCompletion(id: int, past=false):
 	
 	goto_node(node)
 	
-func viewOfflineGameCompletion(id: int):
-	
+func viewSandboxGameCompletion(id: int):
 	var startTime = Time.get_unix_time_from_system()
 	
-	#sandbox
 	gameDetails[-1] = {
 		"gameData": {
 			"hostID": getSelfID(),
@@ -466,20 +468,6 @@ func viewOfflineGameCompletion(id: int):
 		}
 	}
 	
-	#singleplayer
-	gameDetails[-2] = {
-	"gameData": {
-		"hostID": getSelfID(),
-		"startTime": startTime,
-		"hasChatNotifications": false,
-		"hasNotifications": false,
-		"playerCount": 8,
-		"finished": false
-	},
-	"gameSettings": {
-		"playerCap": 8
-	}
-}
 	
 	var game = GameInterface.new()
 	game.init(id, self.id, randi_range(0, 100000), startTime, false, 2, {
@@ -493,6 +481,118 @@ func viewOfflineGameCompletion(id: int):
 		1: {
 			"id": -1,
 			"username": "Bot 1",
+			"stats": {
+				"rating": 1200
+			}
+		}
+	}, {
+		"simulationSpeed": 1800
+	})
+	game.set_visible(false)
+	game.set_process(false)
+	
+	mutex.lock()
+	if games.has(id):
+		games[id].getFloorDisplay().queue_free()
+		games[id].queue_free()
+	
+	games[id] = game
+	mutex.unlock()
+	
+	var node = preload("res://Game.tscn").instantiate()
+	node.init(id, true)
+
+	if len(currentGameIDs) == 0 or currentGameIDs[len(currentGameIDs) - 1][0] != id:	
+		currentGameIDs.push_back([id, false])
+	
+	goto_node(node)
+
+func viewSinglePlayerGameCompletion(id: int):
+	var startTime = Time.get_unix_time_from_system()
+	
+	gameDetails[-1] = {
+		"gameData": {
+			"hostID": getSelfID(),
+			"startTime": startTime,
+			"hasChatNotifications": false,
+			"hasNotifications": false,
+			"playerCount": 10,
+			"finished": false
+		},
+		"gameSettings": {
+			"playerCap": 10
+		}
+	}
+	
+	
+	var game = GameInterface.new()
+	game.init(id, self.id, randi_range(0, 100000), startTime, false, 2, {
+		0: {
+			"id": getSelfID(),
+			"username": getSelf().username,
+			"stats": {
+				"rating": getSelf().userStats.rating
+			}
+		},
+		1: {
+			"id": -1,
+			"username": "Bot 1",
+			"stats": {
+				"rating": 1200
+			}
+		},
+		2: {
+			"id": -2,
+			"username": "Bot 2",
+			"stats": {
+				"rating": 1200
+			}
+		},
+		3: {
+			"id": -2,
+			"username": "Bot 3",
+			"stats": {
+				"rating": 1200
+			}
+		},
+		4: {
+			"id": -4,
+			"username": "Bot 4",
+			"stats": {
+				"rating": 1200
+			}
+		},
+		5: {
+			"id": -5,
+			"username": "Bot 5",
+			"stats": {
+				"rating": 1200
+			}
+		},
+		6: {
+			"id": -6,
+			"username": "Bot 6",
+			"stats": {
+				"rating": 1200
+			}
+		},
+		7: {
+			"id": -7,
+			"username": "Bot 7",
+			"stats": {
+				"rating": 1200
+			}
+		},
+		8: {
+			"id": -8,
+			"username": "Bot 8",
+			"stats": {
+				"rating": 1200
+			}
+		},
+		9: {
+			"id": -9,
+			"username": "Bot 9",
 			"stats": {
 				"rating": 1200
 			}
