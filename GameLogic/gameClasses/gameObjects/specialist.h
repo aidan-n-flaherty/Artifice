@@ -41,6 +41,12 @@ enum SpecialistType : unsigned int {
     WAR_HERO,
     DOUBLE_AGENT,
     RECRUITER,
+    CHANCELLOR,
+    SCAVENGER,
+    MARAUDER,
+    CONDUCTOR,
+    TRAPPER,
+    STRATEGIST,
     END
 };
 
@@ -112,7 +118,13 @@ public:
             TYCOON,
             WAR_HERO,
             DOUBLE_AGENT,
-            RECRUITER
+            RECRUITER,
+            CHANCELLOR,
+            SCAVENGER,
+            MARAUDER,
+            CONDUCTOR,
+            TRAPPER,
+            STRATEGIST
         };
     }
 
@@ -125,14 +137,14 @@ public:
             THIEF,
             INSPECTOR,
             MARTYR, // no promotion
-            REVERED_ELDER, // no promotion
+            REVERED_ELDER,
             SABOTEUR, // no promotion
             SENTRY,
             DIPLOMAT, // no promotion
             FOREMAN,
-            HELMSMAN, // no promotion
+            HELMSMAN,
             HYPNOTIST,
-            INTELLIGENCE_OFFICER, // no promotion
+            INTELLIGENCE_OFFICER,
             TINKERER,
             DOUBLE_AGENT // no promotion
         };
@@ -145,14 +157,19 @@ public:
     static std::list<SpecialistType> promotionOptions(SpecialistType t) {
         switch(t){
             case NAVIGATOR: return { ADMIRAL };
-            case FOREMAN: return { ENGINEER, TYCOON };
+            case FOREMAN: return { ENGINEER, TYCOON, RECRUITER };
             case LIEUTENANT: return { GENERAL, NAVIGATOR };
             case HYPNOTIST: return { KING };
             case TINKERER: return { MINISTER_OF_ENERGY };
             case INSPECTOR: return { SECURITY_CHIEF };
             case SENTRY: return { WAR_HERO };
+            case WAR_HERO: return { MARAUDER };
             case THIEF: return { PIRATE };
-            case HELMSMAN: return { SMUGGLER };
+            case PIRATE: return { SCAVENGER, TRAPPER };
+            case HELMSMAN: return { SMUGGLER, CONDUCTOR };
+            case REVERED_ELDER: return { CHANCELLOR };
+            case ENGINEER: return { SCAVENGER };
+            case INTELLIGENCE_OFFICER: return { STRATEGIST };
             default: return {};
         }
     }
@@ -201,6 +218,12 @@ public:
             "War_Hero",
             "Double_Agent",
             "Recruiter",
+            "Chancellor",
+            "Scavenger",
+            "Marauder",
+            "Conductor",
+            "Trapper",
+            "Strategist",
             "NULL"
         };
 

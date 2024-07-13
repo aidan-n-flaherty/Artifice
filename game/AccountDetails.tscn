@@ -20,7 +20,7 @@ expand_margin_top = 500.0
 [sub_resource type="ButtonGroup" id="ButtonGroup_b3uma"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_u21hr"]
-bg_color = Color(0.0980392, 0.0980392, 0.0980392, 0.368627)
+bg_color = Color(0, 0, 0, 0.368627)
 corner_radius_top_left = 10
 corner_radius_top_right = 10
 corner_radius_bottom_right = 10

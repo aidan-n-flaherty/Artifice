@@ -60,7 +60,9 @@ func setEditable(canEdit):
 		for specialist in SettingsDefault.getAllSpecialists():
 			var specialistName = SettingsDefault.getSpecialistName(specialist)
 			
-			var button = Button.new()
+			var button = $"MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/VBoxContainer/ActiveHoursButtons/0".duplicate()
+			if button.toggled.is_connected(on_activeTimes_modified):
+				button.toggled.disconnect(on_activeTimes_modified)
 			button.name = str(specialist)
 			button.text = specialistName
 			
@@ -290,6 +292,9 @@ func serialize():
 	
 	var hours = []
 	
+	if simulationTimescale != "days":
+		activeHours = range(24)
+	
 	print("c ", activeHours)
 	
 	for hour in activeHours:
@@ -393,7 +398,7 @@ func on_activeTimes_modified(button_pressed: bool):
 		if child.button_pressed:
 			activeHours.append(child.name.to_int())
 	activeHours.sort()
-	print("e", activeHours)
+	print(activeHours)
 
 func on_timescale_modified(button_pressed: bool, timescale):
 	simulationTimescale = timescale

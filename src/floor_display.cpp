@@ -14,6 +14,7 @@
 #include "../GameLogic/gameClasses/game.h"
 #include "../GameLogic/gameClasses/events/battle_event.h"
 #include "../GameLogic/gameClasses/gameObjects/outpost.h"
+#include "../GameLogic/gameClasses/events/outpost_range_event.h"
 
 using namespace godot;
 
@@ -118,6 +119,14 @@ void FloorDisplay::_draw() {
         }
     }
 
+    const OutpostRangeEvent* e = complete->nextFireEvent(game->getTime() + getDiff());
+    double fireOpacity = -1.0;
+    double fireInterval = game->getSettings()->fireRate * game->getSettings()->baseFireRate / game->getSettings()->simulationSpeed;
+    if(e) {
+        fireOpacity = std::max(10.0 * std::abs(game->getTime() + getDiff() - (e->getTimestamp() - fireInterval / 2.0)) / (fireInterval / 2.0) - 9.0, 0.0);
+        if(fireOpacity > 1.0) fireOpacity = 0.0;
+    }
+
     for(int i = -1; i <= 1; i++) {
         for(int j = -1; j <= 1; j++) {
             double x = rootX + i * game->getSettings()->width;
@@ -126,24 +135,43 @@ void FloorDisplay::_draw() {
             for(const auto& pair : game->getOutposts()) {
                 if(p && !visibilityGame->withinRange(p, pair.second, getDiff())) continue;
 
-                if(!pair.second->controlsSpecialist(SpecialistType::SENTRY) && !pair.second->controlsSpecialist(SpecialistType::MARTYR)) continue;
+                if(!pair.second->controlsSpecialist(SpecialistType::SENTRY) && !pair.second->controlsSpecialist(SpecialistType::MARTYR) && !pair.second->controlsSpecialist(SpecialistType::CHANCELLOR)) continue;
 
                 double x1 = pair.second->getPositionAt(getDiff()).getX();
                 double y1 = pair.second->getPositionAt(getDiff()).getY();
 
+                if(fireOpacity > 0 && (pair.second->controlsSpecialist(SpecialistType::SENTRY) || pair.second->controlsSpecialist(SpecialistType::CHANCELLOR))) {
+                    double maxRange = -1.0;
+                    if(pair.second->controlsSpecialist(SpecialistType::SENTRY)) maxRange = std::max(maxRange, double(pair.second->getFireRange()));
+                    if(pair.second->controlsSpecialist(SpecialistType::CHANCELLOR)) maxRange = std::max(maxRange, double(game->getSettings()->defaultSonar));
+
+                    draw_arc(Vector2(x1 - x, y1 - y) * pixels, (maxRange * pixels)/2, 0, UtilityFunctions::deg_to_rad(360), 32, Color(1.0, 0.0, 1.0, 0.2 * fireOpacity), maxRange * pixels, false);
+                }
+
                 if(pair.second->controlsSpecialist(SpecialistType::SENTRY)) draw_arc(Vector2(x1 - x, y1 - y) * pixels, pair.second->getFireRange() * pixels, 0, UtilityFunctions::deg_to_rad(360), 64, Color(1.0,0.0,0.25),6.0,false);
                 if(pair.second->controlsSpecialist(SpecialistType::MARTYR)) draw_arc(Vector2(x1 - x, y1 - y) * pixels, game->getSettings()->defaultSonar/5.0 * pixels, 0, UtilityFunctions::deg_to_rad(360), 64, Color(1.0,0.0,0.25),6.0,false);
+                if(pair.second->controlsSpecialist(SpecialistType::CHANCELLOR)) draw_arc(Vector2(x1 - x, y1 - y) * pixels, game->getSettings()->defaultSonar * pixels, 0, UtilityFunctions::deg_to_rad(360), 64, Color(1.0,0.0,0.25),6.0,false);
             }
 
             for(const auto& pair : game->getVessels()) {
                 if(p && !visibilityGame->withinRange(p, pair.second, getDiff())) continue;
 
-                if(!pair.second->controlsSpecialist(SpecialistType::MARTYR)) continue;
+                if(!pair.second->controlsSpecialist(SpecialistType::MARTYR) && !pair.second->controlsSpecialist(SpecialistType::CHANCELLOR) && !pair.second->controlsSpecialist(SpecialistType::MARAUDER)) continue;
 
                 double x1 = pair.second->getPositionAt(getDiff()).getX();
                 double y1 = pair.second->getPositionAt(getDiff()).getY();
 
+                if(fireOpacity > 0 && (pair.second->controlsSpecialist(SpecialistType::MARAUDER) || pair.second->controlsSpecialist(SpecialistType::CHANCELLOR))) {
+                    double maxRange = -1.0;
+                    if(pair.second->controlsSpecialist(SpecialistType::MARAUDER)) maxRange = std::max(maxRange, double(game->getSettings()->defaultSonar * game->getSettings()->fireRange));
+                    if(pair.second->controlsSpecialist(SpecialistType::CHANCELLOR)) maxRange = std::max(maxRange, double(game->getSettings()->defaultSonar));
+
+                    draw_arc(Vector2(x1 - x, y1 - y) * pixels, (maxRange * pixels)/2, 0, UtilityFunctions::deg_to_rad(360), 32, Color(1.0, 0.0, 1.0, 0.2 * fireOpacity), maxRange * pixels, false);
+                }
+
                 if(pair.second->controlsSpecialist(SpecialistType::MARTYR)) draw_arc(Vector2(x1 - x, y1 - y) * pixels, game->getSettings()->defaultSonar/5.0 * pixels, 0, UtilityFunctions::deg_to_rad(360), 64, Color(1.0,0.0,0.25),6.0,false);
+                if(pair.second->controlsSpecialist(SpecialistType::CHANCELLOR)) draw_arc(Vector2(x1 - x, y1 - y) * pixels, game->getSettings()->defaultSonar * pixels, 0, UtilityFunctions::deg_to_rad(360), 64, Color(1.0,0.0,0.25),6.0,false);
+                if(pair.second->controlsSpecialist(SpecialistType::MARAUDER)) draw_arc(Vector2(x1 - x, y1 - y) * pixels, game->getSettings()->defaultSonar * game->getSettings()->fireRange * pixels, 0, UtilityFunctions::deg_to_rad(360), 64, Color(1.0,0.0,0.25),6.0,false);
             }
         }
     }
@@ -237,14 +265,14 @@ void FloorDisplay::_draw() {
                     //draw_circle(Vector2(x1 - x, y1 - y) * pixels, 9, c);
                     draw_arc(Vector2(x1 - x, y1 - y) * pixels, 5, 0, UtilityFunctions::deg_to_rad(360), 16, Color(1.0, 1.0, 1.0), 5, false);
                     draw_arc(Vector2(x1 - x, y1 - y) * pixels, 4, 0, UtilityFunctions::deg_to_rad(360), 16, c, 5, false);
-                    draw_arc(Vector2(x1 - x, y1 - y) * pixels, 5, 0, UtilityFunctions::deg_to_rad(360), 16, Color(1.0, 1.0, 1.0), 0.5, false);
+                    //draw_arc(Vector2(x1 - x, y1 - y) * pixels, 5, 0, UtilityFunctions::deg_to_rad(360), 16, Color(1.0, 1.0, 1.0), 0.5, false);
 
-                    for(int i = 45; i < 360; i += 90) {
+                    /*for(int i = 45; i < 360; i += 90) {
                         double x2 = x1 + 0.3 * cos(UtilityFunctions::deg_to_rad(i)), x3 = x1 + cos(UtilityFunctions::deg_to_rad(i));
                         double y2 = y1 + 0.3 * sin(UtilityFunctions::deg_to_rad(i)), y3 = y1 + sin(UtilityFunctions::deg_to_rad(i));
 
                         draw_line(Vector2(x2 - x, y2 - y) * pixels, Vector2(x3 - x, y3 - y) * pixels, Color(1.0, 1.0, 1.0), 0.5, false);
-                    }
+                    }*/
                 }
             }
         }

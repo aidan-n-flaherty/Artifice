@@ -75,6 +75,8 @@ public:
                 outpost->addUnits(vessel->getUnits());
             }
 
+            if(vessel->controlsSpecialist(SpecialistType::INSPECTOR) && vessel->getOwnerID() == outpost->getOwnerID()) outpost->rechargeShield();
+
             outpost->addSpecialists(vessel->removeSpecialists());
             setFriendly();
         } else {
@@ -117,6 +119,8 @@ public:
                     pair.second->setDefeated(game);
                 }
             }
+
+            if(outpost->controlsSpecialist(SpecialistType::INSPECTOR)) outpost->rechargeShield();
         }
 
         if(outpost->controlsSpecialist(SpecialistType::HYPNOTIST)) {
@@ -124,6 +128,7 @@ public:
                 outpost->getOwner()->addSpecialist(s);
             }
         }
+
         if (outpost->controlsSpecialist(SpecialistType::DIPLOMAT)) {
             for (auto pair : game->getOutposts()) {
                 Outpost* other = pair.second;
@@ -158,6 +163,7 @@ public:
         for (const auto &p : specialist_groups) {
             game->addEvent(new ReleaseEvent(nullptr, getTimestamp(), p.second, outpost));
         }
+
         game->removeVessel(vessel);
     }
 };

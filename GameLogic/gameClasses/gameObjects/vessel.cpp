@@ -30,6 +30,8 @@ int Vessel::getUnitsAt(double timeDiff) const {
 ** movement into account.
 */
 const Point Vessel::getTargetPos() const {
+    if(!target) return Point();
+
     // return the target position if the target does not move
     Point targetPos = getPosition().closest(target->getStartPosition());
     if(getSpeed() == 0 || target->getSpeed() == 0) return targetPos;
@@ -98,15 +100,16 @@ void Vessel::update(double timeDiff) {
     moveTowards(targetedPos, distance);
 }
 
-double Vessel::getSpeed(double speed, double simulationSpeed, Player* p, const std::list<Specialist*> &specialists, PositionalObject* target) {
-    if(!p) return speed * (simulationSpeed * 2.0 / (60 * 60));
+double Vessel::getSpeed(double speed, double simulationSpeed, Player* p, const std::list<Specialist*> &specialists, PositionalObject* source, PositionalObject* target, bool globalDisabled) {
+    if(!p || speed < 1) return speed * (simulationSpeed * 2.0 / (60 * 60));
 
     if(controlsSpecialist(p, specialists, SpecialistType::GENERAL) || controlsSpecialist(p, specialists, SpecialistType::LIEUTENANT)) speed = fmax(speed, 1.5);
-    if(specialists.empty() && p->controlsSpecialist(SpecialistType::ADMIRAL)) speed = fmax(speed, 1.0 + 0.5 * p->expSpecialistEffect(SpecialistType::ADMIRAL));
+    if(specialists.empty() && p->controlsSpecialist(SpecialistType::ADMIRAL) && !globalDisabled) speed = fmax(speed, 1.0 + 0.5 * p->expSpecialistEffect(SpecialistType::ADMIRAL));
     if(controlsSpecialist(p, specialists, SpecialistType::ADMIRAL)) speed = fmax(speed, 2);
     if(controlsSpecialist(p, specialists, SpecialistType::HELMSMAN)) speed = fmax(speed, 2);
     if(controlsSpecialist(p, specialists, SpecialistType::PIRATE)) speed = fmax(speed, 2);
     if(controlsSpecialist(p, specialists, SpecialistType::SMUGGLER) && (!target || target->getOwnerID() == p->getID())) speed = fmax(speed, 3);
+    if(source && source->getOwnerID() == p->getID() && target && target->getOwnerID() == p->getID() && source->controlsSpecialist(SpecialistType::CONDUCTOR) && target->controlsSpecialist(SpecialistType::CONDUCTOR)) speed = fmax(speed, 3);
 
     return speed * (simulationSpeed * 2.0 / (60 * 60));
 }
@@ -117,7 +120,7 @@ double Vessel::getSpeed() const {
     
     double speed = speedModifier;
 
-    return Vessel::getSpeed(speed, getSettings()->simulationSpeed, getOwner(), getSpecialists(), getTarget());
+    return Vessel::getSpeed(speed, getSettings()->simulationSpeed, getOwner(), getSpecialists(), getOrigin(), getTarget(), getGlobalDisabled());
 }
 
 // generate collision events for other vessels
@@ -127,7 +130,7 @@ void Vessel::collision(Vessel* vessel, Vessel* other, double timestamp, std::mul
     double seconds = -1;
     // Case 1: both are heading in the same direction, so it's a matter of whether the one behind can catch up
     if(vessel->getOriginID() == other->getOriginID() && vessel->getTargetID() == other->getTargetID()) {
-        float speedDiff = vessel->getSpeed() - other->getSpeed();
+        double speedDiff = vessel->getSpeed() - other->getSpeed();
 
         if(speedDiff != 0) {
             seconds = (vessel->distance(target->getPosition()) - other->distance(target->getPosition()))/speedDiff;
@@ -136,7 +139,7 @@ void Vessel::collision(Vessel* vessel, Vessel* other, double timestamp, std::mul
     // Case 2: both are heading towards each other, so they are guaranteed to collide
     else if((vessel->getOriginID() == other->getTargetID() && vessel->getTargetID() == other->getOriginID())
         || (vessel->getID() == other->getTargetID() && vessel->getTargetID() == other->getID())) {
-        float speedSum = vessel->getSpeed() + other->getSpeed();
+        double speedSum = vessel->getSpeed() + other->getSpeed();
 
         if(speedSum > 0) seconds = vessel->distance(other->getPosition())/speedSum;
     }
@@ -182,8 +185,16 @@ void Vessel::collision(Vessel* vessel, Outpost* outpost, double timestamp, std::
 }
 
 void Vessel::returnHome() {
-    if(hasOwner() && !getOwner()->getOutposts().empty()) setTarget(getOwner()->sortedOutposts(this).front());
-    else setTarget(returnOutpost);
+    if(hasOwner() && !getOwner()->getOutposts().empty()) {
+        int fromID = getOrigin() ? getOrigin()->getID() : -1;
+        int toID = getTarget() ? getTarget()->getID() : -1;
+
+        Outpost* o = getOwner()->sortedOutposts(this).front();
+
+        if(!o || (o->getID() != toID && o->getID() != fromID)) setOrigin(nullptr);
+
+        setTarget(o);
+    } else setTarget(returnOutpost);
 }
 
 int Vessel::getProductionAmount() {

@@ -20,9 +20,18 @@ var added = false
 
 var viewportAdded = false
 
+var lastCameraPos = null
+
+var lastCameraSize = null
+
+var lastViewportSize = null
+
+var elapsed = 0
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass
+	if get_node_or_null("Outpost"):
+		rot(get_node("Outpost"))
 	
 func rot(node):
 	node.get_node("City/Factory").rotation_degrees.y = 45 + 90 * get_parent().getID()
@@ -32,9 +41,17 @@ func rot(node):
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	elapsed += delta
+	
 	var camera = get_viewport().get_camera_3d()
 	
-	if camera:
+	if camera and (camera.get_camera_transform().origin != lastCameraPos or camera.size != lastCameraSize or get_viewport().size != lastViewportSize):
+		lastCameraPos = camera.get_camera_transform().origin
+		
+		lastCameraSize = camera.size
+		
+		lastViewportSize = get_viewport().size
+		
 		var scaleAmount = 1.0 + (camera.size - 240 * min(1, get_viewport().size.x * 1.0 / get_viewport().size.y))/(240 * min(1, get_viewport().size.x * 1.0 / get_viewport().size.y)) if camera.size > 240 * min(1, get_viewport().size.x * 1.0 / get_viewport().size.y) else 1.0
 		
 		$RotationInvariant.scale = Vector3(1.0, 1.0, 1.0) * scaleAmount
@@ -55,26 +72,35 @@ func _process(delta):
 			return
 		else:
 			visible = true
-			
+				
 			if not get_node_or_null("Outpost"):
 				var node = preload("res://OutpostSubMesh.tscn").instantiate()
 				destroyed = null
 				node.name = "Outpost"
 				rot(node)
 				add_child(node)
+	elif not visible:
+		return
+				
+
+	$Locked.visible = get_parent().isLocked()
 
 	if units != get_parent().getUnits():
 		$Units.text = str(get_parent().getUnits())
+	
 	if shield != get_parent().getShield() or maxShield != get_parent().getMaxShield():
 		$Shield.text = str(get_parent().getShield())
 		if get_node_or_null("SubViewport"):
 			get_node("SubViewport/OutpostInfo").setShield(get_parent().getShield(), get_parent().getMaxShield())
 		else:
 			get_node("SubViewportTemp/OutpostInfo").setShield(get_parent().getShield(), get_parent().getMaxShield())
+		
 	if outpostName != get_parent().getName():
 		$Name.text = get_parent().getName()
+	
 	if (get_parent().canViewType() or get_parent().isInRadar()) and destroyed != get_parent().isBroken():
 		$Outpost/JellyfishMesh.setDark(get_parent().isBroken())
+	
 	if selected != get_parent().isSelected():
 		if get_parent().isSelected():
 			$FlagSprite.modulate = get_parent().getColor().lightened(0.5)
@@ -84,12 +110,13 @@ func _process(delta):
 	if selected:
 		$Outpost.position.y = 0.8 * $Outpost.position.y + 2 * 0.2
 	else:
-		$Outpost.position.y = 0.8 * $Outpost.position.y
+		$Outpost.position.y = 0.8 * $Outpost.position.y + 0.25 * cos(PI * sin(27.0 * get_parent().getID()) + 0.5 * elapsed)
 	
 	if color != get_parent().getColor():
 		$FlagSprite.modulate = get_parent().getColor()
 	
 	$FlagSprite/FlagSprite2.visible = get_parent().getSelfOwned()
+	
 	
 	units = get_parent().getUnits()
 	shield = get_parent().getShield()

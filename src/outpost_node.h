@@ -52,6 +52,8 @@ public:
 
 	bool isBroken() { return outpost->getType() == OutpostType::BROKEN; }
 
+	bool isLocked() { return outpost && outpost->isLocked(); }
+
 	String getName();
 };
 

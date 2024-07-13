@@ -282,6 +282,7 @@ public:
 	int getNextBattleVictorUnits(int objID);
 	Array getNextBattleCaptures(int objID);
 
+	bool canRetreat(int vesselID) { return future && game && game->hasVessel(vesselID) && game->canRetreat(game->getVessel(vesselID), settings.clientToGameTime(getCurrent()) - game->getTime()); };
 	bool canGift(int vesselID) { return future && game && game->hasPlayer(userGameID) && game->hasVessel(vesselID) && !game->getVessel(vesselID)->isGift(); }
 	bool canHire() { return future && game && game->hasPlayer(userGameID) && game->getPlayer(userGameID)->getHiresAt(settings.clientToGameTime(getCurrent()) - game->getTime()) > 0 && dynamic_cast<Outpost*>(game->getPlayer(userGameID)->getSpawnLocation()) && game->getPlayer(userGameID)->getSpawnLocation()->getOwnerID() == userGameID; }
 	bool hasStarted() { return current >= game->getStartTime(); }

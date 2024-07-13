@@ -52,6 +52,7 @@ func initNum(specialistNum):
 		
 	for option in promotionOptions:
 		var button = Button.new()
+		button.theme = preload("res://resources/themes/DetailTheme.tres")
 		button.pressed.connect(viewSpecialist.bind(option))
 		button.text = game.getSpecialistName(option)
 		
@@ -103,7 +104,7 @@ func _process(delta):
 		get_parent().playerName = player.getName()
 
 func viewSpecialist(specialistNum: int):
-	self.specialistNums.push_back(specialistNum)
+	self.specialistNums.push_back(self.specialistNum)
 	
 	initNum(specialistNum)
 
@@ -128,5 +129,7 @@ func _on_next_hire_pressed():
 
 func _on_back_pressed():
 	specialistNum = self.specialistNums.pop_back()
+	
+	print("Number ", specialistNum)
 	
 	initNum(specialistNum)

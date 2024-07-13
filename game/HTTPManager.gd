@@ -30,7 +30,12 @@ func postReq(path, data, params, includeToken=true):
 			path += "&"
 		path += key + "=" + str(params[key]).replace(" ", "%20")
 		
-	reqNode.request(url + path, headers, HTTPClient.METHOD_POST, json)
+	var error = reqNode.request(url + path, headers, HTTPClient.METHOD_POST, json)
+	if error != OK:
+		push_error("An error occurred in the HTTP request.")
+		reqNode.queue_free()
+		return false
+		
 	var response = await reqNode.request_completed
 
 	var result = response[0]
@@ -38,9 +43,8 @@ func postReq(path, data, params, includeToken=true):
 	var response_headers = response[2]
 	
 	reqNode.queue_free()
-	remove_child(reqNode)
 	
-	if(response_code < 200 || response_code > 299):
+	if(result != HTTPRequest.RESULT_SUCCESS || response_code < 200 || response_code > 299):
 		print(path)
 		print(response)
 		return false
@@ -72,7 +76,12 @@ func putReq(path, data, params, includeToken=true):
 			path += "&"
 		path += key + "=" + str(params[key]).replace(" ", "%20")
 		
-	reqNode.request(url + path, headers, HTTPClient.METHOD_PUT, json)
+	var error = reqNode.request(url + path, headers, HTTPClient.METHOD_PUT, json)
+	if error != OK:
+		push_error("An error occurred in the HTTP request.")
+		reqNode.queue_free()
+		return false
+		
 	var response = await reqNode.request_completed
 
 	var result = response[0]
@@ -80,9 +89,8 @@ func putReq(path, data, params, includeToken=true):
 	var response_headers = response[2]
 	
 	reqNode.queue_free()
-	remove_child(reqNode)
 	
-	if(response_code < 200 || response_code > 299):
+	if(result != HTTPRequest.RESULT_SUCCESS || response_code < 200 || response_code > 299):
 		print(path)
 		print(response)
 		return false
@@ -112,7 +120,12 @@ func getReq(path, params={}, includeToken=true):
 			path += "&"
 		path += key + "=" + str(params[key]).replace(" ", "%20")
 	
-	reqNode.request(url + path, [], HTTPClient.METHOD_GET)
+	var error = reqNode.request(url + path, [], HTTPClient.METHOD_GET)
+	if error != OK:
+		push_error("An error occurred in the HTTP request.")
+		reqNode.queue_free()
+		return false
+	
 	var response = await reqNode.request_completed
 	
 	var result = response[0]
@@ -121,9 +134,8 @@ func getReq(path, params={}, includeToken=true):
 	var body = JSON.parse_string(response[3].get_string_from_utf8())
 	
 	reqNode.queue_free()
-	remove_child(reqNode)
 	
-	if(response_code < 200 || response_code > 299):
+	if(result != HTTPRequest.RESULT_SUCCESS || response_code < 200 || response_code > 299):
 		print(path)
 		print(response)
 		return false

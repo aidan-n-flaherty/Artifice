@@ -146,6 +146,7 @@ void GameInterface::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("getOrderDescription"), &GameInterface::getOrderDescription);
 	ClassDB::bind_method(D_METHOD("canUndoOrder"), &GameInterface::canUndoOrder);
 
+	ClassDB::bind_method(D_METHOD("canRetreat", "vesselID"), &GameInterface::canRetreat);
 	ClassDB::bind_method(D_METHOD("canGift", "vesselID"), &GameInterface::canGift);
 
 	ClassDB::bind_method(D_METHOD("getNumTeams"), &GameInterface::getNumTeams);
@@ -669,7 +670,7 @@ bool GameInterface::willSendWith(SpecialistType type) {
 	Vessel* v = dynamic_cast<Vessel*>(getSelected());
 
 	for(Specialist* s : getSelected()->getSpecialists()) {
-		if(s->getType() == type && s->getOwnerID() == getUserGameID() && (v || std::find(selectedSpecialists.begin(), selectedSpecialists.end(), s->getID()) != selectedSpecialists.end())) {
+		if(s->getType() == type && (s->getOwnerID() == getUserGameID() || isOffline()) && (v || std::find(selectedSpecialists.begin(), selectedSpecialists.end(), s->getID()) != selectedSpecialists.end())) {
 			return true;
 		}
 	}
@@ -711,6 +712,9 @@ void GameInterface::sendTo(int id) {
 		if(o1) {
 			if(v2 && !willSendWith(SpecialistType::PIRATE)) return;
 
+			std::unordered_set<int> lockedFrom = o1->getLockedFrom();
+			if(o1->isLocked() && lockedFrom.find(id) == lockedFrom.end()) return;
+
 			int units = getSelected()->getUnitsAt(simulatedDiff);
 
 			uint32_t parameters[] = { uint32_t(std::max(selectedSpecialists.empty() ? 1 : 0, int(percent * units))), uint32_t(selected), target->getID() };
@@ -719,7 +723,7 @@ void GameInterface::sendTo(int id) {
 			for(int i = 0; i < 3; i++) arguments.push_back(parameters[i]);
 
 			while(!selectedSpecialists.empty()) {
-				if(simulatedGame->getSpecialist(*selectedSpecialists.begin())->getOwnerID() == userGameID) {
+				if(simulatedGame->getSpecialist(*selectedSpecialists.begin())->getOwnerID() == userGameID || isOffline()) {
 					arguments.push_back(uint32_t(*selectedSpecialists.begin()));
 					if(getNode(selected)) getNode(selected)->setSpecialistSelected(*selectedSpecialists.begin(), false);
 				}
@@ -1143,7 +1147,7 @@ double GameInterface::projectedTime(double x, double y) {
 
 	std::set<int> specialists(selectedSpecialists.begin(), selectedSpecialists.end());
 
-	double speed = getSelected()->getProjectedSpeed(target ? target->getObj() : nullptr, specialists);
+	double speed = getSelected()->getProjectedSpeed(getSelected(), target ? target->getObj() : nullptr, specialists);
 
 	double mag = (target ? target->getObj()->getPositionAt(target->getDiff()) : p).closestDistance(getSelected()->getPositionAt(timeDiff));
 

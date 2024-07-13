@@ -8,13 +8,15 @@ var chats = {}
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	GameData.chatChanged.connect(chatChanged)
+	pass
 
 func init(gameID):
 	game = GameData.getGame(gameID)
 	self.gameID = gameID
 
 	refresh(await GameData.loadChats(gameID))
+	
+	GameData.chatChanged.connect(chatChanged)
 	
 func refresh(newChats):
 	for chat in newChats:

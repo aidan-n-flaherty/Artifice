@@ -1,10 +1,11 @@
-[gd_scene load_steps=9 format=3 uid="uid://bod0r21lv0xfs"]
+[gd_scene load_steps=10 format=3 uid="uid://bod0r21lv0xfs"]
 
 [ext_resource type="Theme" uid="uid://tg7ina762c6q" path="res://resources/themes/UITheme.tres" id="1_i20n5"]
 [ext_resource type="Script" path="res://OutpostDetails.gd" id="1_n7jsx"]
 [ext_resource type="Texture2D" uid="uid://muiswj5itio4" path="res://resources/icons/Factory.png" id="3_h8sdh"]
 [ext_resource type="Texture2D" uid="uid://tr562byfed0a" path="res://resources/icons/Generator.png" id="4_h2dfi"]
 [ext_resource type="Texture2D" uid="uid://2qky2etb1pkk" path="res://resources/icons/Mine.png" id="5_ww34p"]
+[ext_resource type="Theme" uid="uid://cltadyeempokg" path="res://resources/themes/DetailTheme.tres" id="6_qglxq"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_hivrr"]
 font_size = 30
@@ -106,6 +107,11 @@ layout_mode = 2
 theme = ExtResource("1_i20n5")
 text = "-1 in"
 
+[node name="GlobalDisabled" type="Label" parent="VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 10
+text = "Global Effects Disabled"
+
 [node name="OutOfRange" type="Label" parent="VBoxContainer"]
 layout_mode = 2
 text = "This outpost is outside of your sonar range."
@@ -123,7 +129,7 @@ theme_override_constants/v_separation = 10
 
 [node name="Jump" type="Button" parent="VBoxContainer/HBoxContainer"]
 layout_mode = 2
-theme = ExtResource("1_i20n5")
+theme = ExtResource("6_qglxq")
 text = "Next production event"
 
 [node name="Spacer1" type="Control" parent="VBoxContainer/HBoxContainer"]
@@ -133,7 +139,7 @@ theme = ExtResource("1_i20n5")
 
 [node name="Mine" type="Button" parent="VBoxContainer/HBoxContainer"]
 layout_mode = 2
-theme = ExtResource("1_i20n5")
+theme = ExtResource("6_qglxq")
 text = "Mine (50)"
 
 [node name="Spacer2" type="Control" parent="VBoxContainer/HBoxContainer"]
@@ -143,7 +149,7 @@ theme = ExtResource("1_i20n5")
 
 [node name="Cancel" type="Button" parent="VBoxContainer/HBoxContainer"]
 layout_mode = 2
-theme = ExtResource("1_i20n5")
+theme = ExtResource("6_qglxq")
 text = "Cancel order"
 
 [node name="Spacer3" type="Control" parent="VBoxContainer/HBoxContainer"]
@@ -153,7 +159,7 @@ theme = ExtResource("1_i20n5")
 
 [node name="BattleForecast" type="Button" parent="VBoxContainer/HBoxContainer"]
 layout_mode = 2
-theme = ExtResource("1_i20n5")
+theme = ExtResource("6_qglxq")
 text = "Battle Forecast"
 
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/Jump" to="." method="_on_jump_pressed"]

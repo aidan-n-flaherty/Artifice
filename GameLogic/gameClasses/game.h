@@ -30,6 +30,8 @@ class VesselOutpostEvent;
 
 class WinConditionEvent;
 
+class OutpostRangeEvent;
+
 struct GameOrder {
     bool operator()(const std::shared_ptr<Game> &lhs, const std::shared_ptr<Game> &rhs) const;
 };
@@ -185,6 +187,7 @@ public:
     std::shared_ptr<Game> setSimulateVessel(int ID, double timestamp, bool simulate);
     std::shared_ptr<Game> setSimulateOrder(int ID, bool simulate);
     std::list<int> ignoredOrders();
+    bool canRetreat(Vessel* v, double timeDiff) const;
     bool withinRange(Player* p, PositionalObject* obj, double timeDiff) const;
     bool withinRange(Player* p, const Point& pos, double timeDiff) const;
     std::shared_ptr<Game> lastState(double timestamp);
@@ -196,6 +199,7 @@ public:
     const BattleEvent* nextBattle(int id, double timestamp);
     const WinConditionEvent* nextWinCondition(double timestamp);
     const VesselOutpostEvent* nextArrival(int id, double timestamp);
+    const OutpostRangeEvent* nextFireEvent(double timestamp);
     std::list<BattleEvent*> nextBattles(int id);
     const BattleEvent* simulatedBattle(int eventID);
 

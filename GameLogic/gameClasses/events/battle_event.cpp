@@ -8,6 +8,11 @@ void BattleEvent::specialistPhase(Game* game) {
     int unitsA = a->getUnits();
     int unitsB = b->getUnits();
 
+    if(a->getGlobalDisabled() || b->getGlobalDisabled()) {
+        addMessage(-1, "Due to a nearby Chancellor, all global specialist abilities are disabled.");
+        return;
+    }
+
     if(a->controlsSpecialist(SpecialistType::REVERED_ELDER) && !b->controlsSpecialist(SpecialistType::REVERED_ELDER)) {
         addMessage(a->getOwnerID(), a->getOwner()->getName() + "'s Revered Elder removes all specialists from combat.");
         return;
@@ -121,29 +126,29 @@ void BattleEvent::postSpecialistPhase(Game* game) {
     int unitsA = a->getUnits();
     int unitsB = b->getUnits();
 
-    if(a->controlsSpecialist(SpecialistType::REVERED_ELDER) != b->controlsSpecialist(SpecialistType::REVERED_ELDER)) {
-        return;
-    }
-
-    for(int i = 0; i < a->ownerSpecialistCount(SpecialistType::KING); i++) {
+    for(int i = 0; i < (!a->getGlobalDisabled() ? a->ownerSpecialistCount(SpecialistType::KING) : -1); i++) {
         addMessage(a->getOwnerID(), a->getOwner()->getName() + "'s King kills " + std::to_string(b->removeUnits(int(unitsA * 1.0 / (2 * i + 4)))) + " units");
     }
 
-    for(int i = 0; i < b->ownerSpecialistCount(SpecialistType::KING); i++) {
+    for(int i = 0; i < (!b->getGlobalDisabled() ? b->ownerSpecialistCount(SpecialistType::KING) : -1); i++) {
         addMessage(b->getOwnerID(), b->getOwner()->getName() + "'s King kills " + std::to_string(a->removeUnits(int(unitsB * 1.0 / (2 * i + 4)))) + " units");
     }
 
     if(!a->getSpecialists().empty()) {
-        for(int i = 0; i < a->ownerSpecialistCount(SpecialistType::GENERAL); i++) {
+        for(int i = 0; i < (!a->getGlobalDisabled() ? a->ownerSpecialistCount(SpecialistType::GENERAL) : -1); i++) {
             addMessage(a->getOwnerID(), a->getOwner()->getName() + "'s General kills " + std::to_string(b->removeUnits(10)) + " units");
         }
     }
 
     if(!b->getSpecialists().empty()) {
-        for(int i = 0; i < b->ownerSpecialistCount(SpecialistType::GENERAL); i++) {
+        for(int i = 0; i < (!b->getGlobalDisabled() ? b->ownerSpecialistCount(SpecialistType::GENERAL) : -1); i++) {
             addMessage(b->getOwnerID(), b->getOwner()->getName() + "'s General kills " + std::to_string(a->removeUnits(10)) + " units");
         }
     }
+
+    /*if(a->controlsSpecialist(SpecialistType::REVERED_ELDER) != b->controlsSpecialist(SpecialistType::REVERED_ELDER)) {
+        return;
+    }*/
 
     setPhaseUnits();
 }
@@ -151,16 +156,12 @@ void BattleEvent::postSpecialistPhase(Game* game) {
 void BattleEvent::victorySpecialistPhase(Game* game) {
     setPhase("Combat Resolution Phase");
 
-    if(a->controlsSpecialist(SpecialistType::REVERED_ELDER) != b->controlsSpecialist(SpecialistType::REVERED_ELDER)) {
-        return;
-    }
-
     if(a->getOwnerID() == getVictor() && a->ownerControlsSpecialist(SpecialistType::ENGINEER)) {
         int lostUnits = startingUnitsA - a->getUnits();
 
         if(lostUnits > 0) {
             int engineersInBattle = a->specialistCount(SpecialistType::ENGINEER);
-            int engineersTotal = a->hasOwner() ? a->getOwner()->specialistCount(SpecialistType::ENGINEER) : 0;
+            int engineersTotal = a->hasOwner() && !a->getGlobalDisabled() ? a->getOwner()->specialistCount(SpecialistType::ENGINEER) : 0;
 
             for(int i = 0; i < engineersInBattle; i++) {
                 int restored = int(0.5 * lostUnits);
@@ -183,7 +184,7 @@ void BattleEvent::victorySpecialistPhase(Game* game) {
 
         if(lostUnits > 0) {
             int engineersInBattle = b->specialistCount(SpecialistType::ENGINEER);
-            int engineersTotal = b->hasOwner() ? b->getOwner()->specialistCount(SpecialistType::ENGINEER) : 0;
+            int engineersTotal = b->hasOwner() && !b->getGlobalDisabled() ? b->getOwner()->specialistCount(SpecialistType::ENGINEER) : 0;
 
             for(int i = 0; i < engineersInBattle; i++) {
                 int restored = int(0.5 * lostUnits);
@@ -201,10 +202,66 @@ void BattleEvent::victorySpecialistPhase(Game* game) {
         }
     }
 
+    Vessel* v1 = dynamic_cast<Vessel*>(a);
+    Vessel* v2 = dynamic_cast<Vessel*>(b);
+
+    if(a->getOwnerID() == getVictor() && v1 && v1->getOrigin() && v1->getOrigin()->getOwnerID() == v1->getOwnerID() && v1->getOrigin()->controlsSpecialist(SpecialistType::SCAVENGER)) {
+        int lostUnits = startingUnitsA - a->getUnits();
+
+        for(int i = 0, effectiveness = 1; i < v1->getOrigin()->specialistCount(SpecialistType::SCAVENGER); i++, effectiveness *= 2) {
+            int restored = int(0.25 / effectiveness * lostUnits);
+            v1->getOrigin()->addUnits(restored);
+        
+            addMessage(a->getOwnerID(), a->getOwner()->getName() + "'s Scavenger restores " + std::to_string(restored) + " units");
+        }
+    }
+
+    if(b->getOwnerID() == getVictor() && v2 && v2->getOrigin() && v2->getOrigin()->getOwnerID() == v2->getOwnerID() && v2->getOrigin()->controlsSpecialist(SpecialistType::SCAVENGER)) {
+        int lostUnits = startingUnitsB - b->getUnits();
+
+        for(int i = 0, effectiveness = 1; i < v2->getOrigin()->specialistCount(SpecialistType::SCAVENGER); i++, effectiveness *= 2) {
+            int restored = int(0.25 / effectiveness * lostUnits);
+            v2->getOrigin()->addUnits(restored);
+
+            addMessage(b->getOwnerID(), b->getOwner()->getName() + "'s Scavenger restores " + std::to_string(restored) + " units");
+        }
+    }
+
+    /*if(a->controlsSpecialist(SpecialistType::REVERED_ELDER) != b->controlsSpecialist(SpecialistType::REVERED_ELDER)) {
+        return;
+    }*/
+
     setPhaseUnits();
 }
 
 void BattleEvent::defeatSpecialistPhase(Game* game) {
+    setPhase("Defeat Phase");
+
+    Vessel* v1 = dynamic_cast<Vessel*>(a);
+    Vessel* v2 = dynamic_cast<Vessel*>(b);
+
+    if(a->getOwnerID() != getVictor() && v1 && v1->getOrigin() && v1->getOrigin()->getOwnerID() == v1->getOwnerID() && v1->getOrigin()->controlsSpecialist(SpecialistType::SCAVENGER)) {
+        int lostUnits = startingUnitsA - a->getUnits();
+
+        for(int i = 0, effectiveness = 1; i < v1->getOrigin()->specialistCount(SpecialistType::SCAVENGER); i++, effectiveness *= 2) {
+            int restored = int(0.5 / effectiveness * lostUnits);
+            v1->getOrigin()->addUnits(restored);
+
+            addMessage(a->getOwnerID(), a->getOwner()->getName() + "'s Scavenger restores " + std::to_string(restored) + " units");
+        }
+    }
+
+    if(b->getOwnerID() != getVictor() && v2 && v2->getOrigin() && v2->getOrigin()->getOwnerID() == v2->getOwnerID() && v2->getOrigin()->controlsSpecialist(SpecialistType::SCAVENGER)) {
+        int lostUnits = startingUnitsB - b->getUnits();
+
+        for(int i = 0, effectiveness = 1; i < v2->getOrigin()->specialistCount(SpecialistType::SCAVENGER); i++, effectiveness *= 2) {
+            int restored = int(0.5 / effectiveness * lostUnits);
+            v2->getOrigin()->addUnits(restored);
+
+            addMessage(b->getOwnerID(), b->getOwner()->getName() + "'s Scavenger restores " + std::to_string(restored) + " units");
+        }
+    }
+
     if(a->controlsSpecialist(SpecialistType::REVERED_ELDER) != b->controlsSpecialist(SpecialistType::REVERED_ELDER)) {
         return;
     }
@@ -241,7 +298,7 @@ void BattleEvent::postCombatSpecialistPhase(Game* game) {
     }
 
     if(b->controlsSpecialist(SpecialistType::MARTYR) && a->hasOwner()) {
-        addMessage(a->getOwnerID(), a->getOwner()->getName() + "'s Martyr detonates.");
+        addMessage(b->getOwnerID(), b->getOwner()->getName() + "'s Martyr detonates.");
 
         int range = game->getSettings()->defaultSonar/5;
 

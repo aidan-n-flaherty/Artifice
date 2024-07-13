@@ -37,6 +37,7 @@ func _process(delta):
 	$Images/HBoxContainer/Factory.visible = (outpost.isInRadar() or outpost.canViewType()) and outpost.isFactory()
 	$Images/HBoxContainer/Generator.visible = (outpost.isInRadar() or outpost.canViewType()) and outpost.isGenerator()
 	$Images/HBoxContainer/Mine.visible = (outpost.isInRadar() or outpost.canViewType()) and outpost.isMine()
+	$VBoxContainer/HBoxContainer2/GlobalDisabled.visible = outpost.getGlobalDisabled()
 	
 	if not (outpost.isInRadar() or outpost.canViewType() or outpost.isMine()):
 		$VBoxContainer/HBoxContainer/Jump.hide()

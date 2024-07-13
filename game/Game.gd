@@ -141,13 +141,14 @@ func init(gameID: int, offline=false):
 	
 	tabDisplay().get_node("Panel/Status").init(gameID)
 	tabDisplay().get_node("Panel/Shop").init(gameID)
-	tabDisplay().get_node("Panel/Chat").init(gameID)
 	tabDisplay().get_node("Panel/Orders").init(gameID)
 	
 	var details = GameData.getGameDetails(gameID)
 	
 	
 	if not game.isOffline():
+		tabDisplay().get_node("Panel/Chat").init(gameID)
+	
 		if tabDisplay().get_node_or_null("Panel/GameEditor"):
 			tabDisplay().remove_child(tabDisplay().get_node("Panel/GameEditor"))
 		

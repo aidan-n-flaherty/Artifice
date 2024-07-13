@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <cmath>
 #include <list>
+#include <unordered_set>
 #include "positional_object.h"
 #include "../game_settings.h"
 #include "../possessable.h"
@@ -26,6 +27,10 @@ private:
     int shieldCharge = 0;
     double fractionalShield = 0.0;
 
+    bool locked = false;
+
+    std::unordered_set<int> lockedFrom;
+
     OutpostType type;
 
 public:
@@ -42,6 +47,7 @@ public:
 
     void setMaxShield(int maxShieldCharge) { this->maxShieldCharge = maxShieldCharge; }
     int removeShield(int amount);
+    void rechargeShield() { this->shieldCharge = getMaxShield(); }
 
     int getFireRange() const;
     int getSonarRange() const;
@@ -58,6 +64,12 @@ public:
     double nextProductionEvent(double timeDiff) const;
 
     void update(double timeDiff);
+
+    void setLocked(Game* game);
+
+    bool isLocked() { return locked; };
+
+    std::unordered_set<int> getLockedFrom() { return lockedFrom; }
 };
 
 #endif

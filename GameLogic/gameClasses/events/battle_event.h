@@ -73,6 +73,11 @@ public:
         startingUnitsB = b->getUnits();
         
         setLocation(a->getPosition());
+
+        if(a->getGlobalDisabled() || b->getGlobalDisabled()) {
+            a->setGlobalDisabled(true);
+            b->setGlobalDisabled(true);
+        }
     }
 
     int getAID() const { return aID; }
@@ -137,7 +142,7 @@ public:
     }
 
     static const std::list<std::string> getPhases() {
-        return { "Specialist Phase", "Post-Specialist Phase", "Combat Resolution Phase", "Post-Combat Phase" };
+        return { "Specialist Phase", "Post-Specialist Phase", "Combat Resolution Phase", "Defeat Phase", "Post-Combat Phase" };
     }
 
     const std::pair<int, int> getBattleUsers() const {

@@ -59,6 +59,13 @@ public:
 
         Outpost* outpost = game->getOutpost(originID);
 
+        std::unordered_set<int> lockedFrom = outpost->getLockedFrom();
+
+        if(outpost->isLocked() && lockedFrom.find(targetID) == lockedFrom.end()) {
+            std::cout << "ORDER ERROR: outpost cannot send" << std::endl;
+            return nullptr;
+        }
+
         if(!game->hasPosObject(targetID)) {
             std::cout << "ORDER ERROR: nonexistent target" << std::endl;
             return nullptr;
@@ -90,6 +97,8 @@ public:
             std::cout << "ORDER ERROR: outpost " << outpost->getID() << " is not owned by " << getSenderID() << std::endl;
             return nullptr;
         }
+
+        if(outpost->getUnits() < numUnits) numUnits = outpost->getUnits();
 
         if(!outpost->canRemoveSpecialists(specialistIDs) || !outpost->canRemoveUnits(numUnits)) {
             for(int i : specialistIDs) std::cout << i << " ";

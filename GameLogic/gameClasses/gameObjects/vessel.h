@@ -53,7 +53,7 @@ public:
     int getOriginID() const { return origin != nullptr ? origin->getID() : -1; }
     void setOrigin(Outpost* origin) { this->origin = origin; }
 
-    static double getSpeed(double speed, double simulationSpeed, Player* p, const std::list<Specialist*> &specialists, PositionalObject* target);
+    static double getSpeed(double speed, double simulationSpeed, Player* p, const std::list<Specialist*> &specialists, PositionalObject* source, PositionalObject* target, bool globalDisabled);
     double getSpeed() const override;
     void setSpeedModifier(double speed) { this->speedModifier = speed; }
 
@@ -69,6 +69,8 @@ public:
         setRefresh(this->target == nullptr || this->target->getID() != target->getID());
         this->target = target;
     }
+
+    PositionalObject* getReturnOutpost() { return returnOutpost; }
 
     void returnHome();
 

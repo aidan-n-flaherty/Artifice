@@ -21,6 +21,7 @@
 #include "orders/release_order.h"
 #include "orders/surrender_order.h"
 #include "orders/mine_order.h"
+#include "orders/retreat_order.h"
 #include "helpers/point.h"
 #include "events/send_event.h"
 #include "events/reroute_event.h"
@@ -461,6 +462,8 @@ void Game::removeRelevant(int id) {
 }
 
 void Game::updateEvents() {
+    for(auto& pair : outposts) pair.second->setLocked(this);
+
     // delete all objects flagged for deletion
     for(auto itA = vessels.begin(); itA != vessels.end();) {
         Vessel* vessel = itA->second;
@@ -543,7 +546,10 @@ void Game::updateState(double timestamp) {
     if(secondsElapsed == 0) return;
 
     for(auto& pair : vessels) pair.second->update(secondsElapsed);
-    for(auto& pair : outposts) pair.second->update(secondsElapsed);
+    for(auto& pair : outposts) {
+        pair.second->update(secondsElapsed);
+        pair.second->setLocked(this);
+    }
     for(auto& pair : players) pair.second->update(secondsElapsed);
 
     for(auto& pair : vessels) pair.second->endUpdate();
@@ -876,6 +882,17 @@ const VesselOutpostEvent* Game::nextArrival(int id, double timestamp) {
     return nullptr;
 }
 
+const OutpostRangeEvent* Game::nextFireEvent(double timestamp) {
+    for(Event* event : simulatedEvents) {
+        if(event->getTimestamp() > timestamp) {
+            OutpostRangeEvent* e = dynamic_cast<OutpostRangeEvent*>(event);
+            if(e) return e;
+        }
+    }
+
+    return nullptr;
+}
+
 // method should only be called by the current game state, and returned battles are only predictions
 std::list<BattleEvent*> Game::nextBattles(int id) {
     std::list<BattleEvent*> l;
@@ -1003,6 +1020,10 @@ void Game::addOrder(const std::string &type, int ID, int referenceID, bool cance
         int targetID = argumentIDs.front();
         argumentIDs.pop_front();
         addOrder(new RerouteOrder(ID, time, senderID, vesselID, targetID, referenceID, canceled));
+    } else if(type == "RETREAT" && argumentIDs.size() >= 1) {
+        int vesselID = argumentIDs.front();
+        argumentIDs.pop_front();
+        addOrder(new RetreatOrder(ID, time, senderID, vesselID, referenceID, canceled));
     } else if(type == "MINE" && argumentIDs.size() >= 1) {
         int outpostID = argumentIDs.front();
         argumentIDs.pop_front();
@@ -1109,6 +1130,18 @@ std::list<Vessel*> Game::getTeamVessels(int teamID) const {
     }
 
     return returnVal;
+}
+
+bool Game::canRetreat(Vessel* v, double timeDiff) const {
+    if(!v->getReturnOutpost()) return false;
+
+    for(const auto& pair : getOutposts()) {
+        if(pair.second->getOwnerID() == v->getOwnerID() && pair.second->controlsSpecialist(SpecialistType::STRATEGIST) && pair.second->distance(v->getPositionAt(timeDiff)) <= pair.second->getSonarRange()) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 bool Game::withinRange(Player* p, PositionalObject* obj, double timeDiff) const {

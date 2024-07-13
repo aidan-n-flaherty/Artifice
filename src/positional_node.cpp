@@ -46,6 +46,7 @@ void PositionalNode::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("getSpecialistIDs"), &PositionalNode::getSpecialistIDs);
 	ClassDB::bind_method(D_METHOD("getOriginatingOrder"), &PositionalNode::getOriginatingOrder);
 	ClassDB::bind_method(D_METHOD("getOriginatingOrderType"), &PositionalNode::getOriginatingOrderType);
+	ClassDB::bind_method(D_METHOD("getGlobalDisabled"), &PositionalNode::getGlobalDisabled);
 	ADD_SIGNAL(MethodInfo("selected", PropertyInfo(Variant::INT, "id")));
 	ADD_SIGNAL(MethodInfo("released", PropertyInfo(Variant::INT, "id")));
 }
