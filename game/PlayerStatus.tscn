@@ -144,11 +144,9 @@ value = 50.0
 show_percentage = false
 
 [node name="Banner" parent="MarginContainer/HBoxContainer/MarginContainer/Units" instance=ExtResource("3_aaafv")]
-visible = false
 modulate = Color(1, 1, 1, 0.2)
 show_behind_parent = true
-layout_mode = 0
-anchors_preset = 0
+layout_mode = 1
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/MarginContainer"]
 layout_mode = 2

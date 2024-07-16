@@ -394,7 +394,6 @@ size_flags_vertical = 3
 theme = ExtResource("4_6biup")
 
 [node name="Fade" type="Panel" parent="."]
-visible = false
 layout_mode = 2
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_f2vgl")

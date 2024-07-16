@@ -1,6 +1,11 @@
 extends MarginContainer
 
+
 var color = Color.WHITE
+var colorP = Color.WHITE
+var colorS = Color.WHITE
+
+var bannerID = 0
 
 var playerName = ""
 
@@ -11,5 +16,8 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	get_parent().get_node("Header/HeaderColor/Banner").setPattern(bannerID)
+	#get_parent().add_child(banner)
+	
 	get_parent().get_node("Header/HeaderColor").modulate = color
 	get_parent().get_node("Header/MarginContainer/Player").text = playerName

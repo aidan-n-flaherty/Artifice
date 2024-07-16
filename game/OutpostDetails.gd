@@ -30,6 +30,7 @@ func _process(delta):
 	
 
 	get_parent().color = outpost.getColor()
+	
 	if outpost.getOwnerID() != -1:
 		get_parent().playerName = game.getPlayer(outpost.getOwnerID()).getName()
 	else:
