@@ -157,7 +157,7 @@ void fragment() {
 	} else {
 		float curve = getTexture(pos, sunlightTexture1).r;
 		curve = float(int(curve * 5.0))/5.0;
-		ALBEDO = vec3(0.4, 0.5, 0.6) * (0.5 + 0.5 * curve);
+		ALBEDO = vec3(0.06, 0.08, 0.1) * (0.5 + 0.5 * curve);
 		METALLIC = 1.0;
 	}
 }

@@ -56,6 +56,26 @@ void BattleEvent::specialistPhase(Game* game) {
         addMessage(b->getOwnerID(), b->getOwner()->getName() + "'s War Hero kills " + std::to_string(a->removeUnits(20)) + " units");
     }
 
+    for(int i = 0; i < a->specialistCount(SpecialistType::MINISTER_OF_WAR); i++) {
+        int destroyedOutposts = 0;
+
+        for(Outpost* o : a->getOwner()->getOutposts()) {
+            if(o->getType() == OutpostType::BROKEN) destroyedOutposts++;
+        }
+
+        addMessage(a->getOwnerID(), a->getOwner()->getName() + "'s Minister Of War kills " + std::to_string(b->removeUnits(destroyedOutposts * 10)) + " units");
+    }
+
+    for(int i = 0; i < b->specialistCount(SpecialistType::MINISTER_OF_WAR); i++) {
+        int destroyedOutposts = 0;
+
+        for(Outpost* o : b->getOwner()->getOutposts()) {
+            if(o->getType() == OutpostType::BROKEN) destroyedOutposts++;
+        }
+
+        addMessage(b->getOwnerID(), b->getOwner()->getName() + "'s Minister Of War kills " + std::to_string(a->removeUnits(destroyedOutposts * 10)) + " units");
+    }
+
     Vessel* v1 = dynamic_cast<Vessel*>(a);
     Vessel* v2 = dynamic_cast<Vessel*>(b);
 

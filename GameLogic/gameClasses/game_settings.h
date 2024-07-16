@@ -48,6 +48,10 @@ public:
     int number_of_teams;
     int giftPadding;
 
+    // specialist specific
+    double trapperRange;
+    int detonatorCost;
+
     void loadDefaults();
 
     void addSetting(const char* type, const void* value);

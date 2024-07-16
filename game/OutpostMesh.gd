@@ -83,7 +83,7 @@ func _process(delta):
 		return
 				
 
-	$Locked.visible = get_parent().isLocked()
+	$Locked.visible = false
 
 	if units != get_parent().getUnits():
 		$Units.text = str(get_parent().getUnits())

@@ -38,6 +38,7 @@ func _process(delta):
 	$Images/HBoxContainer/Generator.visible = (outpost.isInRadar() or outpost.canViewType()) and outpost.isGenerator()
 	$Images/HBoxContainer/Mine.visible = (outpost.isInRadar() or outpost.canViewType()) and outpost.isMine()
 	$VBoxContainer/HBoxContainer2/GlobalDisabled.visible = outpost.getGlobalDisabled()
+	$VBoxContainer/HBoxContainer2/Locked.visible = game.isLocked(outpost.getID())
 	
 	if not (outpost.isInRadar() or outpost.canViewType() or outpost.isMine()):
 		$VBoxContainer/HBoxContainer/Jump.hide()
@@ -81,8 +82,9 @@ func _process(delta):
 		$VBoxContainer/HBoxContainer/Mine.hide()
 	
 	var owns = game.ownsObj(outpost.getID())
-	if owns and outpost.canMine():
+	if owns and not outpost.isMine():
 		$VBoxContainer/HBoxContainer/Mine.show()
+		$VBoxContainer/HBoxContainer/Mine.disabled = not outpost.canMine()
 		$VBoxContainer/HBoxContainer/Mine.text = "Mine (%d)" % outpost.getMineCost()
 	else:
 		$VBoxContainer/HBoxContainer/Mine.hide()

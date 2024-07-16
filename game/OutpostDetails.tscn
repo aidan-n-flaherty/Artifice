@@ -112,6 +112,11 @@ layout_mode = 2
 size_flags_horizontal = 10
 text = "Global Effects Disabled"
 
+[node name="Locked" type="Label" parent="VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 10
+text = "Cannot send specialists"
+
 [node name="OutOfRange" type="Label" parent="VBoxContainer"]
 layout_mode = 2
 text = "This outpost is outside of your sonar range."

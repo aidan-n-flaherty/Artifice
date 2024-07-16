@@ -8,6 +8,7 @@
 
 [sub_resource type="LabelSettings" id="LabelSettings_cfbt4"]
 font_size = 30
+outline_size = 2
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5jxhx"]
 bg_color = Color(0, 0, 0, 1)
@@ -157,9 +158,18 @@ size_flags_vertical = 8
 theme = ExtResource("3_wbpsg")
 text = "Next Hire"
 
+[node name="Activation" type="Button" parent="MarginContainer/HBoxContainer/MarginContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 8
+theme = ExtResource("3_wbpsg")
+text = "Activate"
+
 [connection signal="pressed" from="MarginContainer/HBoxContainer/HBoxContainer/VBoxContainer/Back" to="." method="_on_back_pressed"]
 [connection signal="pressed" from="MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/Promote" to="." method="_on_promote_pressed"]
 [connection signal="pressed" from="MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/Release" to="." method="_on_release_pressed"]
 [connection signal="pressed" from="MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/Shop" to="." method="_on_shop_pressed"]
 [connection signal="pressed" from="MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/Cancel" to="." method="_on_cancel_pressed"]
 [connection signal="pressed" from="MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/NextHire" to="." method="_on_next_hire_pressed"]
+[connection signal="pressed" from="MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/Activation" to="." method="_on_activation_pressed"]

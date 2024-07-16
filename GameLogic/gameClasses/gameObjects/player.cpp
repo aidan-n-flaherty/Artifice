@@ -261,6 +261,7 @@ void Player::removeSpecialist(Specialist* specialist) {
 }
 
 void Player::addOutpost(Outpost* outpost) {
+    if(outpost->getType() == OutpostType::MINE) setRefresh(true);
     if(outpost->hasOwner()) outpost->getOwner()->removeOutpost(outpost);
 
     outpost->setOwner(this);
@@ -297,6 +298,8 @@ void Player::removeOutpost(Outpost* outpost) {
                 fractionalProduction = 0;
                 setRefresh(true);
             }
+
+            if(controlsSpecialist(SpecialistType::MINISTER_OF_WAR)) outpost->setType(OutpostType::BROKEN);
 
             outposts.erase(it);
             break;

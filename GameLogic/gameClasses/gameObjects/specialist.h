@@ -47,6 +47,8 @@ enum SpecialistType : unsigned int {
     CONDUCTOR,
     TRAPPER,
     STRATEGIST,
+    DETONATOR,
+    MINISTER_OF_WAR,
     END
 };
 
@@ -124,29 +126,31 @@ public:
             MARAUDER,
             CONDUCTOR,
             TRAPPER,
-            STRATEGIST
+            STRATEGIST,
+            DETONATOR,
+            MINISTER_OF_WAR
         };
     }
 
     static std::list<SpecialistType> baseHires() {
         return {
-            PRINCESS, // no promotion
             ASSASSIN, // no promotion
-            INFILTRATOR, // no promotion
-            LIEUTENANT,
-            THIEF,
-            INSPECTOR,
-            MARTYR, // no promotion
-            REVERED_ELDER,
-            SABOTEUR, // no promotion
-            SENTRY,
+            DOUBLE_AGENT, // no promotion
             DIPLOMAT, // no promotion
             FOREMAN,
             HELMSMAN,
             HYPNOTIST,
+            INFILTRATOR, // no promotion
+            INSPECTOR,
             INTELLIGENCE_OFFICER,
+            LIEUTENANT,
+            MARTYR,
+            PRINCESS, // no promotion
+            REVERED_ELDER,
+            SABOTEUR, // no promotion
+            SENTRY,
+            THIEF,
             TINKERER,
-            DOUBLE_AGENT // no promotion
         };
     }
 
@@ -170,6 +174,8 @@ public:
             case REVERED_ELDER: return { CHANCELLOR };
             case ENGINEER: return { SCAVENGER };
             case INTELLIGENCE_OFFICER: return { STRATEGIST };
+            case MARTYR: return { DETONATOR };
+            case DETONATOR: return { MINISTER_OF_WAR };
             default: return {};
         }
     }
@@ -224,6 +230,8 @@ public:
             "Conductor",
             "Trapper",
             "Strategist",
+            "Detonator",
+            "Minister_Of_War",
             "NULL"
         };
 

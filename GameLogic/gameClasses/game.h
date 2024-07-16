@@ -188,6 +188,7 @@ public:
     std::shared_ptr<Game> setSimulateOrder(int ID, bool simulate);
     std::list<int> ignoredOrders();
     bool canRetreat(Vessel* v, double timeDiff) const;
+    bool isLocked(Outpost* o, double timeDiff) const;
     bool withinRange(Player* p, PositionalObject* obj, double timeDiff) const;
     bool withinRange(Player* p, const Point& pos, double timeDiff) const;
     std::shared_ptr<Game> lastState(double timestamp);

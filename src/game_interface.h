@@ -159,11 +159,16 @@ public:
 	std::shared_ptr<Game> getCurrentGame() { return currentGame; }
 	std::shared_ptr<Game> getFullGame() { return fullGame; }
 
+	bool isSuspended() { return paused; }
 
 	int getUserGameID() { return userGameID; }
 
 	int getHires() {
 		return game && game->hasPlayer(userGameID) ? game->getPlayer(userGameID)->getHiresAt(settings.clientToGameTime(current) - game->getTime()) : -1;
+	}
+
+	int getHiresFor(int specialistID) {
+		return game && game->hasSpecialist(specialistID) && game->getSpecialist(specialistID)->hasOwner() && game->getSpecialist(specialistID)->getType() == SpecialistType::QUEEN ? game->getPlayer(game->getSpecialist(specialistID)->getOwnerID())->getHiresAt(settings.clientToGameTime(current) - game->getTime()) : -1;
 	}
 	
 	double getTimeMillis();
@@ -259,7 +264,8 @@ public:
 	bool canUndoSpecialist(int specialistID) { return simulatedGame->hasSpecialist(specialistID) && simulatedGame->getSpecialist(specialistID)->getOriginatingOrder() && simulatedGame->getSpecialist(specialistID)->getOriginatingOrder()->getTimestamp() > settings.clientToGameTime(getTimeMillis()); }
 	int getSpecialistOriginatingOrder(int specialistID) { return canUndoSpecialist(specialistID) ? simulatedGame->getSpecialist(specialistID)->getOriginatingOrder()->getID() : -1; }
 	String getSpecialistOriginatingOrderType(int specialistID) { return canUndoSpecialist(specialistID) ? String(simulatedGame->getSpecialist(specialistID)->getOriginatingOrder()->getType().c_str()) : ""; }
-	bool ownsSpecialist(int specialistID) { return simulatedGame->hasSpecialist(specialistID) && simulatedGame->getSpecialist(specialistID)->getOwnerID() == userGameID; }
+	bool ownsSpecialist(int specialistID) { return userGameID >= 0 && simulatedGame && simulatedGame->hasSpecialist(specialistID) && simulatedGame->getSpecialist(specialistID)->getOwnerID() == userGameID; }
+	String getActivation(int specialistID);
 	bool ownsObj(int objID) { return simulatedGame->hasPosObject(objID) && simulatedGame->getPosObject(objID)->getOwnerID() == userGameID; }
 
 
@@ -282,6 +288,7 @@ public:
 	int getNextBattleVictorUnits(int objID);
 	Array getNextBattleCaptures(int objID);
 
+	bool isLocked(int outpostID) { return game && game->hasOutpost(outpostID) && game->isLocked(game->getOutpost(outpostID), settings.clientToGameTime(getCurrent()) - game->getTime()); }
 	bool canRetreat(int vesselID) { return future && game && game->hasVessel(vesselID) && game->canRetreat(game->getVessel(vesselID), settings.clientToGameTime(getCurrent()) - game->getTime()); };
 	bool canGift(int vesselID) { return future && game && game->hasPlayer(userGameID) && game->hasVessel(vesselID) && !game->getVessel(vesselID)->isGift(); }
 	bool canHire() { return future && game && game->hasPlayer(userGameID) && game->getPlayer(userGameID)->getHiresAt(settings.clientToGameTime(getCurrent()) - game->getTime()) > 0 && dynamic_cast<Outpost*>(game->getPlayer(userGameID)->getSpawnLocation()) && game->getPlayer(userGameID)->getSpawnLocation()->getOwnerID() == userGameID; }

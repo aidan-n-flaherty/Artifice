@@ -30,6 +30,8 @@ void GameSettings::loadDefaults() {
     GameSettings::startTime = -1;
     GameSettings::resourceReductionAmount = 0.2;
     GameSettings::giftPadding = 100;
+    GameSettings::trapperRange = 0.3;
+    GameSettings::detonatorCost = 50;
     GameSettings::activeHours.clear();
     for(int i = 0; i < 24; i++) GameSettings::activeHours.insert(i);
     GameSettings::specialistBans.clear();
@@ -69,8 +71,10 @@ void GameSettings::loadDefaults() {
         { SCAVENGER, "For any friendly submarine traveling from the Scavenger's outpost, the Scavenger's outpost recovers 25% of your units lost to combat. For combats you lose, an additional 25% are recovered. Additional Scavengers are half as effective." },
         { MARAUDER, "While on a submarine, steal 4% of units from the highest-unit enemy vessel or outpost every 2 hours. Range is 50% of the default sonar value." },
         { CONDUCTOR, "All friendly subs travel at 3x speed when traveling between outposts that both have conductors." },
-        { TRAPPER, "While traveling directly from a friendly outpost to an enemy outpost, the enemy outpost is unable to send submarines anywhere except the Trapper's starting outpost." },
-        { STRATEGIST, "Any sub within sonar range of the Strategist's outpost may return to the outpost it was sent from." }
+        { TRAPPER, "While on a sub traveling directly to an enemy outpost, enemy specialists cannot leave once the Trapper is within 30% of base sonar range." },
+        { STRATEGIST, "Any sub within sonar range of the Strategist's outpost may return to the outpost it was sent from." },
+        { DETONATOR, "You may send an order to detonate at any time, destroying all outposts, submarines, and specialists, allied and enemy alike, within a range of 20% the default sonar value." },
+        { MINISTER_OF_WAR, "Any time you lose control of an outpost, destroy it (without killing units or specialists). When participating in battle, kill 5 units for every destroyed outpost you own." }
     };
 
     GameSettings::playerColors = {

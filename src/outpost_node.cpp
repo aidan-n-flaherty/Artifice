@@ -22,7 +22,6 @@ void OutpostNode::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("isFactory"), &OutpostNode::isFactory);
 	ClassDB::bind_method(D_METHOD("isGenerator"), &OutpostNode::isGenerator);
 	ClassDB::bind_method(D_METHOD("isBroken"), &OutpostNode::isBroken);
-	ClassDB::bind_method(D_METHOD("isLocked"), &OutpostNode::isLocked);
 	ClassDB::bind_method(D_METHOD("getName"), &OutpostNode::getName);
 }
 

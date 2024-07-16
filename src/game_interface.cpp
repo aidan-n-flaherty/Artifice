@@ -78,6 +78,7 @@ void GameInterface::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("getSimulationSpeed"), &GameInterface::getSimulationSpeed);
 	ClassDB::bind_method(D_METHOD("getNextHireEvent"), &GameInterface::getNextHireEvent);
 	ClassDB::bind_method(D_METHOD("getHires"), &GameInterface::getHires);
+	ClassDB::bind_method(D_METHOD("getHiresFor", "specialistID"), &GameInterface::getHiresFor);
 	ClassDB::bind_method(D_METHOD("getStartTime"), &GameInterface::getStartTime);
 	ClassDB::bind_method(D_METHOD("hasLost"), &GameInterface::hasLost);
 	ClassDB::bind_method(D_METHOD("isMining"), &GameInterface::isMining);
@@ -98,6 +99,7 @@ void GameInterface::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("setOffline"), &GameInterface::setOffline);
 	ClassDB::bind_method(D_METHOD("isOffline"), &GameInterface::isOffline);
 	ClassDB::bind_method(D_METHOD("getNextOfflineOrder"), &GameInterface::getNextOfflineOrder);
+	ClassDB::bind_method(D_METHOD("isSuspended"), &GameInterface::isSuspended);
 
 	// battles
 	ClassDB::bind_method(D_METHOD("getNextBattleEvent"), &GameInterface::getNextBattleEvent);
@@ -129,6 +131,7 @@ void GameInterface::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("canRelease", "specialistID"), &GameInterface::canRelease);
 	ClassDB::bind_method(D_METHOD("canPromote", "specialistID"), &GameInterface::canPromote);
 	ClassDB::bind_method(D_METHOD("canUndoSpecialist", "specialistID"), &GameInterface::canUndoSpecialist);
+	ClassDB::bind_method(D_METHOD("getActivation", "specialistID"), &GameInterface::getActivation);
 	ClassDB::bind_method(D_METHOD("getSpecialistOriginatingOrder", "specialistID"), &GameInterface::getSpecialistOriginatingOrder);
 	ClassDB::bind_method(D_METHOD("getSpecialistOriginatingOrderType", "specialistID"), &GameInterface::getSpecialistOriginatingOrderType);
 	ClassDB::bind_method(D_METHOD("getAllSpecialists"), &GameInterface::getAllSpecialists);
@@ -146,6 +149,7 @@ void GameInterface::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("getOrderDescription"), &GameInterface::getOrderDescription);
 	ClassDB::bind_method(D_METHOD("canUndoOrder"), &GameInterface::canUndoOrder);
 
+	ClassDB::bind_method(D_METHOD("isLocked", "outpostID"), &GameInterface::isLocked);
 	ClassDB::bind_method(D_METHOD("canRetreat", "vesselID"), &GameInterface::canRetreat);
 	ClassDB::bind_method(D_METHOD("canGift", "vesselID"), &GameInterface::canGift);
 
@@ -708,12 +712,19 @@ void GameInterface::sendTo(int id) {
 		Vessel* v2 = dynamic_cast<Vessel*>(target);
 		Outpost* o2 = dynamic_cast<Outpost*>(target);
 
-
 		if(o1) {
-			if(v2 && !willSendWith(SpecialistType::PIRATE)) return;
+			if(simulatedGame->isLocked(o1, simulatedDiff) && !selectedSpecialists.empty()) {
+				while(!selectedSpecialists.empty()) {
+					if(simulatedGame->getSpecialist(*selectedSpecialists.begin())->getOwnerID() == userGameID || isOffline()) {
+						if(getNode(selected)) getNode(selected)->setSpecialistSelected(*selectedSpecialists.begin(), false);
+					}
+					selectedSpecialists.erase(selectedSpecialists.begin());
+				}
 
-			std::unordered_set<int> lockedFrom = o1->getLockedFrom();
-			if(o1->isLocked() && lockedFrom.find(id) == lockedFrom.end()) return;
+				if(getNode(selected)) getNode(selected)->clearSelectedSpecialists();
+			}
+
+			if(v2 && !willSendWith(SpecialistType::PIRATE)) return;
 
 			int units = getSelected()->getUnitsAt(simulatedDiff);
 
@@ -799,7 +810,19 @@ void GameInterface::setSelected(int id) {
 
 	PositionalNode* obj = getNode(id);
 
+	for(auto& pair : vessels) if(!obj || pair.first != obj->getID()) pair.second->clearSelectedSpecialists();
+	for(auto& pair : outposts) if(!obj || pair.first != obj->getID()) pair.second->clearSelectedSpecialists();
+
 	if(obj) {
+		std::list<Specialist*> specialists = obj->getObj()->getSpecialists();
+		
+		for(auto it = selectedSpecialists.begin(); it != selectedSpecialists.end();) {
+			if(!std::any_of(specialists.begin(), specialists.end(), [&it](auto s){
+				return *it == s->getID();
+			})) it = selectedSpecialists.erase(it);
+			else it++;
+		}
+
 		obj->setSelected(true);
 	}
 
@@ -1018,6 +1041,8 @@ void GameInterface::addSpecialist(int orderID, int specialistID) {
 		Outpost* outpost = gameAtOrder->getOutpost(order->getOriginID());
 
 		if(outpost) {
+			if(gameAtOrder->isLocked(outpost, 0)) return;
+
 			uint32_t parameters[] = { uint32_t(order->getUnits()), uint32_t(order->getOriginID()), uint32_t(order->getTargetID()) };
 			Array oldArguments;
 			Array arguments;
@@ -1101,6 +1126,9 @@ int GameInterface::getSpecialistTypeBeforeOrder(int specialistID, int orderID) {
 	return gameAtOrder->hasSpecialist(specialistID) ? gameAtOrder->getSpecialist(specialistID)->getType() : 0;
 }
 
+String GameInterface::getActivation(int specialistID) {
+	return future && ownsSpecialist(specialistID) && simulatedGame->getSpecialist(specialistID)->getType() == SpecialistType::DETONATOR ? "Detonate" : "";
+}
 
 PositionalNode* GameInterface::getTarget(double x, double y) {
 	PositionalNode* target = nullptr;

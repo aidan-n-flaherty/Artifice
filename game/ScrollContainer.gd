@@ -24,7 +24,6 @@ func _input(ev) -> void:
 	
 	
 	if ev is InputEventMouseButton:
-		
 		if ev.pressed and get_global_rect().has_point(ev.global_position):
 			look_for_swipe = (not vertical_scroll_mode == SCROLL_MODE_DISABLED and get_v_scroll_bar().max_value - get_v_scroll_bar().min_value > size.y) or (not horizontal_scroll_mode == SCROLL_MODE_DISABLED and get_h_scroll_bar().max_value - get_h_scroll_bar().min_value > size.x)
 			swipe_mouse_start = ev.global_position

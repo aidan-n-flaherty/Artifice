@@ -17,6 +17,7 @@ func init(userID: int):
 	self.isSelf = userID == GameData.getSelfID()
 	
 	GameData.userChanged.connect(updateUser)
+	$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/VBoxContainer/ScrollContainer/PastGameList/MarginContainer.add_theme_constant_override("margin_right", 0)
 	
 	if isSelf:
 		user = GameData.getSelf()
@@ -25,7 +26,9 @@ func init(userID: int):
 		
 		await GameData.loadSelf()
 	else:
-		$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/VBoxContainer/MarginContainer/PastGameList.initUser(userID)
+		$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/VBoxContainer/ScrollContainer/PastGameList.suppressReady()
+		$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/VBoxContainer/ScrollContainer/PastGameList.initUser(userID)
+		await $MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/VBoxContainer/ScrollContainer/PastGameList.init()
 		await GameData.loadUser(userID)
 
 func updateUser(userID):
@@ -73,6 +76,23 @@ func updateUser(userID):
 	$MarginContainer/ScrollContainer/VBoxContainer/GridContainer/GraphicsButtons/PushOff.set_pressed_no_signal(settings.has("graphics") and settings["graphics"] == "simple")
 	
 	$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/Delete.visible = isSelf
+	
+	$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer/Leaderboard.visible = isSelf
+	$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer/Spacer.visible = isSelf
+	
+	if isSelf:
+		var users = await GameData.getRankings()
+		
+		for child in $MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/VBoxContainer/ScrollContainer/UserRankings/VBoxContainer.get_children():
+			child.queue_free()
+		
+		var i = 1
+		for player in users:
+			var node = preload("res://RankingView.tscn").instantiate()
+			node.init(player.id, player.username, player.userStats.rating, i)
+			$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/VBoxContainer/ScrollContainer/UserRankings/VBoxContainer.add_child(node)
+			
+			i += 1
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -176,3 +196,13 @@ func _on_graphics_push_off_toggled(toggled_on):
 
 func _on_test_game_pressed():
 	GameData.viewGame(-1, false)
+
+
+func _on_match_history_pressed():
+	$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/VBoxContainer/ScrollContainer/PastGameList.show()
+	$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/VBoxContainer/ScrollContainer/UserRankings.hide()
+
+
+func _on_leaderboard_pressed():
+	$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/VBoxContainer/ScrollContainer/PastGameList.hide()
+	$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/VBoxContainer/ScrollContainer/UserRankings.show()

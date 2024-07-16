@@ -4,12 +4,18 @@ class_name GameList
 var gameIDs
 
 var buttons = {}
+
+var suppress = false
 	
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	GameData.gamesChanged.connect(gamesChanged)
 	
-	init()
+	if not suppress:
+		init()
+	
+func suppressReady():
+	suppress = true
 	
 func initList():
 	pass

@@ -59,9 +59,7 @@ public:
 
         Outpost* outpost = game->getOutpost(originID);
 
-        std::unordered_set<int> lockedFrom = outpost->getLockedFrom();
-
-        if(outpost->isLocked() && lockedFrom.find(targetID) == lockedFrom.end()) {
+        if(game->isLocked(outpost, 0) && !specialistIDs.empty()) {
             std::cout << "ORDER ERROR: outpost cannot send" << std::endl;
             return nullptr;
         }

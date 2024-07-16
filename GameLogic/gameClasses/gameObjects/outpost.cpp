@@ -139,15 +139,3 @@ void Outpost::addSpecialists(std::list<Specialist*> specialists) {
         addSpecialist(specialist);
     }
 }
-
-void Outpost::setLocked(Game* game) {
-    locked = false;
-    lockedFrom.clear();
-
-    for(const auto& pair : game->getVessels()) {
-        if(pair.second->getOwnerID() != getOwnerID() && pair.second->getTargetID() == getID() && pair.second->getOrigin() && pair.second->controlsSpecialist(SpecialistType::TRAPPER)) {
-            locked = true;
-            lockedFrom.insert(pair.second->getOrigin()->getID());
-        }
-    }
-}

@@ -27,10 +27,6 @@ private:
     int shieldCharge = 0;
     double fractionalShield = 0.0;
 
-    bool locked = false;
-
-    std::unordered_set<int> lockedFrom;
-
     OutpostType type;
 
 public:
@@ -64,12 +60,6 @@ public:
     double nextProductionEvent(double timeDiff) const;
 
     void update(double timeDiff);
-
-    void setLocked(Game* game);
-
-    bool isLocked() { return locked; };
-
-    std::unordered_set<int> getLockedFrom() { return lockedFrom; }
 };
 
 #endif

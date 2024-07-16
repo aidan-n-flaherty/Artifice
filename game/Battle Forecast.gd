@@ -42,7 +42,7 @@ func init(gameID:int, objectID:int):
 	var postPhases = []
 	
 	for phase in phases:
-		if phase in ["Combat Resolution Phase", "Post-Combat Phase", "Victory Phase"]:
+		if phase in ["Combat Resolution Phase", "Post-Combat Phase", "Defeat Phase"]:
 			postPhases.push_back(phase)
 			continue
 		

@@ -22,6 +22,7 @@
 #include "orders/surrender_order.h"
 #include "orders/mine_order.h"
 #include "orders/retreat_order.h"
+#include "orders/activate_order.h"
 #include "helpers/point.h"
 #include "events/send_event.h"
 #include "events/reroute_event.h"
@@ -462,8 +463,6 @@ void Game::removeRelevant(int id) {
 }
 
 void Game::updateEvents() {
-    for(auto& pair : outposts) pair.second->setLocked(this);
-
     // delete all objects flagged for deletion
     for(auto itA = vessels.begin(); itA != vessels.end();) {
         Vessel* vessel = itA->second;
@@ -546,10 +545,7 @@ void Game::updateState(double timestamp) {
     if(secondsElapsed == 0) return;
 
     for(auto& pair : vessels) pair.second->update(secondsElapsed);
-    for(auto& pair : outposts) {
-        pair.second->update(secondsElapsed);
-        pair.second->setLocked(this);
-    }
+    for(auto& pair : outposts) pair.second->update(secondsElapsed);
     for(auto& pair : players) pair.second->update(secondsElapsed);
 
     for(auto& pair : vessels) pair.second->endUpdate();
@@ -1024,6 +1020,10 @@ void Game::addOrder(const std::string &type, int ID, int referenceID, bool cance
         int vesselID = argumentIDs.front();
         argumentIDs.pop_front();
         addOrder(new RetreatOrder(ID, time, senderID, vesselID, referenceID, canceled));
+    } else if(type == "ACTIVATE" && argumentIDs.size() >= 1) {
+        int specialistID = argumentIDs.front();
+        argumentIDs.pop_front();
+        addOrder(new ActivateOrder(ID, time, senderID, specialistID, referenceID, canceled));
     } else if(type == "MINE" && argumentIDs.size() >= 1) {
         int outpostID = argumentIDs.front();
         argumentIDs.pop_front();
@@ -1137,6 +1137,16 @@ bool Game::canRetreat(Vessel* v, double timeDiff) const {
 
     for(const auto& pair : getOutposts()) {
         if(pair.second->getOwnerID() == v->getOwnerID() && pair.second->controlsSpecialist(SpecialistType::STRATEGIST) && pair.second->distance(v->getPositionAt(timeDiff)) <= pair.second->getSonarRange()) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool Game::isLocked(Outpost* o, double timeDiff) const {
+    for(const auto& pair : getVessels()) {
+        if(pair.second->getOwnerID() != o->getOwnerID() && pair.second->getTargetID() == o->getID() && o->distance(pair.second->getPositionAt(timeDiff)) <= settings->defaultSonar * settings->trapperRange && pair.second->getOrigin() && pair.second->controlsSpecialist(SpecialistType::TRAPPER)) {
             return true;
         }
     }

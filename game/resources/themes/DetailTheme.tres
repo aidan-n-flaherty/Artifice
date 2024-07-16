@@ -26,18 +26,28 @@ content_margin_left = 16.0
 content_margin_top = 6.0
 content_margin_right = 16.0
 content_margin_bottom = 5.0
-bg_color = Color(0.109341, 0.109341, 0.10934, 1)
+bg_color = Color(0.0541422, 0.0541422, 0.0541415, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.228511, 0.228511, 0.228511, 1)
 corner_radius_top_left = 12
 corner_radius_top_right = 12
 corner_radius_bottom_right = 12
 corner_radius_bottom_left = 12
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4qrjr"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_k277k"]
 content_margin_left = 16.0
 content_margin_top = 6.0
 content_margin_right = 16.0
 content_margin_bottom = 5.0
-bg_color = Color(0, 0, 0, 1)
+bg_color = Color(0.0980986, 0.0980986, 0.0980976, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.228511, 0.228511, 0.228511, 1)
 corner_radius_top_left = 12
 corner_radius_top_right = 12
 corner_radius_bottom_right = 12
@@ -53,4 +63,4 @@ Button/styles/disabled = SubResource("StyleBoxFlat_8dxm1")
 Button/styles/focus = SubResource("StyleBoxEmpty_3u62t")
 Button/styles/hover = SubResource("StyleBoxFlat_cmekx")
 Button/styles/normal = SubResource("StyleBoxFlat_cmekx")
-Button/styles/pressed = SubResource("StyleBoxFlat_4qrjr")
+Button/styles/pressed = SubResource("StyleBoxFlat_k277k")

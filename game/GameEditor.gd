@@ -221,7 +221,7 @@ func deserialize(gameID):
 					found = true
 					break
 			
-			if not found:
+			if found:
 				$MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/SpecialistBansButtons/SpecialistBansButtons.move_child(child, $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/SpecialistBansButtons/SpecialistBansButtons.get_child_count() - 1)
 	else:
 		$MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/SpecialistBans.hide()
@@ -267,19 +267,17 @@ func updatePlayers(gameID, settings):
 	for n in $MarginContainer/VBoxContainer/Players/MarginContainer/PlayerList/GridContainer.get_children():
 		$MarginContainer/VBoxContainer/Players/MarginContainer/PlayerList/GridContainer.remove_child(n)
 		n.queue_free() 
-	
+		
 	for	i in range(int(settings.playerCap)):
 		var playerView = preload("res://Game_PlayerView.tscn").instantiate()
 		playerViews.append(playerView)
 		$MarginContainer/VBoxContainer/Players/MarginContainer/PlayerList/GridContainer.add_child(playerView)
 	
-	var users = await GameData.getGameUsers(gameID)
+	var users = await GameData.getGameUsers(gameID, false)
 	
 	var userKeys = Array(users.keys())
 	
 	var colors = SettingsDefault.getPlayerColors()
-	
-	var playerView
 	
 	for	i in userKeys:
 		var id = int(i)
