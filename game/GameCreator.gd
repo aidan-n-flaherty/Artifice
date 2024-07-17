@@ -17,10 +17,15 @@ func activate():
 			GameData.currentTab = "res://CurrentGameList.tscn"
 			GameData.goto_scene("res://MainMenu.tscn")
 	
+	#refactor to get rid of mismatch between 1s and 2s
 	if onlineMenu == 1:
+		var data = serializeSingleplayer()
+		GameData.addSingleplayerGame(data)
 		GameData.viewGame(-2, false)
 	
 	if onlineMenu == 2:
+		var data = serializeSandbox()
+		GameData.addSandboxGame(data)
 		GameData.viewGame(-1, false)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

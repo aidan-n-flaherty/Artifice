@@ -454,19 +454,19 @@ func viewGameCompletion(id: int, past=false):
 func viewSandboxGameCompletion(id: int):
 	var startTime = Time.get_unix_time_from_system()
 	
-	gameDetails[-1] = {
-		"gameData": {
-			"hostID": getSelfID(),
-			"startTime": startTime,
-			"hasChatNotifications": false,
-			"hasNotifications": false,
-			"playerCount": 2,
-			"finished": false
-		},
-		"gameSettings": {
-			"playerCap": 2
-		}
-	}
+	#gameDetails[-1] = {
+		#"gameData": {
+			#"hostID": getSelfID(),
+			#"startTime": startTime,
+			#"hasChatNotifications": false,
+			#"hasNotifications": false,
+			#"playerCount": 2,
+			#"finished": false
+		#},
+		#"gameSettings": {
+			#"playerCap": 2
+		#}
+	#}
 	
 	
 	var game = GameInterface.new()
@@ -510,19 +510,19 @@ func viewSandboxGameCompletion(id: int):
 func viewSinglePlayerGameCompletion(id: int):
 	var startTime = Time.get_unix_time_from_system()
 	
-	gameDetails[-1] = {
-		"gameData": {
-			"hostID": getSelfID(),
-			"startTime": startTime,
-			"hasChatNotifications": false,
-			"hasNotifications": false,
-			"playerCount": 10,
-			"finished": false
-		},
-		"gameSettings": {
-			"playerCap": 10
-		}
-	}
+	#gameDetails[-2] = {
+		#"gameData": {
+			#"hostID": getSelfID(),
+			#"startTime": startTime,
+			#"hasChatNotifications": false,
+			#"hasNotifications": false,
+			#"playerCount": 10,
+			#"finished": false
+		#},
+		#"gameSettings": {
+			#"playerCap": 10
+		#}
+	#}
 	
 	
 	var game = GameInterface.new()
@@ -902,6 +902,41 @@ func addGame(game):
 		openGameIDs.erase(int(game.gameData.id))
 	
 	emit_signal("gamesChanged")
+
+func addSingleplayerGame(data): 
+	var startTime = Time.get_unix_time_from_system()
+	
+	gameDetails[-1] = {
+		"gameData": {
+			"hostID": getSelfID(),
+			"startTime": startTime,
+			"hasChatNotifications": false,
+			"hasNotifications": false,
+			"playerCount": data.playerCap ,
+			"finished": false
+		},
+		"gameSettings": {} #= data
+	}
+	
+	gameDetails[-1].gameSettings = data
+	
+func addSandboxGame(data):
+	var startTime = Time.get_unix_time_from_system()
+	
+	gameDetails[-1] = {
+		"gameData": {
+			"hostID": getSelfID(),
+			"startTime": startTime,
+			"hasChatNotifications": false,
+			"hasNotifications": false,
+			"playerCount": 2,
+			"finished": false
+		},
+		"gameSettings": {}
+	}
+	gameDetails[-1].gameSettings = data
+	
+	
 
 func updateOrders(id: int):
 	if not hasGame(id):

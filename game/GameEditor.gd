@@ -346,6 +346,97 @@ func serialize():
 	
 	return data
 
+func serializeSandbox():
+	var hours = []
+	for i in 24:
+		hours.push_back(i)
+	#probably unnecessary
+	hours.sort()
+	
+	print("creating game")
+	var data = {
+		"lobbyName": "sandbox",
+		"password": $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/PasswordText.text,
+		"playerCap": 2,
+		"ranked": false,
+		"startTimeDisplacement": 0,
+		"minRating": 0,
+		"settingOverrides": {
+			"simulationSpeed": (60 * 60) * $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/SpeedSlider.value,
+			"number_of_teams": 0,
+			"ratingConstraints": 0,
+			"activeHours": hours,
+			"gameMode": "CONQUEST" if $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/GameModeButtons/Conquest.button_pressed else "ELIMINATION" if $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/GameModeButtons/Elimination.button_pressed else "MINING",
+		}
+	}
+	
+	var bans = []
+	for child in $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/SpecialistBansButtons/SpecialistBansButtons.get_children():
+		if child.button_pressed:
+			bans.push_back(child.name.to_int())
+	
+	if len(bans) > 0:
+		data.settingOverrides["specialistBans"] = bans
+	
+	for setting in advancedSettings:
+		var slider = get_node("MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/" + setting)
+		
+		if not slider:
+			continue
+		
+		data.settingOverrides[setting] = slider.value
+	
+	return data
+
+func serializeSingleplayer():
+	var hours = []
+	for i in 24:
+		hours.push_back(i)
+	#probably unnecessary
+	hours.sort()
+	
+	##Checks to make sure that the current team count is valid. If it isn't automatically sets
+	##number of teams to zero
+	if number_of_teams != 0 and numPlayers % number_of_teams != 0:
+		number_of_teams = 0
+	
+	print("creating game")
+	var data = {
+		"lobbyName": $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/LobbyNameText.text,
+		"password": $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/PasswordText.text,
+		"playerCap": numPlayers,
+		"ranked": false,
+		"startTimeDisplacement": 30,
+		"minRating": $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/RatingSlider.value,
+		"settingOverrides": {
+			"simulationSpeed": (1 if simulationTimescale == "days" else 60 if simulationTimescale == "hours" else 60 * 60) * $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/SpeedSlider.value,
+			"number_of_teams": number_of_teams,
+			"ratingConstraints": $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/RatingSlider.value,
+			"activeHours": hours,
+			"gameMode": "CONQUEST" if $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/GameModeButtons/Conquest.button_pressed else "ELIMINATION" if $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/GameModeButtons/Elimination.button_pressed else "MINING",
+		}
+	}
+	
+	var bans = []
+	for child in $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/SpecialistBansButtons/SpecialistBansButtons.get_children():
+		if child.button_pressed:
+			bans.push_back(child.name.to_int())
+	
+	if len(bans) > 0:
+		data.settingOverrides["specialistBans"] = bans
+	
+	for setting in advancedSettings:
+		var slider = get_node("MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/" + setting)
+		
+		if not slider:
+			continue
+		
+		data.settingOverrides[setting] = slider.value
+	
+	return data
+
+
+
 func activate():
 	pass
 
