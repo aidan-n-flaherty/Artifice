@@ -425,11 +425,11 @@ func viewGame(id: int, past=false):
 
 func viewGameCompletion(id: int, past=false):
 	if id == -1:
-		viewSandboxGameCompletion(-1)
+		viewSinglePlayerGameCompletion(-1)
 		return
 	
 	if id == -2:
-		viewSinglePlayerGameCompletion(-1)
+		viewSandboxGameCompletion(-1)
 		return
 	
 	if not hasGame(id):
@@ -453,20 +453,6 @@ func viewGameCompletion(id: int, past=false):
 	
 func viewSandboxGameCompletion(id: int):
 	var startTime = Time.get_unix_time_from_system()
-	
-	#gameDetails[-1] = {
-		#"gameData": {
-			#"hostID": getSelfID(),
-			#"startTime": startTime,
-			#"hasChatNotifications": false,
-			#"hasNotifications": false,
-			#"playerCount": 2,
-			#"finished": false
-		#},
-		#"gameSettings": {
-			#"playerCap": 2
-		#}
-	#}
 	
 	
 	var game = GameInterface.new()
@@ -524,82 +510,28 @@ func viewSinglePlayerGameCompletion(id: int):
 		#}
 	#}
 	
-	
-	var game = GameInterface.new()
-	game.init(id, self.id, randi_range(0, 100000), startTime, false, 2, {
-		0: {
+	var playerList = {
+		0 : {
 			"id": getSelfID(),
 			"username": getSelf().username,
 			"stats": {
 				"rating": getSelf().userStats.rating
 			}
-		},
-		1: {
-			"id": -1,
-			"username": "Bot 1",
-			"stats": {
-				"rating": 1200
-			}
-		},
-		2: {
-			"id": -2,
-			"username": "Bot 2",
-			"stats": {
-				"rating": 1200
-			}
-		},
-		3: {
-			"id": -2,
-			"username": "Bot 3",
-			"stats": {
-				"rating": 1200
-			}
-		},
-		4: {
-			"id": -4,
-			"username": "Bot 4",
-			"stats": {
-				"rating": 1200
-			}
-		},
-		5: {
-			"id": -5,
-			"username": "Bot 5",
-			"stats": {
-				"rating": 1200
-			}
-		},
-		6: {
-			"id": -6,
-			"username": "Bot 6",
-			"stats": {
-				"rating": 1200
-			}
-		},
-		7: {
-			"id": -7,
-			"username": "Bot 7",
-			"stats": {
-				"rating": 1200
-			}
-		},
-		8: {
-			"id": -8,
-			"username": "Bot 8",
-			"stats": {
-				"rating": 1200
-			}
-		},
-		9: {
-			"id": -9,
-			"username": "Bot 9",
+		}
+	}
+	
+	for i in (int(gameDetails[-1].gameSettings.playerCap) - 1):
+		playerList[int(i)+1] = {
+			"id": (int(i)+1) * -1,
+			"username": "Bot " + str(i + 1),
 			"stats": {
 				"rating": 1200
 			}
 		}
-	}, {
-		"simulationSpeed": 1800
-	})
+		
+	
+	var game = GameInterface.new()
+	game.init(id, self.id, randi_range(0, 100000), startTime, false, 2, playerList, { "simulationSpeed":  gameDetails[-1].gameSettings.settingOverrides.simulationSpeed})
 	game.set_visible(false)
 	game.set_process(false)
 	

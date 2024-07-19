@@ -21,12 +21,12 @@ func activate():
 	if onlineMenu == 1:
 		var data = serializeSingleplayer()
 		GameData.addSingleplayerGame(data)
-		GameData.viewGame(-2, false)
+		GameData.viewGame(-1, false)
 	
 	if onlineMenu == 2:
 		var data = serializeSandbox()
 		GameData.addSandboxGame(data)
-		GameData.viewGame(-1, false)
+		GameData.viewGame(-2, false)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
