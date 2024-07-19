@@ -260,7 +260,7 @@ func deserialize(gameID):
 	
 	print("Loaded game editor")
 
-func updatePlayers(gameID, settings):
+func updatePlayers(gameID, settings):																																											
 	var playerViews = []
 	
 	for n in $MarginContainer/VBoxContainer/Players/MarginContainer/PlayerList/GridContainer.get_children():
@@ -275,22 +275,7 @@ func updatePlayers(gameID, settings):
 		var opButton = preload("res://optionButton.tscn").instantiate();
 		playerViews.append(playerView)
 		$MarginContainer/VBoxContainer/Players/MarginContainer/PlayerList/GridContainer.add_child(opButton)
-		#if ($"MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/TeamButtons/0".toggled):
-			#opButton.get_child(1).get_child(0).clear()
-		if ($"MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/TeamButtons/2".toggled):
-			#opButton.get_child(1).get_child(0).clear()
-			opButton.get_child(1).get_child(0).add_item("1")
-			opButton.get_child(1).get_child(0).add_item("2")
-		elif ($"MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/TeamButtons/5".toggled):
-			#opButton.get_child(1).get_child(0).clear()
-			opButton.get_child(1).get_child(0).add_item("1")
-			opButton.get_child(1).get_child(0).add_item("2")
-			opButton.get_child(1).get_child(0).add_item("3")
-			opButton.get_child(1).get_child(0).add_item("4")
-			opButton.get_child(1).get_child(0).add_item("5")
-		
 		$MarginContainer/VBoxContainer/Players/MarginContainer/PlayerList/GridContainer.add_child(playerView)
-		
 	
 	var users = await GameData.getGameUsers(gameID)
 	
@@ -304,6 +289,11 @@ func updatePlayers(gameID, settings):
 		var id = int(i)
 		var color = colors[id]
 		playerViews[id].init(users[i].id, users[i].username, color, users[i].userStats.rating, settings.ranked)
+
+func createTeams():
+	for i in number_of_teams:
+		print(i);
+
 
 func serialize():
 	var bias = int(Time.get_time_zone_from_system().bias/60)
@@ -426,11 +416,24 @@ func on_team_number_modified(button_pressed: bool):
 	for child in $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/TeamButtons.get_children():
 		if child.button_pressed:
 			number_of_teams = int(str(child.name))
+	for	child in $MarginContainer/VBoxContainer/Players/MarginContainer/PlayerList/GridContainer.get_children():		#need to make it so player can only select their team. 
+		if (child.get_child(1).get_child(0)) is OptionButton && number_of_teams==2:
+			child.get_child(1).get_child(0).clear()
+			child.get_child(1).get_child(0).add_item("1")
+			child.get_child(1).get_child(0).add_item("2")
+		if (child.get_child(1).get_child(0)) is OptionButton && number_of_teams==5:
+			child.get_child(1).get_child(0).clear()
+			child.get_child(1).get_child(0).add_item("1")
+			child.get_child(1).get_child(0).add_item("2")
+			child.get_child(1).get_child(0).add_item("3")
+			child.get_child(1).get_child(0).add_item("4")
+			child.get_child(1).get_child(0).add_item("5")
+		if (child.get_child(1).get_child(0)) is OptionButton && number_of_teams==0:
+			child.get_child(1).get_child(0).clear()
 
 
 func _on_advanced_button_pressed():
 	$MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced.visible = not $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced.visible
-
 	
 func teamSelecter():
 	$MarginContainer/HBoxContainer/TeamSelecter.add_item("No Teams")

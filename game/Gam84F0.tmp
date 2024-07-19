@@ -1,0 +1,1153 @@
+[gd_scene load_steps=16 format=3 uid="uid://biekuv7dddk3m"]
+
+[ext_resource type="Theme" uid="uid://tg7ina762c6q" path="res://resources/themes/UITheme.tres" id="1_sjo5m"]
+[ext_resource type="Script" path="res://GameEditor.gd" id="2_ymahp"]
+[ext_resource type="PackedScene" uid="uid://dg4lhqpoy431" path="res://CustomScroll.tscn" id="3_l4xqo"]
+[ext_resource type="FontFile" uid="uid://bt7qlnun0cepj" path="res://resources/fonts/nasalization-free/nasalization-rg.otf" id="4_qo8y8"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tpxmc"]
+bg_color = Color(0.0392157, 0.0392157, 0.0392157, 0.156863)
+corner_radius_bottom_right = 30
+corner_radius_bottom_left = 30
+corner_detail = 16
+expand_margin_top = 1000.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ehftu"]
+bg_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 50
+corner_radius_top_right = 50
+corner_radius_bottom_right = 50
+corner_radius_bottom_left = 50
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_uu6rh"]
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_ktqn5"]
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_8s3p8"]
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_fv0u6"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_ychv2"]
+font_color = Color(0.45098, 0.45098, 0.45098, 1)
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_tgd8x"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_61g4f"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="FontVariation" id="FontVariation_w86xw"]
+base_font = ExtResource("4_qo8y8")
+spacing_top = 10
+spacing_bottom = 10
+
+[sub_resource type="FontVariation" id="FontVariation_311ai"]
+base_font = ExtResource("4_qo8y8")
+spacing_top = 10
+spacing_bottom = 10
+
+[node name="GameEditor" type="MarginContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_sjo5m")
+script = ExtResource("2_ymahp")
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 2
+theme = ExtResource("1_sjo5m")
+theme_override_styles/panel = SubResource("StyleBoxFlat_tpxmc")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme = ExtResource("1_sjo5m")
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 100
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 50
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme = ExtResource("1_sjo5m")
+theme_override_constants/separation = 30
+
+[node name="Finalizing" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+
+[node name="Panel" type="Panel" parent="MarginContainer/VBoxContainer/Finalizing"]
+layout_mode = 2
+mouse_filter = 1
+theme_override_styles/panel = SubResource("StyleBoxFlat_ehftu")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Finalizing"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="Finalize" type="Label" parent="MarginContainer/VBoxContainer/Finalizing/MarginContainer"]
+layout_mode = 2
+theme_override_constants/outline_size = 1
+text = "Waiting for the host to start the game..."
+horizontal_alignment = 1
+
+[node name="ScrollContainer" parent="MarginContainer/VBoxContainer" instance=ExtResource("3_l4xqo")]
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+theme_override_constants/separation = 40
+
+[node name="System" type="MarginContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("1_sjo5m")
+
+[node name="Grid" type="GridContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/System"]
+layout_mode = 2
+theme = ExtResource("1_sjo5m")
+theme_override_constants/h_separation = 20
+theme_override_constants/v_separation = 20
+columns = 2
+
+[node name="CreationDate" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/System/Grid"]
+layout_mode = 2
+mouse_filter = 1
+theme = ExtResource("1_sjo5m")
+text = "Creation Date"
+
+[node name="CreationDateText" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/System/Grid"]
+layout_mode = 2
+mouse_filter = 1
+theme = ExtResource("1_sjo5m")
+
+[node name="Version" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/System/Grid"]
+layout_mode = 2
+mouse_filter = 1
+theme = ExtResource("1_sjo5m")
+text = "Version
+"
+
+[node name="VersionText" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/System/Grid"]
+layout_mode = 2
+mouse_filter = 1
+theme = ExtResource("1_sjo5m")
+
+[node name="Basic" type="MarginContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("1_sjo5m")
+
+[node name="Grid" type="GridContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+theme_override_constants/h_separation = 20
+theme_override_constants/v_separation = 20
+columns = 2
+
+[node name="LobbyName" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid"]
+layout_mode = 2
+theme = ExtResource("1_sjo5m")
+text = "Lobby Name"
+
+[node name="LobbyNameText" type="LineEdit" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+
+[node name="Password" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid"]
+layout_mode = 2
+theme = ExtResource("1_sjo5m")
+text = "Password (Optional)"
+
+[node name="PasswordText" type="LineEdit" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+placeholder_text = "Leave blank for no password"
+
+[node name="Ranked" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid"]
+layout_mode = 2
+theme = ExtResource("1_sjo5m")
+text = "Ranked Game"
+
+[node name="RankedButtons" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+
+[node name="ranked" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/RankedButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_uu6rh")
+text = "Ranked"
+
+[node name="unranked" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/RankedButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+toggle_mode = true
+button_pressed = true
+button_group = SubResource("ButtonGroup_uu6rh")
+text = "Casual"
+
+[node name="NumPlayers" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid"]
+layout_mode = 2
+theme = ExtResource("1_sjo5m")
+text = "Number of Players"
+
+[node name="NumPlayersButtons" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid" instance=ExtResource("3_l4xqo")]
+layout_mode = 2
+vertical_scroll_mode = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("1_sjo5m")
+
+[node name="2" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_ktqn5")
+text = "2"
+
+[node name="3" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_ktqn5")
+text = "3"
+
+[node name="4" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_ktqn5")
+text = "4"
+
+[node name="5" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_ktqn5")
+text = "5"
+
+[node name="6" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_ktqn5")
+text = "6"
+
+[node name="7" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_ktqn5")
+text = "7"
+
+[node name="8" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_ktqn5")
+text = "8"
+
+[node name="9" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_ktqn5")
+text = "9"
+
+[node name="10" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/NumPlayersButtons/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+toggle_mode = true
+button_pressed = true
+button_group = SubResource("ButtonGroup_ktqn5")
+text = "10"
+
+[node name="GameMode" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid"]
+layout_mode = 2
+theme = ExtResource("1_sjo5m")
+text = "Game Mode"
+
+[node name="GameModeButtons" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+
+[node name="Mining" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/GameModeButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+toggle_mode = true
+button_pressed = true
+button_group = SubResource("ButtonGroup_8s3p8")
+text = "Mining"
+
+[node name="Conquest" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/GameModeButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_8s3p8")
+text = "Conquest"
+
+[node name="Elimination" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/GameModeButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_8s3p8")
+text = "Elim"
+
+[node name="SimulationTimescale" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid"]
+layout_mode = 2
+theme = ExtResource("1_sjo5m")
+text = "Simulation Timescale"
+
+[node name="SimulationTimescaleButtons" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+
+[node name="days" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/SimulationTimescaleButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+toggle_mode = true
+button_pressed = true
+button_group = SubResource("ButtonGroup_fv0u6")
+text = "Days"
+
+[node name="hours" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/SimulationTimescaleButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_fv0u6")
+text = "Hours"
+
+[node name="minutes" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/SimulationTimescaleButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_fv0u6")
+text = "Minutes"
+
+[node name="ActiveHours" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid"]
+layout_mode = 2
+theme = ExtResource("1_sjo5m")
+text = "Active Hours"
+
+[node name="ActiveHoursRows" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid" instance=ExtResource("3_l4xqo")]
+layout_mode = 2
+vertical_scroll_mode = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+
+[node name="ActiveHoursButtons" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+
+[node name="0" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/VBoxContainer/ActiveHoursButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+toggle_mode = true
+button_pressed = true
+text = "12 AM"
+
+[node name="1" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/VBoxContainer/ActiveHoursButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+toggle_mode = true
+button_pressed = true
+text = "1"
+
+[node name="2" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/VBoxContainer/ActiveHoursButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+toggle_mode = true
+button_pressed = true
+text = "2"
+
+[node name="3" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/VBoxContainer/ActiveHoursButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+toggle_mode = true
+button_pressed = true
+text = "3"
+
+[node name="4" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/VBoxContainer/ActiveHoursButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+toggle_mode = true
+button_pressed = true
+text = "4 AM"
+
+[node name="5" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/VBoxContainer/ActiveHoursButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+toggle_mode = true
+button_pressed = true
+text = "5"
+
+[node name="6" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/VBoxContainer/ActiveHoursButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+toggle_mode = true
+button_pressed = true
+text = "6"
+
+[node name="7" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/VBoxContainer/ActiveHoursButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+toggle_mode = true
+button_pressed = true
+text = "7"
+
+[node name="8" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/VBoxContainer/ActiveHoursButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+toggle_mode = true
+button_pressed = true
+text = "8 AM"
+
+[node name="9" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/VBoxContainer/ActiveHoursButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+toggle_mode = true
+button_pressed = true
+text = "9"
+
+[node name="10" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/VBoxContainer/ActiveHoursButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+toggle_mode = true
+button_pressed = true
+text = "10"
+
+[node name="11" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/VBoxContainer/ActiveHoursButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+toggle_mode = true
+button_pressed = true
+text = "11"
+
+[node name="ActiveHoursButtons2" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+
+[node name="12" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/VBoxContainer/ActiveHoursButtons2"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+toggle_mode = true
+button_pressed = true
+text = "12 PM"
+
+[node name="13" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/VBoxContainer/ActiveHoursButtons2"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+toggle_mode = true
+button_pressed = true
+text = "1"
+
+[node name="14" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/VBoxContainer/ActiveHoursButtons2"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+toggle_mode = true
+button_pressed = true
+text = "2"
+
+[node name="15" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/VBoxContainer/ActiveHoursButtons2"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+toggle_mode = true
+button_pressed = true
+text = "3"
+
+[node name="16" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/VBoxContainer/ActiveHoursButtons2"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+toggle_mode = true
+button_pressed = true
+text = "4 PM"
+
+[node name="17" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/VBoxContainer/ActiveHoursButtons2"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+toggle_mode = true
+button_pressed = true
+text = "5"
+
+[node name="18" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/VBoxContainer/ActiveHoursButtons2"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+toggle_mode = true
+button_pressed = true
+text = "6"
+
+[node name="19" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/VBoxContainer/ActiveHoursButtons2"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+toggle_mode = true
+button_pressed = true
+text = "7"
+
+[node name="20" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/VBoxContainer/ActiveHoursButtons2"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+toggle_mode = true
+button_pressed = true
+text = "8 PM"
+
+[node name="21" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/VBoxContainer/ActiveHoursButtons2"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+toggle_mode = true
+button_pressed = true
+text = "9"
+
+[node name="22" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/VBoxContainer/ActiveHoursButtons2"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+toggle_mode = true
+button_pressed = true
+text = "10"
+
+[node name="23" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/VBoxContainer/ActiveHoursButtons2"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+toggle_mode = true
+button_pressed = true
+text = "11"
+
+[node name="Speed" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid"]
+layout_mode = 2
+theme = ExtResource("1_sjo5m")
+text = "Simulation Speed"
+
+[node name="SpeedSlider" type="HSlider" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+theme = ExtResource("1_sjo5m")
+min_value = 0.5
+max_value = 2.0
+step = 0.0
+value = 1.0
+exp_edit = true
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/SpeedSlider"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_sjo5m")
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/SpeedSlider/MarginContainer"]
+layout_mode = 2
+theme = ExtResource("1_sjo5m")
+
+[node name="Slow" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/SpeedSlider/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+text = "Slow (0.5x)"
+label_settings = SubResource("LabelSettings_ychv2")
+
+[node name="Fast" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/SpeedSlider/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+text = "Fast (2x)"
+label_settings = SubResource("LabelSettings_ychv2")
+horizontal_alignment = 2
+
+[node name="Rating" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid"]
+layout_mode = 2
+theme = ExtResource("1_sjo5m")
+text = "Minimum Rating"
+
+[node name="RatingSlider" type="HSlider" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+max_value = 3000.0
+step = 2.08165e-12
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/RatingSlider"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_sjo5m")
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/RatingSlider/MarginContainer"]
+layout_mode = 2
+theme = ExtResource("1_sjo5m")
+
+[node name="Low" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/RatingSlider/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+text = "0"
+label_settings = SubResource("LabelSettings_ychv2")
+
+[node name="High" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/RatingSlider/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+text = "3000"
+label_settings = SubResource("LabelSettings_ychv2")
+horizontal_alignment = 2
+
+[node name="TeamCount" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid"]
+layout_mode = 2
+theme = ExtResource("1_sjo5m")
+text = "Number of Teams"
+
+[node name="TeamButtons" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid"]
+layout_mode = 2
+theme = ExtResource("1_sjo5m")
+
+[node name="0" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/TeamButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+toggle_mode = true
+button_pressed = true
+button_group = SubResource("ButtonGroup_tgd8x")
+text = "No Teams"
+
+[node name="2" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/TeamButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_tgd8x")
+text = "2"
+
+[node name="3" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/TeamButtons"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_tgd8x")
+text = "3"
+
+[node name="4" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/TeamButtons"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_tgd8x")
+text = "4"
+
+[node name="5" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/TeamButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_tgd8x")
+text = "5"
+
+[node name="Editable" type="Panel" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic"]
+visible = false
+layout_mode = 2
+theme = ExtResource("1_sjo5m")
+theme_override_styles/panel = SubResource("StyleBoxFlat_61g4f")
+
+[node name="AdvancedButton" type="Button" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+text = "- Advanced -"
+
+[node name="Advanced" type="MarginContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("1_sjo5m")
+
+[node name="Grid" type="GridContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced"]
+layout_mode = 2
+theme = ExtResource("1_sjo5m")
+theme_override_constants/h_separation = 20
+theme_override_constants/v_separation = 20
+columns = 2
+
+[node name="SpecialistBans" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
+layout_mode = 2
+theme = ExtResource("1_sjo5m")
+text = "Specialist Bans"
+
+[node name="SpecialistBansButtons" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid" instance=ExtResource("3_l4xqo")]
+layout_mode = 2
+size_flags_horizontal = 3
+vertical_scroll_mode = 0
+
+[node name="SpecialistBansButtons" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/SpecialistBansButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+
+[node name="defaultSonarText" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
+layout_mode = 2
+theme = ExtResource("1_sjo5m")
+text = "Sonar Radius"
+
+[node name="defaultSonar" type="HSlider" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+theme = ExtResource("1_sjo5m")
+min_value = 30.0
+max_value = 120.0
+step = 0.0
+value = 60.0
+exp_edit = true
+rounded = true
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/defaultSonar"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/defaultSonar/MarginContainer"]
+layout_mode = 2
+
+[node name="Low" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/defaultSonar/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "50%"
+label_settings = SubResource("LabelSettings_ychv2")
+
+[node name="High" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/defaultSonar/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "200%"
+label_settings = SubResource("LabelSettings_ychv2")
+horizontal_alignment = 2
+
+[node name="defaultMaxShieldText" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
+layout_mode = 2
+theme = ExtResource("1_sjo5m")
+text = "Base Shield"
+
+[node name="defaultMaxShield" type="HSlider" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+theme = ExtResource("1_sjo5m")
+min_value = 10.0
+max_value = 40.0
+step = 0.0
+value = 20.0
+exp_edit = true
+rounded = true
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/defaultMaxShield"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/defaultMaxShield/MarginContainer"]
+layout_mode = 2
+
+[node name="Low" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/defaultMaxShield/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "10"
+label_settings = SubResource("LabelSettings_ychv2")
+
+[node name="High" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/defaultMaxShield/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "30"
+label_settings = SubResource("LabelSettings_ychv2")
+horizontal_alignment = 2
+
+[node name="resourcesToWinText" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
+layout_mode = 2
+theme = ExtResource("1_sjo5m")
+text = "Resources To Win"
+
+[node name="resourcesToWin" type="HSlider" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+theme = ExtResource("1_sjo5m")
+min_value = 50.0
+max_value = 400.0
+step = 0.0
+value = 200.0
+exp_edit = true
+rounded = true
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/resourcesToWin"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/resourcesToWin/MarginContainer"]
+layout_mode = 2
+
+[node name="Low" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/resourcesToWin/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "50"
+label_settings = SubResource("LabelSettings_ychv2")
+
+[node name="High" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/resourcesToWin/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "400"
+label_settings = SubResource("LabelSettings_ychv2")
+horizontal_alignment = 2
+
+[node name="factoryDensityText" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
+layout_mode = 2
+theme = ExtResource("1_sjo5m")
+text = "Factory Concentration"
+
+[node name="factoryDensity" type="HSlider" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+theme = ExtResource("1_sjo5m")
+min_value = 0.2
+max_value = 0.8
+step = 0.0
+value = 0.5
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/factoryDensity"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/factoryDensity/MarginContainer"]
+layout_mode = 2
+
+[node name="Low" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/factoryDensity/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "20%"
+label_settings = SubResource("LabelSettings_ychv2")
+
+[node name="High" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/factoryDensity/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "80%"
+label_settings = SubResource("LabelSettings_ychv2")
+horizontal_alignment = 2
+
+[node name="fireRateText" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
+layout_mode = 2
+theme = ExtResource("1_sjo5m")
+text = "Fire Rate"
+
+[node name="fireRate" type="HSlider" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+theme = ExtResource("1_sjo5m")
+min_value = 0.5
+max_value = 2.0
+step = 0.0
+value = 1.0
+exp_edit = true
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/fireRate"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/fireRate/MarginContainer"]
+layout_mode = 2
+
+[node name="Low" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/fireRate/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "50%"
+label_settings = SubResource("LabelSettings_ychv2")
+
+[node name="High" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/fireRate/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "200%"
+label_settings = SubResource("LabelSettings_ychv2")
+horizontal_alignment = 2
+
+[node name="fireRangeText" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
+layout_mode = 2
+theme = ExtResource("1_sjo5m")
+text = "Fire Radius"
+
+[node name="fireRange" type="HSlider" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+theme = ExtResource("1_sjo5m")
+min_value = 0.25
+max_value = 1.0
+step = 0.0
+value = 0.5
+exp_edit = true
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/fireRange"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/fireRange/MarginContainer"]
+layout_mode = 2
+
+[node name="Low" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/fireRange/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "50%"
+label_settings = SubResource("LabelSettings_ychv2")
+
+[node name="High" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/fireRange/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "200%"
+label_settings = SubResource("LabelSettings_ychv2")
+horizontal_alignment = 2
+
+[node name="costPerMineText" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
+layout_mode = 2
+theme = ExtResource("1_sjo5m")
+text = "Mine Cost"
+
+[node name="costPerMine" type="HSlider" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+theme = ExtResource("1_sjo5m")
+min_value = 25.0
+step = 0.0
+value = 50.0
+exp_edit = true
+rounded = true
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/costPerMine"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/costPerMine/MarginContainer"]
+layout_mode = 2
+
+[node name="Low" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/costPerMine/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "25"
+label_settings = SubResource("LabelSettings_ychv2")
+
+[node name="High" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/costPerMine/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "100"
+label_settings = SubResource("LabelSettings_ychv2")
+horizontal_alignment = 2
+
+[node name="outpostsPerPlayerText" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
+layout_mode = 2
+theme = ExtResource("1_sjo5m")
+text = "Outposts Per Player"
+
+[node name="outpostsPerPlayer" type="HSlider" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+theme = ExtResource("1_sjo5m")
+min_value = 5.0
+max_value = 15.0
+step = 0.0
+value = 10.0
+rounded = true
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/outpostsPerPlayer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/outpostsPerPlayer/MarginContainer"]
+layout_mode = 2
+
+[node name="Low" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/outpostsPerPlayer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "5"
+label_settings = SubResource("LabelSettings_ychv2")
+
+[node name="High" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/outpostsPerPlayer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "15"
+label_settings = SubResource("LabelSettings_ychv2")
+horizontal_alignment = 2
+
+[node name="Editable" type="Panel" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced"]
+visible = false
+layout_mode = 2
+theme = ExtResource("1_sjo5m")
+theme_override_styles/panel = SubResource("StyleBoxFlat_61g4f")
+
+[node name="Players" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("1_sjo5m")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Players"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+
+[node name="PlayerList" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Players/MarginContainer"]
+layout_mode = 2
+theme = ExtResource("1_sjo5m")
+theme_override_constants/separation = 20
+
+[node name="Players" type="Label" parent="MarginContainer/VBoxContainer/Players/MarginContainer/PlayerList"]
+layout_mode = 2
+theme = ExtResource("1_sjo5m")
+text = "Players"
+horizontal_alignment = 1
+
+[node name="GridContainer" type="GridContainer" parent="MarginContainer/VBoxContainer/Players/MarginContainer/PlayerList"]
+layout_mode = 2
+size_flags_vertical = 3
+theme = ExtResource("1_sjo5m")
+columns = 2
+
+[node name="Passworded" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("1_sjo5m")
+theme_override_constants/separation = 50
+
+[node name="Password" type="Label" parent="MarginContainer/VBoxContainer/Passworded"]
+layout_mode = 2
+theme = ExtResource("1_sjo5m")
+text = "Password"
+
+[node name="PasswordText" type="LineEdit" parent="MarginContainer/VBoxContainer/Passworded"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_sjo5m")
+placeholder_text = "Enter Password Here!"
+
+[node name="Activate" type="Button" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("1_sjo5m")
+theme_override_fonts/font = SubResource("FontVariation_w86xw")
+text = "Create"
+
+[node name="Secondary" type="Button" parent="MarginContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+theme = ExtResource("1_sjo5m")
+theme_override_fonts/font = SubResource("FontVariation_311ai")
+text = "Start"
+
+[connection signal="pressed" from="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/AdvancedButton" to="." method="_on_advanced_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/Activate" to="." method="activate"]
