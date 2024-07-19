@@ -8,6 +8,7 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <utility>
+#include <chrono>
 #include <godot_cpp/variant/vector2.hpp>
 #include <godot_cpp/variant/vector2i.hpp>
 #include <godot_cpp/variant/color.hpp>
@@ -176,7 +177,7 @@ public:
 	void setCurrent();
 	void setBuff(bool value) { buffer = value; }
 	bool getBuff() { return buffer; }
-	bool simulatingFuture() { return future; }
+	bool simulatingFuture() { return future || getTime() >= getTimeMillis(); }
 	bool willSendWith(SpecialistType type);
 	void setSelectedSpecialist(int id);
 	void select(int id);

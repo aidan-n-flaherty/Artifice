@@ -71,6 +71,9 @@ public:
     void run(Game* game) override {
         startingUnitsA = a->getUnits();
         startingUnitsB = b->getUnits();
+
+        aOwnerID = a->getOwnerID();
+        bOwnerID = b->getOwnerID();
         
         setLocation(a->getPosition());
 

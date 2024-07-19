@@ -93,6 +93,7 @@ corner_radius_bottom_left = 10
 [sub_resource type="FontVariation" id="FontVariation_unt1h"]
 base_font = ExtResource("2_7bam3")
 variation_embolden = 0.5
+spacing_glyph = 1
 spacing_space = 3
 spacing_top = 1
 spacing_bottom = -4

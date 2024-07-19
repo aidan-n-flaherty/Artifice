@@ -25,8 +25,6 @@ func _process(delta):
 		$Counter.scale = Vector3(1.4, 1.4, 1.4) * scaleAmount
 		$Color.scale = Vector3(1.63, 0.7, 1.63) * scaleAmount
 		$RotationInvariant.scale = Vector3(1.0, 1.0, 1.0) * scaleAmount
-		$Submarine.scale = Vector3(1.67, 1.2, 1.2) * (0.5 * scaleAmount + 0.5)
-		$MeshInstance3D.scale = Vector3(1.67, 1.2, 1.2) * (0.5 * scaleAmount + 0.5)
 		$CollisionShape.scale = Vector3(1.0, 1.0, 1.0) * scaleAmount
 		$Counter.position.y = scaleAmount
 		$Color.position.y = scaleAmount
@@ -37,26 +35,42 @@ func _process(delta):
 		
 		if pos.x < -camera.size/2 - 25 || pos.x > camera.size/2 + 25 || pos.y < -get_viewport().size.y * 1.0 / get_viewport().size.x * camera.size/2 - 25 || pos.y > get_viewport().size.y * 1.0 / get_viewport().size.x * camera.size/2 + 25:
 			visible = false
+			
+			if get_node_or_null("Submarine"):
+				var node = get_node("Submarine")
+				node.queue_free()
+				remove_child(node)
+			
 			return
 		else:
 			visible = true
+				
+			if not get_node_or_null("Submarine"):
+				var node = preload("res://Submarine.tscn").instantiate()
+				node.name = "Submarine"
+				
+				add_child(node)
+				
+				rot = null
+				units = null
+				selected = null
+				color = null
+			
+			$Submarine.scale = Vector3(1.8, 1.4, 1.4) * (0.5 * scaleAmount + 0.5)
 		
 	if -get_rotation().y != rot: $RotationInvariant.rotation = Vector3(0, -get_rotation().y, 0)
 	if units != get_parent().getUnits():
-		$RotationInvariant/Units.setValue(str(get_parent().getUnits()))
 		$RotationInvariant/UnitsLabel.text = str(get_parent().getUnits())
 	if selected != get_parent().isSelected():
-		$RotationInvariant/Units.setSelection(get_parent().isSelected())
 		if get_parent().isSelected():
 			$Color.get_surface_override_material(0).albedo_color = Color.WHITE
 		else:
 			color = null
 	if color != get_parent().getColor():
-		$RotationInvariant/Units.setColor(get_parent().getColor())
 		if not get_parent().isSelected():
 			$Color.get_surface_override_material(0).albedo_color = get_parent().getColor()
-			$Submarine.get_surface_override_material(0).albedo_color = get_parent().getColor().darkened(0.5)
-		$MeshInstance3D.get_surface_override_material(1).set_shader_parameter("color", get_parent().getColor())
+		$Submarine.get_surface_override_material(0).albedo_color = get_parent().getColor()
+		$Submarine.get_surface_override_material(1).albedo_color = get_parent().getColor().darkened(0.5)
 			
 		#$Submarine.get_surface_override_material(4).emission = get_parent().getColor()
 	

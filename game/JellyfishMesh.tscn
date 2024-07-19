@@ -12,8 +12,8 @@ shading_mode = 0
 albedo_color = Color(1, 1, 1, 0.117647)
 
 [sub_resource type="Gradient" id="Gradient_oeevq"]
-offsets = PackedFloat32Array(0.110294, 0.382353, 0.661765, 1)
-colors = PackedColorArray(0, 0, 0, 1, 0.564962, 0.564962, 0.564962, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+offsets = PackedFloat32Array(0.257353, 0.397059, 0.485294, 0.720588, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0.564962, 0.564962, 0.564962, 1, 0.74558, 0.74558, 0.74558, 1, 1, 1, 1, 1, 1, 1, 1, 1)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_44dwb"]
 gradient = SubResource("Gradient_oeevq")
@@ -24,7 +24,7 @@ fill_to = Vector2(0, 1)
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_tc2ko"]
 noise_type = 2
 frequency = 0.0166
-fractal_octaves = 3
+fractal_octaves = 8
 cellular_distance_function = 1
 cellular_jitter = 0.8
 cellular_return_type = 6

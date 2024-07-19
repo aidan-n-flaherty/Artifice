@@ -17,7 +17,7 @@ func _ready():
 func init(player, selected: bool, modifiable: bool):
 	self.selected = selected
 	userID = player.getUserID()
-	color = player.getColor()
+	color = player.getColor().darkened(0.25)
 	self.modifiable = modifiable
 	
 	if modifiable:

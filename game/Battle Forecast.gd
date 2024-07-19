@@ -1,10 +1,17 @@
 extends MarginContainer
 
+var objectID: int
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	pass # Replace with function body.
 
+func getObjectID():
+	return objectID
+
 func init(gameID:int, objectID:int):
+	self.objectID = objectID
+	
 	var game
 	var players
 	var p1
@@ -66,7 +73,6 @@ func init(gameID:int, objectID:int):
 	$VBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer/Power/Player2/VBoxContainer/Units/UnitsP2.text = str(p2Units)
 	
 	#get shield charge (getters not in C++) 
-		#game.getNextBattleShields(objectID)
 	
 	var shieldCharges = game.getNextBattleShields(objectID)
 	var p1ShieldCharge = shieldCharges[p1.getID()]

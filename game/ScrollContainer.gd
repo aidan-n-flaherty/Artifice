@@ -54,24 +54,35 @@ func _input(ev) -> void:
 			look_for_swipe = false
 			
 	if ev is InputEventMouseMotion:
+		var disableX = false
+		var disableY = false
+		
 		if not vertical_scroll_mode == SCROLL_MODE_DISABLED and get_v_scroll_bar().max_value - get_v_scroll_bar().min_value > size.y:
 			if swipe_mouse_start.y > ev.global_position.y && swipe_mouse_start.y - ev.global_position.y < vertical_drag_threshold:
-				return
+				disableY = true
 				
 			if swipe_mouse_start.y < ev.global_position.y && ev.global_position.y - swipe_mouse_start.y < vertical_drag_threshold:
-				return
+				disableY = true
 				
 			if swipe_mouse_start.y == ev.global_position.y:
-				return
+				disableY = true
+		else:
+			disableY = true
+		
 		if not horizontal_scroll_mode == SCROLL_MODE_DISABLED and get_h_scroll_bar().max_value - get_h_scroll_bar().min_value > size.x:
 			if swipe_mouse_start.x > ev.global_position.x && swipe_mouse_start.x - ev.global_position.x < horizontal_drag_threshold:
-				return
+				disableX = true
 				
 			if swipe_mouse_start.x < ev.global_position.x && ev.global_position.x - swipe_mouse_start.x < horizontal_drag_threshold:
-				return
+				disableX = true
 				
 			if swipe_mouse_start.x == ev.global_position.x:
-				return
+				disableX = true
+		else:
+			disableX = true
+		
+		if disableX and disableY:
+			return
 			
 		if look_for_swipe:
 			var delta = ev.global_position - swipe_mouse_start
