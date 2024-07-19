@@ -27,6 +27,8 @@ private:
 
     std::list<Specialist*> specialists;
 
+    bool globalDisabled = false;
+
 public:
     PositionalObject(unsigned int ID, GameSettings* settings, const Point &position, int numUnits) : GameObject(ID, settings), numUnits(numUnits), position(position) { startPosition = Point(settings, position.getX(), position.getY()); }
     PositionalObject(unsigned int ID, GameSettings* settings, const Point &position, int numUnits, const std::list<Specialist*> &specialists) : GameObject(ID, settings), numUnits(numUnits), position(position) { addSpecialists(specialists); startPosition = Point(settings, position.getX(), position.getY()); }
@@ -46,11 +48,12 @@ public:
 
     virtual int getUnitsAt(double timeDiff) const { return numUnits; }
     int getUnits() const { return numUnits; }
+    virtual int getProductionAmount() { return 0; };
 
     std::list<Specialist*> getSpecialists() const { return specialists; }
     virtual double getSpeed() const { return 0; };
 
-    double getProjectedSpeed(PositionalObject* target, std::set<int> selectedSpecialists) const;
+    double getProjectedSpeed(PositionalObject* origin, PositionalObject* target, std::set<int> selectedSpecialists) const;
 
     void addUnits(int count) { numUnits += count; }
     void addSpecialist(Specialist* specialists);
@@ -84,6 +87,9 @@ public:
 
     // removes and returns all specialists contained in this object
     std::list<Specialist*> removeSpecialists();
+
+    void setGlobalDisabled(bool value) { this->globalDisabled = value; }
+    bool getGlobalDisabled() const { return globalDisabled; }
 };
 
 #endif

@@ -36,6 +36,16 @@ public:
         if(game->ignoreVessel(vesselA->getID(), getTimestamp()) || game->ignoreVessel(vesselB->getID(), getTimestamp())) {
             setDisabled(true);
             return;
+        } else if(vesselA->isGift() && vesselA->getTargetID() == vesselB->getID()) {
+            setFriendly();
+
+            vesselA->setTarget(vesselB->getReturnOutpost());
+            vesselA->setOrigin(nullptr);
+        } else if(vesselB->isGift() && vesselB->getTargetID() == vesselA->getID()) {
+            setFriendly();
+
+            vesselB->setTarget(vesselB->getReturnOutpost());
+            vesselB->setOrigin(nullptr);
         } else if(vesselA->isGift() && vesselB->getTargetID() != vesselA->getID()) {
             setFriendly();
             return;
@@ -44,13 +54,12 @@ public:
             return;
         } else if(vesselA->getOwnerID() == vesselB->getOwnerID()) {
             setFriendly();
-            vesselA->addUnits(vesselB->removeUnits(vesselB->getUnits()));
-            vesselA->addSpecialists(vesselB->getSpecialists());
-
-            game->removeVessel(vesselB);
+            return;
         } else {
             // start with specialist phase
             specialistPhase(game);
+            if(shouldEndCombat()) return;
+
             postSpecialistPhase(game);
 
             // remove units until one vessel has nothing left
@@ -65,6 +74,7 @@ public:
             bool tie = vesselA->getUnits() == vesselB->getUnits() && vesselB->getSpecialists().size() == vesselA->getSpecialists().size();
 
             if(tie) {
+                defeatSpecialistPhase(game);
                 postCombatSpecialistPhase(game);
 
                 // in an event of a tie, both subs are sent back
@@ -82,13 +92,11 @@ public:
                 victorySpecialistPhase(game);
                 postCombatSpecialistPhase(game);
 
-                Player* vesselAOwner = vesselA->getOwner();
-                Player* vesselBOwner = vesselB->getOwner();
-
                 if(!winner->isDeleted() && !loser->isDeleted()) {
                     if(!loser->getSpecialists().empty()) {
                         winner->getOwner()->addVessel(loser);
                         loser->returnHome();
+                        if(winner->getOrigin() && (loser->getTargetID() == winner->getOriginID() || loser->getTargetID() == winner->getTargetID())) loser->setOrigin(winner->getOrigin());
                     } else game->removeVessel(loser);
                 }
 
@@ -100,12 +108,10 @@ public:
                     }
                 }
 
-                if(vesselAOwner && !vesselAOwner->controlsSpecialist(SpecialistType::QUEEN)) {
-                    vesselAOwner->setDefeated(game);
-                }
-
-                if(vesselBOwner && !vesselBOwner->controlsSpecialist(SpecialistType::QUEEN)) {
-                    vesselBOwner->setDefeated(game);
+                for(const auto& pair : game->getPlayers()) {
+                    if(!pair.second->controlsSpecialist(SpecialistType::QUEEN)) {
+                        pair.second->setDefeated(game);
+                    }
                 }
             }
         }

@@ -98,6 +98,7 @@ public:
 
     std::list<Outpost*> getOutposts() const { return outposts; }
     std::list<Outpost*> sortedOutposts(const PositionalObject* obj);
+    std::list<Vessel*> sortedVessels(const PositionalObject* obj);
     void addOutpost(Outpost* outpost);
     void removeOutpost(Outpost* outpost);
 
@@ -133,8 +134,10 @@ public:
     int getUnits() const;
     int getMinesDrilled() const { return minesDrilled; }
 
+    void setHires(int hires) { this->hires = hires; }
+
     void addResources(int amount) { resources += amount; }
-    void removeResources(int amount) { resources -= amount; }
+    void removeResources(int amount) { resources -= amount; if(resources < 0) resources = 0; }
 
     double nextHireEvent(double timeDiff) const;
 

@@ -26,7 +26,10 @@ func _process(delta):
 		$Color.scale = Vector3(1.63, 0.7, 1.63) * scaleAmount
 		$RotationInvariant.scale = Vector3(1.0, 1.0, 1.0) * scaleAmount
 		$Submarine.scale = Vector3(1.67, 1.2, 1.2) * (0.5 * scaleAmount + 0.5)
+		$MeshInstance3D.scale = Vector3(1.67, 1.2, 1.2) * (0.5 * scaleAmount + 0.5)
 		$CollisionShape.scale = Vector3(1.0, 1.0, 1.0) * scaleAmount
+		$Counter.position.y = scaleAmount
+		$Color.position.y = scaleAmount
 		
 		var actualPos = get_parent().position + position
 		var pos = Vector2(actualPos.x - camera.get_camera_transform().origin.x, actualPos.z + actualPos.y - (camera.get_camera_transform().origin.z + 200))
@@ -50,8 +53,12 @@ func _process(delta):
 			color = null
 	if color != get_parent().getColor():
 		$RotationInvariant/Units.setColor(get_parent().getColor())
-		$Color.get_surface_override_material(0).albedo_color = get_parent().getColor()
-		$Submarine.get_surface_override_material(4).emission = get_parent().getColor()
+		if not get_parent().isSelected():
+			$Color.get_surface_override_material(0).albedo_color = get_parent().getColor()
+			$Submarine.get_surface_override_material(0).albedo_color = get_parent().getColor().darkened(0.5)
+		$MeshInstance3D.get_surface_override_material(1).set_shader_parameter("color", get_parent().getColor())
+			
+		#$Submarine.get_surface_override_material(4).emission = get_parent().getColor()
 	
 	$RotationInvariant/Gift.visible = get_parent().isGift()
 	

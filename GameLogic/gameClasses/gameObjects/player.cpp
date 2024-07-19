@@ -54,7 +54,8 @@ int Player::getHiresAt(double& fractionalHires, double timeDiff) const {
 
 void Player::update(double timeDiff) {
     std::unordered_map<int, int> unitDiff = calculateUnitsAt(this->fractionalProduction, timeDiff);
-    for(Outpost* o : outposts) o->addUnits(unitDiff[o->getID()]);
+    for(Outpost* o : outposts) if(unitDiff[o->getID()] > 0) o->addUnits(unitDiff[o->getID()]);
+    for(Vessel* v : vessels) if(unitDiff[v->getID()] > 0) v->addUnits(unitDiff[v->getID()]);
 
     resources = getResourcesAt(this->fractionalResProduction, timeDiff);
 
@@ -79,10 +80,16 @@ void Player::setDefeated(Game* game) {
 }
 
 PositionalObject* Player::getSpawnLocation() {
+    for(Outpost* o : outposts) {
+        if(o->controlsSpecialist(SpecialistType::QUEEN)) return o;
+    }
+
+    for(Vessel* v : vessels) {
+        if(v->controlsSpecialist(SpecialistType::QUEEN)) return v;
+    }
+
     for(Specialist* s : specialists) {
-        if(s->getType() == QUEEN) {
-            return s->getContainer();
-        }
+        if(s->getType() == QUEEN) return s->getContainer();
     }
 
     return nullptr;
@@ -98,6 +105,18 @@ std::list<Outpost*> Player::sortedOutposts(const PositionalObject* obj) {
     });
 
     return outposts;
+}
+
+std::list<Vessel*> Player::sortedVessels(const PositionalObject* obj) {
+    std::list<Vessel*> vessels;
+
+    for(Vessel* v : getVessels()) vessels.push_back(v);
+
+    vessels.sort([&obj](Vessel* a, Vessel* b) { 
+        return obj->distance(a->getPosition()) < obj->distance(b->getPosition()); 
+    });
+
+    return vessels;
 }
 
 void Player::projectedVictory(Player* player, double timestamp, std::multiset<Event*, EventOrder> &events) {
@@ -145,7 +164,7 @@ int Player::globalProductionAmount() const {
 double Player::globalProductionSpeed() const {
     double productionSpeed = 1;
 
-    productionSpeed += 0.5 * specialistCount(SpecialistType::TYCOON);
+    productionSpeed += 0.5 * expSpecialistEffect(SpecialistType::TYCOON);
 
     return productionSpeed;
 }
@@ -153,7 +172,7 @@ double Player::globalProductionSpeed() const {
 double Player::globalSonar() const {
     double range = 1;
 
-    range = 1 + 0.25 * specialistCount(SpecialistType::INTELLIGENCE_OFFICER);
+    range = 1 + 0.25 * expSpecialistEffect(SpecialistType::INTELLIGENCE_OFFICER);
 
     return range;
 }
@@ -242,6 +261,7 @@ void Player::removeSpecialist(Specialist* specialist) {
 }
 
 void Player::addOutpost(Outpost* outpost) {
+    if(outpost->getType() == OutpostType::MINE) setRefresh(true);
     if(outpost->hasOwner()) outpost->getOwner()->removeOutpost(outpost);
 
     outpost->setOwner(this);
@@ -250,6 +270,27 @@ void Player::addOutpost(Outpost* outpost) {
 }
 
 void Player::removeOutpost(Outpost* outpost) {
+    if(outpost->controlsSpecialist(SpecialistType::QUEEN)) {
+        bool assigned = false;
+
+        for(Outpost* o : sortedOutposts(outpost)) {
+            if(o->controlsSpecialist(SpecialistType::PRINCESS)) {
+                o->getSpecialist(SpecialistType::PRINCESS)->setType(SpecialistType::QUEEN);
+                assigned = true;
+                break;
+            }
+        }
+
+        if(!assigned) {
+            for(Vessel* v : sortedVessels(outpost)) {
+                if(v->controlsSpecialist(SpecialistType::PRINCESS)) {
+                    v->getSpecialist(SpecialistType::PRINCESS)->setType(SpecialistType::QUEEN);
+                    break;
+                }
+            }
+        }
+    }
+
     for(auto it = outposts.begin(); it != outposts.end(); it++) {
         if((*it)->getID() == outpost->getID()) {
             if(outpost->getType() == OutpostType::MINE) {
@@ -257,6 +298,8 @@ void Player::removeOutpost(Outpost* outpost) {
                 fractionalProduction = 0;
                 setRefresh(true);
             }
+
+            if(controlsSpecialist(SpecialistType::MINISTER_OF_WAR)) outpost->setType(OutpostType::BROKEN);
 
             outposts.erase(it);
             break;
@@ -279,6 +322,27 @@ void Player::addVessel(Vessel* vessel) {
 }
 
 void Player::removeVessel(Vessel* vessel) {
+    if(vessel->controlsSpecialist(SpecialistType::QUEEN)) {
+        bool assigned = false;
+
+        for(Outpost* o : sortedOutposts(vessel)) {
+            if(o->controlsSpecialist(SpecialistType::PRINCESS)) {
+                o->getSpecialist(SpecialistType::PRINCESS)->setType(SpecialistType::QUEEN);
+                assigned = true;
+                break;
+            }
+        }
+
+        if(!assigned) {
+            for(Vessel* v : sortedVessels(vessel)) {
+                if(v->controlsSpecialist(SpecialistType::PRINCESS)) {
+                    v->getSpecialist(SpecialistType::PRINCESS)->setType(SpecialistType::QUEEN);
+                    break;
+                }
+            }
+        }
+    }
+
     for(auto it = vessels.begin(); it != vessels.end(); it++) {
         if((*it)->getID() == vessel->getID()) {
             vessels.erase(it);
@@ -344,7 +408,7 @@ std::unordered_map<int, int> Player::calculateUnitsAt(double& fractionalProducti
 
     int totalProductionRate = 0;
 
-    std::list<Outpost*> tmp;
+    std::list<PositionalObject*> tmp;
     for(Outpost* o : outposts) {
         if(o->getProductionAmount() > 0 && o->getType() == OutpostType::FACTORY) {
             tmp.push_back(o);
@@ -353,9 +417,17 @@ std::unordered_map<int, int> Player::calculateUnitsAt(double& fractionalProducti
         units[o->getID()] = 0;
     }
 
+    for(Vessel* v : vessels) {
+        if(v->getProductionAmount() > 0 && v->controlsSpecialist(SpecialistType::RECRUITER)) {
+            tmp.push_back(v);
+            totalProductionRate += v->getProductionAmount();
+        }
+        units[v->getID()] = 0;
+    }
+
     if(timeDiff <= 0) return units;
 
-    tmp.sort([]( const Outpost* a, const Outpost* b ) { return a->getID() < b->getID(); } );
+    tmp.sort([]( const PositionalObject* a, const PositionalObject* b ) { return a->getID() < b->getID(); } );
 
     int totalUnits = getUnits();
 
@@ -367,13 +439,13 @@ std::unordered_map<int, int> Player::calculateUnitsAt(double& fractionalProducti
 
     int remaining = totalProduction;
 
-    for(Outpost* o : tmp) {
+    for(PositionalObject* o : tmp) {
         units[o->getID()] = int((o->getProductionAmount() * 1.0 / totalProductionRate) * totalProduction);
         remaining -= units[o->getID()];
     }
 
     while(remaining > 0) {
-        for(Outpost* o : tmp) {
+        for(PositionalObject* o : tmp) {
             units[o->getID()]++;
             remaining--;
 
@@ -382,21 +454,6 @@ std::unordered_map<int, int> Player::calculateUnitsAt(double& fractionalProducti
     }
 
     fractionalProduction -= productionCycles;
-    /*while(fractionalProduction >= 1) {
-        fractionalProduction -= 1;
-
-
-        for(Outpost* o : tmp) {
-            int n = std::min(std::max(0, getCapacity() - totalUnits), o->getProductionAmount());
-
-            if(getCapacity() - totalUnits <= 0) break;
-
-            units[o->getID()] += n;
-            totalUnits += n;
-        }
-
-        if(totalUnits >= getCapacity()) fractionalProduction -= int(fractionalProduction);
-    }*/
 
     return units;
 }

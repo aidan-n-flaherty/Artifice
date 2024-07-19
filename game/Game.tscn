@@ -1,4 +1,4 @@
-[gd_scene load_steps=65 format=3 uid="uid://cfaaort7dldjk"]
+[gd_scene load_steps=58 format=3 uid="uid://cfaaort7dldjk"]
 
 [ext_resource type="Script" path="res://Game.gd" id="1_s53r2"]
 [ext_resource type="PackedScene" uid="uid://b14auts774043" path="res://Shaders.tscn" id="2_qvr2g"]
@@ -262,81 +262,6 @@ corner_radius_top_left = 30
 corner_radius_top_right = 30
 corner_radius_bottom_right = 30
 corner_radius_bottom_left = 30
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v3lbm"]
-bg_color = Color(0, 0, 0, 1)
-
-[sub_resource type="Animation" id="Animation_0mnru"]
-resource_name = "fade_from_black"
-length = 0.3
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Fade:modulate")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.3),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
-}
-
-[sub_resource type="Animation" id="Animation_s53n2"]
-resource_name = "fade_to_black"
-length = 0.3
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Fade:modulate")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.3),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
-}
-
-[sub_resource type="Animation" id="Animation_7aaoa"]
-resource_name = "fade_to_game"
-length = 0.3
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Fade:modulate")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.3),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
-}
-
-[sub_resource type="Animation" id="Animation_v60cd"]
-resource_name = "fade_to_user"
-length = 0.3
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Fade:modulate")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.3),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
-}
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_435c8"]
-_data = {
-"fade_from_black": SubResource("Animation_0mnru"),
-"fade_to_black": SubResource("Animation_s53n2"),
-"fade_to_game": SubResource("Animation_7aaoa"),
-"fade_to_user": SubResource("Animation_v60cd")
-}
 
 [node name="Game" type="MarginContainer"]
 anchors_preset = 15
@@ -980,18 +905,6 @@ theme = ExtResource("10_ww8tb")
 layout_mode = 2
 theme = ExtResource("10_ww8tb")
 
-[node name="Fade" type="Panel" parent="."]
-modulate = Color(1, 1, 1, 0)
-layout_mode = 2
-mouse_filter = 2
-theme = ExtResource("10_ww8tb")
-theme_override_styles/panel = SubResource("StyleBoxFlat_v3lbm")
-
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-libraries = {
-"": SubResource("AnimationLibrary_435c8")
-}
-
 [connection signal="unselect" from="Viewport/Viewport3D/CameraManager" to="." method="_on_camera_manager_unselect"]
 [connection signal="pressed" from="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/VBoxContainer/TopSpacer/MarginContainer/BackButton" to="." method="_on_back_button_pressed"]
 [connection signal="value_changed" from="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/VBoxContainer/HBoxContainer/Control/PercentBar" to="." method="_on_percent_bar_value_changed"]
@@ -1006,4 +919,3 @@ libraries = {
 [connection signal="pressed" from="Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer/ShopContainer/ShopButton" to="." method="_on_shop_button_pressed"]
 [connection signal="pressed" from="Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer/EditorContainer/EditorButton" to="." method="_on_editor_button_pressed"]
 [connection signal="pressed" from="Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer/OrderContainer/OrderButton" to="." method="_on_order_button_pressed"]
-[connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_animation_player_animation_finished"]

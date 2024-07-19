@@ -26,15 +26,12 @@ public:
 
     Order* copy() override { return new PromoteOrder(*this); }
 
+    void adjustIDs(int createdID, int amount) override {
+        if(specialistID >= createdID) specialistID += amount;
+    }
+
     Event* converted(Game* game) override {
         if(!game->hasPlayer(getSenderID())) return nullptr;
-        
-        Player* player = game->getPlayer(getSenderID());
-        
-        if(player->hasLost() || player->getHires() <= 0) {
-            std::cout << "ORDER ERROR: not enough hires or player has lost" << std::endl;
-            return nullptr;
-        }
 
         if(!game->hasSpecialist(specialistID)) {
             std::cout << "ORDER ERROR: specialist does not exist" << std::endl;
@@ -42,6 +39,24 @@ public:
         }
         
         Specialist* specialist = game->getSpecialist(specialistID);
+        
+        SpecialistType t;
+
+        if(specialistTypeID > int(SpecialistType::NONE) && specialistTypeID < int(SpecialistType::END)) {
+            t = SpecialistType(specialistTypeID);
+        } else {
+            std::cout << "Promoted to a nonexistent specialist" << std::endl;
+            return nullptr;
+        }
+
+        setDescription(std::string("Promote ") + specialist->typeAsString() + std::string(" to ") + Specialist::typeAsString(t));
+        
+        Player* player = game->getPlayer(getSenderID());
+        
+        if(player->hasLost() || player->getHires() <= 0) {
+            std::cout << "ORDER ERROR: not enough hires or player has lost" << std::endl;
+            return nullptr;
+        }
 
         if(specialist->getOwnerID() != getSenderID()) {
             std::cout << "ORDER ERROR: does not own specialist" << std::endl;
@@ -57,14 +72,6 @@ public:
             std::cout << "ORDER ERROR: specialist not at outpost" << std::endl;
             return nullptr;
         }
-        
-        SpecialistType t;
-
-        try {
-            t = SpecialistType(specialistTypeID);
-        } catch(...) {
-            return nullptr;
-        }
 
         if(game->getSettings()->specialistBans.find(t) != game->getSettings()->specialistBans.end()) return nullptr;
 
@@ -76,8 +83,6 @@ public:
             }
         }
         if(!canPromote) return nullptr;
-
-        setDescription(std::string("Promote ") + specialist->typeAsString() + std::string(" to ") + Specialist::typeAsString(t));
 
         return new PromoteEvent(this, getTimestamp(), specialist, t);
     }

@@ -12,7 +12,6 @@ func _ready():
 	$MarginContainer/VBoxContainer/GameEditor.getActivationButton().connect("pressed", _on_button_pressed)
 		
 	GameData.gameChanged.connect(reload)
-	GameData.loadUserDetail.connect(viewUser)
 
 func init(gameID):
 	self.gameID = gameID
@@ -21,15 +20,11 @@ func init(gameID):
 	
 	#$Background.material.set_shader_parameter("gradStrength", 0.75)
 	
-	$Fade.modulate = Color(1.0, 1.0, 1.0)
-	
 	await GameData.loadGameUsers(gameID)
 	
 	await $MarginContainer/VBoxContainer/GameEditor.deserialize(gameID)
 	
 	reload(gameID)
-	
-	$AnimationPlayer.play("fade_from_black")
 
 func reload(gameID: int):
 	if gameID != self.gameID:
@@ -52,9 +47,15 @@ func reload(gameID: int):
 	var details = GameData.getGameDetails(gameID)
 	
 	if int(details.gameData.startTime) < Time.get_unix_time_from_system() + (2 * 365 * 24 * 60 * 60):
-		$AnimationPlayer.play("fade_to_game")
+		GameData.viewGame(gameID)
 	else:
 		await $MarginContainer/VBoxContainer/GameEditor.deserialize(gameID)
+	
+	if int(details.gameData.hostID) == GameData.getSelfID():
+		var gameChanger = preload("res://GameChanger.tscn").instantiate()
+		gameChanger.init(gameID)
+		
+		GameData.goto_node(gameChanger)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -63,7 +64,7 @@ func _process(delta):
 	$MarginContainer/VBoxContainer/GameEditor.setFinalizing(not details.gameData.started and details.gameData.playerCount == details.gameSettings.playerCap)
 
 func _on_back_button_pressed():
-	$AnimationPlayer.play("fade_to_black")
+	GameData.previous()
 
 func _on_button_pressed():
 	$MarginContainer/VBoxContainer/GameEditor.getActivationButton().disabled = true
@@ -71,23 +72,5 @@ func _on_button_pressed():
 		await GameData.joinGame(self.gameID, $MarginContainer/VBoxContainer/GameEditor/MarginContainer/VBoxContainer/Passworded/PasswordText.text)
 	else:
 		if await GameData.leaveGame(self.gameID):
-			$AnimationPlayer.play("fade_to_current")
+			GameData.gotoCurrent()
 	$MarginContainer/VBoxContainer/GameEditor.getActivationButton().disabled = false
-
-func viewUser(userID: int):
-	self.userID = userID
-	
-	$AnimationPlayer.play("fade_to_user")
-	
-func _on_animation_player_animation_finished(anim_name):
-	if anim_name == "fade_to_user":
-		GameData.viewUserCompletion(userID)
-	if anim_name == "fade_to_game":
-		GameData.viewGameCompletion($MarginContainer/VBoxContainer/GameEditor.gameID, false)
-	if anim_name == "fade_to_current":
-		if GameData.exitGameToMenu():
-			GameData.currentTab = "res://CurrentGameList.tscn"
-			GameData.goto_scene("res://MainMenu.tscn")
-	if anim_name == "fade_to_black":
-		if GameData.exitGameToMenu():
-			GameData.goto_scene("res://MainMenu.tscn")

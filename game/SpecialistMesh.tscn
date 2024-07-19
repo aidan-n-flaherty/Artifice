@@ -1,9 +1,8 @@
 [gd_scene load_steps=12 format=3 uid="uid://820462udup0w"]
 
 [ext_resource type="Script" path="res://SpecialistMesh.gd" id="1_ka51b"]
-[ext_resource type="Texture2D" uid="uid://c1f04o6gimvxl" path="res://resources/images/whiteCircle.png" id="2_puof1"]
 [ext_resource type="Shader" path="res://SpecialistMesh3D.gdshader" id="2_vhvoe"]
-[ext_resource type="Material" uid="uid://ceshq08mjed03" path="res://resources/materials/SpecialistMesh.tres" id="3_74y6v"]
+[ext_resource type="Shader" path="res://SpecialistMesh2D.gdshader" id="3_jwu6e"]
 [ext_resource type="Texture2D" uid="uid://hxbtj5f0qnsi" path="res://resources/specialistIcons/Smuggler.png" id="3_wml8q"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_ddm8n"]
@@ -13,11 +12,12 @@ radius = 2.0
 [sub_resource type="CylinderMesh" id="CylinderMesh_vmxwe"]
 top_radius = 2.0
 bottom_radius = 2.0
-height = 0.25
+height = 0.35
 radial_segments = 16
 rings = 1
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_fxjoc"]
+resource_local_to_scene = true
 render_priority = 0
 shader = ExtResource("2_vhvoe")
 shader_parameter/inverted = false
@@ -34,8 +34,16 @@ rings = 1
 albedo_color = Color(0, 0, 0, 1)
 metallic = 1.0
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_xim3k"]
-viewport_path = NodePath("SubViewport")
+[sub_resource type="PlaneMesh" id="PlaneMesh_nem67"]
+size = Vector2(4, 4)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_y1eix"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("3_jwu6e")
+shader_parameter/inverted = false
+shader_parameter/translucent = false
+shader_parameter/icon = ExtResource("3_wml8q")
 
 [node name="SpecialistMesh" type="Area3D"]
 script = ExtResource("1_ka51b")
@@ -46,7 +54,6 @@ shape = SubResource("CylinderShape3D_ddm8n")
 
 [node name="Cylinder" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 0, 0)
-visible = false
 layers = 2
 cast_shadow = 0
 gi_mode = 0
@@ -61,56 +68,9 @@ gi_mode = 0
 mesh = SubResource("CylinderMesh_7vgjm")
 surface_material_override/0 = SubResource("StandardMaterial3D_uctjo")
 
-[node name="Sprite3D" type="Sprite3D" parent="."]
-transform = Transform3D(-1, 6.18173e-08, -6.18173e-08, 0, 0.707107, 0.707107, 8.74228e-08, 0.707107, -0.707107, 0, 0.1, -0.1)
-layers = 2
-cast_shadow = 0
-ignore_occlusion_culling = true
-gi_mode = 0
-pixel_size = 0.08
-double_sided = false
-no_depth_test = true
-render_priority = 2
-texture = SubResource("ViewportTexture_xim3k")
-
-[node name="SubViewport" type="SubViewport" parent="."]
-transparent_bg = true
-size = Vector2i(50, 50)
-
-[node name="Control" type="Control" parent="SubViewport"]
-material = ExtResource("3_74y6v")
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Background" type="TextureRect" parent="SubViewport/Control"]
-use_parent_material = true
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_horizontal = 6
-size_flags_vertical = 6
-mouse_filter = 0
-texture = ExtResource("2_puof1")
-expand_mode = 1
-
-[node name="Texture" type="TextureRect" parent="SubViewport/Control"]
-use_parent_material = true
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_horizontal = 6
-size_flags_vertical = 6
-texture = ExtResource("3_wml8q")
-expand_mode = 1
+[node name="Texture" type="MeshInstance3D" parent="."]
+transform = Transform3D(-1, -5.95416e-16, -2.4663e-16, -2.4663e-16, 0.707107, -0.707107, 5.95416e-16, -0.707107, -0.707107, 2.08165e-12, 0.25, -0.25)
+mesh = SubResource("PlaneMesh_nem67")
+surface_material_override/0 = SubResource("ShaderMaterial_y1eix")
 
 [connection signal="input_event" from="." to="." method="_on_input_event"]

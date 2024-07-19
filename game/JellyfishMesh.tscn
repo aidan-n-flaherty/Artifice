@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://be40a30mo8arh"]
+[gd_scene load_steps=15 format=3 uid="uid://be40a30mo8arh"]
 
 [ext_resource type="Script" path="res://JellyfishMesh.gd" id="1_67kmm"]
 [ext_resource type="ArrayMesh" uid="uid://b1on2kir3uh0r" path="res://resources/outpost/shieldAlternate2.obj" id="2_17bqs"]
@@ -12,17 +12,19 @@ shading_mode = 0
 albedo_color = Color(1, 1, 1, 0.117647)
 
 [sub_resource type="Gradient" id="Gradient_oeevq"]
-offsets = PackedFloat32Array(0, 0.5, 1)
-colors = PackedColorArray(0, 0, 0, 1, 0.720588, 0.720588, 0.720588, 1, 1, 1, 1, 1)
+offsets = PackedFloat32Array(0.110294, 0.382353, 0.661765, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0.564962, 0.564962, 0.564962, 1, 1, 1, 1, 1, 1, 1, 1, 1)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_44dwb"]
 gradient = SubResource("Gradient_oeevq")
-fill_from = Vector2(1, 0.0643939)
-fill_to = Vector2(1, 0.556818)
+fill = 1
+fill_from = Vector2(0.5, 0.518939)
+fill_to = Vector2(0, 1)
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_tc2ko"]
 noise_type = 2
-frequency = 0.0215
+frequency = 0.0166
+fractal_octaves = 3
 cellular_distance_function = 1
 cellular_jitter = 0.8
 cellular_return_type = 6
@@ -38,10 +40,19 @@ resource_local_to_scene = true
 render_priority = 0
 shader = ExtResource("3_yj7fn")
 shader_parameter/speed = 0.01
-shader_parameter/dark = null
+shader_parameter/dark = false
 shader_parameter/id = 0
 shader_parameter/screen_texture = SubResource("NoiseTexture2D_txva8")
 shader_parameter/gradient = SubResource("GradientTexture2D_44dwb")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_vvajo"]
+noise_type = 2
+cellular_distance_function = 1
+cellular_return_type = 6
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_7ipj1"]
+seamless = true
+noise = SubResource("FastNoiseLite_vvajo")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_klvm6"]
 resource_local_to_scene = true
@@ -49,6 +60,8 @@ render_priority = 0
 shader = ExtResource("3_e4syj")
 shader_parameter/dark = false
 shader_parameter/rotation = 2.08165e-12
+shader_parameter/speed = 0.01
+shader_parameter/noise = SubResource("NoiseTexture2D_7ipj1")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_m4nvs"]
 resource_local_to_scene = true

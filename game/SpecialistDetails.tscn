@@ -1,12 +1,14 @@
-[gd_scene load_steps=9 format=3 uid="uid://dc28ekhtbcoo"]
+[gd_scene load_steps=8 format=3 uid="uid://dc28ekhtbcoo"]
 
 [ext_resource type="Theme" uid="uid://tg7ina762c6q" path="res://resources/themes/UITheme.tres" id="1_cfgj3"]
 [ext_resource type="Script" path="res://SpecialistDetails.gd" id="1_psvyd"]
 [ext_resource type="Material" uid="uid://ceshq08mjed03" path="res://resources/materials/SpecialistMesh.tres" id="2_nlvwq"]
 [ext_resource type="Texture2D" uid="uid://cidbww6nbslt4" path="res://resources/specialistIcons/Helmsman.png" id="3_cl3u5"]
+[ext_resource type="Theme" uid="uid://cltadyeempokg" path="res://resources/themes/DetailTheme.tres" id="3_wbpsg"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_cfbt4"]
 font_size = 30
+outline_size = 2
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5jxhx"]
 bg_color = Color(0, 0, 0, 1)
@@ -14,28 +16,6 @@ corner_radius_top_left = 25
 corner_radius_top_right = 25
 corner_radius_bottom_right = 25
 corner_radius_bottom_left = 25
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lefyu"]
-content_margin_left = 10.0
-content_margin_top = 0.0
-content_margin_right = 10.0
-content_margin_bottom = 0.0
-bg_color = Color(0, 0, 0, 0.784314)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bfggk"]
-content_margin_left = 10.0
-content_margin_top = 0.0
-content_margin_right = 10.0
-content_margin_bottom = 0.0
-bg_color = Color(0, 0, 0, 0.862745)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
 
 [node name="SpecialistDetails" type="MarginContainer"]
 anchors_preset = 15
@@ -96,6 +76,7 @@ text = "Promotion Options:"
 [node name="Back" type="Button" parent="MarginContainer/HBoxContainer/HBoxContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
+theme = ExtResource("3_wbpsg")
 text = "Back"
 
 [node name="Spacer" type="Control" parent="MarginContainer/HBoxContainer/HBoxContainer"]
@@ -142,10 +123,7 @@ visible = false
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 8
-theme = ExtResource("1_cfgj3")
-theme_override_styles/normal = SubResource("StyleBoxFlat_lefyu")
-theme_override_styles/hover = SubResource("StyleBoxFlat_lefyu")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_bfggk")
+theme = ExtResource("3_wbpsg")
 text = "Promote"
 
 [node name="Release" type="Button" parent="MarginContainer/HBoxContainer/MarginContainer/VBoxContainer"]
@@ -153,10 +131,7 @@ visible = false
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 8
-theme = ExtResource("1_cfgj3")
-theme_override_styles/normal = SubResource("StyleBoxFlat_lefyu")
-theme_override_styles/hover = SubResource("StyleBoxFlat_lefyu")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_bfggk")
+theme = ExtResource("3_wbpsg")
 text = "Release"
 
 [node name="Shop" type="Button" parent="MarginContainer/HBoxContainer/MarginContainer/VBoxContainer"]
@@ -164,10 +139,7 @@ visible = false
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 8
-theme = ExtResource("1_cfgj3")
-theme_override_styles/normal = SubResource("StyleBoxFlat_lefyu")
-theme_override_styles/hover = SubResource("StyleBoxFlat_lefyu")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_bfggk")
+theme = ExtResource("3_wbpsg")
 text = "Shop"
 
 [node name="Cancel" type="Button" parent="MarginContainer/HBoxContainer/MarginContainer/VBoxContainer"]
@@ -175,10 +147,7 @@ visible = false
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 8
-theme = ExtResource("1_cfgj3")
-theme_override_styles/normal = SubResource("StyleBoxFlat_lefyu")
-theme_override_styles/hover = SubResource("StyleBoxFlat_lefyu")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_bfggk")
+theme = ExtResource("3_wbpsg")
 text = "Cancel Hire"
 
 [node name="NextHire" type="Button" parent="MarginContainer/HBoxContainer/MarginContainer/VBoxContainer"]
@@ -186,11 +155,16 @@ visible = false
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 8
-theme = ExtResource("1_cfgj3")
-theme_override_styles/normal = SubResource("StyleBoxFlat_lefyu")
-theme_override_styles/hover = SubResource("StyleBoxFlat_lefyu")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_bfggk")
+theme = ExtResource("3_wbpsg")
 text = "Next Hire"
+
+[node name="Activation" type="Button" parent="MarginContainer/HBoxContainer/MarginContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 8
+theme = ExtResource("3_wbpsg")
+text = "Activate"
 
 [connection signal="pressed" from="MarginContainer/HBoxContainer/HBoxContainer/VBoxContainer/Back" to="." method="_on_back_pressed"]
 [connection signal="pressed" from="MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/Promote" to="." method="_on_promote_pressed"]
@@ -198,3 +172,4 @@ text = "Next Hire"
 [connection signal="pressed" from="MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/Shop" to="." method="_on_shop_pressed"]
 [connection signal="pressed" from="MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/Cancel" to="." method="_on_cancel_pressed"]
 [connection signal="pressed" from="MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/NextHire" to="." method="_on_next_hire_pressed"]
+[connection signal="pressed" from="MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/Activation" to="." method="_on_activation_pressed"]

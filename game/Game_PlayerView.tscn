@@ -51,10 +51,9 @@ corner_radius_bottom_left = 20
 custom_minimum_size = Vector2(2.08165e-12, 60)
 anchors_preset = 10
 anchor_right = 1.0
-offset_bottom = 40.0
+offset_bottom = 60.0
 grow_horizontal = 2
 size_flags_horizontal = 3
-size_flags_vertical = 0
 theme = ExtResource("1_5v71y")
 script = ExtResource("1_qa1hm")
 
@@ -63,7 +62,8 @@ layout_mode = 2
 theme_override_styles/focus = SubResource("StyleBoxEmpty_udx5a")
 theme_override_styles/hover = SubResource("StyleBoxFlat_njarg")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_nec25")
-theme_override_styles/normal = SubResource("StyleBoxFlat_njarg")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_nec25")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_udx5a")
 
 [node name="ColorPanel" type="Panel" parent="."]
 visible = false
@@ -123,6 +123,11 @@ layout_mode = 2
 theme = ExtResource("1_5v71y")
 text = "123"
 
+[node name="Kick" type="Button" parent="MarginContainer/HBoxContainer"]
+visible = false
+layout_mode = 2
+text = "kick"
+
 [node name="Spacer" type="Control" parent="MarginContainer/HBoxContainer"]
 visible = false
 layout_mode = 2
@@ -131,3 +136,4 @@ mouse_filter = 2
 theme = ExtResource("1_5v71y")
 
 [connection signal="pressed" from="View" to="." method="_on_view_pressed"]
+[connection signal="pressed" from="MarginContainer/HBoxContainer/Kick" to="." method="_on_kick_pressed"]

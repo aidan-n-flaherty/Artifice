@@ -1,6 +1,7 @@
-[gd_scene load_steps=7 format=3 uid="uid://c5ndavpu76sg4"]
+[gd_scene load_steps=8 format=3 uid="uid://c5ndavpu76sg4"]
 
 [ext_resource type="Theme" uid="uid://tg7ina762c6q" path="res://resources/themes/UITheme.tres" id="1_uird0"]
+[ext_resource type="Theme" uid="uid://cltadyeempokg" path="res://resources/themes/DetailTheme.tres" id="2_lh8ew"]
 [ext_resource type="Material" uid="uid://ceshq08mjed03" path="res://resources/materials/SpecialistMesh.tres" id="3_7acws"]
 [ext_resource type="Texture2D" uid="uid://cidbww6nbslt4" path="res://resources/specialistIcons/Helmsman.png" id="4_3silb"]
 
@@ -90,6 +91,7 @@ scroll_active = false
 [node name="Back" type="Button" parent="MarginContainer/HBoxContainer/HBoxContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
+theme = ExtResource("2_lh8ew")
 text = "Back"
 
 [node name="Spacer" type="Control" parent="MarginContainer/HBoxContainer/HBoxContainer"]

@@ -4,12 +4,7 @@
 #include <algorithm>
 #include "player.h"
 #include "../game_settings.h"
-
-int Outpost::getUnitsAt(double timeDiff) const {
-    double fractionalProduction = hasOwner() ? getOwner()->getFractionalProduction() : 0;
-    
-    return getUnitsAt(fractionalProduction, timeDiff);
-}
+#include "../game.h"
 
 int Outpost::getShieldAt(double timeDiff) const {
     double fractionalShield = this->fractionalShield;
@@ -30,11 +25,9 @@ double Outpost::nextProductionEvent(double timeDiff) const {
     return time;
 }
 
-/* The following two functions do not modify this instance unless you pass in
-** references to the actual member variables, allowing them to be used for interpolation
-** or updating the game state.
-*/
-int Outpost::getUnitsAt(double& fractionalProduction, double timeDiff) const {
+int Outpost::getUnitsAt(double timeDiff) const {
+    double fractionalProduction = hasOwner() ? getOwner()->getFractionalProduction() : 0;
+    
     int units = getUnits();
 
     if(!hasOwner() || type != OutpostType::FACTORY) return units;
@@ -58,9 +51,8 @@ int Outpost::getShieldAt(double& fractionalShield, double timeDiff) const {
 
     fractionalShield += timeDiff * (getMaxShield() / (48.0 * 60 * 60));
 
-    // SCHEDULED CHANGE:
-    // fractionalShield -= specialistCount(SpecialistType::TINKERER) * timeDiff * (3.0 / (60 * 60));
-    if(controlsSpecialist(SpecialistType::TINKERER)) fractionalShield -= timeDiff * (3.0 / (60 * 60));
+    fractionalShield -= specialistCount(SpecialistType::TINKERER) * timeDiff * (3.0 / (60 * 60));
+    
     while(fractionalShield >= 1) {
         fractionalShield -= 1;
         
@@ -84,7 +76,6 @@ int Outpost::getShieldAt(double& fractionalShield, double timeDiff) const {
     }
 
     shieldCharge = std::fmax(0, std::fmin(shieldCharge, getMaxShield()));
-    if(controlsSpecialist(SpecialistType::INSPECTOR)) shieldCharge = getMaxShield();
 
     return shieldCharge;
 }

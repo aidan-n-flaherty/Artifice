@@ -14,13 +14,14 @@
 #include "../GameLogic/gameClasses/game.h"
 #include "../GameLogic/gameClasses/events/battle_event.h"
 #include "../GameLogic/gameClasses/gameObjects/outpost.h"
+#include "../GameLogic/gameClasses/events/outpost_range_event.h"
 
 using namespace godot;
 
 FloorDisplay::FloorDisplay(GameInterface* gameInterface) : gameInterface(gameInterface) {}
 
 void FloorDisplay::_draw() {
-    if(!gameInterface || !gameInterface->getGame() || !gameInterface->getCompleteGame() || !gameInterface->getCurrentGame()) return;
+    if(!gameInterface || !gameInterface->getGame() || !gameInterface->getCompleteGame() || !gameInterface->getCurrentGame() || !gameInterface->getFullGame()) return;
 
     std::shared_ptr<Game> game = gameInterface->getGame();
     std::shared_ptr<Game> current = gameInterface->getCurrentGame();
@@ -37,60 +38,62 @@ void FloorDisplay::_draw() {
 
     // draw_arc(const Vector2 &center, double radius, double start_angle, double end_angle, int32_t point_count, const Color &color, double width = -1.0, bool antialiased = false)
 
-    draw_rect(Rect2(0, 0, viewport->get_size().x, viewport->get_size().y), Color(0.0, 0.0, 0.9, 1.0));
+    if(gameInterface->getUserGameID() >= 0 && !gameInterface->getFinished() && !gameInterface->isOffline()) draw_rect(Rect2(0, 0, viewport->get_size().x, viewport->get_size().y), Color(0.0, 0.0, 0.9, 1.0));
 
     Player* p = gameInterface->simulatingFuture() ? current->getPlayer(gameInterface->getUserGameID()) : game->getPlayer(gameInterface->getUserGameID());
 
     std::shared_ptr<Game> visibilityGame = gameInterface->simulatingFuture() ? current : game;
 
-    for(int i = -1; i <= 1; i++) {
-        for(int j = -1; j <= 1; j++) {
-            double x = rootX + i * game->getSettings()->width;
-            double y = rootY + j * game->getSettings()->height;
-
-            for(const auto& pair : (gameInterface->simulatingFuture() ? current->getOutposts() : game->getOutposts())) {
-                if(pair.second->getOwnerID() != gameInterface->getUserGameID() && (!pair.second->hasOwner() || !complete->teamGame() || pair.second->getOwner()->getTeamID() != p->getTeamID())) continue;
-
-                double x1 = pair.second->getPositionAt(getDiff()).getX();
-                double y1 = pair.second->getPositionAt(getDiff()).getY();
-
-                //draw_circle(Vector2(x1 - x, y1 - y) * pixels, pair.second->getSonarRange() * pixels, Color(0.0, 0.0, 0.4));
-                draw_arc(Vector2(x1 - x, y1 - y) * pixels, pair.second->getSonarRange() * pixels - 10, 0, UtilityFunctions::deg_to_rad(360), 32, Color(0.0, 0.0, 0.4), 20, false);
-            }
-        }
-    }
-
-    for(int i = -1; i <= 1; i++) {
-        for(int j = -1; j <= 1; j++) {
-            double x = rootX + i * game->getSettings()->width;
-            double y = rootY + j * game->getSettings()->height;
-
-            for(const auto& pair : (gameInterface->simulatingFuture() ? current->getOutposts() : game->getOutposts())) {
-                if(pair.second->getOwnerID() != gameInterface->getUserGameID() && (!pair.second->hasOwner() || !complete->teamGame() || pair.second->getOwner()->getTeamID() != p->getTeamID())) continue;
-
-                double x1 = pair.second->getPositionAt(getDiff()).getX();
-                double y1 = pair.second->getPositionAt(getDiff()).getY();
-
-                //draw_circle(Vector2(x1 - x, y1 - y) * pixels, pair.second->getSonarRange() * pixels - 20, Color(0.0, 0.0, 0.0));
-                draw_arc(Vector2(x1 - x, y1 - y) * pixels, (pair.second->getSonarRange() * pixels - 20)/2, 0, UtilityFunctions::deg_to_rad(360), 32, Color(0.0, 0.0, 0.0), (pair.second->getSonarRange() * pixels - 20), false);
-            }
-        }
-    }
-
-    if(complete->teamGame()) {
+    if(gameInterface->getUserGameID() >= 0 && !gameInterface->getFinished()) {
         for(int i = -1; i <= 1; i++) {
             for(int j = -1; j <= 1; j++) {
                 double x = rootX + i * game->getSettings()->width;
                 double y = rootY + j * game->getSettings()->height;
 
                 for(const auto& pair : (gameInterface->simulatingFuture() ? current->getOutposts() : game->getOutposts())) {
-                    if(pair.second->getOwnerID() != gameInterface->getUserGameID()) continue;
+                    if(pair.second->getOwnerID() != gameInterface->getUserGameID() && (!pair.second->hasOwner() || !complete->teamGame() || pair.second->getOwner()->getTeamID() != p->getTeamID())) continue;
 
                     double x1 = pair.second->getPositionAt(getDiff()).getX();
                     double y1 = pair.second->getPositionAt(getDiff()).getY();
 
-                    //draw_circle(Vector2(x1 - x, y1 - y) * pixels, pair.second->getSonarRange() * pixels - 20, Color(1.0, 1.0, 0.01));
-                    draw_arc(Vector2(x1 - x, y1 - y) * pixels, (pair.second->getSonarRange() * pixels - 20)/2, 0, UtilityFunctions::deg_to_rad(360), 32, Color(1.0, 1.0, 0.01), (pair.second->getSonarRange() * pixels - 20), false);
+                    //draw_circle(Vector2(x1 - x, y1 - y) * pixels, pair.second->getSonarRange() * pixels, Color(0.0, 0.0, 0.4));
+                    draw_arc(Vector2(x1 - x, y1 - y) * pixels, pair.second->getSonarRange() * pixels - 10, 0, UtilityFunctions::deg_to_rad(360), 32, Color(0.0, 0.0, 0.4), 20, false);
+                }
+            }
+        }
+
+        for(int i = -1; i <= 1; i++) {
+            for(int j = -1; j <= 1; j++) {
+                double x = rootX + i * game->getSettings()->width;
+                double y = rootY + j * game->getSettings()->height;
+
+                for(const auto& pair : (gameInterface->simulatingFuture() ? current->getOutposts() : game->getOutposts())) {
+                    if(pair.second->getOwnerID() != gameInterface->getUserGameID() && (!pair.second->hasOwner() || !complete->teamGame() || pair.second->getOwner()->getTeamID() != p->getTeamID())) continue;
+
+                    double x1 = pair.second->getPositionAt(getDiff()).getX();
+                    double y1 = pair.second->getPositionAt(getDiff()).getY();
+
+                    //draw_circle(Vector2(x1 - x, y1 - y) * pixels, pair.second->getSonarRange() * pixels - 20, Color(0.0, 0.0, 0.0));
+                    draw_arc(Vector2(x1 - x, y1 - y) * pixels, (pair.second->getSonarRange() * pixels - 20)/2, 0, UtilityFunctions::deg_to_rad(360), 32, Color(0.0, 0.0, 0.0), (pair.second->getSonarRange() * pixels - 20), false);
+                }
+            }
+        }
+
+        if(complete->teamGame()) {
+            for(int i = -1; i <= 1; i++) {
+                for(int j = -1; j <= 1; j++) {
+                    double x = rootX + i * game->getSettings()->width;
+                    double y = rootY + j * game->getSettings()->height;
+
+                    for(const auto& pair : (gameInterface->simulatingFuture() ? current->getOutposts() : game->getOutposts())) {
+                        if(pair.second->getOwnerID() != gameInterface->getUserGameID()) continue;
+
+                        double x1 = pair.second->getPositionAt(getDiff()).getX();
+                        double y1 = pair.second->getPositionAt(getDiff()).getY();
+
+                        //draw_circle(Vector2(x1 - x, y1 - y) * pixels, pair.second->getSonarRange() * pixels - 20, Color(1.0, 1.0, 0.01));
+                        draw_arc(Vector2(x1 - x, y1 - y) * pixels, (pair.second->getSonarRange() * pixels - 20)/2, 0, UtilityFunctions::deg_to_rad(360), 32, Color(1.0, 1.0, 0.01), (pair.second->getSonarRange() * pixels - 20), false);
+                    }
                 }
             }
         }
@@ -116,6 +119,14 @@ void FloorDisplay::_draw() {
         }
     }
 
+    const OutpostRangeEvent* e = complete->nextFireEvent(game->getTime() + getDiff());
+    double fireOpacity = -1.0;
+    double fireInterval = game->getSettings()->fireRate * game->getSettings()->baseFireRate / game->getSettings()->simulationSpeed;
+    if(e) {
+        fireOpacity = std::max(10.0 * std::abs(game->getTime() + getDiff() - (e->getTimestamp() - fireInterval / 2.0)) / (fireInterval / 2.0) - 9.0, 0.0);
+        if(fireOpacity > 1.0) fireOpacity = 0.0;
+    }
+
     for(int i = -1; i <= 1; i++) {
         for(int j = -1; j <= 1; j++) {
             double x = rootX + i * game->getSettings()->width;
@@ -124,24 +135,44 @@ void FloorDisplay::_draw() {
             for(const auto& pair : game->getOutposts()) {
                 if(p && !visibilityGame->withinRange(p, pair.second, getDiff())) continue;
 
-                if(!pair.second->controlsSpecialist(SpecialistType::SENTRY) && !pair.second->controlsSpecialist(SpecialistType::MARTYR)) continue;
+                if(!pair.second->controlsSpecialist(SpecialistType::SENTRY) && !pair.second->controlsSpecialist(SpecialistType::MARTYR) && !pair.second->controlsSpecialist(SpecialistType::CHANCELLOR) && !pair.second->controlsSpecialist(SpecialistType::DETONATOR)) continue;
 
                 double x1 = pair.second->getPositionAt(getDiff()).getX();
                 double y1 = pair.second->getPositionAt(getDiff()).getY();
 
+                if(fireOpacity > 0 && (pair.second->controlsSpecialist(SpecialistType::SENTRY) || pair.second->controlsSpecialist(SpecialistType::CHANCELLOR))) {
+                    double maxRange = -1.0;
+                    if(pair.second->controlsSpecialist(SpecialistType::SENTRY)) maxRange = std::max(maxRange, double(pair.second->getFireRange()));
+                    if(pair.second->controlsSpecialist(SpecialistType::CHANCELLOR)) maxRange = std::max(maxRange, double(game->getSettings()->defaultSonar));
+
+                    draw_arc(Vector2(x1 - x, y1 - y) * pixels, (maxRange * pixels)/2, 0, UtilityFunctions::deg_to_rad(360), 32, Color(1.0, 0.0, 1.0, 0.2 * fireOpacity), maxRange * pixels, false);
+                }
+
                 if(pair.second->controlsSpecialist(SpecialistType::SENTRY)) draw_arc(Vector2(x1 - x, y1 - y) * pixels, pair.second->getFireRange() * pixels, 0, UtilityFunctions::deg_to_rad(360), 64, Color(1.0,0.0,0.25),6.0,false);
-                if(pair.second->controlsSpecialist(SpecialistType::MARTYR)) draw_arc(Vector2(x1 - x, y1 - y) * pixels, game->getSettings()->defaultSonar/5.0 * pixels, 0, UtilityFunctions::deg_to_rad(360), 64, Color(1.0,0.0,0.25),6.0,false);
+                if(pair.second->controlsSpecialist(SpecialistType::MARTYR) || pair.second->controlsSpecialist(SpecialistType::DETONATOR)) draw_arc(Vector2(x1 - x, y1 - y) * pixels, game->getSettings()->defaultSonar/5.0 * pixels, 0, UtilityFunctions::deg_to_rad(360), 64, Color(1.0,0.0,0.25),6.0,false);
+                if(pair.second->controlsSpecialist(SpecialistType::CHANCELLOR)) draw_arc(Vector2(x1 - x, y1 - y) * pixels, game->getSettings()->defaultSonar * pixels, 0, UtilityFunctions::deg_to_rad(360), 64, Color(1.0,0.0,0.25),6.0,false);
             }
 
             for(const auto& pair : game->getVessels()) {
                 if(p && !visibilityGame->withinRange(p, pair.second, getDiff())) continue;
 
-                if(!pair.second->controlsSpecialist(SpecialistType::MARTYR)) continue;
+                if(!pair.second->controlsSpecialist(SpecialistType::MARTYR) && !pair.second->controlsSpecialist(SpecialistType::DETONATOR) && !pair.second->controlsSpecialist(SpecialistType::CHANCELLOR) && !pair.second->controlsSpecialist(SpecialistType::MARAUDER) && !pair.second->controlsSpecialist(SpecialistType::TRAPPER)) continue;
 
                 double x1 = pair.second->getPositionAt(getDiff()).getX();
                 double y1 = pair.second->getPositionAt(getDiff()).getY();
 
-                if(pair.second->controlsSpecialist(SpecialistType::MARTYR)) draw_arc(Vector2(x1 - x, y1 - y) * pixels, game->getSettings()->defaultSonar/5.0 * pixels, 0, UtilityFunctions::deg_to_rad(360), 64, Color(1.0,0.0,0.25),6.0,false);
+                if(fireOpacity > 0 && (pair.second->controlsSpecialist(SpecialistType::MARAUDER) || pair.second->controlsSpecialist(SpecialistType::CHANCELLOR))) {
+                    double maxRange = -1.0;
+                    if(pair.second->controlsSpecialist(SpecialistType::MARAUDER)) maxRange = std::max(maxRange, double(game->getSettings()->defaultSonar * game->getSettings()->fireRange));
+                    if(pair.second->controlsSpecialist(SpecialistType::CHANCELLOR)) maxRange = std::max(maxRange, double(game->getSettings()->defaultSonar));
+
+                    draw_arc(Vector2(x1 - x, y1 - y) * pixels, (maxRange * pixels)/2, 0, UtilityFunctions::deg_to_rad(360), 32, Color(1.0, 0.0, 1.0, 0.2 * fireOpacity), maxRange * pixels, false);
+                }
+
+                if(pair.second->controlsSpecialist(SpecialistType::MARTYR) || pair.second->controlsSpecialist(SpecialistType::DETONATOR)) draw_arc(Vector2(x1 - x, y1 - y) * pixels, game->getSettings()->defaultSonar/5.0 * pixels, 0, UtilityFunctions::deg_to_rad(360), 64, Color(1.0,0.0,0.25),6.0,false);
+                if(pair.second->controlsSpecialist(SpecialistType::CHANCELLOR)) draw_arc(Vector2(x1 - x, y1 - y) * pixels, game->getSettings()->defaultSonar * pixels, 0, UtilityFunctions::deg_to_rad(360), 64, Color(1.0,0.0,0.25),6.0,false);
+                if(pair.second->controlsSpecialist(SpecialistType::MARAUDER)) draw_arc(Vector2(x1 - x, y1 - y) * pixels, game->getSettings()->defaultSonar * game->getSettings()->fireRange * pixels, 0, UtilityFunctions::deg_to_rad(360), 64, Color(1.0,0.0,0.25),6.0,false);
+                if(pair.second->controlsSpecialist(SpecialistType::TRAPPER)) draw_arc(Vector2(x1 - x, y1 - y) * pixels, game->getSettings()->defaultSonar * game->getSettings()->trapperRange * pixels, 0, UtilityFunctions::deg_to_rad(360), 64, Color(1.0,0.0,0.25),6.0,false);
             }
         }
     }
@@ -187,7 +218,9 @@ void FloorDisplay::_draw() {
             for(const auto& pair : game->getVessels()) {
                 Vessel* v = full->getVessel(pair.first);
 
-                if(gameInterface->simulatingFuture() && v && !full->withinRange(p, v, fullDiff)) continue;
+                if(gameInterface->simulatingFuture() && v && p && !full->withinRange(p, v, fullDiff)) continue;
+
+                if(pair.second->getDisabled()) continue;
 
                 if(p && !visibilityGame->withinRange(p, pair.second, getDiff())) continue;
 
@@ -199,15 +232,26 @@ void FloorDisplay::_draw() {
                 double deltaY = position.closest(pair.second->getTargetPos()).getY() - y1;
                 double deltaMag = sqrt(deltaX * deltaX + deltaY * deltaY);
 
+                Color c(1.0, 1.0, 1.0);
+
+                if(pair.second->controlsSpecialist(SpecialistType::TRAPPER)) {
+                    Outpost* o = dynamic_cast<Outpost*>(pair.second->getTarget());
+                    if(pair.second->getOwnerID() != o->getOwnerID() && o->distance(position) <= game->getSettings()->defaultSonar * game->getSettings()->trapperRange && pair.second->getOrigin()) {
+                        c = Color(1.0, 0.0, 1.0);
+                    }
+                }
+
                 if(pair.second->getOrigin()) draw_line(Vector2(x1 - x, y1 - y) * pixels - 8 * Vector2(deltaX / deltaMag, deltaY / deltaMag), Vector2(position.closest(pair.second->getOrigin()->getPosition()).getX() - x, position.closest(pair.second->getOrigin()->getPosition()).getY() - y) * pixels, Color(1.0, 1.0, 0.25), 4.0);
-                draw_arc(Vector2(x1 - x, y1 - y) * pixels, 8, 0, UtilityFunctions::deg_to_rad(360), 32, Color(1.0, 1.0, 1.0), 3.0, false);
-                draw_line(Vector2(x1 - x, y1 - y) * pixels + 8 * Vector2(deltaX / deltaMag, deltaY / deltaMag), Vector2(position.closest(pair.second->getTargetPos()).getX() - x, position.closest(pair.second->getTargetPos()).getY() - y) * pixels, Color(1.0, 1.0, 1.0), 5.0);
+                draw_arc(Vector2(x1 - x, y1 - y) * pixels, 8, 0, UtilityFunctions::deg_to_rad(360), 32, c, 3.0, false);
+                draw_line(Vector2(x1 - x, y1 - y) * pixels + 8 * Vector2(deltaX / deltaMag, deltaY / deltaMag), Vector2(position.closest(pair.second->getTargetPos()).getX() - x, position.closest(pair.second->getTargetPos()).getY() - y) * pixels, c, 5.0);
             }
 
             for(const auto& pair : game->getVessels()) {
                 Vessel* v = full->getVessel(pair.first);
 
-                if(gameInterface->simulatingFuture() && v && !full->withinRange(p, v, fullDiff)) continue;
+                if(gameInterface->simulatingFuture() && v && p && !full->withinRange(p, v, fullDiff)) continue;
+
+                if(pair.second->getDisabled()) continue;
 
                 if(p && !visibilityGame->withinRange(p, pair.second, getDiff())) continue;
 
@@ -231,14 +275,14 @@ void FloorDisplay::_draw() {
                     //draw_circle(Vector2(x1 - x, y1 - y) * pixels, 9, c);
                     draw_arc(Vector2(x1 - x, y1 - y) * pixels, 5, 0, UtilityFunctions::deg_to_rad(360), 16, Color(1.0, 1.0, 1.0), 5, false);
                     draw_arc(Vector2(x1 - x, y1 - y) * pixels, 4, 0, UtilityFunctions::deg_to_rad(360), 16, c, 5, false);
-                    draw_arc(Vector2(x1 - x, y1 - y) * pixels, 5, 0, UtilityFunctions::deg_to_rad(360), 16, Color(1.0, 1.0, 1.0), 0.5, false);
+                    //draw_arc(Vector2(x1 - x, y1 - y) * pixels, 5, 0, UtilityFunctions::deg_to_rad(360), 16, Color(1.0, 1.0, 1.0), 0.5, false);
 
-                    for(int i = 45; i < 360; i += 90) {
+                    /*for(int i = 45; i < 360; i += 90) {
                         double x2 = x1 + 0.3 * cos(UtilityFunctions::deg_to_rad(i)), x3 = x1 + cos(UtilityFunctions::deg_to_rad(i));
                         double y2 = y1 + 0.3 * sin(UtilityFunctions::deg_to_rad(i)), y3 = y1 + sin(UtilityFunctions::deg_to_rad(i));
 
                         draw_line(Vector2(x2 - x, y2 - y) * pixels, Vector2(x3 - x, y3 - y) * pixels, Color(1.0, 1.0, 1.0), 0.5, false);
-                    }
+                    }*/
                 }
             }
         }

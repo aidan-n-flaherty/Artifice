@@ -49,6 +49,8 @@ public:
 
     std::list<int> getSpecialistIDs() { return specialistIDs; }
 
+    void setSpecialistIDs(const std::list<int>& specialistIDs) { this->specialistIDs = specialistIDs; }
+
     Event* converted(Game* game) override {
         if(!game->hasOutpost(originID)) {
             std::cout << "ORDER ERROR: nonexistent origin" << std::endl;
@@ -56,6 +58,11 @@ public:
         }
 
         Outpost* outpost = game->getOutpost(originID);
+
+        if(game->isLocked(outpost, 0) && !specialistIDs.empty()) {
+            std::cout << "ORDER ERROR: outpost cannot send" << std::endl;
+            return nullptr;
+        }
 
         if(!game->hasPosObject(targetID)) {
             std::cout << "ORDER ERROR: nonexistent target" << std::endl;
@@ -89,6 +96,8 @@ public:
             return nullptr;
         }
 
+        if(outpost->getUnits() < numUnits) numUnits = outpost->getUnits();
+
         if(!outpost->canRemoveSpecialists(specialistIDs) || !outpost->canRemoveUnits(numUnits)) {
             for(int i : specialistIDs) std::cout << i << " ";
             std::cout << std::endl;
@@ -98,6 +107,8 @@ public:
 
             return nullptr;
         }
+
+        // TODO: add check that specialist count is 3 or less
 
         std::list<Specialist*> specialists;
         for(int specialistID : specialistIDs) specialists.push_back(game->getSpecialist(specialistID));

@@ -49,6 +49,8 @@ private:
 
     bool friendly = false;
 
+    bool endCombat = false;
+
 public:
     BattleEvent(){}
     BattleEvent(double timestamp, PositionalObject* a, PositionalObject* b) : Event(nullptr, timestamp),
@@ -71,13 +73,24 @@ public:
         startingUnitsB = b->getUnits();
         
         setLocation(a->getPosition());
+
+        if(a->getGlobalDisabled() || b->getGlobalDisabled()) {
+            a->setGlobalDisabled(true);
+            b->setGlobalDisabled(true);
+        }
     }
+
+    int getAID() const { return aID; }
+    int getBID() const { return bID; }
 
     void specialistPhase(Game* game);
     void postSpecialistPhase(Game* game);
     void victorySpecialistPhase(Game* game);
     void defeatSpecialistPhase(Game* game);
     void postCombatSpecialistPhase(Game* game);
+
+    void setEndCombat() { endCombat = true; }
+    bool shouldEndCombat() { return endCombat; }
 
     void addMessage(int userID, const std::string &message) {
         battleLog[currentPhase].push_back(std::pair<int, std::string>(userID, message));
@@ -129,7 +142,7 @@ public:
     }
 
     static const std::list<std::string> getPhases() {
-        return { "Specialist Phase", "Post-Specialist Phase", "Combat Resolution Phase", "Post-Combat Phase" };
+        return { "Specialist Phase", "Post-Specialist Phase", "Combat Resolution Phase", "Defeat Phase", "Post-Combat Phase" };
     }
 
     const std::pair<int, int> getBattleUsers() const {

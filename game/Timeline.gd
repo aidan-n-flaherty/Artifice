@@ -158,11 +158,11 @@ func moveTo(t):
 
 
 func _on_back_pressed():
-	moveTo(game.getTime() - 60.0 / game.getSimulationSpeed())
+	moveTo(game.getTime() - max(1.0, 60.0 / game.getSimulationSpeed()))
 
 
 func _on_forward_pressed():
-	moveTo(game.getTime() + 60.0 / game.getSimulationSpeed())
+	moveTo(game.getTime() + max(1.0, 60.0 / game.getSimulationSpeed()))
 
 
 func _on_buffer_toggled(value: bool):
@@ -170,9 +170,15 @@ func _on_buffer_toggled(value: bool):
 	
 	$Horizontal/Measurement/VBoxContainer/HBoxContainer/Buffer.text = "Buffer On" if value else "Buffer Off"
 	$Horizontal/Measurement/VBoxContainer/HBoxContainer/Spacer.text = "Buffer On" if value else "Buffer Off"
+	$Horizontal/Measurement/VBoxContainer/HBoxContainer/Buffer.add_theme_color_override("font_hover_color", Color.WHITE if value else Color.FIREBRICK)
+	$Horizontal/Measurement/VBoxContainer/HBoxContainer/Buffer.add_theme_color_override("font_focus_color", Color.WHITE if value else Color.FIREBRICK)
+	$Horizontal/Measurement/VBoxContainer/HBoxContainer/Buffer.add_theme_color_override("font_color", Color.WHITE if value else Color.FIREBRICK)
 	
 	$Vertical/MarginContainer/VBoxContainer/Buffer.text = "On" if value else "Off"
 	$Vertical/MarginContainer/VBoxContainer/Spacer.text = "On" if value else "Off"
+	$Vertical/MarginContainer/VBoxContainer/Buffer.add_theme_color_override("font_hover_color", Color.WHITE if value else Color.FIREBRICK)
+	$Vertical/MarginContainer/VBoxContainer/Buffer.add_theme_color_override("font_focus_color", Color.WHITE if value else Color.FIREBRICK)
+	$Vertical/MarginContainer/VBoxContainer/Buffer.add_theme_color_override("font_color", Color.WHITE if value else Color.FIREBRICK)
 
 
 func _on_revert_to_current_pressed():

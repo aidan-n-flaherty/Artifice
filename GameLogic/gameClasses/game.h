@@ -30,6 +30,8 @@ class VesselOutpostEvent;
 
 class WinConditionEvent;
 
+class OutpostRangeEvent;
+
 struct GameOrder {
     bool operator()(const std::shared_ptr<Game> &lhs, const std::shared_ptr<Game> &rhs) const;
 };
@@ -76,7 +78,7 @@ private:
 
     std::multiset<Event*, EventOrder> events;
     std::multiset<Order*, OrderOrder> orders;
-    std::list<Event*> simulatedEvents;
+    std::vector<Event*> simulatedEvents;
     std::list<Order*> invalidOrders;
     std::list<Order*> simulatedOrders;
 
@@ -85,6 +87,8 @@ private:
     std::set<AttackNotification*, NotificationOrder> notifications;
 
     std::unordered_map<int, double> ignoredVessels;
+
+    std::unordered_set<int> removedVessels;
 
     GameSettings* settings = nullptr;
 
@@ -123,7 +127,7 @@ public:
     const std::unordered_map<int, Player*>& getPlayers() const { return players; }
     const std::unordered_map<int, Specialist*>& getSpecialists() const { return specialists; }
     const std::multiset<Event*, EventOrder>& getEvents() const { return events; }
-    const std::list<Event*>& getSimulatedEvents() const { return simulatedEvents; }
+    const std::vector<Event*>& getSimulatedEvents() const { return simulatedEvents; }
     const std::multiset<Order*, OrderOrder>& getOrders() const { return orders; }
     const std::list<Order*>& getInvalid() { return invalidOrders; }
     const std::set<AttackNotification*, NotificationOrder>& getNotifications() { return notifications; };
@@ -136,8 +140,9 @@ public:
     bool hasOutpost(const int id) const { return outposts.find(id) != outposts.end(); }
     bool hasSpecialist(const int id) const { return specialists.find(id) != specialists.end(); }
     bool hasPosObject(const int id) const { return hasOutpost(id) || hasVessel(id); }
-    bool ignoreVessel(const int id, double timestamp) { return ignoredVessels.find(id) != ignoredVessels.end() && ignoredVessels[id] < timestamp; }
+    bool ignoreVessel(const int id, double timestamp) { return ignoredVessels.find(id) != ignoredVessels.end() && timestamp >= ignoredVessels[id]; }
     int simulatedEventCount() const { return simulatedEvents.size(); }
+    int cacheSize() const { return cache.size(); }
 
 
     void addPlayer(Player* p);
@@ -149,10 +154,11 @@ public:
     void addNotification(AttackNotification* n);
 
     std::shared_ptr<Game> removeOrder(int ID);
-    std::shared_ptr<Game> adjustUnits(int orderID, int units);
+    std::shared_ptr<Game> adjustSend(int orderID, int units, const std::list<int>& specialistIDs);
     void addOrder(const std::string &type, int ID, int referenceID, bool canceled, double timestamp, int senderID, int argumentIDs[], int argCount);
     std::shared_ptr<Game> processOrder(const std::string &type, int ID, int referenceID, bool canceled, double timestamp, int senderID, int argumentIDs[], int argCount);
     
+    bool removedVessel(int vesselID) { return removedVessels.find(vesselID) != removedVessels.end(); }
     void removeVessel(Vessel* v);
     void removeSpecialist(Specialist* s);
 
@@ -181,8 +187,12 @@ public:
     std::shared_ptr<Game> setSimulateVessel(int ID, double timestamp, bool simulate);
     std::shared_ptr<Game> setSimulateOrder(int ID, bool simulate);
     std::list<int> ignoredOrders();
+    bool canRetreat(Vessel* v, double timeDiff) const;
+    bool isLocked(Outpost* o, double timeDiff) const;
     bool withinRange(Player* p, PositionalObject* obj, double timeDiff) const;
+    bool withinRange(Player* p, const Point& pos, double timeDiff) const;
     std::shared_ptr<Game> lastState(double timestamp);
+    std::shared_ptr<Game> lastStateBefore(double timestamp);
     std::shared_ptr<Game> stateBefore(int orderID);
     double nextState(double timestamp);
     double getNextEndState() const { return nextEndState; }
@@ -190,6 +200,7 @@ public:
     const BattleEvent* nextBattle(int id, double timestamp);
     const WinConditionEvent* nextWinCondition(double timestamp);
     const VesselOutpostEvent* nextArrival(int id, double timestamp);
+    const OutpostRangeEvent* nextFireEvent(double timestamp);
     std::list<BattleEvent*> nextBattles(int id);
     const BattleEvent* simulatedBattle(int eventID);
 

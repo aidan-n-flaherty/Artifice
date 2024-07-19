@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <cmath>
 #include <set>
+#include <vector>
 #include <algorithm>
 #include "../helpers/point.h"
 #include "positional_object.h"
@@ -37,10 +38,12 @@ public:
         PositionalObject* target, int numUnits,
         const std::list<Specialist*> &specialists) :
         PositionalObject(ID, settings, position, numUnits),
-        returnOutpost(origin), origin(origin), target(target), gift(false) { owner->addVessel(this); addSpecialists(specialists); }
+        returnOutpost(origin), origin(origin), target(target), gift(false) { if(owner) owner->addVessel(this); addSpecialists(specialists); }
     void updatePointers(Game* game) override;
+    
+    int getUnitsAt(double timeDiff) const override;
 
-    void collision(Vessel* vessel, Vessel* other, double timestamp, std::multiset<Event*, EventOrder> &events);
+    void collision(Vessel* vessel, Vessel* other, double timestamp, std::multiset<Event*, EventOrder> &events, std::vector<Event*> &simulatedEvents);
     void collision(Vessel* vessel, Outpost* other, double timestamp, std::multiset<Event*, EventOrder> &events);
 
     void specialistPhase(int& units, int& otherUnits, Vessel* other);
@@ -50,7 +53,7 @@ public:
     int getOriginID() const { return origin != nullptr ? origin->getID() : -1; }
     void setOrigin(Outpost* origin) { this->origin = origin; }
 
-    static double getSpeed(double speed, double simulationSpeed, Player* p, const std::list<Specialist*> &specialists, PositionalObject* target);
+    static double getSpeed(double speed, double simulationSpeed, Player* p, const std::list<Specialist*> &specialists, PositionalObject* source, PositionalObject* target, bool globalDisabled);
     double getSpeed() const override;
     void setSpeedModifier(double speed) { this->speedModifier = speed; }
 
@@ -67,6 +70,8 @@ public:
         this->target = target;
     }
 
+    PositionalObject* getReturnOutpost() { return returnOutpost; }
+
     void returnHome();
 
     void update(double timeDiff);
@@ -76,6 +81,8 @@ public:
 
     void setDisabled(bool value) { this->disabled = value; }
     bool getDisabled() { return disabled; }
+
+    int getProductionAmount() override;
 };
 
 #endif

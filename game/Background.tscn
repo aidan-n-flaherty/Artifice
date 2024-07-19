@@ -5,11 +5,10 @@
 [ext_resource type="Script" path="res://Background.gd" id="2_41fco"]
 
 [sub_resource type="Gradient" id="Gradient_2s0lq"]
-colors = PackedColorArray(0.345946, 0.345946, 0.345946, 1, 0.849621, 0.849621, 0.849621, 1)
+colors = PackedColorArray(0.312466, 0.312466, 0.312466, 1, 0.781407, 0.781407, 0.781407, 1)
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_r4ruq"]
-noise_type = 2
-frequency = 0.003
+frequency = 0.007
 cellular_distance_function = 1
 cellular_return_type = 6
 domain_warp_type = 1

@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <cmath>
 #include <list>
+#include <unordered_set>
 #include "positional_object.h"
 #include "../game_settings.h"
 #include "../possessable.h"
@@ -42,6 +43,7 @@ public:
 
     void setMaxShield(int maxShieldCharge) { this->maxShieldCharge = maxShieldCharge; }
     int removeShield(int amount);
+    void rechargeShield() { this->shieldCharge = getMaxShield(); }
 
     int getFireRange() const;
     int getSonarRange() const;
@@ -49,9 +51,8 @@ public:
     int getMaxShield() const;
     int getUnitsAt(double timeDiff) const override;
     int getShieldAt(double timeDiff) const;
-    int getUnitsAt(double& fractionalProduction, double timeDiff) const;
     int getShieldAt(double& fractionalShield, double timeDiff) const;
-    int getProductionAmount();
+    int getProductionAmount() override;
 
     void addSpecialists(std::list<Specialist*> specialists) override;
 

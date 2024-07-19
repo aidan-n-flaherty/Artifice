@@ -38,7 +38,18 @@ enum SpecialistType : unsigned int {
     MINISTER_OF_ENERGY,
     SECURITY_CHIEF,
     TYCOON,
-    WAR_HERO
+    WAR_HERO,
+    DOUBLE_AGENT,
+    RECRUITER,
+    CHANCELLOR,
+    SCAVENGER,
+    MARAUDER,
+    CONDUCTOR,
+    TRAPPER,
+    STRATEGIST,
+    DETONATOR,
+    MINISTER_OF_WAR,
+    END
 };
 
 class Game;
@@ -107,30 +118,39 @@ public:
             MINISTER_OF_ENERGY,
             SECURITY_CHIEF,
             TYCOON,
-            WAR_HERO
+            WAR_HERO,
+            DOUBLE_AGENT,
+            RECRUITER,
+            CHANCELLOR,
+            SCAVENGER,
+            MARAUDER,
+            CONDUCTOR,
+            TRAPPER,
+            STRATEGIST,
+            DETONATOR,
+            MINISTER_OF_WAR
         };
     }
 
     static std::list<SpecialistType> baseHires() {
         return {
-            PRINCESS,
-            NAVIGATOR,
-            ASSASSIN,
-            INFILTRATOR,
-            LIEUTENANT,
-            THIEF,
-            INSPECTOR,
-            MARTYR,
-            REVERED_ELDER,
-            SABOTEUR,
-            SENTRY,
-            SMUGGLER,
-            DIPLOMAT,
+            ASSASSIN, // no promotion
+            DOUBLE_AGENT, // no promotion
+            DIPLOMAT, // no promotion
             FOREMAN,
             HELMSMAN,
             HYPNOTIST,
+            INFILTRATOR, // no promotion
+            INSPECTOR,
             INTELLIGENCE_OFFICER,
-            TINKERER
+            LIEUTENANT,
+            MARTYR,
+            PRINCESS, // no promotion
+            REVERED_ELDER,
+            SABOTEUR, // no promotion
+            SENTRY,
+            THIEF,
+            TINKERER,
         };
     }
 
@@ -141,14 +161,21 @@ public:
     static std::list<SpecialistType> promotionOptions(SpecialistType t) {
         switch(t){
             case NAVIGATOR: return { ADMIRAL };
-            case FOREMAN: return { ENGINEER };
-            case LIEUTENANT: return { GENERAL };
+            case FOREMAN: return { ENGINEER, TYCOON, RECRUITER };
+            case LIEUTENANT: return { GENERAL, NAVIGATOR };
             case HYPNOTIST: return { KING };
             case TINKERER: return { MINISTER_OF_ENERGY };
             case INSPECTOR: return { SECURITY_CHIEF };
-            case SMUGGLER: return { TYCOON };
             case SENTRY: return { WAR_HERO };
+            case WAR_HERO: return { MARAUDER };
             case THIEF: return { PIRATE };
+            case PIRATE: return { SCAVENGER, TRAPPER };
+            case HELMSMAN: return { SMUGGLER, CONDUCTOR };
+            case REVERED_ELDER: return { CHANCELLOR };
+            case ENGINEER: return { SCAVENGER };
+            case INTELLIGENCE_OFFICER: return { STRATEGIST };
+            case MARTYR: return { DETONATOR };
+            case DETONATOR: return { MINISTER_OF_WAR };
             default: return {};
         }
     }
@@ -194,7 +221,18 @@ public:
             "Minister_Of_Energy",
             "Security_Chief",
             "Tycoon",
-            "War_Hero"
+            "War_Hero",
+            "Double_Agent",
+            "Recruiter",
+            "Chancellor",
+            "Scavenger",
+            "Marauder",
+            "Conductor",
+            "Trapper",
+            "Strategist",
+            "Detonator",
+            "Minister_Of_War",
+            "NULL"
         };
 
         return list[t];

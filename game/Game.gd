@@ -18,15 +18,13 @@ var userID: int
 
 var diff = 0
 
+var offline: bool
+
 # Called when the node enters the scene tree for the first time.
 func _ready():	
 	get_viewport().connect("size_changed", resize)
 	
 	resize()
-	
-	$Fade.modulate = Color(0.0, 0.0, 0.0, 1.0)
-	
-	$AnimationPlayer.play("fade_from_black")
 
 func resize():
 	var element = elementDisplay()
@@ -103,10 +101,13 @@ func elementDisplay():
 func tabDisplay():
 	return get_node("Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/HSeparator/TabDisplay") if get_node_or_null("Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/HSeparator/TabDisplay") else get_node("Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/VSeparator/TabDisplay")
 
-func init(gameID):
+func init(gameID: int, offline=false):
 	self.gameID = gameID
+	self.offline = offline
 	
 	game = GameData.getGame(gameID)
+	if offline:
+		game.setOffline()
 	game.resume()
 	game.set_process(true)
 	game.set_visible(true)
@@ -118,38 +119,37 @@ func init(gameID):
 	game.connect("selectSpecialist", selectSpecialist)
 	game.connect("deselect", deselect)
 	game.connect("deselectSpecialist", deselectSpecialist)
-	
-	GameData.loadUserDetail.connect(viewUser)
-	GameData.loadGameDetail.connect(viewGameDetail)
-	GameData.loadGame.connect(viewGame)
 
 	var startTime = int(Time.get_unix_time_from_system())
 	
 	$Viewport/Viewport3D.add_child(game)
 	
 	$Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer/ShopContainer.visible = game.getUserGameID() != -1
-	$Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer/ChatContainer.visible = game.getUserGameID() != -1
+	$Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer/ChatContainer.visible = game.getUserGameID() != -1 and not game.isOffline()
+	$Viewport/GameOverlay/VMenuBar/Tabs/HBoxContainer/EditorContainer.visible = not game.isOffline()
 	
 	$Viewport/GameOverlay/MarginContainer/VTimeline/Timeline.init(gameID)
 	$Viewport/Viewport3D/CameraManager.init(gameID)
 	
 	tabDisplay().get_node("Panel/Status").init(gameID)
 	tabDisplay().get_node("Panel/Shop").init(gameID)
-	tabDisplay().get_node("Panel/Chat").init(gameID)
 	tabDisplay().get_node("Panel/Orders").init(gameID)
 	
 	var details = GameData.getGameDetails(gameID)
 	
 	
-	if tabDisplay().get_node_or_null("Panel/GameEditor"):
-		tabDisplay().remove_child(tabDisplay().get_node("Panel/GameEditor"))
+	if not game.isOffline():
+		tabDisplay().get_node("Panel/Chat").init(gameID)
 	
-	var gameEditor = ResourceLoader.load("res://GameModifier.tscn").instantiate()
-	gameEditor.name = "GameEditor"
-	gameEditor.hide()
-	tabDisplay().get_node("Panel").add_child(gameEditor)
-	gameEditor.setEditable(details.gameData.hostID == GameData.id and details.gameData.startTime > Time.get_unix_time_from_system() + 2 * 365 * 24 * 60 * 60)
-	gameEditor.init(gameID)
+		if tabDisplay().get_node_or_null("Panel/GameEditor"):
+			tabDisplay().remove_child(tabDisplay().get_node("Panel/GameEditor"))
+		
+		var gameEditor = ResourceLoader.load("res://GameModifier.tscn").instantiate()
+		gameEditor.name = "GameEditor"
+		gameEditor.hide()
+		tabDisplay().get_node("Panel").add_child(gameEditor)
+		gameEditor.setEditable(details.gameData.hostID == GameData.id and details.gameData.startTime > Time.get_unix_time_from_system() + 2 * 365 * 24 * 60 * 60)
+		gameEditor.init(gameID)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -191,34 +191,38 @@ func _process(delta):
 	else:
 		$Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/VBoxContainer/HBoxContainer/Control/MarginContainer/MarginContainer/Label.text = ""
 	
-	if game.hasLost():
-		if not hasLost:
-			hasLost = true
-			
-			await GameData.viewEnd(gameID)
-	
-	if game.hasEnded():
-		if not viewingEnd:
-			viewingEnd = true
-			await GameData.viewEnd(gameID)
-	
-			if not GameData.isFinished(gameID):
-				if await GameData.verifyEnd(gameID):
+	if not game.isOffline():
+		if game.hasLost():
+			if not hasLost:
+				hasLost = true
+				
+				await GameData.viewEnd(gameID)
+		
+		if game.hasEnded() or GameData.isFinished(gameID):
+			if not viewingEnd:
+				viewingEnd = true
+				await GameData.viewEnd(gameID)
+				
+				if not game.hasEnded():
+					game.startAtBeginning()
+		
+				if not GameData.isFinished(gameID):
+					if await GameData.verifyEnd(gameID):
+						$Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/EndGame.init(gameID)
+						$Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/EndGame.show()
+				else:
 					$Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/EndGame.init(gameID)
 					$Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/EndGame.show()
-			else:
-				$Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/EndGame.init(gameID)
-				$Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/EndGame.show()
-	else:
-		viewingEnd = false
-		$Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/EndGame.hide()
-	
-	if details.gameData.hostID == GameData.id and details.gameData.startTime > Time.get_unix_time_from_system() + 2 * 365 * 24 * 60 * 60:
-		tabDisplay().get_node("Panel/GameEditor").setEditable(true)
-		tabDisplay().get_node("Panel/GameEditor").setActivatable(true)
-	else:
-		tabDisplay().get_node("Panel/GameEditor").setEditable(false)
-		tabDisplay().get_node("Panel/GameEditor").setActivatable(false)
+		else:
+			viewingEnd = false
+			$Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/EndGame.hide()
+		
+		if details.gameData.hostID == GameData.id and details.gameData.startTime > Time.get_unix_time_from_system() + 2 * 365 * 24 * 60 * 60:
+			tabDisplay().get_node("Panel/GameEditor").setEditable(true)
+			tabDisplay().get_node("Panel/GameEditor").setActivatable(true)
+		else:
+			tabDisplay().get_node("Panel/GameEditor").setEditable(false)
+			tabDisplay().get_node("Panel/GameEditor").setActivatable(false)
 	
 	var rect = $Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay.get_global_rect()
 	
@@ -241,8 +245,8 @@ func _process(delta):
 func addOrder(type, referenceID, timestamp, arguments):
 	GameData.addOrder(gameID, type, referenceID, timestamp, arguments)
 
-func replaceOrder(id, type, referenceID, timestamp, arguments):
-	GameData.replaceOrder(id, gameID, type, referenceID, timestamp, arguments)
+func replaceOrder(id, type, referenceID, canceled, timestamp, arguments, oldArguments):
+	GameData.replaceOrder(id, gameID, type, referenceID, canceled, timestamp, arguments, oldArguments)
 
 func setDisplay(scene):
 	if detailDisplay != null:
@@ -339,7 +343,7 @@ func _on_order_button_pressed():
 	setMenuDisplay(tabDisplay().get_node("Panel/Orders"), true)
 	
 func _on_back_button_pressed():
-	$AnimationPlayer.play("fade_to_black")
+	GameData.previous()
 
 func _on_camera_manager_unselect():
 	setMenuDisplay(null, false)
@@ -358,17 +362,6 @@ func _on_camera_manager_unselect():
 			for child in tabs.get_node("HBoxContainer").get_children():
 				if child.get_child_count() > 0:
 					child.get_child(0).button_pressed = false
-
-func viewUser(userID: int):
-	self.userID = userID
-	
-	$AnimationPlayer.play("fade_to_user")
-
-func viewGame(gameID: int, past: bool):
-	GameData.viewGameCompletion(gameID, past)
-
-func viewGameDetail(gameID: int):
-	GameData.viewGameDetailCompletion(gameID)
 	
 func _exit_tree():
 	$Viewport/Viewport3D/CameraManager/FloorDisplay.remove_child(game.getFloorDisplay())
@@ -380,16 +373,7 @@ func _exit_tree():
 	game.suspend()
 		
 func _on_animation_player_animation_finished(anim_name):
-	if anim_name == "fade_to_user":
-		GameData.viewUserCompletion(userID)
-	elif anim_name == "fade_to_black":
-		#GameData.games.erase(gameID)
-		#game.queue_free()
-		#game.getFloorDisplay().queue_free()
-		
-		if GameData.exitGameToMenu():
-			GameData.goto_scene("res://MainMenu.tscn")
-	elif anim_name == "slide_down":
+	if anim_name == "slide_down":
 		tabDisplay().get_node("Panel").hide()
 		
 		if menuDisplay:

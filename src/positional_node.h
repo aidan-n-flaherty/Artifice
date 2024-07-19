@@ -6,9 +6,11 @@
 #include <godot_cpp/classes/camera2d.hpp>
 #include <godot_cpp/classes/input_event.hpp>
 #include <godot_cpp/classes/texture_rect.hpp>
+#include <godot_cpp/classes/packed_scene.hpp>
 #include <godot_cpp/variant/vector3.hpp>
 #include <godot_cpp/variant/string.hpp>
 #include <godot_cpp/variant/color.hpp>
+#include <godot_cpp/variant/packed_int32_array.hpp>
 #include "../GameLogic/gameClasses/gameObjects/positional_object.h"
 #include "../GameLogic/gameClasses/order.h"
 #include <unordered_set>
@@ -39,6 +41,8 @@ private:
 
 	bool loaded = false;
 
+	static Ref<PackedScene> sMesh;
+
 protected:
 	static void _bind_methods();
 	
@@ -55,6 +59,8 @@ public:
 		currentTime = time;
 		timeDiff = diff;
 	}
+
+	double getCurrentTime() { return currentTime; }
 	
 	double getDiff() { return timeDiff; }
 	
@@ -69,6 +75,8 @@ public:
 	void setSelfOwned(bool value) { selfOwned = value; }
 
 	bool getSelfOwned() { return selfOwned; }
+
+	PackedInt32Array getSpecialistIDs();
 	
 	void select(Camera3D *camera, const Ref<InputEvent> &event, const Vector3 &position, const Vector3 &normal, int32_t shape_idx);
 	
@@ -107,6 +115,8 @@ public:
 	String getOriginatingOrderType() { return canUndo() ? String(obj->getOriginatingOrder()->getType().c_str()) : ""; }
 
 	bool isLoaded() { return loaded; }
+
+	bool getGlobalDisabled() { return obj ? obj->getGlobalDisabled() : false; }
 };
 
 }

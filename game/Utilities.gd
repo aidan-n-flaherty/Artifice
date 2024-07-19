@@ -42,7 +42,7 @@ func timeToDateStr(t: int):
 	if current.year == time.year and current.day > time.day and current.day < time.day + 7:
 		return "%s at %s" % [["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][time.weekday], subtime]
 	
-	if current.year == time.year and current.day + 1 == time.day:
+	if current.year == time.year and current.month == time.month and current.day + 1 == time.day:
 		return "Tomorrow at " + subtime
 	
 	if current.year == time.year:

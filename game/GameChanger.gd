@@ -12,10 +12,8 @@ func _ready():
 	$MarginContainer/VBoxContainer/GameEditor.getSecondaryButton().text = "Start"
 	$MarginContainer/VBoxContainer/GameEditor.getSecondaryButton().connect("pressed", _on_start_pressed)
 	$MarginContainer/VBoxContainer/GameEditor.setFinalizeText("Ready to start")
-	$Fade.modulate = Color.BLACK
 	
 	GameData.gameChanged.connect(reload)
-	GameData.loadUserDetail.connect(viewUser)
 
 func init(gameID):
 	self.gameID = gameID
@@ -24,13 +22,9 @@ func init(gameID):
 	
 	#$Background.material.set_shader_parameter("gradStrength", 0.75)
 	
-	$Fade.modulate = Color(1.0, 1.0, 1.0)
-	
 	await GameData.loadGameUsers(gameID)
 	
 	await $MarginContainer/VBoxContainer/GameEditor.deserialize(gameID)
-	
-	$AnimationPlayer.play("fade_from_black")
 
 func reload(gameID: int):
 	if self.gameID != gameID:
@@ -39,7 +33,7 @@ func reload(gameID: int):
 	var details = GameData.getGameDetails(gameID)
 	
 	if details.gameData.started:
-		$AnimationPlayer.play("fade_to_game")
+		GameData.viewGame(self.gameID)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -53,7 +47,7 @@ func _process(delta):
 		$MarginContainer/VBoxContainer/GameEditor.getSecondaryButton().text = "Leave"
 
 func _on_back_button_pressed():
-	$AnimationPlayer.play("fade_to_black")
+	GameData.previous()
 
 func _on_save_pressed():
 	await HTTPManager.putReq("/editMatch", $MarginContainer/VBoxContainer/GameEditor.serialize(), { "gameID": self.gameID })
@@ -69,22 +63,4 @@ func _on_start_pressed():
 			await $MarginContainer/VBoxContainer/GameEditor.deserialize(self.gameID)
 	else:
 		if await GameData.leaveGame(self.gameID):
-			$AnimationPlayer.play("fade_to_current")
-
-func viewUser(userID: int):
-	self.userID = userID
-	
-	$AnimationPlayer.play("fade_to_user")
-
-func _on_animation_player_animation_finished(anim_name):
-	if anim_name == "fade_to_user":
-		GameData.viewUserCompletion(userID)
-	if anim_name == "fade_to_game":
-		GameData.viewGameCompletion($MarginContainer/VBoxContainer/GameEditor.gameID, false)
-	if anim_name == "fade_to_current":
-		if GameData.exitGameToMenu():
-			GameData.currentTab = "res://CurrentGameList.tscn"
-			GameData.goto_scene("res://MainMenu.tscn")
-	if anim_name == "fade_to_black":
-		if GameData.exitGameToMenu():
-			GameData.goto_scene("res://MainMenu.tscn")
+			GameData.gotoCurrent()

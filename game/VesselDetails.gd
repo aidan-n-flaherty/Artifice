@@ -12,6 +12,8 @@ var submittedChange = false
 
 var oldUnits = null
 
+var specialistOptions = {}
+
 signal battleForecastToggle(vessel)
 
 # Called when the node enters the scene tree for the first time.
@@ -54,6 +56,8 @@ func _process(delta):
 		$VBoxContainer/HBoxContainer2/VBoxContainer/Speed.text = ("%0.1fx speed" % speed) if ("%0.2f" % speed).ends_with("0") else ("%0.2fx speed" % speed)
 	else:
 		$VBoxContainer/HBoxContainer2/VBoxContainer/Speed.hide()
+		
+	$VBoxContainer/HBoxContainer2/VBoxContainer/GlobalDisabled.visible = vessel.getGlobalDisabled()
 	
 	var arrival = game.getNextArrivalEvent(vessel.getID())
 	if arrival >= 0:
@@ -74,6 +78,15 @@ func _process(delta):
 		$VBoxContainer/HBoxContainer/BattleForecast.hide()
 	
 	var owns = game.ownsObj(vessel.getID())
+		
+	if owns and game.canRetreat(vessel.getID()):
+		$VBoxContainer/HBoxContainer/Spacer4.show()
+		$VBoxContainer/HBoxContainer/Retreat.show()
+	else: 
+		$VBoxContainer/HBoxContainer/Spacer4.hide()
+		$VBoxContainer/HBoxContainer/Retreat.hide()
+	
+	$VBoxContainer/HBoxContainer/Gift.visible = owns and game.canGift(vessel.getID())
 	
 	if owns and vessel.canUndo():
 		$VBoxContainer/HBoxContainer/Cancel.text = "Undo '" + vessel.getOriginatingOrderType() + "'"
@@ -83,6 +96,45 @@ func _process(delta):
 		$VBoxContainer/HBoxContainer2/Units.editable = true
 		$VBoxContainer/HBoxContainer2/Units.virtual_keyboard_enabled = true
 		$VBoxContainer/HBoxContainer2/Units.focus_mode = FOCUS_ALL
+
+		if vessel.canUndoSource():
+			var possibleSpecialists = game.possibleSpecialists(vessel.getSourceOrder())
+			var currentSpecialists = vessel.getSpecialistIDs()
+			
+			$VBoxContainer/HBoxContainer2/Specialists.visible = len(possibleSpecialists) > 0
+			
+			var possibleSpecialistArr = []
+			
+			for specialistID in possibleSpecialists:
+				if specialistID in currentSpecialists:
+					possibleSpecialistArr.push_back(specialistID)
+			
+			for specialistID in possibleSpecialists:
+				if not specialistID in currentSpecialists:
+					possibleSpecialistArr.push_back(specialistID)
+			
+			for specialistID in possibleSpecialistArr:
+				var selected = specialistID in currentSpecialists
+				var specialistType = game.getSpecialistTypeBeforeOrder(specialistID, vessel.getSourceOrder())
+				var specialistName = game.getSpecialistName(specialistType)
+				
+				var specialist = null
+				if specialistOptions.has(specialistID):
+					specialist = specialistOptions[specialistID]
+				else:
+					specialist = preload("res://VesselSpecialist.tscn").instantiate()
+					specialist.selected.connect(toggledSpecialist)
+					specialistOptions[specialistID] = specialist
+					$VBoxContainer/HBoxContainer2/Specialists/ScrollContainer/Specialists.add_child(specialist)
+				
+				specialist.init(specialistID, specialistName, selected)
+			
+			for specialistID in specialistOptions.keys():
+				if specialistID not in possibleSpecialists:
+					$VBoxContainer/HBoxContainer2/Specialists/ScrollContainer/Specialists.remove_child(specialistOptions[specialistID])
+					specialistOptions.erase(specialistID)
+		else:
+			$VBoxContainer/HBoxContainer2/Specialists.hide()
 	else:
 		$VBoxContainer/HBoxContainer/Spacer2.hide()
 		$VBoxContainer/HBoxContainer/Cancel.hide()
@@ -90,6 +142,7 @@ func _process(delta):
 		$VBoxContainer/HBoxContainer2/Units.editable = false
 		$VBoxContainer/HBoxContainer2/Units.virtual_keyboard_enabled = false
 		$VBoxContainer/HBoxContainer2/Units.focus_mode = FOCUS_NONE
+		$VBoxContainer/HBoxContainer2/Specialists.hide()
 	
 	get_parent().color = vessel.getColor()
 	var bannerID = 0
@@ -151,3 +204,13 @@ func _on_units_focus_entered():
 func _on_units_focus_exited():
 	if DisplayServer.has_feature(DisplayServer.FEATURE_VIRTUAL_KEYBOARD):
 		DisplayServer.virtual_keyboard_hide()
+
+func toggledSpecialist(specialistID: int):
+	if specialistID in vessel.getSpecialistIDs():
+		game.removeSpecialist(vessel.getSourceOrder(), specialistID)
+	else:
+		game.addSpecialist(vessel.getSourceOrder(), specialistID)
+
+
+func _on_retreat_pressed():
+	GameData.addOrder(gameID, "RETREAT", int(game.getReferenceID()), game.getTime(), [vessel.getID()])

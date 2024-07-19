@@ -46,6 +46,11 @@ public:
     std::unordered_set<int> activeHours;
     std::unordered_set<SpecialistType> specialistBans;
     int number_of_teams;
+    int giftPadding;
+
+    // specialist specific
+    double trapperRange;
+    int detonatorCost;
 
     void loadDefaults();
 
