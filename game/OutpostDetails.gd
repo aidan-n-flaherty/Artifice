@@ -30,11 +30,21 @@ func _process(delta):
 	
 
 	get_parent().color = outpost.getColor()
+	var bannerID = 0
 	
 	if outpost.getOwnerID() != -1:
 		get_parent().playerName = game.getPlayer(outpost.getOwnerID()).getName()
+		var p = game.getPlayer(outpost.getOwnerID())
+		var user = await GameData.getUser(p.getUserID())
+		if(!user):
+			bannerID = 0
+		else:
+			bannerID = user.bannerID
 	else:
 		get_parent().playerName = "Neutral"
+		bannerID = 0
+	
+	get_parent().bannerID = bannerID
 	
 	$Images/HBoxContainer/Factory.visible = (outpost.isInRadar() or outpost.canViewType()) and outpost.isFactory()
 	$Images/HBoxContainer/Generator.visible = (outpost.isInRadar() or outpost.canViewType()) and outpost.isGenerator()

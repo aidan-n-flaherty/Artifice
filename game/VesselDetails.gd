@@ -92,12 +92,22 @@ func _process(delta):
 		$VBoxContainer/HBoxContainer2/Units.focus_mode = FOCUS_NONE
 	
 	get_parent().color = vessel.getColor()
+	var bannerID = 0
 	
 	if vessel.getOwnerID() != -1:
 		get_parent().playerName = game.getPlayer(vessel.getOwnerID()).getName()
+		var p =  game.getPlayer(vessel.getOwnerID())
+		var user = await GameData.getUser(p.getUserID())
+		if(!user):
+			bannerID = 0
+		else:
+			bannerID = user.bannerID
 	else:
 		get_parent().playerName = "Neutral"
-
+		bannerID = 0
+	
+	get_parent().bannerID = bannerID
+	
 func _on_cancel_pressed():
 	GameData.cancelOrder(gameID, vessel.getOriginatingOrder())
 
