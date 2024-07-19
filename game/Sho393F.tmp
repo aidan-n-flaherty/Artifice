@@ -139,14 +139,9 @@ size_flags_vertical = 3
 text = "Unit Specialists"
 
 [node name="Back Button" type="Button" parent="VBoxContainer/ScrollContainer/Stack"]
-custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
+size_flags_vertical = 3
 text = "Back"
 
 [connection signal="pressed" from="VBoxContainer/ScrollContainer/Stack/Combat Specialist" to="." method="_on_combat_specialist_pressed"]
-[connection signal="pressed" from="VBoxContainer/ScrollContainer/Stack/Counter Specialist" to="." method="_on_counter_specialist_pressed"]
-[connection signal="pressed" from="VBoxContainer/ScrollContainer/Stack/Defense Specialist" to="." method="_on_defense_specialist_pressed"]
-[connection signal="pressed" from="VBoxContainer/ScrollContainer/Stack/Transit Specialist" to="." method="_on_transit_specialist_pressed"]
-[connection signal="pressed" from="VBoxContainer/ScrollContainer/Stack/Sonar Specialist" to="." method="_on_sonar_specialist_pressed"]
-[connection signal="pressed" from="VBoxContainer/ScrollContainer/Stack/Unit Specialist" to="." method="_on_unit_specialist_pressed"]
 [connection signal="pressed" from="VBoxContainer/ScrollContainer/Stack/Back Button" to="." method="_on_back_button_pressed"]

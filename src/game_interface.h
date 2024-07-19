@@ -139,11 +139,21 @@ public:
 		
 	void update();
 
-	void setOffline() {
+	void setSandbox() {
 		offline = true;
+
 		if(completeGame && completeGame->hasPlayer(userGameID)) {
 			completeGame = completeGame->lastState(getCurrent());
 			completeGame->getPlayer(userGameID)->setHires(1000);
+			completeGame->run();
+		}
+	}
+
+	void setSingleplayer() {
+		offline = true;
+
+		if(completeGame && completeGame->hasPlayer(userGameID)) {
+			completeGame = completeGame->lastState(getCurrent());
 			completeGame->run();
 		}
 	}

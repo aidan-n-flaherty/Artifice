@@ -24,7 +24,7 @@ signal loadCurrent
 
 signal refreshBattle(gameID)
 
-var version = "1.17"
+var version = "2.0"
 
 var needsUpdate = false
 
@@ -434,7 +434,11 @@ func viewGame(id: int, past=false):
 
 func viewGameCompletion(id: int, past=false):
 	if id == -1:
-		viewOfflineGameCompletion()
+		viewSinglePlayerGameCompletion(-1)
+		return
+	
+	if id == -2:
+		viewSandboxGameCompletion(-1)
 		return
 	
 	if not hasGame(id):
@@ -455,24 +459,9 @@ func viewGameCompletion(id: int, past=false):
 	
 	goto_node(node)
 	
-func viewOfflineGameCompletion():
-	var id = -1
-	
+func viewSandboxGameCompletion(id: int):
 	var startTime = Time.get_unix_time_from_system()
 	
-	gameDetails[-1] = {
-		"gameData": {
-			"hostID": getSelfID(),
-			"startTime": startTime,
-			"hasChatNotifications": false,
-			"hasNotifications": false,
-			"playerCount": 2,
-			"finished": false
-		},
-		"gameSettings": {
-			"playerCap": 2
-		}
-	}
 	
 	var game = GameInterface.new()
 	game.init(id, self.id, randi_range(0, 100000), startTime, false, 2, {
@@ -510,6 +499,77 @@ func viewOfflineGameCompletion():
 	priorScenes.push_back(["res://Game.tscn", id])
 	
 	goto_node(node)
+
+func viewSinglePlayerGameCompletion(id: int):
+	var startTime = Time.get_unix_time_from_system()
+	
+	#gameDetails[-2] = {
+		#"gameData": {
+			#"hostID": getSelfID(),
+			#"startTime": startTime,
+			#"hasChatNotifications": false,
+			#"hasNotifications": false,
+			#"playerCount": 10,
+			#"finished": false
+		#},
+		#"gameSettings": {
+			#"playerCap": 10
+		#}
+	#}
+	
+	var playerList = {
+		0 : {
+			"id": getSelfID(),
+			"username": getSelf().username,
+			"stats": {
+				"rating": getSelf().userStats.rating
+			}
+		}
+	}
+	
+	for i in (int(gameDetails[-1].gameSettings.playerCap) - 1):
+		playerList[int(i)+1] = {
+			"id": (int(i)+1) * -1,
+			"username": "Bot " + str(i + 1),
+			"stats": {
+				"rating": 1200
+			}
+		}
+		
+	
+	var game = GameInterface.new()
+	game.init(id, self.id, randi_range(0, 100000), startTime, false, 2, playerList, { "simulationSpeed":  gameDetails[-1].gameSettings.settingOverrides.simulationSpeed})
+	game.set_visible(false)
+	game.set_process(false)
+	
+	mutex.lock()
+	if games.has(id):
+		games[id].getFloorDisplay().queue_free()
+		games[id].queue_free()
+	
+	games[id] = game
+	mutex.unlock()
+	
+	var node = preload("res://Game.tscn").instantiate()
+	node.init(id, true)
+
+	if len(currentGameIDs) == 0 or currentGameIDs[len(currentGameIDs) - 1][0] != id:	
+		currentGameIDs.push_back([id, false])
+	
+	goto_node(node)
+
+func exitGameToMenu():
+	if len(currentGameIDs) > 0:
+		currentGameIDs.remove_at(len(currentGameIDs) - 1)
+	
+	if len(currentGameIDs) > 0:
+		if hasGame(currentGameIDs[len(currentGameIDs) - 1][0]):
+			viewGame(currentGameIDs[len(currentGameIDs) - 1][0], currentGameIDs[len(currentGameIDs) - 1][1])
+		else:
+			viewGameDetail(currentGameIDs[len(currentGameIDs) - 1][0])
+		return false
+	else:
+		return true
 	
 func viewGameDetails(id: int):
 	var node = preload("res://GameDetail.tscn").instantiate()
@@ -788,6 +848,41 @@ func addGame(game):
 		openGameIDs.erase(int(game.gameData.id))
 	
 	emit_signal("gamesChanged")
+
+func addSingleplayerGame(data): 
+	var startTime = Time.get_unix_time_from_system()
+	
+	gameDetails[-1] = {
+		"gameData": {
+			"hostID": getSelfID(),
+			"startTime": startTime,
+			"hasChatNotifications": false,
+			"hasNotifications": false,
+			"playerCount": data.playerCap ,
+			"finished": false
+		},
+		"gameSettings": {} #= data
+	}
+	
+	gameDetails[-1].gameSettings = data
+	
+func addSandboxGame(data):
+	var startTime = Time.get_unix_time_from_system()
+	
+	gameDetails[-1] = {
+		"gameData": {
+			"hostID": getSelfID(),
+			"startTime": startTime,
+			"hasChatNotifications": false,
+			"hasNotifications": false,
+			"playerCount": 2,
+			"finished": false
+		},
+		"gameSettings": {}
+	}
+	gameDetails[-1].gameSettings = data
+	
+	
 
 func updateOrders(id: int):
 	if not hasGame(id):

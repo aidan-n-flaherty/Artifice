@@ -18,6 +18,8 @@ var promotionViews = {}
 
 var hireable: bool
 
+var hireCustomAmount = 0
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	$VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer/Title.text = specialistName.replace("_", " ")

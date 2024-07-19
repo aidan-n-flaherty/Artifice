@@ -95,10 +95,13 @@ void GameInterface::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("getNextVictoryPlayer"), &GameInterface::getNextVictoryPlayer);
 	ClassDB::bind_method(D_METHOD("getNextArrivalEvent"), &GameInterface::getNextArrivalEvent);
 	ClassDB::bind_method(D_METHOD("getNextProductionEvent"), &GameInterface::getNextProductionEvent);
-	ClassDB::bind_method(D_METHOD("setOffline"), &GameInterface::setOffline);
 	ClassDB::bind_method(D_METHOD("isOffline"), &GameInterface::isOffline);
 	ClassDB::bind_method(D_METHOD("getNextOfflineOrder"), &GameInterface::getNextOfflineOrder);
 	ClassDB::bind_method(D_METHOD("isSuspended"), &GameInterface::isSuspended);
+
+	//Singleplayer functions
+	ClassDB::bind_method(D_METHOD("setSandbox"), &GameInterface::setSandbox);
+	ClassDB::bind_method(D_METHOD("setSingleplayer"), &GameInterface::setSingleplayer);
 
 	// battles
 	ClassDB::bind_method(D_METHOD("getNextBattleEvent"), &GameInterface::getNextBattleEvent);

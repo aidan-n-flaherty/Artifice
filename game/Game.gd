@@ -106,8 +106,15 @@ func init(gameID: int, offline=false):
 	self.offline = offline
 	
 	game = GameData.getGame(gameID)
+	
 	if offline:
-		game.setOffline()
+		#For now we will use the IDs to determine which offline game mode(s) to load up
+		if self.gameID == -1:
+			game.setSandbox()
+		if self.gameID == -2:
+			game.setSingleplayer()
+	
+		
 	game.resume()
 	game.set_process(true)
 	game.set_visible(true)

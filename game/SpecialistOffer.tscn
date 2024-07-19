@@ -171,17 +171,17 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 8
 theme = ExtResource("1_tjwlt")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_colors/font_disabled_color = Color(0, 0, 0, 1)
 theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
 theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
-theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
 theme_override_colors/font_hover_pressed_color = Color(0, 0, 0, 1)
-theme_override_colors/font_disabled_color = Color(0, 0, 0, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_styles/normal = SubResource("StyleBoxFlat_hk65e")
 theme_override_styles/hover = SubResource("StyleBoxFlat_hk65e")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_1ul18")
-text = "Hire now"
+theme_override_styles/normal = SubResource("StyleBoxFlat_hk65e")
+text = "Hire 1x"
 
 [node name="PromotionDisplays" type="MarginContainer" parent="VBoxContainer"]
 layout_mode = 2

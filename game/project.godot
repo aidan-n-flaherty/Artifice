@@ -11,8 +11,8 @@ config_version=5
 [application]
 
 config/name="Artifice"
-run/main_scene="res://RootScene.tscn"
-config/features=PackedStringArray("4.2", "Mobile")
+run/main_scene="res://MainMenu.tscn"
+config/features=PackedStringArray("4.3", "Mobile")
 run/max_fps=30
 boot_splash/bg_color=Color(0, 0, 0, 1)
 boot_splash/image="res://resources/images/LogoTransparent.png"
