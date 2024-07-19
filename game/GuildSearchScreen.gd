@@ -4,7 +4,8 @@ signal guild_status_update
 
 var guild_name
 
-"To do:
+"
+To do:
 	- add dynamic list that displays roughly ~10 guilds by default
 	- add functionality to join guild by name
 	- add ability for user to create their own guild, if the global
@@ -15,13 +16,32 @@ var guild_name
 
 "
 List of server side variables that need to be added:
-- List of all Guilds currently created, and their current playercount
+- List of all Guilds currently created, their current playercounts, and the maximum number of players they should have
 - Variable to store user's guild between sessions
 - Variable to store user's status within their guild
 - Tracker variable for number of guilds that currently exist total
 
 Need to figure out:
 	How results for a player search of a guild will work
+
+Guild:
+	GuildName (string)
+	PlayerCount (int)
+	Leaders (HashSet of IDs)
+
+Within players:
+	in_guild (True/False)
+	guildID (Some positive int)
+
+Store Guilds in HashTable of GuildIds and Guild Objects
+
+Drafting json object for guild storage:
+
+{
+'guilds':[
+	{'GuildId':10 , 'GuildName':'Test', 'PlayerCount':10, 'Leaders':[ 1, 2, 3 ] }
+]
+}
 "
 
 # Called when the node enters the scene tree for the first time.

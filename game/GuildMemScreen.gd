@@ -6,7 +6,8 @@ var guild_name
 
 @export_file("*.tscn") var MainMenu
 
-"To do:
+"
+To do:
 	-attach a chat log a la the in game chat log that stores user
 	interactions on the server side
 	-add guild hierarchy

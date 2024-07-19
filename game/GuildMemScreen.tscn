@@ -68,4 +68,8 @@ theme_override_font_sizes/font_size = 29
 theme_override_styles/normal = SubResource("StyleBoxFlat_n0k2f")
 text = "Leave Guild"
 
+[node name="GuildMemPanel" type="Control" parent="."]
+visible = false
+layout_mode = 2
+
 [connection signal="pressed" from="MarginContainer/VBoxContainer/TestLeaveGuild" to="." method="_on_test_leave_guild_pressed"]
