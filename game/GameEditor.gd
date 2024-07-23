@@ -412,13 +412,14 @@ func on_timescale_modified(button_pressed: bool, timescale):
 		$MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHours.visible = simulationTimescale == "days"
 		$MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows.visible = simulationTimescale == "days"
 		
-func on_team_number_modified(button_pressed: bool):
+func on_team_number_modified(button_pressed: bool): 
 	for child in $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/TeamButtons.get_children():
 		if child.button_pressed:
 			number_of_teams = int(str(child.name))
-	for	child in $MarginContainer/VBoxContainer/Players/MarginContainer/PlayerList/GridContainer.get_children():		#need to make it so player can only select their team. 
+	for	child in $MarginContainer/VBoxContainer/Players/MarginContainer/PlayerList/GridContainer.get_children():		 # go through each player option button and add the appropriate selectable teams.
+		#need to make it so player can only select their team. 
 		if (child.get_child(1).get_child(0)) is OptionButton && number_of_teams==2:
-			child.get_child(1).get_child(0).clear()
+			child.get_child(1).get_child(0).clear() #need to clear first because adds twice. 
 			child.get_child(1).get_child(0).add_item("1")
 			child.get_child(1).get_child(0).add_item("2")
 		if (child.get_child(1).get_child(0)) is OptionButton && number_of_teams==5:

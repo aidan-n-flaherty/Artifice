@@ -515,6 +515,24 @@ theme_override_fonts/font = SubResource("FontVariation_l1fdh")
 theme_override_font_sizes/font_size = 21
 text = "Share Account"
 
+[node name="Spacer4" type="Control" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer"]
+custom_minimum_size = Vector2(2.08165e-12, 80)
+layout_mode = 2
+
+[node name="FriendsList" type="MarginContainer" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/FriendsList"]
+layout_mode = 2
+text = "Friends List"
+
+[node name="Spacer5" type="Control" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(0, 500)
+layout_mode = 2
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3

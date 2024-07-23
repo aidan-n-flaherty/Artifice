@@ -55,10 +55,10 @@ Game::Game(GameSettings settings, int simulatorID, double startTime, double endT
 
     //check if the current GameSettings has number_of_teams initialized to some value that is > 1
     if(this->settings->number_of_teams > 1 && players.size() % this->settings->number_of_teams == 0){
-        for(int i = 0; i < players.size(); i++) players[i]->setTeam(i / this->settings->number_of_teams);
+        for(int i = 0; i < players.size(); i++) players[i]->setTeam(i / this->settings->number_of_teams); 
 
         for(int i = players.size() - 1; i >= 0; i--) {
-            int j = gen() % players.size();
+            int j = gen() % players.size(); // generate a random number
 
             int teamA = players[i]->getTeamID();
             players[i]->setTeam(players[j]->getTeamID());
@@ -66,7 +66,8 @@ Game::Game(GameSettings settings, int simulatorID, double startTime, double endT
         }
 
         if(this->settings->gameMode == Mode::CONQUEST) this->settings->gameMode = Mode::ELIMINATION;
-    } else {
+    } 
+    else {
         this->settings->number_of_teams = -1;
     }
 

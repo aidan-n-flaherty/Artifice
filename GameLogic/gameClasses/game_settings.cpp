@@ -291,6 +291,7 @@ double GameSettings::clientToGameTime(double timestamp) const {
 
     return timestamp - skippedTime;
 }
+
 bool GameSettings::clientIsPaused(double timestamp) const {
     if(activeHours.size() == 0 || activeHours.size() == 24 || startTime <= 0 || timestamp < startTime) return false;
 

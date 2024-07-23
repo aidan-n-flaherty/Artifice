@@ -8,6 +8,9 @@ var isSelf
 
 var update = -1
 
+var dummy_label = Label.new()
+
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	pass
@@ -27,6 +30,12 @@ func init(userID: int):
 	else:
 		$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/VBoxContainer/MarginContainer/PastGameList.initUser(userID)
 		await GameData.loadUser(userID)
+		
+	
+	for i in 4:
+		var dummy_label = Label.new()
+		dummy_label.text = str(i)
+		$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/FriendsList/VBoxContainer.add_child(dummy_label)
 
 func updateUser(userID):
 	if userID != self.userID:
@@ -81,7 +90,10 @@ func _process(delta):
 		
 		if update <= 0:
 			GameData.editSelf(user)
+	#here, go through and add dummy users to the friendList VBoxContainer.
 	
+
+
 
 func _on_username_text_text_changed(new_text):
 	if len(new_text) < 3 or len(new_text) > 20:
