@@ -22,12 +22,7 @@ corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kjkmy"]
-content_margin_left = 10.0
-content_margin_top = 3.0
-content_margin_right = 10.0
-content_margin_bottom = 3.0
-bg_color = Color(0.6, 0.6, 0.6, 0)
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_n5sed"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gbyhc"]
 content_margin_left = 10.0
@@ -98,6 +93,7 @@ corner_radius_bottom_left = 10
 [sub_resource type="FontVariation" id="FontVariation_unt1h"]
 base_font = ExtResource("2_7bam3")
 variation_embolden = 0.5
+spacing_glyph = 1
 spacing_space = 3
 spacing_top = 1
 spacing_bottom = -4
@@ -133,7 +129,7 @@ Button/colors/icon_disabled_color = Color(1, 1, 1, 0.4)
 Button/font_sizes/font_size = 25
 Button/fonts/font = SubResource("FontVariation_7m5i6")
 Button/styles/disabled = SubResource("StyleBoxFlat_vugve")
-Button/styles/focus = SubResource("StyleBoxFlat_kjkmy")
+Button/styles/focus = SubResource("StyleBoxEmpty_n5sed")
 Button/styles/hover = SubResource("StyleBoxFlat_gbyhc")
 Button/styles/normal = SubResource("StyleBoxFlat_d5sxm")
 Button/styles/pressed = SubResource("StyleBoxFlat_scwkr")

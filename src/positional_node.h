@@ -115,6 +115,8 @@ public:
 	String getOriginatingOrderType() { return canUndo() ? String(obj->getOriginatingOrder()->getType().c_str()) : ""; }
 
 	bool isLoaded() { return loaded; }
+
+	bool getGlobalDisabled() { return obj ? obj->getGlobalDisabled() : false; }
 };
 
 }

@@ -52,6 +52,7 @@ func initNum(specialistNum):
 		
 	for option in promotionOptions:
 		var button = Button.new()
+		button.theme = preload("res://resources/themes/DetailTheme.tres")
 		button.pressed.connect(viewSpecialist.bind(option))
 		button.text = game.getSpecialistName(option)
 		
@@ -71,6 +72,7 @@ func _process(delta):
 		$MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/Shop.hide()
 		$MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/Cancel.hide()
 		$MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/NextHire.hide()
+		$MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/Activation.hide()
 		return
 	else:
 		$MarginContainer/HBoxContainer/HBoxContainer/VBoxContainer/Back.hide()
@@ -82,9 +84,9 @@ func _process(delta):
 		init(specialistID, gameID)
 	
 	$MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/NextHire.visible = specialistName == "Queen" and owns
-	$MarginContainer/HBoxContainer/HBoxContainer/VBoxContainer/NextHireLabel.visible = specialistName == "Queen" and owns
-	if specialistName == "Queen" and owns:
-		$MarginContainer/HBoxContainer/HBoxContainer/VBoxContainer/NextHireLabel.text = "%d hire%s available, next hire in %s" % [game.getHires(), "s" if game.getHires() != 1 else "", Utilities.timeToStr(game.getNextHireEvent() - game.getTime())]
+	$MarginContainer/HBoxContainer/HBoxContainer/VBoxContainer/NextHireLabel.visible = specialistName == "Queen"
+	if specialistName == "Queen":
+		$MarginContainer/HBoxContainer/HBoxContainer/VBoxContainer/NextHireLabel.text = "%d hire%s available, next hire in %s" % [game.getHiresFor(specialistID), "s" if game.getHiresFor(specialistID) != 1 else "", Utilities.timeToStr(game.getNextHireEvent() - game.getTime())]
 	
 	$MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/Shop.visible = owns and canHire and specialistName == "Queen"
 	
@@ -96,6 +98,11 @@ func _process(delta):
 	
 	$MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/Release.visible = not owns and game.canRelease(specialistID)
 	
+	var activationText = game.getActivation(specialistID)
+	
+	$MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/Activation.text = activationText
+	$MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/Activation.visible = activationText != ""
+	
 	var player = game.getSpecialistOwner(specialistID)
 	
 	if player:
@@ -103,7 +110,7 @@ func _process(delta):
 		get_parent().playerName = player.getName()
 
 func viewSpecialist(specialistNum: int):
-	self.specialistNums.push_back(specialistNum)
+	self.specialistNums.push_back(self.specialistNum)
 	
 	initNum(specialistNum)
 
@@ -114,6 +121,9 @@ func _on_promote_pressed():
 
 func _on_release_pressed():
 	GameData.addOrder(gameID, "RELEASE", int(game.getReferenceID()), game.getTime(), [int(specialistID)])
+
+func _on_activation_pressed():
+	GameData.addOrder(gameID, "ACTIVATE", int(game.getReferenceID()), game.getTime(), [int(specialistID)])
 
 func _on_shop_pressed():
 	emit_signal("openShop")

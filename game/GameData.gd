@@ -12,13 +12,17 @@ signal queuesChanged
 
 signal menuSwitched(menu)
 
-signal menuFade
-
 signal loadUserDetail(userID)
 
 signal loadGame(gameID, past)
 
 signal loadGameDetail(gameID)
+
+signal loadPrevious
+
+signal loadCurrent
+
+signal refreshBattle(gameID)
 
 var version = "2.0"
 
@@ -26,7 +30,7 @@ var needsUpdate = false
 
 var currentTab = null
 
-var current_scene = null
+var rootScene = null
 
 var queues = {}
 
@@ -46,7 +50,7 @@ var chats = {}
 
 var chatGroups = {}
 
-var currentGameIDs = []
+var priorScenes = []
 
 var id: int
 
@@ -92,12 +96,12 @@ var localSettings = {}
 	mutex.unlock()"""
 	
 func _ready():
-	current_scene = get_tree().current_scene
+	rootScene = get_tree().current_scene
+	
 	#if Engine.has_singleton("APN"):
 	#	var _apn = Engine.get_singleton("APN");
 	#	_apn.connect("device_address_changed", _apn_device);
 	#	_apn.register_push_notifications(_apn.PUSH_SOUND | _apn.PUSH_BADGE | _apn.PUSH_ALERT);
-	
 	
 	if Engine.has_singleton("ByteBrew"):
 		byteBrew = Engine.get_singleton("ByteBrew")
@@ -136,7 +140,8 @@ func _ready():
 		needsUpdate = true
 		goto_scene("res://OutdatedVersion.tscn")
 	else:
-		await login()
+		if await login():
+			goto_scene("res://MainMenu.tscn")
 	
 	#mutex.lock()
 	#if not pushTokenSet:
@@ -153,44 +158,23 @@ func goto_login():
 	call_deferred("_deferred_goto_login")
 
 func _deferred_goto_login():
-	if current_scene:
-		get_tree().get_root().remove_child(current_scene)
-		current_scene.queue_free()
-
 	var s = ResourceLoader.load("res://MainMenu.tscn")
-	current_scene = s.instantiate()
+	rootScene.setScene(s.instantiate())
 
-	get_tree().get_root().add_child(current_scene)
-	get_tree().set_current_scene(current_scene)
-	
 	await login()
 	
 func goto_scene(path):
 	call_deferred("_deferred_goto_scene", path)
 
 func _deferred_goto_scene(path):
-	if current_scene:
-		get_tree().get_root().remove_child(current_scene)
-		current_scene.queue_free()
-
 	var s = ResourceLoader.load(path)
-	current_scene = s.instantiate()
-
-	get_tree().get_root().add_child(current_scene)
-	get_tree().set_current_scene(current_scene)
+	rootScene.setScene(s.instantiate())
 
 func goto_node(node) -> void:
 	call_deferred("_deferred_goto_node", node)
 	
 func _deferred_goto_node(node) -> void:
-	if current_scene:
-		get_tree().get_root().remove_child(current_scene)
-		current_scene.queue_free()
-	
-	current_scene = node
-
-	get_tree().get_root().add_child(current_scene)
-	get_tree().set_current_scene(current_scene)
+	rootScene.setScene(node)
 
 func loadLocalSettings():
 	var file = FileAccess.open("user://artifice_settings.save", FileAccess.READ)
@@ -358,13 +342,13 @@ func login():
 			expBackoff *= 2
 		
 		loadSelf()
-		loadGames()
 		
 		gameUsers.clear()
-		for arr in currentGameIDs:
-			loadGameUsers(arr[0])
-			updateAllOrders(arr[0])
-			loadChats(arr[0])
+		for id in self.games.keys():
+			if not getGameDetails(id).gameData.finished:
+				loadGameUsers(id)
+				updateAllOrders(id)
+				loadChats(id)
 		
 		for id in chats:
 			refreshMessages(id)
@@ -372,11 +356,17 @@ func login():
 		if not WebSocketManager.hasSocket():
 			WebSocketManager.init(token)
 		
+		await loadGames()
+		
 		print("Logged in!")
 		print("ID:", id)
 		print("Token", token)
+		
+		return true
 	else:
 		goto_scene("res://EULA.tscn")
+		
+		return false
 	
 	#id = 3
 	#token = "5577006791947779410"
@@ -385,19 +375,38 @@ func login():
 	#id = 5
 	#token = "15352856648520921629"
 
-func getCurrentGameID():
-	return currentGameIDs[len(currentGameIDs) - 1][0]
+func goto_previous():
+	print(priorScenes)
+	priorScenes.pop_back()
+	
+	if len(priorScenes) == 0:
+		goto_scene("res://MainMenu.tscn")
+	else:
+		var sceneArgs = priorScenes.back()
+		
+		var scene = load(sceneArgs.front()).instantiate()
+		await scene.callv("init", sceneArgs.slice(1))
+		
+		rootScene.setScene(scene)
 
 func changeGame(id: int):
 	emit_signal("gameChanged", id)
+
+func previous():
+	emit_signal("loadPrevious")
+	
+func gotoCurrent():
+	emit_signal("loadCurrent")
 
 func viewUser(id: int):
 	emit_signal("loadUserDetail", id)
 
 func viewUserCompletion(id: int):
 	var node = preload("res://UserDetails.tscn").instantiate()
-	node.init(id)
-		
+	await node.init(id)
+	
+	priorScenes.push_back(["res://UserDetails.tscn", id])
+	
 	goto_node(node)
 
 func viewGameDetail(id: int):
@@ -406,19 +415,19 @@ func viewGameDetail(id: int):
 func viewGameDetailCompletion(id: int):
 	var details = getGameDetails(id)
 	
-	if len(currentGameIDs) == 0 or currentGameIDs[len(currentGameIDs) - 1][0] != id:
-		currentGameIDs.push_back([id, false])
+	var sceneStr: String
 	
 	if int(details.gameData.hostID) == getSelfID():
-		var gameChanger = preload("res://GameChanger.tscn").instantiate()
-		gameChanger.init(id)
-		
-		goto_node(gameChanger)
+		sceneStr = "res://GameChanger.tscn"
 	else:
-		var gameDetail = preload("res://GameDetail.tscn").instantiate()
-		gameDetail.init(id)
+		sceneStr = "res://GameDetail.tscn"
 		
-		goto_node(gameDetail)
+	priorScenes.push_back([sceneStr, id])
+	
+	var scene = load(sceneStr).instantiate()
+	await scene.init(id)
+	
+	goto_node(scene)
 
 func viewGame(id: int, past=false):
 	emit_signal("loadGame", id, past)
@@ -444,10 +453,9 @@ func viewGameCompletion(id: int, past=false):
 	games[id].set_visible(false)
 	
 	var node = preload("res://Game.tscn").instantiate()
-	node.init(id)
+	await node.init(id)
 
-	if len(currentGameIDs) == 0 or currentGameIDs[len(currentGameIDs) - 1][0] != id:	
-		currentGameIDs.push_back([id, past])
+	priorScenes.push_back(["res://Game.tscn", id])
 	
 	goto_node(node)
 	
@@ -486,10 +494,9 @@ func viewSandboxGameCompletion(id: int):
 	mutex.unlock()
 	
 	var node = preload("res://Game.tscn").instantiate()
-	node.init(id, true)
+	await node.init(id, true)
 
-	if len(currentGameIDs) == 0 or currentGameIDs[len(currentGameIDs) - 1][0] != id:	
-		currentGameIDs.push_back([id, false])
+	priorScenes.push_back(["res://Game.tscn", id])
 	
 	goto_node(node)
 
@@ -566,10 +573,9 @@ func exitGameToMenu():
 	
 func viewGameDetails(id: int):
 	var node = preload("res://GameDetail.tscn").instantiate()
-	node.gameID = id
+	node.init(id)
 
-	if len(currentGameIDs) == 0 or currentGameIDs[len(currentGameIDs) - 1][0] != id:
-		currentGameIDs.push_back([id, false])
+	priorScenes.push_back(["res://GameDetail.tscn", id])
 	
 	goto_node(node)
 
@@ -764,6 +770,14 @@ func loadGames():
 	await loadPastGames()
 	
 	emit_signal("gamesChanged")
+	
+func getRankings():
+	var users = await HTTPManager.getReq("/fetchRankings", {})
+	
+	if not users:
+		return []
+	
+	return users
 
 func joinQueue(queueType: String):
 	await HTTPManager.postReq("/joinQueue", {}, {
@@ -897,13 +911,13 @@ func updateAllOrders(id: int):
 	
 	bulkAddOrders(id, games[id], gameState.orders)
 
-func getGameUsers(id: int):
+func getGameUsers(id: int, emitSignal=true):
 	if not gameUsers.has(id):
-		await loadGameUsers(id)
+		await loadGameUsers(id, emitSignal)
 		
 	return gameUsers[id]
 
-func loadGameUsers(id: int):
+func loadGameUsers(id: int, emitSignal=true):
 	print("Loading users")
 	var users = await HTTPManager.getReq("/fetchGameUsers", {
 		"gameID": id
@@ -919,7 +933,8 @@ func loadGameUsers(id: int):
 	if gameDetails.has(id):
 		gameDetails[id].gameData.playerCount = len(users)
 	
-	emit_signal("gameChanged", id)
+	if emitSignal:
+		emit_signal("gameChanged", id)
 	
 	emit_signal("gamesChanged")
 
@@ -972,7 +987,7 @@ func bulkAddOrders(gameID: int, game, orders):
 		game.bulkAddOrder(order.type, int(order.id), int(order.referenceID), bool(order.canceled), float(order.timestamp), int(order.senderID), PackedInt32Array(order.argumentIDs), int(order.argumentIDs.size()))
 	game.endBulkAdd()
 	
-	if len(orders) > 0 and gameDetails.has(gameID) and not gameID in currentGameIDs:
+	if len(orders) > 0 and gameDetails.has(gameID) and game.isPaused():
 		gameDetails[gameID].gameData.hasNotifications = true
 
 func addOrder(gameID: int, type, referenceID, timestamp, arguments):
@@ -982,6 +997,7 @@ func addOrder(gameID: int, type, referenceID, timestamp, arguments):
 		game.addOrder(type, int(game.getNextOfflineOrder()), int(referenceID), bool(false), float(timestamp), int(0), PackedInt32Array(arguments), int(arguments.size()))
 		
 		print("Order registered")
+		
 		return
 	
 	print(game.getTime())
@@ -1025,6 +1041,8 @@ func replaceOrder(orderID: int, gameID: int, type: String, referenceID: int, can
 		return false
 	
 	print("Order re-registered")
+	
+	emit_signal("refreshBattle", gameID)
 	
 	return true
 

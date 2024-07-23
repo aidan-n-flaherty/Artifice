@@ -1,0 +1,66 @@
+[gd_resource type="Theme" load_steps=7 format=3 uid="uid://cltadyeempokg"]
+
+[ext_resource type="FontFile" uid="uid://bt7qlnun0cepj" path="res://resources/fonts/nasalization-free/nasalization-rg.otf" id="1_gj7fi"]
+
+[sub_resource type="FontVariation" id="FontVariation_wsac3"]
+base_font = ExtResource("1_gj7fi")
+variation_embolden = 0.5
+spacing_top = 3
+spacing_bottom = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8dxm1"]
+content_margin_left = 16.0
+content_margin_top = 6.0
+content_margin_right = 16.0
+content_margin_bottom = 5.0
+bg_color = Color(0.258804, 0.0891888, 0.0464202, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3u62t"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cmekx"]
+content_margin_left = 16.0
+content_margin_top = 6.0
+content_margin_right = 16.0
+content_margin_bottom = 5.0
+bg_color = Color(0.0541422, 0.0541422, 0.0541415, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.228511, 0.228511, 0.228511, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_k277k"]
+content_margin_left = 16.0
+content_margin_top = 6.0
+content_margin_right = 16.0
+content_margin_bottom = 5.0
+bg_color = Color(0.0980986, 0.0980986, 0.0980976, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.228511, 0.228511, 0.228511, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[resource]
+Button/colors/font_color = Color(1, 1, 1, 0.745098)
+Button/colors/font_pressed_color = Color(1, 1, 1, 1)
+Button/colors/icon_disabled_color = Color(1, 1, 1, 0.4)
+Button/font_sizes/font_size = 25
+Button/fonts/font = SubResource("FontVariation_wsac3")
+Button/styles/disabled = SubResource("StyleBoxFlat_8dxm1")
+Button/styles/focus = SubResource("StyleBoxEmpty_3u62t")
+Button/styles/hover = SubResource("StyleBoxFlat_cmekx")
+Button/styles/normal = SubResource("StyleBoxFlat_cmekx")
+Button/styles/pressed = SubResource("StyleBoxFlat_k277k")

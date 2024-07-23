@@ -56,6 +56,8 @@ func _process(delta):
 		$VBoxContainer/HBoxContainer2/VBoxContainer/Speed.text = ("%0.1fx speed" % speed) if ("%0.2f" % speed).ends_with("0") else ("%0.2fx speed" % speed)
 	else:
 		$VBoxContainer/HBoxContainer2/VBoxContainer/Speed.hide()
+		
+	$VBoxContainer/HBoxContainer2/VBoxContainer/GlobalDisabled.visible = vessel.getGlobalDisabled()
 	
 	var arrival = game.getNextArrivalEvent(vessel.getID())
 	if arrival >= 0:
@@ -76,6 +78,13 @@ func _process(delta):
 		$VBoxContainer/HBoxContainer/BattleForecast.hide()
 	
 	var owns = game.ownsObj(vessel.getID())
+		
+	if owns and game.canRetreat(vessel.getID()):
+		$VBoxContainer/HBoxContainer/Spacer4.show()
+		$VBoxContainer/HBoxContainer/Retreat.show()
+	else: 
+		$VBoxContainer/HBoxContainer/Spacer4.hide()
+		$VBoxContainer/HBoxContainer/Retreat.hide()
 	
 	$VBoxContainer/HBoxContainer/Gift.visible = owns and game.canGift(vessel.getID())
 	
@@ -191,3 +200,7 @@ func toggledSpecialist(specialistID: int):
 		game.removeSpecialist(vessel.getSourceOrder(), specialistID)
 	else:
 		game.addSpecialist(vessel.getSourceOrder(), specialistID)
+
+
+func _on_retreat_pressed():
+	GameData.addOrder(gameID, "RETREAT", int(game.getReferenceID()), game.getTime(), [vessel.getID()])

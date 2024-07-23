@@ -24,6 +24,10 @@ int PositionalObject::removeUnits(int count) {
 }
 
 void PositionalObject::addSpecialist(Specialist* specialist) {
+    if(specialist->getType() == SpecialistType::CONDUCTOR && specialist->hasOwner() && specialist->getOwnerID() == getOwnerID()) {
+        for(Vessel* v : getOwner()->getVessels()) v->setRefresh(true);
+    }
+
     if(specialist->getType() == SpecialistType::QUEEN && specialist->getContainer() && specialist->hasOwner() && specialist->getOwnerID() != getOwnerID()) {
         bool assigned = false;
 
@@ -159,7 +163,7 @@ Specialist* PositionalObject::getSpecialist(SpecialistType t) {
     return nullptr;
 }
 
-double PositionalObject::getProjectedSpeed(PositionalObject* target, std::set<int> selectedSpecialists) const {
+double PositionalObject::getProjectedSpeed(PositionalObject* origin, PositionalObject* target, std::set<int> selectedSpecialists) const {
     std::list<Specialist*> tempSpecialists;
 
     for(Specialist* s : getSpecialists()) {
@@ -168,5 +172,5 @@ double PositionalObject::getProjectedSpeed(PositionalObject* target, std::set<in
         }
     }
 
-    return Vessel::getSpeed(1.0, getSettings()->simulationSpeed, getOwner(), tempSpecialists, target);
+    return Vessel::getSpeed(1.0, getSettings()->simulationSpeed, getOwner(), tempSpecialists, origin, target, getGlobalDisabled());
 }

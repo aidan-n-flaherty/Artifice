@@ -25,10 +25,6 @@ func _ready():
 	get_viewport().connect("size_changed", resize)
 	
 	resize()
-	
-	$Fade.modulate = Color(0.0, 0.0, 0.0, 1.0)
-	
-	$AnimationPlayer.play("fade_from_black")
 
 func resize():
 	var element = elementDisplay()
@@ -130,10 +126,6 @@ func init(gameID: int, offline=false):
 	game.connect("selectSpecialist", selectSpecialist)
 	game.connect("deselect", deselect)
 	game.connect("deselectSpecialist", deselectSpecialist)
-	
-	GameData.loadUserDetail.connect(viewUser)
-	GameData.loadGameDetail.connect(viewGameDetail)
-	GameData.loadGame.connect(viewGame)
 
 	var startTime = int(Time.get_unix_time_from_system())
 	
@@ -148,13 +140,16 @@ func init(gameID: int, offline=false):
 	
 	tabDisplay().get_node("Panel/Status").init(gameID)
 	tabDisplay().get_node("Panel/Shop").init(gameID)
-	tabDisplay().get_node("Panel/Chat").init(gameID)
 	tabDisplay().get_node("Panel/Orders").init(gameID)
+	
+	GameData.refreshBattle.connect(refreshBattle)
 	
 	var details = GameData.getGameDetails(gameID)
 	
 	
 	if not game.isOffline():
+		tabDisplay().get_node("Panel/Chat").init(gameID)
+	
 		if tabDisplay().get_node_or_null("Panel/GameEditor"):
 			tabDisplay().remove_child(tabDisplay().get_node("Panel/GameEditor"))
 		
@@ -278,6 +273,20 @@ func selectVessel(vessel):
 	$Viewport/Viewport3D/CameraManager.selected(vessel)
 	setDisplay(scene)
 
+func refreshBattle(gameID: int):
+	print(tabDisplay().get_node("Panel/Battle Forecast").visible)
+	if gameID == self.gameID and tabDisplay().get_node("Panel/Battle Forecast").visible:
+		var objID = tabDisplay().get_node("Panel/Battle Forecast").getObjectID()
+		var scene = tabDisplay().get_node("Panel/Battle Forecast")
+		scene.queue_free()
+		
+		tabDisplay().get_node("Panel").remove_child(scene)
+		
+		scene = preload("res://Battle Forecast.tscn").instantiate()
+		scene.init(gameID, objID)
+		tabDisplay().get_node("Panel").add_child(scene)
+		setMenuDisplay(scene, true)
+
 func battleForecast(node):
 	if tabDisplay().get_node("Panel/Battle Forecast").visible:
 		setMenuDisplay(null, false)
@@ -357,7 +366,7 @@ func _on_order_button_pressed():
 	setMenuDisplay(tabDisplay().get_node("Panel/Orders"), true)
 	
 func _on_back_button_pressed():
-	$AnimationPlayer.play("fade_to_black")
+	GameData.previous()
 
 func _on_camera_manager_unselect():
 	setMenuDisplay(null, false)
@@ -376,17 +385,6 @@ func _on_camera_manager_unselect():
 			for child in tabs.get_node("HBoxContainer").get_children():
 				if child.get_child_count() > 0:
 					child.get_child(0).button_pressed = false
-
-func viewUser(userID: int):
-	self.userID = userID
-	
-	$AnimationPlayer.play("fade_to_user")
-
-func viewGame(gameID: int, past: bool):
-	GameData.viewGameCompletion(gameID, past)
-
-func viewGameDetail(gameID: int):
-	GameData.viewGameDetailCompletion(gameID)
 	
 func _exit_tree():
 	$Viewport/Viewport3D/CameraManager/FloorDisplay.remove_child(game.getFloorDisplay())
@@ -398,16 +396,7 @@ func _exit_tree():
 	game.suspend()
 		
 func _on_animation_player_animation_finished(anim_name):
-	if anim_name == "fade_to_user":
-		GameData.viewUserCompletion(userID)
-	elif anim_name == "fade_to_black":
-		#GameData.games.erase(gameID)
-		#game.queue_free()
-		#game.getFloorDisplay().queue_free()
-		
-		if GameData.exitGameToMenu():
-			GameData.goto_scene("res://MainMenu.tscn")
-	elif anim_name == "slide_down":
+	if anim_name == "slide_down":
 		tabDisplay().get_node("Panel").hide()
 		
 		if menuDisplay:

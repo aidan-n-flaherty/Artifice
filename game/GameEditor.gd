@@ -60,7 +60,9 @@ func setEditable(canEdit):
 		for specialist in SettingsDefault.getAllSpecialists():
 			var specialistName = SettingsDefault.getSpecialistName(specialist)
 			
-			var button = Button.new()
+			var button = $"MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/VBoxContainer/ActiveHoursButtons/0".duplicate()
+			if button.toggled.is_connected(on_activeTimes_modified):
+				button.toggled.disconnect(on_activeTimes_modified)
 			button.name = str(specialist)
 			button.text = specialistName
 			
@@ -219,7 +221,7 @@ func deserialize(gameID):
 					found = true
 					break
 			
-			if not found:
+			if found:
 				$MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/SpecialistBansButtons/SpecialistBansButtons.move_child(child, $MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/SpecialistBansButtons/SpecialistBansButtons.get_child_count() - 1)
 	else:
 		$MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/SpecialistBans.hide()
@@ -265,19 +267,17 @@ func updatePlayers(gameID, settings):
 	for n in $MarginContainer/VBoxContainer/Players/MarginContainer/PlayerList/GridContainer.get_children():
 		$MarginContainer/VBoxContainer/Players/MarginContainer/PlayerList/GridContainer.remove_child(n)
 		n.queue_free() 
-	
+		
 	for	i in range(int(settings.playerCap)):
 		var playerView = preload("res://Game_PlayerView.tscn").instantiate()
 		playerViews.append(playerView)
 		$MarginContainer/VBoxContainer/Players/MarginContainer/PlayerList/GridContainer.add_child(playerView)
 	
-	var users = await GameData.getGameUsers(gameID)
+	var users = await GameData.getGameUsers(gameID, false)
 	
 	var userKeys = Array(users.keys())
 	
 	var colors = SettingsDefault.getPlayerColors()
-	
-	var playerView
 	
 	for	i in userKeys:
 		var id = int(i)
@@ -289,6 +289,9 @@ func serialize():
 	var bias = int(Time.get_time_zone_from_system().bias/60)
 	
 	var hours = []
+	
+	if simulationTimescale != "days":
+		activeHours = range(24)
 	
 	print("c ", activeHours)
 	
@@ -484,7 +487,7 @@ func on_activeTimes_modified(button_pressed: bool):
 		if child.button_pressed:
 			activeHours.append(child.name.to_int())
 	activeHours.sort()
-	print("e", activeHours)
+	print(activeHours)
 
 func on_timescale_modified(button_pressed: bool, timescale):
 	simulationTimescale = timescale

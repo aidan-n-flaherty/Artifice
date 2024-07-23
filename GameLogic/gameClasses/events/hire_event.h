@@ -37,8 +37,10 @@ public:
             specialist->setOriginatingOrder(getOriginatingOrder());
             game->addSpecialist(specialist);
             owner->addSpecialist(specialist);
+
             PositionalObject* spawn = owner->getSpawnLocation();
             if(spawn) spawn->addSpecialist(specialist);
+
             Outpost* outpost = dynamic_cast<Outpost*>(spawn);
             if (outpost && specialist->getType() == SpecialistType::DIPLOMAT) {
                 for (auto pair : game->getOutposts()) {
@@ -57,6 +59,10 @@ public:
                         }
                     }
                 }
+            }
+
+            if(outpost && specialist->getType() == SpecialistType::INSPECTOR) {
+                outpost->rechargeShield();
             }
         }
         

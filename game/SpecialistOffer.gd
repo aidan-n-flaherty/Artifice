@@ -47,7 +47,7 @@ func init(specialistNum: int, gameID: int, hireable=true):
 		if child.name != "Label":
 			$VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/HBoxContainer/VBoxContainer/PromotionOptions.remove_child(child)
 			child.queue_free()
-		
+	
 	for option in promotionOptions:
 		var button = Button.new()
 		button.pressed.connect(viewSpecialist.bind(option))

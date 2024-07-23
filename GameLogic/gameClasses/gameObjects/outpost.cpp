@@ -4,6 +4,7 @@
 #include <algorithm>
 #include "player.h"
 #include "../game_settings.h"
+#include "../game.h"
 
 int Outpost::getShieldAt(double timeDiff) const {
     double fractionalShield = this->fractionalShield;
@@ -50,9 +51,8 @@ int Outpost::getShieldAt(double& fractionalShield, double timeDiff) const {
 
     fractionalShield += timeDiff * (getMaxShield() / (48.0 * 60 * 60));
 
-    // SCHEDULED CHANGE:
-    // fractionalShield -= specialistCount(SpecialistType::TINKERER) * timeDiff * (3.0 / (60 * 60));
-    if(controlsSpecialist(SpecialistType::TINKERER)) fractionalShield -= timeDiff * (3.0 / (60 * 60));
+    fractionalShield -= specialistCount(SpecialistType::TINKERER) * timeDiff * (3.0 / (60 * 60));
+    
     while(fractionalShield >= 1) {
         fractionalShield -= 1;
         
@@ -76,7 +76,6 @@ int Outpost::getShieldAt(double& fractionalShield, double timeDiff) const {
     }
 
     shieldCharge = std::fmax(0, std::fmin(shieldCharge, getMaxShield()));
-    if(controlsSpecialist(SpecialistType::INSPECTOR)) shieldCharge = getMaxShield();
 
     return shieldCharge;
 }

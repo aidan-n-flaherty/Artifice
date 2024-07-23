@@ -1,0 +1,31 @@
+[gd_scene load_steps=5 format=3 uid="uid://cwk353ga5af81"]
+
+[ext_resource type="ArrayMesh" uid="uid://dyvoutps7c1tx" path="res://resources/airship/subAlternate.obj" id="1_0k7rq"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_c101x"]
+resource_local_to_scene = true
+shading_mode = 2
+albedo_color = Color(0.454524, 0.454524, 0.454524, 1)
+metallic = 0.5
+emission_energy_multiplier = 16.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bku3s"]
+resource_local_to_scene = true
+shading_mode = 0
+albedo_color = Color(0.533037, 0.533037, 0.533037, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_i8kwj"]
+emission_enabled = true
+emission = Color(1, 1, 1, 1)
+emission_energy_multiplier = 16.0
+
+[node name="Submarine" type="MeshInstance3D"]
+transform = Transform3D(-7.86805e-08, 0, -1.4, 0, 1.4, 0, 1.8, 0, -6.11959e-08, 1.3176, -0.270477, 0)
+mesh = ExtResource("1_0k7rq")
+surface_material_override/0 = SubResource("StandardMaterial3D_c101x")
+surface_material_override/1 = SubResource("StandardMaterial3D_bku3s")
+surface_material_override/2 = SubResource("StandardMaterial3D_c101x")
+surface_material_override/3 = SubResource("StandardMaterial3D_bku3s")
+surface_material_override/4 = SubResource("StandardMaterial3D_c101x")
+surface_material_override/5 = SubResource("StandardMaterial3D_bku3s")
+surface_material_override/6 = SubResource("StandardMaterial3D_i8kwj")

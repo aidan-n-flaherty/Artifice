@@ -8,7 +8,7 @@ var gameID = null
 func _ready():
 	pass # Replace with function body.
 
-func init(id, username, color, rating, gameID: int, ranked: bool, editable: bool):
+func init(id: int, username: String, color: Color, rating: int, gameID: int, ranked: bool, editable: bool):
 	self.userID = id
 	self.gameID = gameID
 	$MarginContainer/HBoxContainer/Name.text = str(username)

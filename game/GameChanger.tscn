@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://5qxsaykab36i"]
+[gd_scene load_steps=7 format=3 uid="uid://5qxsaykab36i"]
 
 [ext_resource type="Theme" uid="uid://tg7ina762c6q" path="res://resources/themes/UITheme.tres" id="1_dxjrw"]
 [ext_resource type="Script" path="res://GameChanger.gd" id="2_f3wgt"]
@@ -6,98 +6,6 @@
 [ext_resource type="PackedScene" uid="uid://b14auts774043" path="res://Shaders.tscn" id="4_s1lgy"]
 [ext_resource type="Texture2D" uid="uid://dlqmq6fklb6q8" path="res://resources/images/back_arrow.png" id="5_x47qc"]
 [ext_resource type="PackedScene" uid="uid://biekuv7dddk3m" path="res://GameEditor.tscn" id="6_7r7sl"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ok5ym"]
-bg_color = Color(0, 0, 0, 1)
-
-[sub_resource type="Animation" id="Animation_ym5fu"]
-resource_name = "fade_from_black"
-length = 0.3
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Fade:modulate")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0.1, 0.3),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
-}
-
-[sub_resource type="Animation" id="Animation_mso28"]
-resource_name = "fade_to_black"
-length = 0.3
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Fade:modulate")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.3),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
-}
-
-[sub_resource type="Animation" id="Animation_rbvql"]
-resource_name = "fade_to_current"
-length = 0.3
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Fade:modulate")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.3),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
-}
-
-[sub_resource type="Animation" id="Animation_gfb4x"]
-resource_name = "fade_to_game"
-length = 0.2
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Fade:modulate")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.2),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
-}
-
-[sub_resource type="Animation" id="Animation_tcdyf"]
-resource_name = "fade_to_game_detail"
-length = 0.2
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Fade:modulate")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.2),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
-}
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_hho3n"]
-_data = {
-"fade_from_black": SubResource("Animation_ym5fu"),
-"fade_to_black": SubResource("Animation_mso28"),
-"fade_to_current": SubResource("Animation_rbvql"),
-"fade_to_game": SubResource("Animation_gfb4x"),
-"fade_to_game_detail": SubResource("Animation_tcdyf")
-}
 
 [node name="GameChanger" type="MarginContainer"]
 anchors_preset = 15
@@ -148,16 +56,4 @@ expand_icon = true
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="Fade" type="Panel" parent="."]
-modulate = Color(1, 1, 1, 0)
-layout_mode = 2
-mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_ok5ym")
-
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-libraries = {
-"": SubResource("AnimationLibrary_hho3n")
-}
-
 [connection signal="pressed" from="MarginContainer/VBoxContainer/MarginContainer/BackButton" to="." method="_on_back_button_pressed"]
-[connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_animation_player_animation_finished"]

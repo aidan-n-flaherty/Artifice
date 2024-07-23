@@ -49,10 +49,10 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("2_d7fav")
 text = "Test"
+clip_text = true
 
 [node name="Players" type="Label" parent="Margin/HBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 3
 theme = ExtResource("2_d7fav")
 text = "0/10"
 horizontal_alignment = 2

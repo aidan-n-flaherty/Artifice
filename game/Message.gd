@@ -7,11 +7,14 @@ var maxWidth
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	await get_tree().process_frame
-	self.maxWidth = $VBoxContainer/HBoxContainer.size.x
-	
+
 	$VBoxContainer/HBoxContainer/Control/MarginContainer/Label.text = self.message.content
 
-func init(message, color):
+func setMaxWidth(maxWidth):
+	self.maxWidth = maxWidth
+
+func init(maxWidth, message, color):
+	self.maxWidth = maxWidth
 	self.message = message
 	
 	if message.senderID == GameData.getID():
@@ -33,7 +36,7 @@ func _process(delta):
 	var lspace = $VBoxContainer/HBoxContainer/LSpacer.size.x if $VBoxContainer/HBoxContainer/LSpacer.visible else 0
 	var rspace = $VBoxContainer/HBoxContainer/RSpacer.size.x if $VBoxContainer/HBoxContainer/RSpacer.visible else 0
 	
-	if $VBoxContainer/HBoxContainer/Control/MarginContainer/Label.size.x > maxWidth - lspace - rspace:
+	if $VBoxContainer/HBoxContainer/Control.size.x >= maxWidth - lspace - rspace:
 		$VBoxContainer/HBoxContainer/Control/MarginContainer/Label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		$VBoxContainer/HBoxContainer/Control.size_flags_horizontal = SIZE_EXPAND_FILL
 

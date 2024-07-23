@@ -9,14 +9,16 @@ func _ready():
 func setID(id: int):
 	$MeshInstance3D.get_surface_override_material(1).set_shader_parameter("id", id)
 	
-	var rot = PI * sin(id)
+	var rot = PI * sin(27.0 * id)
 	$MeshInstance3D.rotation.y = rot
 	$MeshInstance3D.get_surface_override_material(2).set_shader_parameter("rotation", rot)
 
 func setDark(dark: bool):
-	$MeshInstance3D.get_surface_override_material(0).albedo_color = Color(0.0, 0.0, 0.0, 0.11) if dark else Color(1.0, 1.0, 1.0, 0.11)
-	$MeshInstance3D.get_surface_override_material(1).set_shader_parameter("dark", dark)
-	$MeshInstance3D.get_surface_override_material(2).set_shader_parameter("dark", dark)
+	if dark != self.dark:
+		self.dark = dark
+		$MeshInstance3D.get_surface_override_material(0).albedo_color = Color(0.0, 0.0, 0.0, 0.11) if dark else Color(1.0, 1.0, 1.0, 0.11)
+		$MeshInstance3D.get_surface_override_material(1).set_shader_parameter("dark", dark)
+		$MeshInstance3D.get_surface_override_material(2).set_shader_parameter("dark", dark)
 
 func showLights(lights: bool):
 	$MeshInstance3D.get_surface_override_material(3).transparency = 0 if lights else 1

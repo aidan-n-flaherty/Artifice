@@ -1,0 +1,78 @@
+[gd_scene load_steps=15 format=3 uid="uid://bwegbtn1wttxi"]
+
+[ext_resource type="ArrayMesh" uid="uid://2po5hsu770qt" path="res://resources/airship/subAlternate2.obj" id="1_38ytv"]
+[ext_resource type="Shader" path="res://Squid.gdshader" id="2_8wlci"]
+[ext_resource type="Shader" path="res://Tentacle.gdshader" id="3_7pajc"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_ft2ed"]
+noise_type = 2
+frequency = 0.0109
+cellular_distance_function = 1
+cellular_return_type = 6
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ryxo7"]
+width = 256
+height = 256
+seamless = true
+noise = SubResource("FastNoiseLite_ft2ed")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_v0v5p"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("2_8wlci")
+shader_parameter/speed = 0.05
+shader_parameter/id = 0
+shader_parameter/screen_texture = SubResource("NoiseTexture2D_ryxo7")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_nlc8g"]
+fractal_octaves = 1
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_cwf27"]
+width = 256
+height = 256
+seamless = true
+noise = SubResource("FastNoiseLite_nlc8g")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_taklp"]
+noise_type = 2
+cellular_distance_function = 1
+cellular_return_type = 6
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_cc2fa"]
+width = 256
+height = 256
+noise = SubResource("FastNoiseLite_taklp")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_p20rv"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("3_7pajc")
+shader_parameter/color = Vector3(1, 1, 2.08165e-12)
+shader_parameter/speed = 0.05
+shader_parameter/noise = SubResource("NoiseTexture2D_cc2fa")
+shader_parameter/current = SubResource("NoiseTexture2D_cwf27")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5j0p0"]
+resource_local_to_scene = true
+shading_mode = 0
+disable_receive_shadows = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_k1ifo"]
+albedo_color = Color(0, 0, 0, 1)
+metallic = 1.0
+metallic_specular = 0.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_p13wc"]
+albedo_color = Color(0, 0, 0, 1)
+metallic = 1.0
+metallic_specular = 0.0
+
+[node name="AlternativeSub" type="MeshInstance3D"]
+transform = Transform3D(-5.68248e-08, 0, -1.3, 0, 1.3, 0, 1.3, 0, -5.68248e-08, 0, 0, 0)
+visible = false
+mesh = ExtResource("1_38ytv")
+surface_material_override/0 = SubResource("ShaderMaterial_v0v5p")
+surface_material_override/1 = SubResource("ShaderMaterial_p20rv")
+surface_material_override/2 = SubResource("StandardMaterial3D_5j0p0")
+surface_material_override/3 = SubResource("StandardMaterial3D_k1ifo")
+surface_material_override/4 = SubResource("StandardMaterial3D_p13wc")

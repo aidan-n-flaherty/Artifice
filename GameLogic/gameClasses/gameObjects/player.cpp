@@ -164,7 +164,7 @@ int Player::globalProductionAmount() const {
 double Player::globalProductionSpeed() const {
     double productionSpeed = 1;
 
-    productionSpeed += 0.5 * specialistCount(SpecialistType::TYCOON);
+    productionSpeed += 0.5 * expSpecialistEffect(SpecialistType::TYCOON);
 
     return productionSpeed;
 }
@@ -172,7 +172,7 @@ double Player::globalProductionSpeed() const {
 double Player::globalSonar() const {
     double range = 1;
 
-    range = 1 + 0.25 * specialistCount(SpecialistType::INTELLIGENCE_OFFICER);
+    range = 1 + 0.25 * expSpecialistEffect(SpecialistType::INTELLIGENCE_OFFICER);
 
     return range;
 }
@@ -261,6 +261,7 @@ void Player::removeSpecialist(Specialist* specialist) {
 }
 
 void Player::addOutpost(Outpost* outpost) {
+    if(outpost->getType() == OutpostType::MINE) setRefresh(true);
     if(outpost->hasOwner()) outpost->getOwner()->removeOutpost(outpost);
 
     outpost->setOwner(this);
@@ -297,6 +298,8 @@ void Player::removeOutpost(Outpost* outpost) {
                 fractionalProduction = 0;
                 setRefresh(true);
             }
+
+            if(controlsSpecialist(SpecialistType::MINISTER_OF_WAR)) outpost->setType(OutpostType::BROKEN);
 
             outposts.erase(it);
             break;

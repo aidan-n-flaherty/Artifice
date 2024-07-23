@@ -67,7 +67,7 @@ theme = ExtResource("1_go72y")
 theme_override_constants/separation = 50
 
 [node name="p1Color" type="Panel" parent="VBoxContainer/ScrollContainer/HBoxContainer"]
-custom_minimum_size = Vector2(10, 0)
+custom_minimum_size = Vector2(20, 2.08165e-12)
 layout_mode = 2
 size_flags_horizontal = 0
 theme = ExtResource("1_go72y")
@@ -360,7 +360,7 @@ layout_mode = 2
 theme = ExtResource("1_go72y")
 
 [node name="p2Color" type="Panel" parent="VBoxContainer/ScrollContainer/HBoxContainer"]
-custom_minimum_size = Vector2(10, 0)
+custom_minimum_size = Vector2(20, 2.08165e-12)
 layout_mode = 2
 size_flags_horizontal = 8
 theme = ExtResource("1_go72y")

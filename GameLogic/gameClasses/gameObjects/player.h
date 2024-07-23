@@ -137,7 +137,7 @@ public:
     void setHires(int hires) { this->hires = hires; }
 
     void addResources(int amount) { resources += amount; }
-    void removeResources(int amount) { resources -= amount; }
+    void removeResources(int amount) { resources -= amount; if(resources < 0) resources = 0; }
 
     double nextHireEvent(double timeDiff) const;
 
