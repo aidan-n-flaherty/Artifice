@@ -2,6 +2,8 @@ extends Node3D
 
 var dark = false
 
+var outOfSonar = false
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	pass # Replace with function body.
@@ -22,6 +24,12 @@ func setDark(dark: bool):
 
 func showLights(lights: bool):
 	$MeshInstance3D.get_surface_override_material(3).transparency = 0 if lights else 1
+
+func setOutOfSonar(outOfSonar: bool):
+	if outOfSonar != self.outOfSonar:
+		self.outOfSonar = outOfSonar
+		$MeshInstance3D.get_surface_override_material(1).set_shader_parameter("outOfSonar", outOfSonar)
+		$MeshInstance3D.get_surface_override_material(2).set_shader_parameter("outOfSonar", outOfSonar)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):

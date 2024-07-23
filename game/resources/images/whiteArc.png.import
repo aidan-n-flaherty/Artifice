@@ -2,9 +2,9 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b0mlod72vurw8"
-path.s3tc="res://.godot/imported/Chat.png-8e495ca66eeb057c3aa6d87b45578d78.s3tc.ctex"
-path.etc2="res://.godot/imported/Chat.png-8e495ca66eeb057c3aa6d87b45578d78.etc2.ctex"
+uid="uid://ceflwx078tk1t"
+path.s3tc="res://.godot/imported/whiteArc.png-3338a16a118f224793286e28025c0582.s3tc.ctex"
+path.etc2="res://.godot/imported/whiteArc.png-3338a16a118f224793286e28025c0582.etc2.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
@@ -12,8 +12,8 @@ metadata={
 
 [deps]
 
-source_file="res://resources/gameMenuIcons/Chat.png"
-dest_files=["res://.godot/imported/Chat.png-8e495ca66eeb057c3aa6d87b45578d78.s3tc.ctex", "res://.godot/imported/Chat.png-8e495ca66eeb057c3aa6d87b45578d78.etc2.ctex"]
+source_file="res://resources/images/whiteArc.png"
+dest_files=["res://.godot/imported/whiteArc.png-3338a16a118f224793286e28025c0582.s3tc.ctex", "res://.godot/imported/whiteArc.png-3338a16a118f224793286e28025c0582.etc2.ctex"]
 
 [params]
 

@@ -70,7 +70,7 @@ func _process(delta):
 		if not get_parent().isSelected():
 			$Color.get_surface_override_material(0).albedo_color = get_parent().getColor()
 		$Submarine.get_surface_override_material(0).albedo_color = get_parent().getColor()
-		$Submarine.get_surface_override_material(1).albedo_color = get_parent().getColor().darkened(0.5)
+		$Submarine.get_surface_override_material(1).albedo_color = get_parent().getColor().darkened(0.9)
 			
 		#$Submarine.get_surface_override_material(4).emission = get_parent().getColor()
 	

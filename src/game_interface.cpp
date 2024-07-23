@@ -1041,8 +1041,8 @@ void GameInterface::incrementSend(int orderID) {
 			for(int id : order->getSpecialistIDs()) arguments.push_back(uint32_t(id));
 			for(int id : order->getSpecialistIDs()) oldArguments.push_back(uint32_t(id));
 
-			if(!isOffline()) emit_signal("replaceOrder", orderID, "SEND", order->getReferenceID(), order->isCanceled(), order->getTimestamp(), arguments, oldArguments);
-			addOrder("SEND", orderID, order->getReferenceID(), order->isCanceled(), order->getTimestamp(), userGameID, arguments, arguments.size());
+			if(!isOffline()) emit_signal("replaceOrder", orderID, "SEND", order->getReferenceID(), order->isCanceled(), settings.gameToClientTime(order->getTimestamp()), arguments, oldArguments);
+			addOrder("SEND", orderID, order->getReferenceID(), order->isCanceled(), settings.gameToClientTime(order->getTimestamp()), userGameID, arguments, arguments.size());
 		}
 	}
 }
@@ -1068,8 +1068,8 @@ void GameInterface::decrementSend(int orderID) {
 			for(int id : order->getSpecialistIDs()) arguments.push_back(uint32_t(id));
 			for(int id : order->getSpecialistIDs()) oldArguments.push_back(uint32_t(id));
 
-			if(!isOffline()) emit_signal("replaceOrder", orderID, "SEND", order->getReferenceID(), order->isCanceled(), order->getTimestamp(), arguments, oldArguments);
-			addOrder("SEND", orderID, order->getReferenceID(), order->isCanceled(), order->getTimestamp(), userGameID, arguments, arguments.size());
+			if(!isOffline()) emit_signal("replaceOrder", orderID, "SEND", order->getReferenceID(), order->isCanceled(), settings.gameToClientTime(order->getTimestamp()), arguments, oldArguments);
+			addOrder("SEND", orderID, order->getReferenceID(), order->isCanceled(), settings.gameToClientTime(order->getTimestamp()), userGameID, arguments, arguments.size());
 		}
 	}
 }
@@ -1097,8 +1097,8 @@ void GameInterface::alterSend(int orderID, int units) {
 			for(int id : order->getSpecialistIDs()) arguments.push_back(uint32_t(id));
 			for(int id : order->getSpecialistIDs()) oldArguments.push_back(uint32_t(id));
 
-			if(!isOffline()) emit_signal("replaceOrder", orderID, "SEND", order->getReferenceID(), order->isCanceled(), order->getTimestamp(), arguments, oldArguments);
-			addOrder("SEND", orderID, order->getReferenceID(), order->isCanceled(), order->getTimestamp(), userGameID, arguments, arguments.size());
+			if(!isOffline()) emit_signal("replaceOrder", orderID, "SEND", order->getReferenceID(), order->isCanceled(), settings.gameToClientTime(order->getTimestamp()), arguments, oldArguments);
+			addOrder("SEND", orderID, order->getReferenceID(), order->isCanceled(), settings.gameToClientTime(order->getTimestamp()), userGameID, arguments, arguments.size());
 		}
 	}
 }
@@ -1132,8 +1132,8 @@ void GameInterface::addSpecialist(int orderID, int specialistID) {
 
 			for(int id : specialistsToSend) arguments.push_back(uint32_t(id));
 
-			if(!isOffline()) emit_signal("replaceOrder", orderID, "SEND", order->getReferenceID(), order->isCanceled(), order->getTimestamp(), arguments, oldArguments);
-			addOrder("SEND", orderID, order->getReferenceID(), order->isCanceled(), order->getTimestamp(), userGameID, arguments, arguments.size());
+			if(!isOffline()) emit_signal("replaceOrder", orderID, "SEND", order->getReferenceID(), order->isCanceled(), settings.gameToClientTime(order->getTimestamp()), arguments, oldArguments);
+			addOrder("SEND", orderID, order->getReferenceID(), order->isCanceled(), settings.gameToClientTime(order->getTimestamp()), userGameID, arguments, arguments.size());
 		}
 	}
 }
@@ -1159,8 +1159,8 @@ void GameInterface::removeSpecialist(int orderID, int specialistID) {
 			for(int id : order->getSpecialistIDs()) if(id != specialistID) arguments.push_back(uint32_t(id));
 			for(int id : order->getSpecialistIDs()) oldArguments.push_back(uint32_t(id));
 
-			if(!isOffline()) emit_signal("replaceOrder", orderID, "SEND", order->getReferenceID(), order->isCanceled(), order->getTimestamp(), arguments, oldArguments);
-			addOrder("SEND", orderID, order->getReferenceID(), order->isCanceled(), order->getTimestamp(), userGameID, arguments, arguments.size());
+			if(!isOffline()) emit_signal("replaceOrder", orderID, "SEND", order->getReferenceID(), order->isCanceled(), settings.gameToClientTime(order->getTimestamp()), arguments, oldArguments);
+			addOrder("SEND", orderID, order->getReferenceID(), order->isCanceled(), settings.gameToClientTime(order->getTimestamp()), userGameID, arguments, arguments.size());
 		}
 	}
 }

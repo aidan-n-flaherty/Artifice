@@ -79,6 +79,7 @@ func _process(delta):
 				node.name = "Outpost"
 				rot(node)
 				add_child(node)
+				color = null
 	elif not visible:
 		return
 				
@@ -101,7 +102,7 @@ func _process(delta):
 	
 	if selected != get_parent().isSelected():
 		if get_parent().isSelected():
-			$FlagSprite.modulate = get_parent().getColor().lightened(0.5)
+			$Outpost/FlagSprite.modulate = get_parent().getColor().lightened(0.5)
 		else:
 			color = null
 	
@@ -111,11 +112,19 @@ func _process(delta):
 		$Outpost.position.y = 0.8 * $Outpost.position.y + 0.25 * cos(PI * sin(27.0 * get_parent().getID()) + 0.5 * elapsed)
 	
 	if color != get_parent().getColor():
-		$FlagSprite.modulate = get_parent().getColor()
+		var c = get_parent().getColor()
+		# $Outpost/City/Factory/Base/factoryComponent1.get_surface_override_material(0).albedo_color = c
+		$Outpost/ring.get_surface_override_material(0).albedo_color = get_parent().getColor().darkened(0.5)
+		$Outpost/FlagSprite.modulate = c
+		if get_parent().getOwnerID() == -1:
+			$Outpost/City/Factory/Base/factoryComponent1.get_surface_override_material(1).emission = Color.WHITE
+		else:
+			$Outpost/City/Factory/Base/factoryComponent1.get_surface_override_material(1).emission = c
+
+	$Outpost/FlagSprite.visible = get_parent().getOwnerID() != -1 and not get_parent().canViewType() and not get_parent().isInRadar()
 	
-	$FlagSprite/FlagSprite2.visible = get_parent().getSelfOwned()
-	
-	
+	$Outpost/JellyfishMesh.setOutOfSonar(not get_parent().canViewType() and not get_parent().isInRadar())
+
 	units = get_parent().getUnits()
 	shield = get_parent().getShield()
 	maxShield = get_parent().getMaxShield()
@@ -131,19 +140,18 @@ func _process(delta):
 	$RotationInvariant.visible = get_parent().isInRadar()
 	
 	if get_parent().canViewType() or get_parent().isInRadar():
-		$Shadow.show()
+		$Outpost/ring.show()
+		
 		if not get_parent().isBroken():
 			$Outpost/City.show()
-			$Outpost/ring.show()
 			$Outpost/floor.show()
 		else:
 			$Outpost/City.hide()
-			$Outpost/ring.hide()
 			$Outpost/floor.hide()
 	else:
-		$Shadow.hide()
+		if get_parent().getOwnerID() == -1:
+			$Outpost/ring.hide()
 		$Outpost/City.hide()
-		$Outpost/ring.hide()
 		$Outpost/floor.hide()
 	
 	if not get_parent().isInRadar():

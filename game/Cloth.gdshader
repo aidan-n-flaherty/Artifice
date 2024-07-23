@@ -10,6 +10,8 @@ uniform float rotation;
 
 uniform float speed;
 
+uniform bool outOfSonar = false;
+
 void vertex() {
 	float amount = min(1.0, max(0.0, -4.0 - VERTEX.y));
 	
@@ -41,9 +43,10 @@ void fragment() {
 		ALBEDO = vec3(1.5) - texture(noise, UV).r;
 		ALPHA = 0.2;
 		if(0.5 - abs(UV.x - 0.5) > 0.25) {
-			ALBEDO += 5.0 * (0.5 - abs(UV.x - 0.5) - 0.25);
-			ALPHA += 5.0 * (0.5 - abs(UV.x - 0.5) - 0.25);
+			ALPHA += 1.0 * (0.5 - abs(UV.x - 0.5) - 0.25);
 		}
+		
+		if(outOfSonar) ALPHA *= 0.25;
 	}
 }
 

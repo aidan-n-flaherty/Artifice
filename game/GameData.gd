@@ -24,7 +24,7 @@ signal loadCurrent
 
 signal refreshBattle(gameID)
 
-var version = "1.17"
+var version = "1.19"
 
 var needsUpdate = false
 
@@ -341,6 +341,9 @@ func login():
 			await get_tree().create_timer(expBackoff).timeout
 			expBackoff *= 2
 		
+		#id = 66
+		#token = '17681744652637311744'
+		
 		loadSelf()
 		
 		gameUsers.clear()
@@ -367,13 +370,6 @@ func login():
 		goto_scene("res://EULA.tscn")
 		
 		return false
-	
-	#id = 3
-	#token = "5577006791947779410"
-	#id = 4
-	#token = "8674665223082153551"
-	#id = 5
-	#token = "15352856648520921629"
 
 func goto_previous():
 	print(priorScenes)

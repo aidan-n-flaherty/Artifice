@@ -87,9 +87,9 @@ int runGameWithNotifications(cGame game, int* playerChanges, double lastUpdate, 
   }
   
   for(auto it = g->getNotifications().begin(); it != g->getNotifications().end(); it++) {
-    if((*it)->getTimestamp() <= lastUpdate || !g->hasVessel((*it)->getVesselID())) continue;
+    if((*it)->getTimestamp() <= g->getSettings()->clientToGameTime(lastUpdate) || !g->hasVessel((*it)->getVesselID())) continue;
 
-    if((*it)->getTimestamp() <= lastUpdates[(*it)->getListenerID()]) continue;
+    if((*it)->getTimestamp() <= g->getSettings()->clientToGameTime(lastUpdates[(*it)->getListenerID()])) continue;
 
     notifications[(*it)->getListenerID()] = g->getPlayer((*it)->getListenerID())->getUserID();
   }
