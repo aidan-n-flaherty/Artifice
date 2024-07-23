@@ -26,7 +26,7 @@ signal refreshBattle(gameID)
 
 signal transitionToAD
 
-var version = "1.17"
+var version = "2.0"
 
 var needsUpdate = false
 

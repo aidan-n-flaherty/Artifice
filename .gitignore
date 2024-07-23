@@ -8,3 +8,6 @@ godot-cpp/
 game/bin/~libgdgamelogic.windows.template_debug.x86_64.dll
 game/bin/libgdgamelogic.windows.template_debug.x86_64.dll
 game/bin/windows/~libgdgamelogic.windows.template_debug.x86_64.dll
+bin/windows/libgdgamelogic.windows.template_debug.x86_64.dll
+bin/windows/libgdgamelogic.windows.template_debug.x86_64.dll
+game/bin/windows/libgdgamelogic.windows.template_debug.x86_64.dll

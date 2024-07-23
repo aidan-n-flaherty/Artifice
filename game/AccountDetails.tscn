@@ -54,7 +54,7 @@ variation_embolden = 1.0
 spacing_top = 6
 spacing_bottom = 6
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_676t4"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tpbsy"]
 content_margin_left = 8.0
 content_margin_top = 8.0
 content_margin_right = 8.0
@@ -77,7 +77,7 @@ border_color = Color(1, 1, 1, 1)
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tpbsy"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_676t4"]
 content_margin_left = 8.0
 content_margin_top = 8.0
 content_margin_right = 8.0
@@ -144,7 +144,6 @@ theme_override_constants/separation = 0
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("1_j5sq6")
-theme_override_fonts/font = ExtResource("5_yyilv")
 theme_override_font_sizes/font_size = 30
 text = "Customize Profile"
 
@@ -158,9 +157,6 @@ size_flags_stretch_ratio = 0.2
 visible = false
 layout_mode = 2
 size_flags_horizontal = 3
-theme = ExtResource("4_tumqw")
-theme_override_fonts/font = ExtResource("5_yyilv")
-theme_override_font_sizes/font_size = 30
 disabled = true
 text = "Friends"
 
@@ -616,10 +612,10 @@ size_flags_horizontal = 3
 
 [node name="MatchHistory" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxEmpty_676t4")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_tpbsy")
 theme_override_styles/hover = SubResource("StyleBoxEmpty_7h3ob")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_defcu")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_tpbsy")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_676t4")
 toggle_mode = true
 button_pressed = true
 button_group = SubResource("ButtonGroup_hgu2c")
@@ -632,10 +628,10 @@ size_flags_stretch_ratio = 0.25
 
 [node name="Leaderboard" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxEmpty_676t4")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_tpbsy")
 theme_override_styles/hover = SubResource("StyleBoxEmpty_7h3ob")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_defcu")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_tpbsy")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_676t4")
 toggle_mode = true
 button_group = SubResource("ButtonGroup_hgu2c")
 text = "Leaderboard"
