@@ -1,4 +1,4 @@
-[gd_scene load_steps=58 format=3 uid="uid://cfaaort7dldjk"]
+[gd_scene load_steps=59 format=3 uid="uid://cfaaort7dldjk"]
 
 [ext_resource type="Script" path="res://Game.gd" id="1_s53r2"]
 [ext_resource type="PackedScene" uid="uid://b14auts774043" path="res://Shaders.tscn" id="2_qvr2g"]
@@ -10,6 +10,7 @@
 [ext_resource type="Shader" path="res://FrostedGlassBlack.gdshader" id="9_5ehda"]
 [ext_resource type="Texture2D" uid="uid://dlqmq6fklb6q8" path="res://resources/images/back_arrow.png" id="10_n5ogc"]
 [ext_resource type="Theme" uid="uid://tg7ina762c6q" path="res://resources/themes/UITheme.tres" id="10_ww8tb"]
+[ext_resource type="PackedScene" uid="uid://ycxxhiua4fft" path="res://Banner.tscn" id="11_ftf84"]
 [ext_resource type="StyleBox" uid="uid://dgq41l16rxlq" path="res://resources/styles/roundRectBlack.tres" id="11_uh1qc"]
 [ext_resource type="Script" path="res://DetailContainer.gd" id="12_7re0q"]
 [ext_resource type="PackedScene" uid="uid://cqdpj2uw0cloc" path="res://Shop.tscn" id="12_sa8gc"]
@@ -537,9 +538,13 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="HeaderColor" type="Panel" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/VSeparator/ElementDisplay/Panel/VBoxContainer/Header"]
+clip_children = 2
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_kv64f")
+
+[node name="Banner" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/VSeparator/ElementDisplay/Panel/VBoxContainer/Header/HeaderColor" instance=ExtResource("11_ftf84")]
+layout_mode = 1
 
 [node name="MarginContainer" type="MarginContainer" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/VSeparator/ElementDisplay/Panel/VBoxContainer/Header"]
 layout_mode = 2
