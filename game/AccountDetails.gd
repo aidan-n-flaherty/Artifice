@@ -42,6 +42,19 @@ func updateUser(userID):
 	
 	if(!user): return
 	
+	$MarginContainer/ScrollContainer/VBoxContainer/ButtonMargins.visible = isSelf
+	
+	var banner
+	banner = preload("res://Banner.tscn").instantiate()
+	var playerSelectedBanner = user.bannerID 	#retrieve from data
+	var pC = user.primaryBannerColor
+	var sC = user.secondaryBannerColor
+	var playerPrimaryColor = Color(pC[0], pC[1], pC[2]) #retrieve from data
+	var playerSecondaryColor =  Color(sC[0], sC[1], sC[2])  #retrieve from data
+	
+	banner.init(playerSelectedBanner, playerPrimaryColor, playerSecondaryColor)
+	$MarginContainer/ScrollContainer/VBoxContainer/Banner.add_child(banner)
+	
 	$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/TestGame.visible = isSelf
 	$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/Restore.visible = isSelf
 	$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/Report.visible = not isSelf
@@ -192,6 +205,13 @@ func _on_graphics_push_on_toggled(toggled_on):
 func _on_graphics_push_off_toggled(toggled_on):
 	GameData.localSettings["graphics"] = "simple"
 	GameData.saveLocalSettings()
+
+
+func _on_customize_profile_pressed() -> void:
+	var customizeProfile = preload("res://CustomizeProfile.tscn").instantiate()
+	customizeProfile.init(userID)
+	GameData.goto_node(customizeProfile)
+	
 
 
 func _on_test_game_pressed():

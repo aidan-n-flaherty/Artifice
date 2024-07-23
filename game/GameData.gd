@@ -24,6 +24,8 @@ signal loadCurrent
 
 signal refreshBattle(gameID)
 
+signal transitionToAD
+
 var version = "1.19"
 
 var needsUpdate = false
@@ -1103,6 +1105,10 @@ func getOngoingGames():
 
 func getPastGames(userID: int):
 	return pastUserGameIDs[userID].keys() if pastUserGameIDs.has(userID) else (await loadPastUserGames(userID)).keys()
+
+func transitionToAccountDetails():
+	emit_signal("transitionToAD")
+	
 
 func _exit_tree():
 	for game in games.values():

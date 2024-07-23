@@ -39,15 +39,18 @@ func update():
 		var generators = p.getGenerators()
 		var color = p.getColor()
 		
+		var user = await GameData.getUser(p.getUserID())
+		var bannerID = user.bannerID
+		
 		var playerStatus
 		
 		if playerStatuses[i] != null:
 			playerStatus = playerStatuses[i]
-			playerStatus.init(game, p, username, dailyProduction, units, capacity, winCount, win, largestCapacity, outposts, factories, generators, mines, color)
+			playerStatus.init(game, p, username, dailyProduction, units, capacity, winCount, win, largestCapacity, outposts, factories, generators, mines, color, bannerID)
 			$MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer.move_child(playerStatus,i)
 		else:
 			playerStatus = preload("res://PlayerStatus.tscn").instantiate()
-			playerStatus.init(game, p, username, dailyProduction, units, capacity, winCount, win, largestCapacity, outposts, factories, generators, mines, color)
+			playerStatus.init(game, p, username, dailyProduction, units, capacity, winCount, win, largestCapacity, outposts, factories, generators, mines, color, bannerID)
 			playerStatuses[i] = playerStatus
 			$MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer.add_child(playerStatus)
 		i += 1

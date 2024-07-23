@@ -1,0 +1,407 @@
+[gd_scene load_steps=13 format=3 uid="uid://co2hj4q3o028x"]
+
+[ext_resource type="Script" path="res://CustomizeProfile.gd" id="1_f7uxy"]
+[ext_resource type="Theme" uid="uid://tg7ina762c6q" path="res://resources/themes/UITheme.tres" id="1_t0e1l"]
+[ext_resource type="PackedScene" uid="uid://c04qxpqrgw5cq" path="res://Background.tscn" id="2_qfmyw"]
+[ext_resource type="Texture2D" uid="uid://dlqmq6fklb6q8" path="res://resources/images/back_arrow.png" id="3_6rfjh"]
+[ext_resource type="Theme" uid="uid://c4m6lidwyxgc" path="res://resources/UITheme.tres" id="4_6biup"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f2vgl"]
+bg_color = Color(0, 0, 0, 1)
+
+[sub_resource type="Animation" id="Animation_ym5fu"]
+resource_name = "fade_from_black"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Fade:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.1, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_mso28"]
+resource_name = "fade_to_black"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Fade:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_gfb4x"]
+resource_name = "fade_to_game"
+length = 0.2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Fade:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_tcdyf"]
+resource_name = "fade_to_game_detail"
+length = 0.2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Fade:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_kpso0"]
+resource_name = "fade_to_user"
+length = 0.2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Fade:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_hho3n"]
+_data = {
+"fade_from_black": SubResource("Animation_ym5fu"),
+"fade_to_black": SubResource("Animation_mso28"),
+"fade_to_game": SubResource("Animation_gfb4x"),
+"fade_to_game_detail": SubResource("Animation_tcdyf"),
+"fade_to_user": SubResource("Animation_kpso0")
+}
+
+[node name="CustomizeProfile" type="MarginContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_t0e1l")
+script = ExtResource("1_f7uxy")
+
+[node name="Background" parent="." instance=ExtResource("2_qfmyw")]
+layout_mode = 2
+theme = ExtResource("4_6biup")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme = ExtResource("4_6biup")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme = ExtResource("4_6biup")
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("4_6biup")
+theme_override_constants/margin_left = 100
+theme_override_constants/margin_top = 100
+theme_override_constants/margin_right = 100
+theme_override_constants/margin_bottom = 0
+
+[node name="BackButton" type="Button" parent="VBoxContainer/MarginContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+theme = ExtResource("4_6biup")
+icon = ExtResource("3_6rfjh")
+flat = true
+expand_icon = true
+
+[node name="Title" type="MarginContainer" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+size_flags_stretch_ratio = 0.1
+theme = ExtResource("4_6biup")
+
+[node name="BannerPreview" type="RichTextLabel" parent="VBoxContainer/Title"]
+layout_mode = 2
+theme = ExtResource("4_6biup")
+theme_override_font_sizes/normal_font_size = 51
+bbcode_enabled = true
+text = "Banner Preview"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("4_6biup")
+
+[node name="Spacer" type="Control" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("4_6biup")
+
+[node name="Banner" type="MarginContainer" parent="VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 9.0
+theme = ExtResource("4_6biup")
+
+[node name="Spacer2" type="Control" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("4_6biup")
+
+[node name="SpacerAboveBannerColors" type="Control" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.05
+theme = ExtResource("4_6biup")
+
+[node name="BannerColor" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.34
+theme = ExtResource("4_6biup")
+
+[node name="Spacer2" type="Control" parent="VBoxContainer/BannerColor"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("4_6biup")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/BannerColor"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 9.0
+theme = ExtResource("4_6biup")
+
+[node name="Title2" type="MarginContainer" parent="VBoxContainer/BannerColor/VBoxContainer"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+size_flags_stretch_ratio = 0.1
+theme = ExtResource("4_6biup")
+
+[node name="BannerColors" type="RichTextLabel" parent="VBoxContainer/BannerColor/VBoxContainer/Title2"]
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 51
+bbcode_enabled = true
+text = "Banner Colors"
+
+[node name="BannerColorManager" type="MarginContainer" parent="VBoxContainer/BannerColor/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.73
+theme = ExtResource("4_6biup")
+
+[node name="VBoxContainer" type="HBoxContainer" parent="VBoxContainer/BannerColor/VBoxContainer/BannerColorManager"]
+layout_mode = 2
+theme = ExtResource("4_6biup")
+
+[node name="Primary" type="VBoxContainer" parent="VBoxContainer/BannerColor/VBoxContainer/BannerColorManager/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("4_6biup")
+
+[node name="PrimaryText" type="RichTextLabel" parent="VBoxContainer/BannerColor/VBoxContainer/BannerColorManager/VBoxContainer/Primary"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.5
+theme = ExtResource("1_t0e1l")
+bbcode_enabled = true
+text = "Primary"
+
+[node name="REDS" type="HBoxContainer" parent="VBoxContainer/BannerColor/VBoxContainer/BannerColorManager/VBoxContainer/Primary"]
+layout_mode = 2
+size_flags_vertical = 3
+theme = ExtResource("4_6biup")
+
+[node name="RED" type="RichTextLabel" parent="VBoxContainer/BannerColor/VBoxContainer/BannerColorManager/VBoxContainer/Primary/REDS"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("4_6biup")
+bbcode_enabled = true
+text = "Red"
+
+[node name="RedSlider" type="HSlider" parent="VBoxContainer/BannerColor/VBoxContainer/BannerColorManager/VBoxContainer/Primary/REDS"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 3.24
+theme = ExtResource("4_6biup")
+max_value = 1.0
+step = 0.01
+value = 0.5
+
+[node name="GREENS" type="HBoxContainer" parent="VBoxContainer/BannerColor/VBoxContainer/BannerColorManager/VBoxContainer/Primary"]
+layout_mode = 2
+size_flags_vertical = 3
+theme = ExtResource("4_6biup")
+
+[node name="GREEN" type="RichTextLabel" parent="VBoxContainer/BannerColor/VBoxContainer/BannerColorManager/VBoxContainer/Primary/GREENS"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("4_6biup")
+bbcode_enabled = true
+text = "Green"
+
+[node name="GreenSlider" type="HSlider" parent="VBoxContainer/BannerColor/VBoxContainer/BannerColorManager/VBoxContainer/Primary/GREENS"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 3.24
+theme = ExtResource("4_6biup")
+max_value = 1.0
+step = 0.01
+value = 0.5
+
+[node name="BLUES" type="HBoxContainer" parent="VBoxContainer/BannerColor/VBoxContainer/BannerColorManager/VBoxContainer/Primary"]
+layout_mode = 2
+size_flags_vertical = 3
+theme = ExtResource("4_6biup")
+
+[node name="Blue" type="RichTextLabel" parent="VBoxContainer/BannerColor/VBoxContainer/BannerColorManager/VBoxContainer/Primary/BLUES"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("4_6biup")
+bbcode_enabled = true
+text = "Blue"
+
+[node name="BlueSlider" type="HSlider" parent="VBoxContainer/BannerColor/VBoxContainer/BannerColorManager/VBoxContainer/Primary/BLUES"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 3.24
+theme = ExtResource("4_6biup")
+max_value = 1.0
+step = 0.01
+value = 0.5
+
+[node name="Spacer" type="Control" parent="VBoxContainer/BannerColor/VBoxContainer/BannerColorManager/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.1
+theme = ExtResource("4_6biup")
+
+[node name="Secondary" type="VBoxContainer" parent="VBoxContainer/BannerColor/VBoxContainer/BannerColorManager/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("4_6biup")
+
+[node name="SecondaryText" type="RichTextLabel" parent="VBoxContainer/BannerColor/VBoxContainer/BannerColorManager/VBoxContainer/Secondary"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.5
+theme = ExtResource("4_6biup")
+bbcode_enabled = true
+text = "Secondary"
+
+[node name="REDS" type="HBoxContainer" parent="VBoxContainer/BannerColor/VBoxContainer/BannerColorManager/VBoxContainer/Secondary"]
+layout_mode = 2
+size_flags_vertical = 3
+theme = ExtResource("4_6biup")
+
+[node name="RED" type="RichTextLabel" parent="VBoxContainer/BannerColor/VBoxContainer/BannerColorManager/VBoxContainer/Secondary/REDS"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("4_6biup")
+bbcode_enabled = true
+text = "Red"
+
+[node name="RedSlider" type="HSlider" parent="VBoxContainer/BannerColor/VBoxContainer/BannerColorManager/VBoxContainer/Secondary/REDS"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 3.24
+theme = ExtResource("4_6biup")
+max_value = 1.0
+step = 0.01
+value = 0.5
+
+[node name="GREENS" type="HBoxContainer" parent="VBoxContainer/BannerColor/VBoxContainer/BannerColorManager/VBoxContainer/Secondary"]
+layout_mode = 2
+size_flags_vertical = 3
+theme = ExtResource("4_6biup")
+
+[node name="GREEN" type="RichTextLabel" parent="VBoxContainer/BannerColor/VBoxContainer/BannerColorManager/VBoxContainer/Secondary/GREENS"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("4_6biup")
+bbcode_enabled = true
+text = "Green"
+
+[node name="GreenSlider" type="HSlider" parent="VBoxContainer/BannerColor/VBoxContainer/BannerColorManager/VBoxContainer/Secondary/GREENS"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 3.24
+theme = ExtResource("4_6biup")
+max_value = 1.0
+step = 0.01
+value = 0.5
+
+[node name="BLUES" type="HBoxContainer" parent="VBoxContainer/BannerColor/VBoxContainer/BannerColorManager/VBoxContainer/Secondary"]
+layout_mode = 2
+size_flags_vertical = 3
+theme = ExtResource("4_6biup")
+
+[node name="Blue" type="RichTextLabel" parent="VBoxContainer/BannerColor/VBoxContainer/BannerColorManager/VBoxContainer/Secondary/BLUES"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("4_6biup")
+bbcode_enabled = true
+text = "Blue"
+
+[node name="BlueSlider" type="HSlider" parent="VBoxContainer/BannerColor/VBoxContainer/BannerColorManager/VBoxContainer/Secondary/BLUES"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 3.24
+theme = ExtResource("4_6biup")
+max_value = 1.0
+step = 0.01
+value = 0.5
+
+[node name="Spacer" type="Control" parent="VBoxContainer/BannerColor"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("4_6biup")
+
+[node name="BannerShop" type="MarginContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme = ExtResource("4_6biup")
+
+[node name="Fade" type="Panel" parent="."]
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_f2vgl")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_hho3n")
+}
+
+[connection signal="pressed" from="VBoxContainer/MarginContainer/BackButton" to="." method="_on_back_button_pressed"]
+[connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_animation_player_animation_finished"]

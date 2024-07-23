@@ -54,7 +54,7 @@ variation_embolden = 1.0
 spacing_top = 6
 spacing_bottom = 6
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_676t4"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tpbsy"]
 content_margin_left = 8.0
 content_margin_top = 8.0
 content_margin_right = 8.0
@@ -77,7 +77,7 @@ border_color = Color(1, 1, 1, 1)
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tpbsy"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_676t4"]
 content_margin_left = 8.0
 content_margin_top = 8.0
 content_margin_right = 8.0
@@ -128,6 +128,42 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = ExtResource("1_j5sq6")
 theme_override_constants/separation = 40
+
+[node name="ButtonMargins" type="MarginContainer" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.05
+
+[node name="Tabs" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer/ButtonMargins"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.05
+theme_override_constants/separation = 0
+
+[node name="CustomizeProfile" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/ButtonMargins/Tabs"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_j5sq6")
+theme_override_font_sizes/font_size = 30
+text = "Customize Profile"
+
+[node name="Spacer" type="Control" parent="MarginContainer/ScrollContainer/VBoxContainer/ButtonMargins/Tabs"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.2
+
+[node name="Friends" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/ButtonMargins/Tabs"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+disabled = true
+text = "Friends"
+
+[node name="Banner" type="MarginContainer" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.09
 
 [node name="GridContainer" type="GridContainer" parent="MarginContainer/ScrollContainer/VBoxContainer"]
 layout_mode = 2
@@ -576,10 +612,10 @@ size_flags_horizontal = 3
 
 [node name="MatchHistory" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxEmpty_676t4")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_tpbsy")
 theme_override_styles/hover = SubResource("StyleBoxEmpty_7h3ob")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_defcu")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_tpbsy")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_676t4")
 toggle_mode = true
 button_pressed = true
 button_group = SubResource("ButtonGroup_hgu2c")
@@ -592,10 +628,10 @@ size_flags_stretch_ratio = 0.25
 
 [node name="Leaderboard" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxEmpty_676t4")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_tpbsy")
 theme_override_styles/hover = SubResource("StyleBoxEmpty_7h3ob")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_defcu")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_tpbsy")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_676t4")
 toggle_mode = true
 button_group = SubResource("ButtonGroup_hgu2c")
 text = "Leaderboard"
@@ -730,6 +766,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 0.5
 
+[connection signal="pressed" from="MarginContainer/ScrollContainer/VBoxContainer/ButtonMargins/Tabs/CustomizeProfile" to="." method="_on_customize_profile_pressed"]
 [connection signal="text_changed" from="MarginContainer/ScrollContainer/VBoxContainer/GridContainer/UsernameText" to="." method="_on_username_text_text_changed"]
 [connection signal="toggled" from="MarginContainer/ScrollContainer/VBoxContainer/GridContainer/PushNotificationButtons/PushOn" to="." method="_on_push_on_toggled"]
 [connection signal="toggled" from="MarginContainer/ScrollContainer/VBoxContainer/GridContainer/PushNotificationButtons/PushOff" to="." method="_on_push_off_toggled"]

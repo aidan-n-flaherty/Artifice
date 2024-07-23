@@ -1,7 +1,8 @@
-[gd_scene load_steps=13 format=3 uid="uid://nglncmsgw3a6"]
+[gd_scene load_steps=14 format=3 uid="uid://nglncmsgw3a6"]
 
 [ext_resource type="Theme" uid="uid://tg7ina762c6q" path="res://resources/themes/UITheme.tres" id="1_3e6o8"]
 [ext_resource type="Script" path="res://PlayerStatus.gd" id="1_oj4yj"]
+[ext_resource type="PackedScene" uid="uid://ycxxhiua4fft" path="res://Banner.tscn" id="3_aaafv"]
 [ext_resource type="Texture2D" uid="uid://muiswj5itio4" path="res://resources/icons/Factory.png" id="3_hcrrc"]
 [ext_resource type="Texture2D" uid="uid://tr562byfed0a" path="res://resources/icons/Generator.png" id="4_uh3qv"]
 [ext_resource type="Texture2D" uid="uid://2qky2etb1pkk" path="res://resources/icons/Mine.png" id="5_0832u"]
@@ -133,6 +134,7 @@ value = 100.0
 show_percentage = false
 
 [node name="Units" type="ProgressBar" parent="MarginContainer/HBoxContainer/MarginContainer"]
+clip_children = 2
 layout_mode = 2
 size_flags_vertical = 1
 theme = ExtResource("1_3e6o8")
@@ -141,6 +143,11 @@ theme_override_styles/fill = SubResource("StyleBoxFlat_ijbxl")
 step = 0.001
 value = 50.0
 show_percentage = false
+
+[node name="Banner" parent="MarginContainer/HBoxContainer/MarginContainer/Units" instance=ExtResource("3_aaafv")]
+modulate = Color(1, 1, 1, 0.2)
+show_behind_parent = true
+layout_mode = 1
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/MarginContainer"]
 layout_mode = 2
