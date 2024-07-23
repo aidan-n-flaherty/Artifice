@@ -25,7 +25,6 @@
 #include <cstdlib>
 #include <ctime>
 #include <cmath>
-#include <chrono>
 #include <utility>
 #include <map>
 #include <list>
@@ -363,6 +362,82 @@ void GameInterface::_process(double delta) {
 			for(const auto& pair : fullGame->getVessels()) {
 				bool isVisible = fullGame->withinRange(p, pair.second, fullDiff);
 
+				if(isVisible) {
+					bool hasDisabled = false;
+
+					for(const Event* e : completeGame->getSimulatedEvents()) {
+						if(e->referencesObject(pair.first) && e->getDisabled()) {
+							hasDisabled = true;
+							break;
+						}
+					}
+
+					if(hasDisabled) {
+						const Event* lastVisible = nullptr;
+
+						bool foundIncorrectlyDisabled = false;
+
+						for(const Event* e : completeGame->getSimulatedEvents()) {
+							if(!e->referencesObject(pair.first)) continue;
+
+							// find first event that is correctly disabled
+							if(e->getDisabled() && e->getTimestamp() > fullTime) {
+								std::shared_ptr<Game> gameBeforeEvent = fullCompleteGame->lastStateBefore(e->getTimestamp());
+
+								double gameDiff = e->getTimestamp() - gameBeforeEvent->getTime();
+
+								const VesselOutpostEvent* battle = dynamic_cast<const VesselOutpostEvent*>(e);
+								
+								if(battle) {
+									PositionalObject* a = gameBeforeEvent->getPosObject(battle->getAID());
+									PositionalObject* b = gameBeforeEvent->getPosObject(battle->getBID());
+									
+									Vessel* v = dynamic_cast<Vessel*>(a);
+									if(!v) v = dynamic_cast<Vessel*>(b);
+									
+									if(v && collectedVessels.find(v->getID()) != collectedVessels.end()) continue;
+									
+									if(v && a && b) {
+										if(!fullGame->withinRange(p, a, gameDiff) || !fullGame->withinRange(p, b, gameDiff)) {
+											lastVisible = e;
+											break;
+										} else {
+											foundIncorrectlyDisabled = true;
+										}
+									}
+								} else {
+									Vessel* v = gameBeforeEvent->getVessel(pair.first);
+
+									if(v) {
+										if(!fullGame->withinRange(p, v, gameDiff)) {
+											lastVisible = e;
+											break;
+										} else {
+											foundIncorrectlyDisabled = true;
+										}
+									}
+								}
+							}
+						}
+
+						if(foundIncorrectlyDisabled) {
+							if(!lastVisible) {
+								std::shared_ptr<Game> g = completeGame->setSimulateVessel(pair.first, fullTime, true);
+								if(!modifiedCompleteGame || g->getTime() <= modifiedCompleteGame->getTime()) modifiedCompleteGame = g;
+
+								anyChanged = true;
+								break;
+							} else {
+								std::shared_ptr<Game> g = completeGame->setSimulateVessel(pair.first, std::max(lastVisible->getTimestamp(), fullTime), false);
+								if(!modifiedCompleteGame || g->getTime() <= modifiedCompleteGame->getTime()) modifiedCompleteGame = g;
+
+								anyChanged = true;
+								break;
+							}
+						}
+					}
+				}
+
 				for(const Event* e : completeGame->getSimulatedEvents()) {
 					if(!e->referencesObject(pair.first)) continue;
 
@@ -460,11 +535,11 @@ void GameInterface::_process(double delta) {
 
 		double simulatedDiff = settings.clientToGameTime(getCurrent()) - simulatedGame->getTime();
 
-		Player* p = future ? currentGame->getPlayer(getUserGameID()) : game->getPlayer(getUserGameID());
+		Player* p = simulatingFuture() ? currentGame->getPlayer(getUserGameID()) : game->getPlayer(getUserGameID());
 
 		Player* fullPlayer = fullGame->getPlayer(getUserGameID());
     
-		std::shared_ptr<Game> visibilityGame = future ? currentGame : game;
+		std::shared_ptr<Game> visibilityGame = simulatingFuture() ? currentGame : game;
 		
 		for(const auto& pair : vessels) {
 			Vessel* v = fullGame->getVessel(pair.first);
@@ -472,7 +547,7 @@ void GameInterface::_process(double delta) {
 			pair.second->setDiff(t, timeDiff);
 			pair.second->setSelfOwned(pair.second->getOwnerID() == userGameID && userGameID >= 0);
 			
-            if(future && v && fullPlayer && !fullGame->withinRange(fullPlayer, v, fullDiff)) pair.second->setInRadar(isOffline() || finished);
+            if(simulatingFuture() && v && fullPlayer && !fullGame->withinRange(fullPlayer, v, fullDiff)) pair.second->setInRadar(isOffline() || finished);
 			else pair.second->setInRadar(isOffline() || finished || (p ? visibilityGame->withinRange(p, pair.second->getObj(), timeDiff) : false));
 			
 			if(pair.second->isLoaded()) pair.second->set_visible(pair.second->isInRadar() && !pair.second->getVessel()->getDisabled());
@@ -1189,8 +1264,8 @@ PackedVector2Array GameInterface::getOutpostPositions() {
 	double timeDiff = settings.clientToGameTime(getTime()) - game->getTime();
 	for(auto& pair : outposts) {
 		if(!pair.second->is_visible()) {
-			Player* p = future ? currentGame->getPlayer(getUserGameID()) : game->getPlayer(getUserGameID());
-			std::shared_ptr<Game> visibilityGame = future ? currentGame : game;
+			Player* p = simulatingFuture() ? currentGame->getPlayer(getUserGameID()) : game->getPlayer(getUserGameID());
+			std::shared_ptr<Game> visibilityGame = simulatingFuture() ? currentGame : game;
 
 			pair.second->setDiff(time, timeDiff);
 			pair.second->set_visible(true);
@@ -1426,8 +1501,8 @@ bool GameInterface::canViewNextBattle(int objID) {
 
 	double timeDiff = settings.clientToGameTime(getTime()) - game->getTime();
 
-	Player* p = future ? currentGame->getPlayer(getUserGameID()) : game->getPlayer(getUserGameID());
-	std::shared_ptr<Game> visibilityGame = future ? currentGame : game;
+	Player* p = simulatingFuture() ? currentGame->getPlayer(getUserGameID()) : game->getPlayer(getUserGameID());
+	std::shared_ptr<Game> visibilityGame = simulatingFuture() ? currentGame : game;
 	
 	std::pair<int, int> pair = b->getBattleObjects();
 

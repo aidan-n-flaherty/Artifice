@@ -139,6 +139,4 @@ func _on_next_hire_pressed():
 func _on_back_pressed():
 	specialistNum = self.specialistNums.pop_back()
 	
-	print("Number ", specialistNum)
-	
 	initNum(specialistNum)

@@ -7,18 +7,19 @@
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tbw38"]
 bg_color = Color(0, 0, 0, 0.235294)
+border_color = Color(0.156863, 0.156863, 0.156863, 0.392157)
 corner_radius_top_left = 50
 corner_radius_top_right = 50
 corner_radius_bottom_right = 50
 corner_radius_bottom_left = 50
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pnbym"]
-bg_color = Color(0, 0, 0, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.270588, 0.270588, 0.270588, 1)
+bg_color = Color(0.6, 0.6, 0.6, 0)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.345946, 0.345946, 0.345946, 0.392157)
 corner_radius_top_left = 40
 corner_radius_top_right = 40
 corner_radius_bottom_right = 40
@@ -81,28 +82,39 @@ stretch_mode = 4
 [node name="ScrollContainer" parent="MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_c8xu0")]
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_vertical = 1
 horizontal_scroll_mode = 1
 
 [node name="PlayerList" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_vertical = 3
+size_flags_vertical = 8
 mouse_filter = 0
 theme_override_constants/separation = 10
 alignment = 2
 
-[node name="ScrollContainer" parent="MarginContainer/VBoxContainer" instance=ExtResource("3_c8xu0")]
+[node name="Control" type="Control" parent="MarginContainer/VBoxContainer"]
+clip_contents = true
 layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ScrollContainer" parent="MarginContainer/VBoxContainer/Control" instance=ExtResource("3_c8xu0")]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
 horizontal_scroll_mode = 0
 
-[node name="MessageContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer"]
+[node name="MessageContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Control/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 10
 mouse_filter = 2
 
-[node name="Control" type="Control" parent="MarginContainer/VBoxContainer/ScrollContainer/MessageContainer"]
+[node name="Control" type="Control" parent="MarginContainer/VBoxContainer/Control/ScrollContainer/MessageContainer"]
 layout_mode = 2
 mouse_filter = 2
 
@@ -118,10 +130,10 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_pnbym")
 custom_minimum_size = Vector2(2.08165e-12, 2.08165e-12)
 layout_mode = 2
 mouse_filter = 0
-theme_override_constants/margin_left = 30
-theme_override_constants/margin_top = 20
-theme_override_constants/margin_right = 30
-theme_override_constants/margin_bottom = 20
+theme_override_constants/margin_left = 25
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/MarginContainer/MarginContainer"]
 layout_mode = 2
@@ -149,7 +161,7 @@ stretch_mode = 0
 
 [connection signal="resized" from="Control" to="." method="_on_resized"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/Back" to="." method="_on_back_pressed"]
-[connection signal="resized" from="MarginContainer/VBoxContainer/ScrollContainer" to="." method="_on_text_edit_resized"]
-[connection signal="resized" from="MarginContainer/VBoxContainer/ScrollContainer/MessageContainer" to="." method="_on_message_container_resized"]
+[connection signal="resized" from="MarginContainer/VBoxContainer/Control/ScrollContainer" to="." method="_on_text_edit_resized"]
+[connection signal="resized" from="MarginContainer/VBoxContainer/Control/ScrollContainer/MessageContainer" to="." method="_on_message_container_resized"]
 [connection signal="text_changed" from="MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/TextEdit" to="." method="_on_text_edit_text_changed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/Send" to="." method="_on_send_pressed"]

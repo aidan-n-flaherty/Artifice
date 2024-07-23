@@ -22,6 +22,8 @@ signal loadPrevious
 
 signal loadCurrent
 
+signal refreshBattle(gameID)
+
 signal transitionToAD
 
 var version = "1.17"
@@ -902,6 +904,7 @@ func addOrder(gameID: int, type, referenceID, timestamp, arguments):
 		game.addOrder(type, int(game.getNextOfflineOrder()), int(referenceID), bool(false), float(timestamp), int(0), PackedInt32Array(arguments), int(arguments.size()))
 		
 		print("Order registered")
+		
 		return
 	
 	print(game.getTime())
@@ -945,6 +948,8 @@ func replaceOrder(orderID: int, gameID: int, type: String, referenceID: int, can
 		return false
 	
 	print("Order re-registered")
+	
+	emit_signal("refreshBattle", gameID)
 	
 	return true
 

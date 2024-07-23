@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://4o681gofc1wg"]
+[gd_scene load_steps=7 format=3 uid="uid://4o681gofc1wg"]
 
 [ext_resource type="Script" path="res://Message.gd" id="1_clcsq"]
 [ext_resource type="Theme" uid="uid://tg7ina762c6q" path="res://resources/themes/UITheme.tres" id="2_jleqy"]
+[ext_resource type="FontFile" uid="uid://bb58old8nuhw8" path="res://resources/fonts/astonpoliz/Astonpoliz.ttf" id="3_2elsh"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nk3lw"]
 bg_color = Color(0.247059, 0.521569, 0.968627, 1)
@@ -16,10 +17,18 @@ corner_radius_top_left = 25
 corner_radius_top_right = 25
 corner_radius_bottom_right = 25
 
+[sub_resource type="FontVariation" id="FontVariation_pxmlk"]
+base_font = ExtResource("3_2elsh")
+variation_embolden = 0.5
+spacing_space = 4
+spacing_top = 3
+spacing_bottom = -1
+
 [node name="Message" type="MarginContainer"]
+custom_minimum_size = Vector2(2.08165e-12, 2.08165e-12)
 anchors_preset = 10
 anchor_right = 1.0
-offset_bottom = 72.0
+offset_bottom = 49.0
 grow_horizontal = 2
 size_flags_horizontal = 3
 mouse_filter = 2
@@ -106,14 +115,15 @@ custom_minimum_size = Vector2(2.08165e-12, 2.08165e-12)
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 15
+theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 15
+theme_override_constants/margin_bottom = 10
 
 [node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/Control/MarginContainer"]
 custom_minimum_size = Vector2(2.08165e-12, 2.08165e-12)
 layout_mode = 2
 theme = ExtResource("2_jleqy")
+theme_override_fonts/font = SubResource("FontVariation_pxmlk")
 
 [node name="RSpacer2" type="Control" parent="VBoxContainer/HBoxContainer"]
 visible = false

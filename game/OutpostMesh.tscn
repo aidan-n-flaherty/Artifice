@@ -1,8 +1,7 @@
-[gd_scene load_steps=16 format=3 uid="uid://b16kytc1dy61a"]
+[gd_scene load_steps=15 format=3 uid="uid://b16kytc1dy61a"]
 
 [ext_resource type="Script" path="res://OutpostMesh.gd" id="1_wyr4n"]
 [ext_resource type="PackedScene" uid="uid://b01b6amie746a" path="res://OutpostSubMesh.tscn" id="2_ihlos"]
-[ext_resource type="Texture2D" uid="uid://bmf74bvs118ed" path="res://resources/images/locked.png" id="4_2uwqf"]
 [ext_resource type="Texture2D" uid="uid://458uxurryqvh" path="res://resources/images/Banner3.png" id="20_v2hdy"]
 [ext_resource type="Script" path="res://OutpostInfo.gd" id="21_b5fe2"]
 [ext_resource type="Texture2D" uid="uid://mitwiba1a215" path="res://resources/images/black_circle.png" id="22_3le47"]
@@ -79,14 +78,6 @@ pixel_size = 0.15
 axis = 1
 double_sided = false
 alpha_antialiasing_edge = 1.0
-
-[node name="Locked" type="Sprite3D" parent="."]
-transform = Transform3D(-1, 6.18172e-08, -6.18172e-08, 2.4663e-16, 0.707107, 0.707107, 8.74228e-08, 0.707107, -0.707107, 2.08165e-12, 24.3102, -2.97061)
-sorting_use_aabb_center = false
-cast_shadow = 0
-modulate = Color(1, 0, 0, 0.509804)
-pixel_size = 0.035
-texture = ExtResource("4_2uwqf")
 
 [node name="SubViewportTemp" type="Control" parent="."]
 visible = false

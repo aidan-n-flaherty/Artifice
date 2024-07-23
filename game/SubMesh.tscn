@@ -1,17 +1,12 @@
-[gd_scene load_steps=25 format=3 uid="uid://c80qrqpvv8oji"]
+[gd_scene load_steps=8 format=3 uid="uid://c80qrqpvv8oji"]
 
 [ext_resource type="Script" path="res://SubMesh.gd" id="1_qc4jq"]
-[ext_resource type="PackedScene" uid="uid://c3ctitj3875oy" path="res://Counter.tscn" id="4_bhkel"]
 [ext_resource type="Texture2D" uid="uid://dc54tlteq11rj" path="res://resources/icons/Gift.png" id="5_8xxne"]
-[ext_resource type="ArrayMesh" uid="uid://dyvoutps7c1tx" path="res://resources/airship/subAlternate.obj" id="6_cnn75"]
 [ext_resource type="ArrayMesh" uid="uid://d3qsofbw0d26t" path="res://resources/airship/counter.obj" id="6_j1yfp"]
-[ext_resource type="ArrayMesh" uid="uid://2po5hsu770qt" path="res://resources/airship/subAlternate2.obj" id="6_nh225"]
-[ext_resource type="Shader" path="res://Squid.gdshader" id="7_bu4ed"]
-[ext_resource type="Shader" path="res://Tentacle.gdshader" id="8_mrx7e"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_s31l7"]
-radius = 1.676
-height = 10.351
+radius = 2.0
+height = 13.487
 
 [sub_resource type="FontVariation" id="FontVariation_o1pwa"]
 variation_embolden = 0.5
@@ -26,70 +21,6 @@ resource_local_to_scene = true
 shading_mode = 0
 disable_receive_shadows = true
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_c101x"]
-resource_local_to_scene = true
-albedo_color = Color(0, 0, 0, 1)
-metallic = 0.5
-roughness = 0.0
-emission_energy_multiplier = 16.0
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_i8kwj"]
-emission_enabled = true
-emission = Color(1, 1, 1, 1)
-emission_energy_multiplier = 16.0
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_ft2ed"]
-noise_type = 2
-frequency = 0.0109
-cellular_distance_function = 1
-cellular_return_type = 6
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ryxo7"]
-seamless = true
-noise = SubResource("FastNoiseLite_ft2ed")
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_v0v5p"]
-resource_local_to_scene = true
-render_priority = 0
-shader = ExtResource("7_bu4ed")
-shader_parameter/speed = 0.05
-shader_parameter/id = 0
-shader_parameter/screen_texture = SubResource("NoiseTexture2D_ryxo7")
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_nlc8g"]
-fractal_octaves = 1
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_cwf27"]
-seamless = true
-noise = SubResource("FastNoiseLite_nlc8g")
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_taklp"]
-noise_type = 2
-cellular_distance_function = 1
-cellular_return_type = 6
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_cc2fa"]
-noise = SubResource("FastNoiseLite_taklp")
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_p20rv"]
-resource_local_to_scene = true
-render_priority = 0
-shader = ExtResource("8_mrx7e")
-shader_parameter/color = Vector3(1, 1, 2.08165e-12)
-shader_parameter/speed = 0.05
-shader_parameter/noise = SubResource("NoiseTexture2D_cc2fa")
-shader_parameter/current = SubResource("NoiseTexture2D_cwf27")
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_k1ifo"]
-albedo_color = Color(0, 0, 0, 1)
-metallic = 1.0
-metallic_specular = 0.0
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_p13wc"]
-albedo_color = Color(0, 0, 0, 1)
-metallic = 1.0
-metallic_specular = 0.0
-
 [node name="SubMesh" type="Area3D"]
 monitoring = false
 monitorable = false
@@ -100,10 +31,6 @@ transform = Transform3D(-4.37114e-08, 1, -4.37114e-08, 0, -4.37114e-08, -1, -1, 
 shape = SubResource("CapsuleShape3D_s31l7")
 
 [node name="RotationInvariant" type="Node3D" parent="."]
-
-[node name="Units" parent="RotationInvariant" instance=ExtResource("4_bhkel")]
-transform = Transform3D(0.75, 0, 0, 0, 0.75, 0, 0, 0, 0.75, 0, 40, -40)
-visible = false
 
 [node name="UnitsLabel" type="Label3D" parent="RotationInvariant"]
 transform = Transform3D(-1, -6.18172e-08, 6.18172e-08, 2.4663e-16, 0.707107, 0.707107, -8.74228e-08, 0.707107, -0.707107, 2.08165e-12, 2, -0.8)
@@ -125,24 +52,3 @@ transform = Transform3D(1.63, 0, 0, 0, 0.7, 0, 0, 0, 1.63, 2.08165e-12, 0.893262
 cast_shadow = 0
 mesh = ExtResource("6_j1yfp")
 surface_material_override/0 = SubResource("StandardMaterial3D_5j0p0")
-
-[node name="Submarine" type="MeshInstance3D" parent="."]
-transform = Transform3D(-5.7699e-08, 0, -1.32, 0, 1.32, 0, 1.32, 0, -5.7699e-08, 1.3176, -0.270477, 0)
-visible = false
-mesh = ExtResource("6_cnn75")
-surface_material_override/0 = SubResource("StandardMaterial3D_c101x")
-surface_material_override/1 = SubResource("StandardMaterial3D_5j0p0")
-surface_material_override/2 = SubResource("StandardMaterial3D_c101x")
-surface_material_override/3 = SubResource("StandardMaterial3D_5j0p0")
-surface_material_override/4 = SubResource("StandardMaterial3D_c101x")
-surface_material_override/5 = SubResource("StandardMaterial3D_5j0p0")
-surface_material_override/6 = SubResource("StandardMaterial3D_i8kwj")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(-5.68248e-08, 0, -1.3, 0, 1.3, 0, 1.3, 0, -5.68248e-08, 0, 0, 0)
-mesh = ExtResource("6_nh225")
-surface_material_override/0 = SubResource("ShaderMaterial_v0v5p")
-surface_material_override/1 = SubResource("ShaderMaterial_p20rv")
-surface_material_override/2 = SubResource("StandardMaterial3D_5j0p0")
-surface_material_override/3 = SubResource("StandardMaterial3D_k1ifo")
-surface_material_override/4 = SubResource("StandardMaterial3D_p13wc")

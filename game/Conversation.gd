@@ -18,7 +18,7 @@ var temporary
 
 var playerTags = []
 
-@onready var container = $MarginContainer/VBoxContainer/ScrollContainer 
+@onready var container = $MarginContainer/VBoxContainer/Control/ScrollContainer 
 
 var atBottom = true
 
@@ -34,11 +34,19 @@ var received = false
 
 var sending = false
 
+var maxWidth = 0
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	GameData.chatChanged.connect(chatChanged)
 	scroll_to_bottom()
-	$MarginContainer/VBoxContainer/ScrollContainer.get_v_scroll_bar().connect("value_changed", scroll_changed)
+	$MarginContainer/VBoxContainer/Control/ScrollContainer.get_v_scroll_bar().connect("value_changed", scroll_changed)
+	
+	await get_tree().process_frame
+	self.maxWidth = $MarginContainer/VBoxContainer/Control.size.x
+	
+	if chat:
+		refresh(chat.messages)
 	
 func scroll_to_bottom():
 	container.set_deferred("scroll_vertical",container.get_v_scroll_bar().max_value)
@@ -82,9 +90,9 @@ func init(gameID: int, chatID: int):
 			playerTags.push_back(playerTag)
 			$MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/PlayerList.add_child(playerTag)
 	
-	refresh(chat.messages)
-	
 func refresh(messageList):
+	messageList = messageList.filter(func(message): return message.chatID == self.chatID)
+
 	messageList.sort_custom(func(a, b): return a.timestamp < b.timestamp)
 	
 	var lastSenderID = -1
@@ -116,11 +124,11 @@ func refresh(messageList):
 		else:
 			messageNode = preload("res://Message.tscn").instantiate()
 			if players.has(int(message.senderID)):
-				messageNode.init(message, players[int(message.senderID)].getColor())
+				messageNode.init(maxWidth, message, players[int(message.senderID)].getColor())
 			else:
-				messageNode.init(message, Color.DIM_GRAY)
+				messageNode.init(maxWidth, message, Color.DIM_GRAY)
 			
-			$MarginContainer/VBoxContainer/ScrollContainer/MessageContainer.add_child(messageNode)
+			$MarginContainer/VBoxContainer/Control/ScrollContainer/MessageContainer.add_child(messageNode)
 			
 		messageNode.displayName(lastSenderID != message.senderID or message.timestamp > lastTimestamp + 10 * 60)
 		messageNode.displayTime(message.timestamp > lastTimestamp + 10 * 60)
@@ -132,7 +140,7 @@ func refresh(messageList):
 		
 		messages[message.id] = messageNode
 			
-		$MarginContainer/VBoxContainer/ScrollContainer/MessageContainer.move_child(messageNode, index)
+		$MarginContainer/VBoxContainer/Control/ScrollContainer/MessageContainer.move_child(messageNode, index)
 	
 	GameData.readChat(chatID)
 	
@@ -148,6 +156,12 @@ func refresh(messageList):
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	if self.maxWidth != $MarginContainer/VBoxContainer/Control.size.x:
+		self.maxWidth = $MarginContainer/VBoxContainer/Control.size.x
+		
+		for messageNode in self.messages.values():
+			messageNode.setMaxWidth(self.maxWidth)
+	
 	var canSend = false
 	for tag in playerTags:
 		if tag.isSelected():
@@ -158,10 +172,11 @@ func _process(delta):
 	$MarginContainer/VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/Send.modulate = Color(0.9, 0.9, 0.9) if (not canSend or sending) else Color(1.0, 1.0, 1.0)
 
 func chatChanged(chatID: int):
-	if chat and chatID == chat.id:
-		refresh(chat.messages)
-	else:
-		init(gameID, chatID)
+	if chatID == self.chatID:
+		if chat:
+			refresh(chat.messages)
+		else:
+			init(gameID, self.chatID)
 
 func _on_back_pressed():
 	emit_signal("deselected", self)
@@ -204,7 +219,7 @@ func scroll_changed(value):
 	
 	if not atTop and container.scroll_vertical < container.get_v_scroll_bar().min_value + 40:
 		atTop = true
-		prevSize = $MarginContainer/VBoxContainer/ScrollContainer/MessageContainer.size.y
+		prevSize = $MarginContainer/VBoxContainer/Control/ScrollContainer/MessageContainer.size.y
 		maintainScroll = true
 		GameData.loadMessages(chatID)
 		
@@ -219,9 +234,9 @@ func _on_message_container_resized():
 	if atBottom:
 		call_deferred("scroll_to_bottom")
 	elif maintainScroll:
-		container.set_deferred("scroll_vertical", $MarginContainer/VBoxContainer/ScrollContainer/MessageContainer.size.y - prevSize)
+		container.set_deferred("scroll_vertical", $MarginContainer/VBoxContainer/Control/ScrollContainer/MessageContainer.size.y - prevSize)
 		
-		container.swipe_start = Vector2(container.get_h_scroll(), $MarginContainer/VBoxContainer/ScrollContainer/MessageContainer.size.y - prevSize)
+		container.swipe_start = Vector2(container.get_h_scroll(), $MarginContainer/VBoxContainer/Control/ScrollContainer/MessageContainer.size.y - prevSize)
 		container.swipe_mouse_start = get_global_mouse_position()
 		container.swipe_mouse_times = [Time.get_ticks_msec()]
 		container.swipe_mouse_positions = [container.swipe_mouse_start]

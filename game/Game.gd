@@ -135,6 +135,8 @@ func init(gameID: int, offline=false):
 	tabDisplay().get_node("Panel/Shop").init(gameID)
 	tabDisplay().get_node("Panel/Orders").init(gameID)
 	
+	GameData.refreshBattle.connect(refreshBattle)
+	
 	var details = GameData.getGameDetails(gameID)
 	
 	
@@ -263,6 +265,20 @@ func selectVessel(vessel):
 	scene.battleForecastToggle.connect(battleForecast)
 	$Viewport/Viewport3D/CameraManager.selected(vessel)
 	setDisplay(scene)
+
+func refreshBattle(gameID: int):
+	print(tabDisplay().get_node("Panel/Battle Forecast").visible)
+	if gameID == self.gameID and tabDisplay().get_node("Panel/Battle Forecast").visible:
+		var objID = tabDisplay().get_node("Panel/Battle Forecast").getObjectID()
+		var scene = tabDisplay().get_node("Panel/Battle Forecast")
+		scene.queue_free()
+		
+		tabDisplay().get_node("Panel").remove_child(scene)
+		
+		scene = preload("res://Battle Forecast.tscn").instantiate()
+		scene.init(gameID, objID)
+		tabDisplay().get_node("Panel").add_child(scene)
+		setMenuDisplay(scene, true)
 
 func battleForecast(node):
 	if tabDisplay().get_node("Panel/Battle Forecast").visible:
