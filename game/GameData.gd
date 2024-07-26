@@ -429,7 +429,7 @@ func viewGameCompletion(id: int, past=false):
 		return
 	
 	if id == -2:
-		viewSandboxGameCompletion(-1)
+		viewSandboxGameCompletion(-2)
 		return
 	
 	if not hasGame(id):
@@ -465,7 +465,7 @@ func viewSandboxGameCompletion(id: int):
 			}
 		},
 		1: {
-			"id": -1,
+			"id": 0, #special id for sandbox bot only, prevents calls from botLogic()
 			"username": "Bot 1",
 			"stats": {
 				"rating": 1200
@@ -495,20 +495,6 @@ func viewSandboxGameCompletion(id: int):
 
 func viewSinglePlayerGameCompletion(id: int):
 	var startTime = Time.get_unix_time_from_system()
-	
-	#gameDetails[-2] = {
-		#"gameData": {
-			#"hostID": getSelfID(),
-			#"startTime": startTime,
-			#"hasChatNotifications": false,
-			#"hasNotifications": false,
-			#"playerCount": 10,
-			#"finished": false
-		#},
-		#"gameSettings": {
-			#"playerCap": 10
-		#}
-	#}
 	
 	var playerList = {
 		0 : {
@@ -855,7 +841,7 @@ func addSingleplayerGame(data):
 func addSandboxGame(data):
 	var startTime = Time.get_unix_time_from_system()
 	
-	gameDetails[-1] = {
+	gameDetails[-2] = {
 		"gameData": {
 			"hostID": getSelfID(),
 			"startTime": startTime,
@@ -866,7 +852,7 @@ func addSandboxGame(data):
 		},
 		"gameSettings": {}
 	}
-	gameDetails[-1].gameSettings = data
+	gameDetails[-2].gameSettings = data
 	
 	
 

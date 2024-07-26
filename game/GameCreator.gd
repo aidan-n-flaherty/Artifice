@@ -17,7 +17,6 @@ func activate():
 			GameData.currentTab = "res://CurrentGameList.tscn"
 			GameData.goto_scene("res://MainMenu.tscn")
 	
-	#refactor to get rid of mismatch between 1s and 2s
 	if onlineMenu == 1:
 		var data = serializeSingleplayer()
 		GameData.addSingleplayerGame(data)

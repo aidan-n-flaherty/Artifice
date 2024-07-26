@@ -114,9 +114,10 @@ func init(gameID: int, offline=false):
 	if offline:
 		#For now we will use the IDs to determine which offline game mode(s) to load up
 		if self.gameID == -1:
-			game.setSandbox()
-		if self.gameID == -2:
 			game.setSingleplayer()
+		if self.gameID == -2:
+			game.setSandbox()
+
 	
 		
 	game.resume()

@@ -22,6 +22,7 @@
 #include <godot_cpp/variant/string.hpp>
 #include <godot_cpp/variant/dictionary.hpp>
 #include <godot_cpp/variant/vector3.hpp>
+#include <godot_cpp/variant/utility_functions.hpp>
 #include <cstdlib>
 #include <ctime>
 #include <cmath>
@@ -30,6 +31,8 @@
 #include <map>
 #include <list>
 #include <unordered_set>
+#include <sstream>
+#include <string>
 
 using namespace godot;
 
@@ -446,6 +449,8 @@ void GameInterface::_process(double delta) {
 				update();
 				std::cout << "Updated!" << std::endl;
 			}
+
+
 		}
 	}
 	
@@ -491,6 +496,19 @@ void GameInterface::_process(double delta) {
 
 		floorDisplay->setDiff(timeDiff, simulatedDiff, t);
 		floorDisplay->queue_redraw();
+
+
+		//telling the bots to make decisions
+		if(singleRun) return;
+		std::unordered_map<int, Player*> playerList = fullGame->getPlayers();
+		for(std::unordered_map<int, Player*>::iterator iter = playerList.begin(); iter != playerList.end(); iter++) {
+			//any player with an id lower than 0 is a bot
+			//UtilityFunctions::print(iter->second->getUserID());
+			if(iter->second->getUserID() < 0) {
+				botLogic(iter->second->getUserID());
+			}
+		}
+		singleRun = true;
 	}
 }
 
@@ -751,6 +769,91 @@ void GameInterface::sendTo(int id) {
 			return;
 		}
 	}
+}
+
+
+//modified version of sendTo used by bots for communicating orders
+void GameInterface::botOrder(Outpost* myOp, Outpost* enemyOp) {
+	//if(current < getStartTime()) current = getStartTime() + epsilon;
+
+	double simulatedDiff = settings.clientToGameTime(getCurrent()) - simulatedGame->getTime();
+	
+	Outpost* o1 = myOp;
+
+	Outpost* o2 = enemyOp;
+
+	int units = myOp->getUnitsAt(simulatedDiff);
+
+	uint32_t parameters[] = { uint32_t(std::max(selectedSpecialists.empty() ? 1 : 0, int(percent * units))), uint32_t(selected), enemyOp->getID() };
+	PackedInt32Array arguments;
+
+	for(int i = 0; i < 3; i++) arguments.push_back(parameters[i]);
+
+	while(!selectedSpecialists.empty()) {
+		if(simulatedGame->getSpecialist(*selectedSpecialists.begin())->getOwnerID() == userGameID) {
+			arguments.push_back(uint32_t(*selectedSpecialists.begin()));
+			if(getNode(selected)) getNode(selected)->setSpecialistSelected(*selectedSpecialists.begin(), false);
+		}
+		selectedSpecialists.erase(selectedSpecialists.begin());
+	}
+
+	if(getNode(selected)) getNode(selected)->clearSelectedSpecialists();
+
+	if(!isOffline()) emit_signal("addOrder", "SEND", simulatedGame->getReferenceID(), current, arguments);
+	else addOrder("SEND", getNextOfflineOrder(), simulatedGame->getReferenceID(), false, current, isOffline() ? o1->getOwnerID() : userGameID, arguments, arguments.size());
+}
+
+//pass in the id of the bot and the bot will choose to make a decision
+void GameInterface::botLogic(int id) {
+	std::unordered_map<int, Outpost*> outposts = game->getOutposts(id);
+
+	//iterating through all current outposts and categorizing them
+	//into outposts the bot does and does not own
+	//being lazy about my datastructures and just storing everything in a vector
+	//I know this is like *the* bad gamedev practice but oh well
+	std::vector<Outpost*> myOutposts;
+	std::vector<Outpost*> enemyOutposts;
+	
+	for(std::unordered_map<int, Outpost*>::iterator iter = outposts.begin(); iter != outposts.end(); ++iter) {
+
+		//creating a pointer to the current outpost
+		Outpost* op = iter->second;
+
+		//determining if the outpost belongs to me or the enemy
+		if(id != op->getOwnerID()) enemyOutposts.push_back(op);
+		else myOutposts.push_back(op);
+	}
+
+	//iterating through all the enemy outposts and looking for one which we have enough units
+	//to massacre, for now not taking into account distance or specialists, or shield being lowered
+
+	UtilityFunctions::print("My ID:");
+	UtilityFunctions::print(id);
+	UtilityFunctions::print("My outposts:");
+	UtilityFunctions::print(myOutposts.size());
+	UtilityFunctions::print("Enemy outposts:");
+	UtilityFunctions::print(enemyOutposts.size());
+	UtilityFunctions::print("\n");
+
+
+	for(int i = 0; i < enemyOutposts.size(); ++i) {
+		UtilityFunctions::print("enemy Units: ");
+		UtilityFunctions::print(enemyOutposts[i]->getUnits());
+		UtilityFunctions::print("Enemy Shield");
+		UtilityFunctions::print(enemyOutposts[i]->getMaxShield());
+		for(int j = 0; j < myOutposts.size(); ++j) {
+			
+			UtilityFunctions::print("My Units: ");
+			UtilityFunctions::print(myOutposts[j]->getUnits());
+
+			if(myOutposts[j]->getUnits() > enemyOutposts[i]->getUnits() + enemyOutposts[i]->getMaxShield()) {
+				botOrder(myOutposts[i], enemyOutposts[i]);
+			}
+		}
+	}
+
+	UtilityFunctions::print("\n");
+	UtilityFunctions::print("\n");
 }
 
 // event propagated from positional nodes, occurs when something is clicked on
