@@ -158,7 +158,6 @@ func deserialize(gameID):
 	
 	simSp /= 1 if simulationTimescale == "days" else 60 if simulationTimescale == "hours" else 60*60
 	$MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/SpeedSlider.value = simSp
-
 	
 	if (simulationTimescale != "days"):
 		$MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHours.visible = false
@@ -264,7 +263,6 @@ func updatePlayers(gameID, settings):
 	var playerViews = []
 	
 	for n in $MarginContainer/VBoxContainer/Players/MarginContainer/PlayerList/GridContainer.get_children():
-		
 		$MarginContainer/VBoxContainer/Players/MarginContainer/PlayerList/GridContainer.remove_child(n)
 		n.queue_free() 
 		

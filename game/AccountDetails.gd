@@ -32,10 +32,17 @@ func init(userID: int):
 		await GameData.loadUser(userID)
 		
 	
-	for i in 4:
-		var dummy_label = Label.new()
-		dummy_label.text = str(i)
-		$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/FriendsList/VBoxContainer.add_child(dummy_label)
+	#for i in 4:
+		#var dummy_label = Label.new()
+		#dummy_label.text = str(i)
+		#$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/FriendsList/VBoxContainer.add_child(dummy_label)
+		
+	var friendView = preload("res://friendView.tscn").instantiate();
+	#$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/FriendsList/Friends.add_child(friendView);
+	print("first", $MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/FriendsList/Friends.get_child_count())
+	for i in 5:
+		print("hello ", i)
+		$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/FriendsList/Friends.add_child(friendView);
 
 func updateUser(userID):
 	if userID != self.userID:
@@ -81,8 +88,11 @@ func updateUser(userID):
 	$MarginContainer/ScrollContainer/VBoxContainer/GridContainer/GraphicsButtons/PushOff.set_pressed_no_signal(settings.has("graphics") and settings["graphics"] == "simple")
 	
 	$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/Delete.visible = isSelf
-
-
+	
+	
+	#for n in $MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/FriendsList/Friends.get_children():
+		
+		
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	if update > 0:
@@ -183,3 +193,8 @@ func _on_graphics_push_on_toggled(toggled_on):
 func _on_graphics_push_off_toggled(toggled_on):
 	GameData.localSettings["graphics"] = "simple"
 	GameData.saveLocalSettings()
+
+
+func on_remove_friend_pressed():
+	#code to remove friend.
+	var thing;

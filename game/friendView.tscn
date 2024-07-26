@@ -1,0 +1,32 @@
+[gd_scene load_steps=2 format=3 uid="uid://bmpvpnmryf2w2"]
+
+[ext_resource type="Script" path="res://AccountDetails.gd" id="1_scex3"]
+
+[node name="Node2D" type="MarginContainer"]
+anchors_preset = -1
+anchor_right = 0.181
+anchor_bottom = 0.011
+offset_right = 48.52
+offset_bottom = 11.88
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel"]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 3.0
+offset_right = 100.0
+offset_bottom = 26.0
+text = "PlayerName"
+
+[node name="Button" type="Button" parent="Panel"]
+layout_mode = 0
+offset_left = 176.0
+offset_top = 1.0
+offset_right = 243.0
+offset_bottom = 32.0
+text = "remove"
+script = ExtResource("1_scex3")
+
+[connection signal="pressed" from="Panel/Button" to="Panel/Button" method="on_remove_friend_pressed"]
