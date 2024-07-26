@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://tclpn61qvqfa"]
+[gd_scene load_steps=13 format=3 uid="uid://tclpn61qvqfa"]
 
 [ext_resource type="Script" path="res://GuildMemScreen.gd" id="1_dmpbr"]
 [ext_resource type="Theme" uid="uid://c4m6lidwyxgc" path="res://resources/UITheme.tres" id="2_3u3c2"]
@@ -18,6 +18,35 @@ content_margin_right = 25.0
 content_margin_bottom = 10.0
 bg_color = Color(0.588235, 0.160784, 0.0784314, 1)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tahyh"]
+bg_color = Color(0.0980392, 0.0980392, 0.0980392, 0.501961)
+expand_margin_left = 10.0
+expand_margin_top = 10.0
+expand_margin_right = 5.0
+expand_margin_bottom = 10.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qx7bg"]
+content_margin_left = 25.0
+content_margin_top = 10.0
+content_margin_right = 25.0
+content_margin_bottom = 10.0
+bg_color = Color(0.196078, 0.439216, 0.94902, 0.501961)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1vtfj"]
+bg_color = Color(0.0745098, 0.0745098, 0.0745098, 0.87451)
+
+[sub_resource type="LabelSettings" id="LabelSettings_mwijy"]
+font_size = 25
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2wj2h"]
+bg_color = Color(0.207843, 0.207843, 0.207843, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_brb1t"]
+font_size = 50
+
+[sub_resource type="LabelSettings" id="LabelSettings_y3pn1"]
+font_size = 24
+
 [node name="GuildMemScreen" type="MarginContainer"]
 offset_right = 1080.0
 offset_bottom = 1920.0
@@ -29,30 +58,30 @@ layout_mode = 2
 theme = ExtResource("2_3u3c2")
 theme_override_constants/margin_top = 50
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+[node name="GuildInfoBox" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
 
-[node name="TitleBox" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
+[node name="TitleBox" type="MarginContainer" parent="MarginContainer/GuildInfoBox"]
 layout_mode = 2
 theme_override_constants/margin_left = 50
 theme_override_constants/margin_top = 50
 theme_override_constants/margin_right = 50
 theme_override_constants/margin_bottom = 50
 
-[node name="Panel" type="Panel" parent="MarginContainer/VBoxContainer/TitleBox"]
+[node name="Panel" type="Panel" parent="MarginContainer/GuildInfoBox/TitleBox"]
 visible = false
 modulate = Color(1, 1, 1, 0.545098)
 layout_mode = 2
 theme = ExtResource("2_3u3c2")
 
-[node name="UserGuild" type="Label" parent="MarginContainer/VBoxContainer/TitleBox"]
+[node name="UserGuild" type="Label" parent="MarginContainer/GuildInfoBox/TitleBox"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 39
 theme_override_styles/normal = SubResource("StyleBoxFlat_5bkhp")
 text = "Placeholder"
 horizontal_alignment = 1
 
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer"]
+[node name="Label" type="Label" parent="MarginContainer/GuildInfoBox"]
 visible = false
 layout_mode = 2
 text = "This is placeholder text to indicate that you have successfully navigated
@@ -60,7 +89,16 @@ text = "This is placeholder text to indicate that you have successfully navigate
 label_settings = SubResource("LabelSettings_sggsb")
 horizontal_alignment = 1
 
-[node name="TestLeaveGuild" type="Button" parent="MarginContainer/VBoxContainer"]
+[node name="PlayercountLeave" type="MarginContainer" parent="MarginContainer/GuildInfoBox"]
+layout_mode = 2
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_right = 40
+
+[node name="LeaveAndCount" type="HBoxContainer" parent="MarginContainer/GuildInfoBox/PlayercountLeave"]
+layout_direction = 3
+layout_mode = 2
+
+[node name="TestLeaveGuild" type="Button" parent="MarginContainer/GuildInfoBox/PlayercountLeave/LeaveAndCount"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
@@ -68,8 +106,78 @@ theme_override_font_sizes/font_size = 29
 theme_override_styles/normal = SubResource("StyleBoxFlat_n0k2f")
 text = "Leave Guild"
 
+[node name="PlayercountMargins" type="MarginContainer" parent="MarginContainer/GuildInfoBox/PlayercountLeave/LeaveAndCount"]
+layout_mode = 2
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_right = 15
+
+[node name="Playercount" type="Label" parent="MarginContainer/GuildInfoBox/PlayercountLeave/LeaveAndCount/PlayercountMargins"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxFlat_tahyh")
+text = "Wassup"
+
+[node name="OpenLeaderMenu" type="Button" parent="MarginContainer/GuildInfoBox/PlayercountLeave/LeaveAndCount"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 29
+theme_override_styles/normal = SubResource("StyleBoxFlat_qx7bg")
+text = "Manage Guild"
+
+[node name="ChatandLeaderMenu" type="MarginContainer" parent="MarginContainer/GuildInfoBox"]
+layout_mode = 2
+theme_override_constants/margin_left = 25
+theme_override_constants/margin_top = 25
+theme_override_constants/margin_right = 25
+theme_override_constants/margin_bottom = 25
+
+[node name="Label" type="Label" parent="MarginContainer/GuildInfoBox/ChatandLeaderMenu"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_1vtfj")
+text = "Lorem ipsum odor amet, consectetuer adipiscing elit. 
+Taciti consectetur elit pretium tellus ante volutpat finibus tortor lacus. 
+Euismod magna nisl ipsum nascetur senectus. Volutpat mollis cras fusce parturient, at himenaeos eleifend mauris. 
+Porttitor tortor sollicitudin rhoncus mauris lacinia amet. 
+Nostra arcu aptent inceptos dignissim mollis iaculis tempor penatibus. Ante mollis potenti tristique vitae viverra efficitur non accumsan? Bibendum 
+aptent tempor placerat augue nulla neque ad. Et senectus at curae, pulvinar tristique leo condimentum quisque. 
+Ac dictumst ac lacus risus lectus risus elementum potenti malesuada.
+
+Sollicitudin feugiat lobortis ultricies torquent lacus blandit interdum. Condimentum nisl ex volutpat netus posuere suspendisse. 
+Imperdiet proin molestie curae gravida platea lorem vestibulum convallis. Gravida penatibus aliquet tellus cras fames pulvinar. Vel morbi curae, congue nec at mus cursus sed. 
+Donec lectus at feugiat tempor magna parturient tortor sodales. Metus natoque tincidunt fusce duis fringilla leo dui ac."
+label_settings = SubResource("LabelSettings_mwijy")
+horizontal_alignment = 1
+text_overrun_behavior = 2
+
+[node name="LeaderMenu" type="MarginContainer" parent="MarginContainer/GuildInfoBox/ChatandLeaderMenu"]
+visible = false
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 15
+
+[node name="Panel" type="Panel" parent="MarginContainer/GuildInfoBox/ChatandLeaderMenu/LeaderMenu"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_2wj2h")
+
+[node name="LeaderMenuContents" type="VBoxContainer" parent="MarginContainer/GuildInfoBox/ChatandLeaderMenu/LeaderMenu"]
+layout_mode = 2
+
+[node name="LMenuTitle" type="Label" parent="MarginContainer/GuildInfoBox/ChatandLeaderMenu/LeaderMenu/LeaderMenuContents"]
+layout_mode = 2
+text = "Guild Leader Menu"
+label_settings = SubResource("LabelSettings_brb1t")
+horizontal_alignment = 1
+
+[node name="LMenuCloseExp" type="Label" parent="MarginContainer/GuildInfoBox/ChatandLeaderMenu/LeaderMenu/LeaderMenuContents"]
+layout_mode = 2
+text = "To close this menu, click the \"manage guild\" button again"
+label_settings = SubResource("LabelSettings_y3pn1")
+horizontal_alignment = 1
+
 [node name="GuildMemPanel" type="Control" parent="."]
 visible = false
 layout_mode = 2
 
-[connection signal="pressed" from="MarginContainer/VBoxContainer/TestLeaveGuild" to="." method="_on_test_leave_guild_pressed"]
+[connection signal="pressed" from="MarginContainer/GuildInfoBox/PlayercountLeave/LeaveAndCount/TestLeaveGuild" to="." method="_on_test_leave_guild_pressed"]
+[connection signal="pressed" from="MarginContainer/GuildInfoBox/PlayercountLeave/LeaveAndCount/OpenLeaderMenu" to="." method="_on_open_leader_menu_pressed"]

@@ -4,7 +4,15 @@ signal guild_status_update
 
 var guild_name
 
+var number_of_members
+
+var max_members
+
 @export_file("*.tscn") var MainMenu
+
+var guild_leader = false
+#test variable to make sure that the button for guild leader menu only appears when someone is a
+#guild leader
 
 "
 To do:
@@ -24,12 +32,30 @@ func init(guild_name):
 	
 	var margin_value = 50
 	
-	$MarginContainer/VBoxContainer/TitleBox/UserGuild.text = guild_name
+	number_of_members = "3"
+	max_members = "50"
 	
-	$MarginContainer/VBoxContainer/TitleBox/UserGuild.add_theme_constant_override("margin_top", margin_value)
-	$MarginContainer/VBoxContainer/TitleBox/UserGuild.add_theme_constant_override("margin_left", margin_value)
-	$MarginContainer/VBoxContainer/TitleBox/UserGuild.add_theme_constant_override("margin_bottom", margin_value)
-	$MarginContainer/VBoxContainer/TitleBox/UserGuild.add_theme_constant_override("margin_right", margin_value)
+	
+	#Initialize the title box to display the retrieved guild name
+	$MarginContainer/GuildInfoBox/TitleBox/UserGuild.text = guild_name
+	#Setting the margins for the title box
+	$MarginContainer/GuildInfoBox/TitleBox/UserGuild.add_theme_constant_override("margin_top", margin_value)
+	$MarginContainer/GuildInfoBox/TitleBox/UserGuild.add_theme_constant_override("margin_left", margin_value)
+	$MarginContainer/GuildInfoBox/TitleBox/UserGuild.add_theme_constant_override("margin_bottom", margin_value)
+	$MarginContainer/GuildInfoBox/TitleBox/UserGuild.add_theme_constant_override("margin_right", margin_value)
+	
+	#Initialize the title box to display the current number of players in the guild
+	$MarginContainer/GuildInfoBox/PlayercountLeave/LeaveAndCount/PlayercountMargins/Playercount.text = "Current Member Count: " + number_of_members + " / " + max_members
+	#Setting the margins for the guild count box
+	$MarginContainer/GuildInfoBox/PlayercountLeave/LeaveAndCount/PlayercountMargins/Playercount.add_theme_constant_override("margin_top", margin_value)
+	$MarginContainer/GuildInfoBox/PlayercountLeave/LeaveAndCount/PlayercountMargins/Playercount.add_theme_constant_override("margin_left", margin_value)
+	$MarginContainer/GuildInfoBox/PlayercountLeave/LeaveAndCount/PlayercountMargins/Playercount.add_theme_constant_override("margin_bottom", margin_value)
+	$MarginContainer/GuildInfoBox/PlayercountLeave/LeaveAndCount/PlayercountMargins/Playercount.add_theme_constant_override("margin_right", margin_value)
+	
+	if(guild_leader == true):
+		$MarginContainer/GuildInfoBox/PlayercountLeave/LeaveAndCount/OpenLeaderMenu.show()
+	else:
+		$MarginContainer/GuildInfoBox/PlayercountLeave/LeaveAndCount/OpenLeaderMenu.hide()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -43,3 +69,7 @@ func _process(delta):
 func _on_test_leave_guild_pressed():
 	GameData.in_guild = false
 	emit_signal("guild_status_update")
+
+
+func _on_open_leader_menu_pressed():
+	$MarginContainer/GuildInfoBox/ChatandLeaderMenu/LeaderMenu.visible = !$MarginContainer/GuildInfoBox/ChatandLeaderMenu/LeaderMenu.visible
