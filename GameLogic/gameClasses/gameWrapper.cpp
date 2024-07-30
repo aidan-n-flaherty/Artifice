@@ -36,10 +36,10 @@ cGame initGame(cGameSettings settings, int simulatorID, double startTime, int* p
 	double cnow = std::chrono::system_clock::to_time_t(now);
 	double endTime = cnow + fraction;
 
-	std::map<int, std::tuple<std::string, int, int>> players;
+	std::map<int, std::tuple<std::string, int, int, bool>> players;
 
 	for(int i = 0; i < playerLength; i++) {
-		players[playerInfo[i * 3]] = std::make_tuple("Unnamed", playerInfo[i * 3 + 1], playerInfo[i * 3 + 2]);
+		players[playerInfo[i * 3]] = std::make_tuple("Unnamed", playerInfo[i * 3 + 1], playerInfo[i * 3 + 2], false);
 	}
 
 	Game* game = new Game(*s, simulatorID, startTime, s->clientToGameTime(endTime), players, seed, false);

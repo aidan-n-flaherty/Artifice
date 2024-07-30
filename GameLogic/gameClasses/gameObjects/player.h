@@ -56,8 +56,10 @@ private:
 
     int teamID = -1;
 
+    bool botStatus = false;
+
 public:
-    Player(unsigned int ID, GameSettings* settings, std::string name, int userID, int rating) : GameObject(ID, settings), userID(userID), name(name), rating(rating), defeated(false) {}
+    Player(unsigned int ID, GameSettings* settings, std::string name, int userID, int rating, bool isBot) : GameObject(ID, settings), userID(userID), name(name), rating(rating), defeated(false), botStatus(isBot) {}
     
     void updatePointers(Game* game);
 
@@ -143,6 +145,8 @@ public:
 
     void setTeam(int teamID){ this->teamID = teamID; }
     int getTeamID() const { return teamID; }
+
+    bool isBot() {return botStatus;}
 };
 
 #endif

@@ -255,9 +255,9 @@ void GameInterface::init(int gameID, int userID, int seed, int startTime, bool f
 
 	current = getTimeMillis();
 	
-	std::map<int, std::tuple<std::string, int, int>> playerMap;
+	std::map<int, std::tuple<std::string, int, int, bool>> playerMap;
 	for(int i = 0; i < playerCap; i++) {
-		playerMap[i] = std::make_tuple("Unclaimed", -1, 0);
+		playerMap[i] = std::make_tuple("Unclaimed", -1, 0, false);
 	}
 
 	Array ids = players.keys();
@@ -269,9 +269,16 @@ void GameInterface::init(int gameID, int userID, int seed, int startTime, bool f
 
 			int userID = int(player["id"]);
 			int rating = int(Dictionary(player["userStats"])["rating"]);
+			bool bot = Dictionary(player["userStats"]).has("bot");
+
+			UtilityFunctions::print("ID:");
+			UtilityFunctions::print(id);
+			UtilityFunctions::print("Is bot?");
+			UtilityFunctions::print(bot);
+			
 			std::string name = std::string(String(player["username"]).utf8().get_data());
 
-			playerMap[id] = std::make_tuple(name, userID, rating);
+			playerMap[id] = std::make_tuple(name, userID, rating, bot);
 		}
 	}
 	
@@ -497,14 +504,11 @@ void GameInterface::_process(double delta) {
 		floorDisplay->setDiff(timeDiff, simulatedDiff, t);
 		floorDisplay->queue_redraw();
 
-
 		//telling the bots to make decisions
 		if(singleRun) return;
 		std::unordered_map<int, Player*> playerList = fullGame->getPlayers();
 		for(std::unordered_map<int, Player*>::iterator iter = playerList.begin(); iter != playerList.end(); iter++) {
-			//any player with an id lower than 0 is a bot
-			//UtilityFunctions::print(iter->second->getUserID());
-			if(iter->second->getUserID() < 0) {
+			if(iter->second->isBot()) {
 				botLogic(iter->second->getUserID());
 			}
 		}
@@ -805,15 +809,24 @@ void GameInterface::botOrder(Outpost* myOp, Outpost* enemyOp) {
 
 //pass in the id of the bot and the bot will choose to make a decision
 void GameInterface::botLogic(int id) {
-	std::unordered_map<int, Outpost*> outposts = game->getOutposts(id);
+	//std::unordered_map<int, Outpost*> outposts = game->getOutposts();
+
 
 	//iterating through all current outposts and categorizing them
 	//into outposts the bot does and does not own
 	//being lazy about my datastructures and just storing everything in a vector
 	//I know this is like *the* bad gamedev practice but oh well
-	std::vector<Outpost*> myOutposts;
-	std::vector<Outpost*> enemyOutposts;
 	
+	
+	
+	std::list<Outpost*> myOutposts = game->getPlayer(id)->getOutposts();
+	
+	
+	
+	
+	//std::vector<Outpost*> enemyOutposts;
+	
+	/*
 	for(std::unordered_map<int, Outpost*>::iterator iter = outposts.begin(); iter != outposts.end(); ++iter) {
 
 		//creating a pointer to the current outpost
@@ -822,7 +835,7 @@ void GameInterface::botLogic(int id) {
 		//determining if the outpost belongs to me or the enemy
 		if(id != op->getOwnerID()) enemyOutposts.push_back(op);
 		else myOutposts.push_back(op);
-	}
+	}*/
 
 	//iterating through all the enemy outposts and looking for one which we have enough units
 	//to massacre, for now not taking into account distance or specialists, or shield being lowered
@@ -830,10 +843,23 @@ void GameInterface::botLogic(int id) {
 	UtilityFunctions::print("My ID:");
 	UtilityFunctions::print(id);
 	UtilityFunctions::print("My outposts:");
+	/*
 	UtilityFunctions::print(myOutposts.size());
-	UtilityFunctions::print("Enemy outposts:");
-	UtilityFunctions::print(enemyOutposts.size());
+	//UtilityFunctions::print("Enemy outposts:");
+	//UtilityFunctions::print(enemyOutposts.size());
 	UtilityFunctions::print("\n");
+
+
+	for(std::list<Outpost*>::iterator i = myOutposts.begin(); i != myOutposts.end(); i++) {
+		
+		UtilityFunctions::print("My Units: ");
+		UtilityFunctions::print((*i)->getUnits());
+
+		
+		if(myOutposts[j]->getUnits() > enemyOutposts[i]->getUnits() + enemyOutposts[i]->getMaxShield()) {
+			botOrder(myOutposts[i], enemyOutposts[i]);
+		}
+	}
 
 
 	for(int i = 0; i < enemyOutposts.size(); ++i) {
@@ -841,19 +867,11 @@ void GameInterface::botLogic(int id) {
 		UtilityFunctions::print(enemyOutposts[i]->getUnits());
 		UtilityFunctions::print("Enemy Shield");
 		UtilityFunctions::print(enemyOutposts[i]->getMaxShield());
-		for(int j = 0; j < myOutposts.size(); ++j) {
-			
-			UtilityFunctions::print("My Units: ");
-			UtilityFunctions::print(myOutposts[j]->getUnits());
 
-			if(myOutposts[j]->getUnits() > enemyOutposts[i]->getUnits() + enemyOutposts[i]->getMaxShield()) {
-				botOrder(myOutposts[i], enemyOutposts[i]);
-			}
-		}
 	}
 
 	UtilityFunctions::print("\n");
-	UtilityFunctions::print("\n");
+	UtilityFunctions::print("\n");*/
 }
 
 // event propagated from positional nodes, occurs when something is clicked on

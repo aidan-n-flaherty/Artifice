@@ -460,14 +460,14 @@ func viewSandboxGameCompletion(id: int):
 		0: {
 			"id": getSelfID(),
 			"username": getSelf().username,
-			"stats": {
+			"userStats": {
 				"rating": getSelf().userStats.rating
 			}
 		},
 		1: {
 			"id": 0, #special id for sandbox bot only, prevents calls from botLogic()
 			"username": "Bot 1",
-			"stats": {
+			"userStats": {
 				"rating": 1200
 			}
 		}
@@ -500,7 +500,7 @@ func viewSinglePlayerGameCompletion(id: int):
 		0 : {
 			"id": getSelfID(),
 			"username": getSelf().username,
-			"stats": {
+			"userStats": {
 				"rating": getSelf().userStats.rating
 			}
 		}
@@ -508,10 +508,11 @@ func viewSinglePlayerGameCompletion(id: int):
 	
 	for i in (int(gameDetails[-1].gameSettings.playerCap) - 1):
 		playerList[int(i)+1] = {
-			"id": (int(i)+1) * -1,
+			"id": (int(i)+1),
 			"username": "Bot " + str(i + 1),
-			"stats": {
-				"rating": 1200
+			"userStats": {
+				"rating": 1200,
+				"bot": "yes"
 			}
 		}
 		

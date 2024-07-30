@@ -33,7 +33,7 @@
 /* The game constructor should create the entire starting state deterministically based on
 ** the random seed provided.
 */
-Game::Game(GameSettings settings, int simulatorID, double startTime, double endTime, std::map<int, std::tuple<std::string, int, int>> &playerInfo, int seed, bool cacheEnabled) :
+Game::Game(GameSettings settings, int simulatorID, double startTime, double endTime, std::map<int, std::tuple<std::string, int, int, bool>> &playerInfo, int seed, bool cacheEnabled) :
     startTime(startTime), stateTime(startTime), endTime(endTime), cacheEnabled(cacheEnabled) {
     std::srand(seed);
 
@@ -42,10 +42,10 @@ Game::Game(GameSettings settings, int simulatorID, double startTime, double endT
     std::vector<int> playerIDs;
 
     for(int i = 0; i < playerInfo.size(); i++) {
-        auto [name, userID, rating] = playerInfo[i];
+        auto [name, userID, rating, isBot] = playerInfo[i];
         int ID = incrementObjCounter();
         playerIDs.push_back(ID);
-        Player* p = new Player(ID, getSettings(), name, userID, rating);
+        Player* p = new Player(ID, getSettings(), name, userID, rating, isBot);
         if(userID == simulatorID) this->simulatorID = p->getID();
         addPlayer(p);
     }

@@ -93,7 +93,7 @@ private:
 public:
     // Deterministically creates a pseudo-random map and initializes all player states.
     Game(){};
-    Game(GameSettings settings, int simulatorID, double startTime, double endTime, std::map<int, std::tuple<std::string, int, int>>& playerInfo, int seed, bool cacheEnabled);
+    Game(GameSettings settings, int simulatorID, double startTime, double endTime, std::map<int, std::tuple<std::string, int, int, bool>> &playerInfo, int seed, bool cacheEnabled);
     Game(const Game& game);
     ~Game();
 
