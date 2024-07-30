@@ -10,7 +10,7 @@
 [ext_resource type="Shader" path="res://FrostedGlassBlack.gdshader" id="9_5ehda"]
 [ext_resource type="Texture2D" uid="uid://dlqmq6fklb6q8" path="res://resources/images/back_arrow.png" id="10_n5ogc"]
 [ext_resource type="Theme" uid="uid://tg7ina762c6q" path="res://resources/themes/UITheme.tres" id="10_ww8tb"]
-[ext_resource type="PackedScene" uid="uid://ycxxhiua4fft" path="res://Banner.tscn" id="11_ftf84"]
+[ext_resource type="PackedScene" uid="uid://i6v846ydkaek" path="res://Banner.tscn" id="11_ftf84"]
 [ext_resource type="StyleBox" uid="uid://dgq41l16rxlq" path="res://resources/styles/roundRectBlack.tres" id="11_uh1qc"]
 [ext_resource type="Script" path="res://DetailContainer.gd" id="12_7re0q"]
 [ext_resource type="PackedScene" uid="uid://cqdpj2uw0cloc" path="res://Shop.tscn" id="12_sa8gc"]
@@ -75,12 +75,12 @@ offsets = PackedFloat32Array(0.155462, 0.996226)
 colors = PackedColorArray(0, 0, 0, 1, 0.383597, 0.383597, 0.383597, 1)
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_ufufh"]
-frequency = 0.005
+frequency = 0.0025
 domain_warp_enabled = true
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_omtys"]
-width = 1024
-height = 1024
+width = 2048
+height = 2048
 seamless = true
 color_ramp = SubResource("Gradient_o0x8m")
 noise = SubResource("FastNoiseLite_ufufh")
@@ -555,6 +555,9 @@ theme_override_constants/margin_bottom = 10
 
 [node name="Player" type="Label" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/VSeparator/ElementDisplay/Panel/VBoxContainer/Header/MarginContainer"]
 layout_mode = 2
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 26
 text = "Test"
 
 [node name="MarginContainer" type="MarginContainer" parent="Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/UIOverlay/VSeparator/ElementDisplay/Panel/VBoxContainer"]

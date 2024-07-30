@@ -24,6 +24,10 @@ int PositionalObject::removeUnits(int count) {
 }
 
 void PositionalObject::addSpecialist(Specialist* specialist) {
+    if(specialist->getType() == SpecialistType::ADMIRAL && specialist->hasOwner() && specialist->getOwnerID() != getOwnerID()) {
+        for(Vessel* v : specialist->getOwner()->getVessels()) v->setRefresh(true);
+    }
+
     if(specialist->getType() == SpecialistType::CONDUCTOR && specialist->hasOwner() && specialist->getOwnerID() == getOwnerID()) {
         for(Vessel* v : getOwner()->getVessels()) v->setRefresh(true);
     }
@@ -135,6 +139,18 @@ int PositionalObject::specialistCount(SpecialistType t) const {
     }
 
     return count;
+}
+
+bool PositionalObject::controlsAnySpecialists() const {
+    if(!hasOwner()) return false;
+
+    for(auto it = specialists.begin(); it != specialists.end(); ++it){
+        if((*it)->getOwnerID() == getOwnerID()) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 bool PositionalObject::controlsSpecialist(Player* p, std::list<Specialist*> specialists, SpecialistType t) {

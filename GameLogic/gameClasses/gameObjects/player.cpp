@@ -270,6 +270,10 @@ void Player::addOutpost(Outpost* outpost) {
 }
 
 void Player::removeOutpost(Outpost* outpost) {
+    for(Vessel* v : vessels) {
+        if(v->controlsSpecialist(SpecialistType::SMUGGLER) && v->getTargetID() == outpost->getID()) v->setRefresh(true);
+    }
+
     if(outpost->controlsSpecialist(SpecialistType::QUEEN)) {
         bool assigned = false;
 

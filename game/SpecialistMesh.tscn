@@ -70,6 +70,7 @@ surface_material_override/0 = SubResource("StandardMaterial3D_uctjo")
 
 [node name="Texture" type="MeshInstance3D" parent="."]
 transform = Transform3D(-1, -5.95416e-16, -2.4663e-16, -2.4663e-16, 0.707107, -0.707107, 5.95416e-16, -0.707107, -0.707107, 2.08165e-12, 0.25, -0.25)
+layers = 2
 mesh = SubResource("PlaneMesh_nem67")
 surface_material_override/0 = SubResource("ShaderMaterial_y1eix")
 

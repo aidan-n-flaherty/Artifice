@@ -94,7 +94,12 @@ public:
 
                 if(!winner->isDeleted() && !loser->isDeleted()) {
                     if(!loser->getSpecialists().empty()) {
+                        double speed = loser->getSpeed();
                         winner->getOwner()->addVessel(loser);
+
+                        // regain control of captured spec with speed boost
+                        if(loser->getSpeed() != speed) loser->setRefresh(true);
+
                         loser->returnHome();
                         if(winner->getOrigin() && (loser->getTargetID() == winner->getOriginID() || loser->getTargetID() == winner->getTargetID())) loser->setOrigin(winner->getOrigin());
                     } else game->removeVessel(loser);

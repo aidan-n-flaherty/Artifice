@@ -48,8 +48,6 @@ func init():
 		switch_to(GameData.currentTab)
 		
 		GameData.menuSwitched.connect(switch_to)
-		
-		$Background.material.set_shader_parameter("gradStrength", 1.0)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):

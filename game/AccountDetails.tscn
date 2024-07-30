@@ -1,11 +1,12 @@
-[gd_scene load_steps=22 format=3 uid="uid://chwn0jkvlrsvw"]
+[gd_scene load_steps=25 format=3 uid="uid://chwn0jkvlrsvw"]
 
 [ext_resource type="Theme" uid="uid://tg7ina762c6q" path="res://resources/themes/UITheme.tres" id="1_j5sq6"]
 [ext_resource type="Script" path="res://AccountDetails.gd" id="2_1f10q"]
 [ext_resource type="PackedScene" uid="uid://dg4lhqpoy431" path="res://CustomScroll.tscn" id="3_4a50u"]
 [ext_resource type="PackedScene" uid="uid://ca2km7m7ec3av" path="res://PastGameList.tscn" id="3_d3vco"]
 [ext_resource type="FontFile" uid="uid://bt7qlnun0cepj" path="res://resources/fonts/nasalization-free/nasalization-rg.otf" id="4_6h237"]
-[ext_resource type="Theme" uid="uid://cltadyeempokg" path="res://resources/themes/DetailTheme.tres" id="4_wnnyu"]
+[ext_resource type="PackedScene" uid="uid://i6v846ydkaek" path="res://Banner.tscn" id="4_20tqr"]
+[ext_resource type="Theme" uid="uid://4tjpjic5sqty" path="res://resources/themes/ModernTheme1.tres" id="5_y62gp"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b4f1s"]
 bg_color = Color(0, 0, 0, 0.156863)
@@ -14,39 +15,25 @@ corner_radius_bottom_left = 60
 corner_detail = 16
 expand_margin_top = 500.0
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_64agx"]
+bg_color = Color(0, 0, 0, 1)
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+expand_margin_top = 400.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rs6lb"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yeafb"]
+bg_color = Color(0, 0, 0, 1)
+corner_radius_bottom_right = 15
+corner_radius_bottom_left = 15
+expand_margin_top = 400.0
+
 [sub_resource type="ButtonGroup" id="ButtonGroup_6tqsn"]
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_o0xt0"]
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_b3uma"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_u21hr"]
-bg_color = Color(0, 0, 0, 0.368627)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8mejh"]
-bg_color = Color(0.997877, 0.722746, 5.98086e-07, 0.603922)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ms1c0"]
-bg_color = Color(0.717647, 0.803922, 0.87451, 0.611765)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bwt8d"]
-bg_color = Color(0.601921, 0.35187, 0, 0.392157)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
 
 [sub_resource type="FontVariation" id="FontVariation_l1fdh"]
 base_font = ExtResource("4_6h237")
@@ -54,7 +41,34 @@ variation_embolden = 1.0
 spacing_top = 6
 spacing_bottom = 6
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tpbsy"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8mejh"]
+bg_color = Color(0.996078, 0.721569, 0, 0.392157)
+border_width_right = 100
+border_color = Color(0.0470588, 0.133333, 0.215686, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ms1c0"]
+bg_color = Color(0.717647, 0.803922, 0.87451, 0.392157)
+border_width_right = 100
+border_color = Color(0.0470588, 0.133333, 0.215686, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bwt8d"]
+bg_color = Color(0.6, 0.352941, 0, 0.392157)
+border_width_right = 100
+border_color = Color(0.0470588, 0.133333, 0.215686, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_676t4"]
 content_margin_left = 8.0
 content_margin_top = 8.0
 content_margin_right = 8.0
@@ -77,7 +91,7 @@ border_color = Color(1, 1, 1, 1)
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_676t4"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tpbsy"]
 content_margin_left = 8.0
 content_margin_top = 8.0
 content_margin_right = 8.0
@@ -106,6 +120,7 @@ theme_override_constants/margin_right = 50
 script = ExtResource("2_1f10q")
 
 [node name="Panel" type="Panel" parent="."]
+visible = false
 layout_mode = 2
 theme = ExtResource("1_j5sq6")
 theme_override_styles/panel = SubResource("StyleBoxFlat_b4f1s")
@@ -114,553 +129,605 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_b4f1s")
 layout_mode = 2
 theme = ExtResource("1_j5sq6")
 theme_override_constants/margin_left = 50
-theme_override_constants/margin_top = 100
+theme_override_constants/margin_top = 0
 theme_override_constants/margin_right = 50
-theme_override_constants/margin_bottom = 50
+theme_override_constants/margin_bottom = 0
 
-[node name="ScrollContainer" parent="MarginContainer" instance=ExtResource("3_4a50u")]
-layout_mode = 2
-horizontal_scroll_mode = 0
-
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/ScrollContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = ExtResource("1_j5sq6")
 theme_override_constants/separation = 40
 
-[node name="ButtonMargins" type="MarginContainer" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+[node name="ButtonMargins" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
+visible = false
 layout_mode = 2
 size_flags_vertical = 3
 size_flags_stretch_ratio = 0.05
 
-[node name="Tabs" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer/ButtonMargins"]
+[node name="Tabs" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ButtonMargins"]
+visible = false
 layout_mode = 2
 size_flags_vertical = 3
 size_flags_stretch_ratio = 0.05
 theme_override_constants/separation = 0
 
-[node name="CustomizeProfile" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/ButtonMargins/Tabs"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme = ExtResource("1_j5sq6")
-theme_override_font_sizes/font_size = 30
-text = "Customize Profile"
-
-[node name="Spacer" type="Control" parent="MarginContainer/ScrollContainer/VBoxContainer/ButtonMargins/Tabs"]
+[node name="Spacer" type="Control" parent="MarginContainer/VBoxContainer/ButtonMargins/Tabs"]
 visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 0.2
 
-[node name="Friends" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/ButtonMargins/Tabs"]
+[node name="Friends" type="Button" parent="MarginContainer/VBoxContainer/ButtonMargins/Tabs"]
 visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 disabled = true
 text = "Friends"
 
-[node name="Banner" type="MarginContainer" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+[node name="CustomizeProfile" type="Button" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(2.08165e-12, 150)
 layout_mode = 2
 size_flags_vertical = 3
-size_flags_stretch_ratio = 0.09
+size_flags_stretch_ratio = 0.25
+theme_override_styles/normal = SubResource("StyleBoxFlat_64agx")
+theme_override_styles/hover = SubResource("StyleBoxFlat_64agx")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_64agx")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_64agx")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_rs6lb")
 
-[node name="GridContainer" type="GridContainer" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/CustomizeProfile"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 15
+theme_override_constants/margin_bottom = 15
+
+[node name="Panel" type="Panel" parent="MarginContainer/VBoxContainer/CustomizeProfile/MarginContainer"]
+clip_children = 2
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_yeafb")
+
+[node name="Banner" parent="MarginContainer/VBoxContainer/CustomizeProfile/MarginContainer/Panel" instance=ExtResource("4_20tqr")]
+layout_mode = 1
+mouse_filter = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/CustomizeProfile/MarginContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 50
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/CustomizeProfile/MarginContainer/MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 8
+
+[node name="Username" type="Label" parent="MarginContainer/VBoxContainer/CustomizeProfile/MarginContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+theme = ExtResource("1_j5sq6")
+theme_override_font_sizes/font_size = 30
+text = "Username"
+vertical_alignment = 2
+
+[node name="Rating" type="Label" parent="MarginContainer/VBoxContainer/CustomizeProfile/MarginContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Rank #999"
+
+[node name="GridContainer" type="GridContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme = ExtResource("1_j5sq6")
 theme_override_constants/h_separation = 20
 theme_override_constants/v_separation = 10
 columns = 2
 
-[node name="Username" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/GridContainer"]
+[node name="Username" type="Label" parent="MarginContainer/VBoxContainer/GridContainer"]
 layout_mode = 2
 theme = ExtResource("1_j5sq6")
 text = "Username"
 
-[node name="UsernameText" type="LineEdit" parent="MarginContainer/ScrollContainer/VBoxContainer/GridContainer"]
+[node name="UsernameText" type="LineEdit" parent="MarginContainer/VBoxContainer/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("1_j5sq6")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "-1"
 
-[node name="PushNotifications" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/GridContainer"]
+[node name="PushNotifications" type="Label" parent="MarginContainer/VBoxContainer/GridContainer"]
 layout_mode = 2
 text = "Game Notifications"
 
-[node name="PushNotificationButtons" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer/GridContainer"]
+[node name="PushNotificationButtons" type="HBoxContainer" parent="MarginContainer/VBoxContainer/GridContainer"]
 layout_mode = 2
 
-[node name="PushOn" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/GridContainer/PushNotificationButtons"]
+[node name="PushOn" type="Button" parent="MarginContainer/VBoxContainer/GridContainer/PushNotificationButtons"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme = ExtResource("5_y62gp")
 toggle_mode = true
 button_pressed = true
 button_group = SubResource("ButtonGroup_6tqsn")
 text = "on"
 
-[node name="PushOff" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/GridContainer/PushNotificationButtons"]
+[node name="PushOff" type="Button" parent="MarginContainer/VBoxContainer/GridContainer/PushNotificationButtons"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme = ExtResource("5_y62gp")
 toggle_mode = true
 button_group = SubResource("ButtonGroup_6tqsn")
 text = "off"
 
-[node name="ChatPushNotifications" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/GridContainer"]
+[node name="ChatPushNotifications" type="Label" parent="MarginContainer/VBoxContainer/GridContainer"]
 layout_mode = 2
 text = "Chat Notifications"
 
-[node name="ChatPushNotificationButtons" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer/GridContainer"]
+[node name="ChatPushNotificationButtons" type="HBoxContainer" parent="MarginContainer/VBoxContainer/GridContainer"]
 layout_mode = 2
 
-[node name="PushOn" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/GridContainer/ChatPushNotificationButtons"]
+[node name="PushOn" type="Button" parent="MarginContainer/VBoxContainer/GridContainer/ChatPushNotificationButtons"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme = ExtResource("5_y62gp")
 toggle_mode = true
 button_pressed = true
 button_group = SubResource("ButtonGroup_o0xt0")
 text = "on"
 
-[node name="PushOff" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/GridContainer/ChatPushNotificationButtons"]
+[node name="PushOff" type="Button" parent="MarginContainer/VBoxContainer/GridContainer/ChatPushNotificationButtons"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme = ExtResource("5_y62gp")
 toggle_mode = true
 button_group = SubResource("ButtonGroup_o0xt0")
 text = "off"
 
-[node name="Graphics" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/GridContainer"]
+[node name="Graphics" type="Label" parent="MarginContainer/VBoxContainer/GridContainer"]
 layout_mode = 2
 text = "Graphics"
 
-[node name="GraphicsButtons" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer/GridContainer"]
+[node name="GraphicsButtons" type="HBoxContainer" parent="MarginContainer/VBoxContainer/GridContainer"]
 layout_mode = 2
 
-[node name="PushOn" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/GridContainer/GraphicsButtons"]
+[node name="PushOn" type="Button" parent="MarginContainer/VBoxContainer/GridContainer/GraphicsButtons"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme = ExtResource("5_y62gp")
 toggle_mode = true
 button_pressed = true
 button_group = SubResource("ButtonGroup_b3uma")
 text = "advanced"
 
-[node name="PushOff" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/GridContainer/GraphicsButtons"]
+[node name="PushOff" type="Button" parent="MarginContainer/VBoxContainer/GridContainer/GraphicsButtons"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme = ExtResource("5_y62gp")
 toggle_mode = true
 button_group = SubResource("ButtonGroup_b3uma")
 text = "simple"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 theme = ExtResource("1_j5sq6")
 theme_override_constants/separation = 0
 
-[node name="Control" type="VBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer"]
+[node name="ScrollContainer" parent="MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_4a50u")]
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="Control" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer"]
 layout_mode = 2
 theme = ExtResource("1_j5sq6")
 theme_override_constants/separation = 20
 
-[node name="Stats" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control"]
+[node name="TestGame" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control"]
 layout_mode = 2
-theme = ExtResource("1_j5sq6")
-text = "Stats"
-horizontal_alignment = 1
-
-[node name="MarginContainer" type="VBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control"]
-layout_mode = 2
-size_flags_vertical = 3
-theme = ExtResource("1_j5sq6")
-
-[node name="PlacementContainer" type="MarginContainer" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer"]
-layout_mode = 2
-
-[node name="Panel" type="Panel" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/PlacementContainer"]
-layout_mode = 2
-theme = ExtResource("1_j5sq6")
-theme_override_styles/panel = SubResource("StyleBoxFlat_u21hr")
-
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/PlacementContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 10
-
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/PlacementContainer/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 30
-
-[node name="PlacementLabel" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/PlacementContainer/MarginContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme = ExtResource("1_j5sq6")
-text = "Rank"
-
-[node name="Placement" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/PlacementContainer/MarginContainer/HBoxContainer"]
-layout_mode = 2
-theme = ExtResource("1_j5sq6")
-text = "-1"
-
-[node name="RatingContainer" type="MarginContainer" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer"]
-layout_mode = 2
-
-[node name="Panel" type="Panel" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/RatingContainer"]
-layout_mode = 2
-theme = ExtResource("1_j5sq6")
-theme_override_styles/panel = SubResource("StyleBoxFlat_u21hr")
-
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/RatingContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 10
-
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/RatingContainer/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 30
-
-[node name="RatingLabel" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/RatingContainer/MarginContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme = ExtResource("1_j5sq6")
-text = "Rating"
-
-[node name="Rating" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/RatingContainer/MarginContainer/HBoxContainer"]
-layout_mode = 2
-theme = ExtResource("1_j5sq6")
-text = "-1"
-
-[node name="Spacer3" type="Control" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer"]
-custom_minimum_size = Vector2(2.08165e-12, 80)
-layout_mode = 2
-
-[node name="VictoryContainer" type="MarginContainer" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer"]
-layout_mode = 2
-
-[node name="Panel" type="Panel" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/VictoryContainer"]
-layout_mode = 2
-theme = ExtResource("1_j5sq6")
-theme_override_styles/panel = SubResource("StyleBoxFlat_u21hr")
-
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/VictoryContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 10
-
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/VictoryContainer/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 30
-
-[node name="VictoriesLabel" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/VictoryContainer/MarginContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme = ExtResource("1_j5sq6")
-text = "Victories"
-
-[node name="Victories" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/VictoryContainer/MarginContainer/HBoxContainer"]
-layout_mode = 2
-theme = ExtResource("1_j5sq6")
-text = "-1"
-
-[node name="DefeatsContainer" type="MarginContainer" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer"]
-layout_mode = 2
-
-[node name="Panel" type="Panel" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/DefeatsContainer"]
-layout_mode = 2
-theme = ExtResource("1_j5sq6")
-theme_override_styles/panel = SubResource("StyleBoxFlat_u21hr")
-
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/DefeatsContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 10
-
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/DefeatsContainer/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 30
-
-[node name="DefeatsLabel" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/DefeatsContainer/MarginContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme = ExtResource("1_j5sq6")
-text = "Defeats"
-
-[node name="Defeats" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/DefeatsContainer/MarginContainer/HBoxContainer"]
-layout_mode = 2
-theme = ExtResource("1_j5sq6")
-text = "-1"
-
-[node name="TotalGamesContainer" type="MarginContainer" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer"]
-layout_mode = 2
-
-[node name="Panel" type="Panel" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/TotalGamesContainer"]
-layout_mode = 2
-theme = ExtResource("1_j5sq6")
-theme_override_styles/panel = SubResource("StyleBoxFlat_u21hr")
-
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/TotalGamesContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 10
-
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/TotalGamesContainer/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 30
-
-[node name="TotalGamesLabel" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/TotalGamesContainer/MarginContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme = ExtResource("1_j5sq6")
-text = "Games
-Played"
-
-[node name="TotalGames" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/TotalGamesContainer/MarginContainer/HBoxContainer"]
-layout_mode = 2
-theme = ExtResource("1_j5sq6")
-text = "-1"
-
-[node name="AverageRankContainer" type="MarginContainer" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer"]
-layout_mode = 2
-
-[node name="Panel" type="Panel" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/AverageRankContainer"]
-layout_mode = 2
-theme = ExtResource("1_j5sq6")
-theme_override_styles/panel = SubResource("StyleBoxFlat_u21hr")
-
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/AverageRankContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 10
-
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/AverageRankContainer/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 30
-
-[node name="AverageRankLabel" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/AverageRankContainer/MarginContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme = ExtResource("1_j5sq6")
-text = "Average
-Placement"
-
-[node name="AverageRank" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/AverageRankContainer/MarginContainer/HBoxContainer"]
-layout_mode = 2
-theme = ExtResource("1_j5sq6")
-text = "-1"
-
-[node name="Spacer" type="Control" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer"]
-custom_minimum_size = Vector2(2.08165e-12, 80)
-layout_mode = 2
-
-[node name="Gold" type="MarginContainer" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer"]
-layout_mode = 2
-
-[node name="Panel" type="Panel" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/Gold"]
-layout_mode = 2
-theme = ExtResource("1_j5sq6")
-theme_override_styles/panel = SubResource("StyleBoxFlat_8mejh")
-
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/Gold"]
-layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 10
-
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/Gold/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 30
-
-[node name="GoldLabel" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/Gold/MarginContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme = ExtResource("1_j5sq6")
-text = "Gold"
-
-[node name="Gold" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/Gold/MarginContainer/HBoxContainer"]
-layout_mode = 2
-theme = ExtResource("1_j5sq6")
-text = "-1"
-
-[node name="Silver" type="MarginContainer" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer"]
-layout_mode = 2
-
-[node name="Panel" type="Panel" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/Silver"]
-layout_mode = 2
-theme = ExtResource("1_j5sq6")
-theme_override_styles/panel = SubResource("StyleBoxFlat_ms1c0")
-
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/Silver"]
-layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 10
-
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/Silver/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 30
-
-[node name="SilverLabel" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/Silver/MarginContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme = ExtResource("1_j5sq6")
-text = "Silver"
-
-[node name="Silver" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/Silver/MarginContainer/HBoxContainer"]
-layout_mode = 2
-theme = ExtResource("1_j5sq6")
-text = "-1"
-
-[node name="Bronze" type="MarginContainer" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer"]
-layout_mode = 2
-
-[node name="Panel" type="Panel" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/Bronze"]
-layout_mode = 2
-theme = ExtResource("1_j5sq6")
-theme_override_styles/panel = SubResource("StyleBoxFlat_bwt8d")
-
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/Bronze"]
-layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 10
-
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/Bronze/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 30
-
-[node name="BronzeLabel" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/Bronze/MarginContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme = ExtResource("1_j5sq6")
-text = "Bronze"
-
-[node name="Bronze" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/Bronze/MarginContainer/HBoxContainer"]
-layout_mode = 2
-theme = ExtResource("1_j5sq6")
-text = "-1"
-
-[node name="Spacer4" type="Control" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer"]
-custom_minimum_size = Vector2(2.08165e-12, 80)
-layout_mode = 2
-
-[node name="TestGame" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer"]
-layout_mode = 2
-theme = ExtResource("4_wnnyu")
+theme = ExtResource("5_y62gp")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = SubResource("FontVariation_l1fdh")
 theme_override_font_sizes/font_size = 21
 text = "Sandbox"
 
-[node name="Spacer2" type="Control" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer"]
+[node name="Spacer4" type="Control" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control"]
 custom_minimum_size = Vector2(2.08165e-12, 80)
 layout_mode = 2
 
-[node name="Delete" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer"]
+[node name="Stats" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control"]
 layout_mode = 2
 theme = ExtResource("1_j5sq6")
+text = "Stats"
+horizontal_alignment = 1
+
+[node name="MarginContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control"]
+layout_mode = 2
+size_flags_vertical = 3
+theme = ExtResource("1_j5sq6")
+
+[node name="PlacementContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer"]
+layout_mode = 2
+
+[node name="Panel" type="Panel" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer/PlacementContainer"]
+layout_mode = 2
+theme = ExtResource("5_y62gp")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer/PlacementContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer/PlacementContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 30
+
+[node name="PlacementLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer/PlacementContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_j5sq6")
+text = "Rank"
+
+[node name="Placement" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer/PlacementContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme = ExtResource("1_j5sq6")
+text = "-1"
+
+[node name="RatingContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer"]
+layout_mode = 2
+
+[node name="Panel" type="Panel" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer/RatingContainer"]
+layout_mode = 2
+theme = ExtResource("5_y62gp")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer/RatingContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer/RatingContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 30
+
+[node name="RatingLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer/RatingContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_j5sq6")
+text = "Rating"
+
+[node name="Rating" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer/RatingContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme = ExtResource("1_j5sq6")
+text = "-1"
+
+[node name="Spacer3" type="Control" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer"]
+custom_minimum_size = Vector2(2.08165e-12, 80)
+layout_mode = 2
+
+[node name="VictoryContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer"]
+layout_mode = 2
+
+[node name="Panel" type="Panel" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer/VictoryContainer"]
+layout_mode = 2
+theme = ExtResource("5_y62gp")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer/VictoryContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer/VictoryContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 30
+
+[node name="VictoriesLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer/VictoryContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_j5sq6")
+text = "Victories"
+
+[node name="Victories" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer/VictoryContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme = ExtResource("1_j5sq6")
+text = "-1"
+
+[node name="DefeatsContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer"]
+layout_mode = 2
+
+[node name="Panel" type="Panel" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer/DefeatsContainer"]
+layout_mode = 2
+theme = ExtResource("5_y62gp")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer/DefeatsContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer/DefeatsContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 30
+
+[node name="DefeatsLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer/DefeatsContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_j5sq6")
+text = "Defeats"
+
+[node name="Defeats" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer/DefeatsContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme = ExtResource("1_j5sq6")
+text = "-1"
+
+[node name="TotalGamesContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer"]
+layout_mode = 2
+
+[node name="Panel" type="Panel" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer/TotalGamesContainer"]
+layout_mode = 2
+theme = ExtResource("5_y62gp")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer/TotalGamesContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer/TotalGamesContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 30
+
+[node name="TotalGamesLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer/TotalGamesContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_j5sq6")
+text = "Games
+Played"
+
+[node name="TotalGames" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer/TotalGamesContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme = ExtResource("1_j5sq6")
+text = "-1"
+
+[node name="AverageRankContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer"]
+layout_mode = 2
+
+[node name="Panel" type="Panel" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer/AverageRankContainer"]
+layout_mode = 2
+theme = ExtResource("5_y62gp")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer/AverageRankContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer/AverageRankContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 30
+
+[node name="AverageRankLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer/AverageRankContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_j5sq6")
+text = "Average
+Placement"
+
+[node name="AverageRank" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer/AverageRankContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme = ExtResource("1_j5sq6")
+text = "-1"
+
+[node name="Spacer" type="Control" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer"]
+custom_minimum_size = Vector2(2.08165e-12, 80)
+layout_mode = 2
+
+[node name="Gold" type="MarginContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer"]
+layout_mode = 2
+
+[node name="Panel" type="Panel" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer/Gold"]
+layout_mode = 2
+theme = ExtResource("1_j5sq6")
+theme_override_styles/panel = SubResource("StyleBoxFlat_8mejh")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer/Gold"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer/Gold/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 30
+
+[node name="GoldLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer/Gold/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_j5sq6")
+text = "Gold"
+
+[node name="Gold" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer/Gold/MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme = ExtResource("1_j5sq6")
+text = "-1"
+
+[node name="Silver" type="MarginContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer"]
+layout_mode = 2
+
+[node name="Panel" type="Panel" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer/Silver"]
+layout_mode = 2
+theme = ExtResource("1_j5sq6")
+theme_override_styles/panel = SubResource("StyleBoxFlat_ms1c0")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer/Silver"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer/Silver/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 30
+
+[node name="SilverLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer/Silver/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_j5sq6")
+text = "Silver"
+
+[node name="Silver" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer/Silver/MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme = ExtResource("1_j5sq6")
+text = "-1"
+
+[node name="Bronze" type="MarginContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer"]
+layout_mode = 2
+
+[node name="Panel" type="Panel" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer/Bronze"]
+layout_mode = 2
+theme = ExtResource("1_j5sq6")
+theme_override_styles/panel = SubResource("StyleBoxFlat_bwt8d")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer/Bronze"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer/Bronze/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 30
+
+[node name="BronzeLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer/Bronze/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_j5sq6")
+text = "Bronze"
+
+[node name="Bronze" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer/Bronze/MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme = ExtResource("1_j5sq6")
+text = "-1"
+
+[node name="Spacer2" type="Control" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer"]
+custom_minimum_size = Vector2(2.08165e-12, 80)
+layout_mode = 2
+
+[node name="Delete" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer"]
+layout_mode = 2
+theme = ExtResource("5_y62gp")
 theme_override_fonts/font = SubResource("FontVariation_l1fdh")
 theme_override_font_sizes/font_size = 21
 text = "Delete Account"
 
-[node name="Report" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer"]
+[node name="Report" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer"]
 layout_mode = 2
-theme = ExtResource("1_j5sq6")
+theme = ExtResource("5_y62gp")
 theme_override_fonts/font = SubResource("FontVariation_l1fdh")
 theme_override_font_sizes/font_size = 21
 text = "Report User"
 
-[node name="Block" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer"]
+[node name="Block" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer"]
 layout_mode = 2
-theme = ExtResource("1_j5sq6")
+theme = ExtResource("5_y62gp")
 theme_override_fonts/font = SubResource("FontVariation_l1fdh")
 theme_override_font_sizes/font_size = 21
 text = "Block User"
 
-[node name="Restore" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer"]
+[node name="Restore" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer"]
 layout_mode = 2
-theme = ExtResource("1_j5sq6")
+theme = ExtResource("5_y62gp")
 theme_override_fonts/font = SubResource("FontVariation_l1fdh")
 theme_override_font_sizes/font_size = 21
 text = "Share Account"
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("1_j5sq6")
 theme_override_constants/separation = 20
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="SpacerL" type="Control" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
+[node name="SpacerL2" type="Control" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(50, 2.08165e-12)
+layout_mode = 2
+
+[node name="SpacerL" type="Control" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="MatchHistory" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
+[node name="MatchHistory" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_tpbsy")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_676t4")
 theme_override_styles/hover = SubResource("StyleBoxEmpty_7h3ob")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_defcu")
-theme_override_styles/normal = SubResource("StyleBoxEmpty_676t4")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_tpbsy")
 toggle_mode = true
 button_pressed = true
 button_group = SubResource("ButtonGroup_hgu2c")
-text = "Match History"
+text = "History"
 
-[node name="Spacer" type="Control" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
+[node name="Spacer" type="Control" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 0.25
 
-[node name="Leaderboard" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
+[node name="Leaderboard" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_tpbsy")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_676t4")
 theme_override_styles/hover = SubResource("StyleBoxEmpty_7h3ob")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_defcu")
-theme_override_styles/normal = SubResource("StyleBoxEmpty_676t4")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_tpbsy")
 toggle_mode = true
 button_group = SubResource("ButtonGroup_hgu2c")
 text = "Leaderboard"
 
-[node name="SpacerR" type="Control" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
+[node name="SpacerR" type="Control" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="ScrollContainer" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/VBoxContainer" instance=ExtResource("3_4a50u")]
+[node name="ScrollContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer" instance=ExtResource("3_4a50u")]
 layout_mode = 2
 horizontal_scroll_mode = 0
 
-[node name="PastGameList" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/VBoxContainer/ScrollContainer" instance=ExtResource("3_d3vco")]
+[node name="PastGameList" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/ScrollContainer" instance=ExtResource("3_d3vco")]
 layout_mode = 2
 theme = ExtResource("1_j5sq6")
 theme_override_constants/margin_left = 0
 theme_override_constants/margin_right = 0
 
-[node name="UserRankings" type="MarginContainer" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/VBoxContainer/ScrollContainer"]
+[node name="UserRankings" type="MarginContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/ScrollContainer"]
 visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/margin_left = 50
-theme_override_constants/margin_top = 50
+theme_override_constants/margin_top = 0
 theme_override_constants/margin_right = 0
 theme_override_constants/margin_bottom = 50
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/VBoxContainer/ScrollContainer/UserRankings"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/ScrollContainer/UserRankings"]
 layout_mode = 2
 
 [node name="ConfirmationDialog" type="HBoxContainer" parent="."]
@@ -766,21 +833,21 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 0.5
 
-[connection signal="pressed" from="MarginContainer/ScrollContainer/VBoxContainer/ButtonMargins/Tabs/CustomizeProfile" to="." method="_on_customize_profile_pressed"]
-[connection signal="text_changed" from="MarginContainer/ScrollContainer/VBoxContainer/GridContainer/UsernameText" to="." method="_on_username_text_text_changed"]
-[connection signal="toggled" from="MarginContainer/ScrollContainer/VBoxContainer/GridContainer/PushNotificationButtons/PushOn" to="." method="_on_push_on_toggled"]
-[connection signal="toggled" from="MarginContainer/ScrollContainer/VBoxContainer/GridContainer/PushNotificationButtons/PushOff" to="." method="_on_push_off_toggled"]
-[connection signal="toggled" from="MarginContainer/ScrollContainer/VBoxContainer/GridContainer/ChatPushNotificationButtons/PushOn" to="." method="_on_chat_push_on_toggled"]
-[connection signal="toggled" from="MarginContainer/ScrollContainer/VBoxContainer/GridContainer/ChatPushNotificationButtons/PushOff" to="." method="_on_chat_push_off_toggled"]
-[connection signal="toggled" from="MarginContainer/ScrollContainer/VBoxContainer/GridContainer/GraphicsButtons/PushOn" to="." method="_on_graphics_push_on_toggled"]
-[connection signal="toggled" from="MarginContainer/ScrollContainer/VBoxContainer/GridContainer/GraphicsButtons/PushOff" to="." method="_on_graphics_push_off_toggled"]
-[connection signal="pressed" from="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/TestGame" to="." method="_on_test_game_pressed"]
-[connection signal="pressed" from="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/Delete" to="." method="_on_delete_pressed"]
-[connection signal="pressed" from="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/Report" to="." method="_on_report_pressed"]
-[connection signal="pressed" from="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/Block" to="." method="_on_block_pressed"]
-[connection signal="pressed" from="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/Restore" to="." method="_on_restore_pressed"]
-[connection signal="pressed" from="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer/MatchHistory" to="." method="_on_match_history_pressed"]
-[connection signal="pressed" from="MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer/Leaderboard" to="." method="_on_leaderboard_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/CustomizeProfile" to="." method="_on_customize_profile_pressed"]
+[connection signal="text_changed" from="MarginContainer/VBoxContainer/GridContainer/UsernameText" to="." method="_on_username_text_text_changed"]
+[connection signal="toggled" from="MarginContainer/VBoxContainer/GridContainer/PushNotificationButtons/PushOn" to="." method="_on_push_on_toggled"]
+[connection signal="toggled" from="MarginContainer/VBoxContainer/GridContainer/PushNotificationButtons/PushOff" to="." method="_on_push_off_toggled"]
+[connection signal="toggled" from="MarginContainer/VBoxContainer/GridContainer/ChatPushNotificationButtons/PushOn" to="." method="_on_chat_push_on_toggled"]
+[connection signal="toggled" from="MarginContainer/VBoxContainer/GridContainer/ChatPushNotificationButtons/PushOff" to="." method="_on_chat_push_off_toggled"]
+[connection signal="toggled" from="MarginContainer/VBoxContainer/GridContainer/GraphicsButtons/PushOn" to="." method="_on_graphics_push_on_toggled"]
+[connection signal="toggled" from="MarginContainer/VBoxContainer/GridContainer/GraphicsButtons/PushOff" to="." method="_on_graphics_push_off_toggled"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/TestGame" to="." method="_on_test_game_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer/Delete" to="." method="_on_delete_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer/Report" to="." method="_on_report_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer/Block" to="." method="_on_block_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer/Restore" to="." method="_on_restore_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer/MatchHistory" to="." method="_on_match_history_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer/Leaderboard" to="." method="_on_leaderboard_pressed"]
 [connection signal="pressed" from="ConfirmationDialog/Dialog/MarginContainer/VBoxContainer/HBoxContainer/Confirm" to="." method="_on_confirm_pressed"]
 [connection signal="pressed" from="ConfirmationDialog/Dialog/MarginContainer/VBoxContainer/HBoxContainer/Cancel" to="." method="_on_cancel_pressed"]
 [connection signal="pressed" from="CodeDialog/Dialog/MarginContainer/VBoxContainer/Done" to="." method="_on_done_pressed"]

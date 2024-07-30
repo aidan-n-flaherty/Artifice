@@ -26,8 +26,8 @@ func _process(delta):
 		$Color.scale = Vector3(1.63, 0.7, 1.63) * scaleAmount
 		$RotationInvariant.scale = Vector3(1.0, 1.0, 1.0) * scaleAmount
 		$CollisionShape.scale = Vector3(1.0, 1.0, 1.0) * scaleAmount
-		$Counter.position.y = scaleAmount
-		$Color.position.y = scaleAmount
+		$Counter.position.y = 0.5 + scaleAmount
+		$Color.position.y = 0.5 + scaleAmount
 		
 		var actualPos = get_parent().position + position
 		var pos = Vector2(actualPos.x - camera.get_camera_transform().origin.x, actualPos.z + actualPos.y - (camera.get_camera_transform().origin.z + 200))
@@ -46,7 +46,7 @@ func _process(delta):
 			visible = true
 				
 			if not get_node_or_null("Submarine"):
-				var node = preload("res://Submarine.tscn").instantiate()
+				var node = preload("res://Submarine2.tscn").instantiate()
 				node.name = "Submarine"
 				
 				add_child(node)
@@ -56,7 +56,7 @@ func _process(delta):
 				selected = null
 				color = null
 			
-			$Submarine.scale = Vector3(1.8, 1.4, 1.4) * (0.5 * scaleAmount + 0.5)
+			$Submarine.scale = Vector3(1.5, 1.5, 1.5) * (0.5 + 0.5 * scaleAmount)
 		
 	if -get_rotation().y != rot: $RotationInvariant.rotation = Vector3(0, -get_rotation().y, 0)
 	if units != get_parent().getUnits():
@@ -69,8 +69,8 @@ func _process(delta):
 	if color != get_parent().getColor():
 		if not get_parent().isSelected():
 			$Color.get_surface_override_material(0).albedo_color = get_parent().getColor()
-		$Submarine.get_surface_override_material(0).albedo_color = get_parent().getColor()
-		$Submarine.get_surface_override_material(1).albedo_color = get_parent().getColor().darkened(0.9)
+		$Submarine.get_surface_override_material(6).albedo_color = get_parent().getColor()
+		$Submarine.get_surface_override_material(0).albedo_color = get_parent().getColor().darkened(0.1)
 			
 		#$Submarine.get_surface_override_material(4).emission = get_parent().getColor()
 	

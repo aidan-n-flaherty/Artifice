@@ -31,29 +31,29 @@ func update(gameID):
 	
 	gameDetails = GameData.getGameDetails(gameID)
 	
-	$Margin/HBoxContainer/Title.text = gameDetails.gameSettings.lobbyName
-	$Margin/HBoxContainer/Players.text = str(gameDetails.gameData.playerCount) + "/" + str(gameDetails.gameSettings.playerCap)
+	$Margin/VBoxContainer/HBoxContainer/Title.text = gameDetails.gameSettings.lobbyName
+	$Margin/VBoxContainer/HBoxContainer/Players.text = str(gameDetails.gameData.playerCount) + "/" + str(gameDetails.gameSettings.playerCap)
 	
-	for node in $Margin/HBoxContainer/Icons.get_children():
+	if gameDetails.gameData.started:
+		$Margin/VBoxContainer/HBoxContainer2/Start.text = "Started on " + Utilities.timeToDateStr(gameDetails.gameData.startTime)
+	else:
+		$Margin/VBoxContainer/HBoxContainer2/Start.text = "Created on " + Utilities.timeToDateStr(gameDetails.gameData.createdAt)
+	
+	for node in $Margin/VBoxContainer/HBoxContainer2/Icons.get_children():
 		node.hide()
 	
 	if gameDetails.gameData.hasPassword and not alreadyJoined:
-		$Margin/HBoxContainer/Icons/Spacer.show()
-		$Margin/HBoxContainer/Icons/Password.show()
+		$Margin/VBoxContainer/HBoxContainer2/Icons/Password.show()
 	
 	if alreadyJoined and gameDetails.gameData.hasNotifications:
 		$Panel.show()
-		$Margin/HBoxContainer/Icons/Spacer.show()
-		$Margin/HBoxContainer/Icons/Notifications.show()
+		$Margin/VBoxContainer/HBoxContainer2/Icons/Notifications.show()
 	
 	if alreadyJoined and gameDetails.gameData.hasChatNotifications:
-		$Panel.show()
-		$Margin/HBoxContainer/Icons/Spacer.show()
-		$Margin/HBoxContainer/Icons/ChatNotifications.show()
+		$Margin/VBoxContainer/HBoxContainer2/Icons/ChatNotifications.show()
 	
 	if gameDetails.gameSettings.ranked:
-		$Margin/HBoxContainer/Icons/Spacer.show()
-		$Margin/HBoxContainer/Icons/Ranked.show()
+		$Margin/VBoxContainer/HBoxContainer2/Icons/Ranked.show()
 
 func _on_button_pressed():
 	if alreadyJoined and int(gameDetails.gameData.startTime) < Time.get_unix_time_from_system() + (2 * 365 * 24 * 60 * 60):

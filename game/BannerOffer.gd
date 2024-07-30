@@ -36,7 +36,7 @@ func init(bannerID: int, userID: int, available=false, selectable=true):
 	
 	print(bannerID)
 	var banner = preload("res://Banner.tscn").instantiate()
-	banner.init(bannerID, Color(0,0,0), Color(1,1,1))
+	banner.init(bannerID, [0,0,0], [255, 255, 255])
 	$VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/MarginContainer/MarginContainer/MarginContainer/Image.add_child(banner)
 	
 	$VBoxContainer/MarginContainer/MarginContainer/HBoxContainer/MarginContainer/Select.visible = selectable

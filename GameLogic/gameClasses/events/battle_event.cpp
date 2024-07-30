@@ -154,13 +154,13 @@ void BattleEvent::postSpecialistPhase(Game* game) {
         addMessage(b->getOwnerID(), b->getOwner()->getName() + "'s King kills " + std::to_string(a->removeUnits(int(unitsB * 1.0 / (2 * i + 4)))) + " units");
     }
 
-    if(!a->getSpecialists().empty()) {
+    if(a->controlsAnySpecialists()) {
         for(int i = 0; i < (!a->getGlobalDisabled() ? a->ownerSpecialistCount(SpecialistType::GENERAL) : -1); i++) {
             addMessage(a->getOwnerID(), a->getOwner()->getName() + "'s General kills " + std::to_string(b->removeUnits(10)) + " units");
         }
     }
 
-    if(!b->getSpecialists().empty()) {
+    if(b->controlsAnySpecialists()) {
         for(int i = 0; i < (!b->getGlobalDisabled() ? b->ownerSpecialistCount(SpecialistType::GENERAL) : -1); i++) {
             addMessage(b->getOwnerID(), b->getOwner()->getName() + "'s General kills " + std::to_string(a->removeUnits(10)) + " units");
         }
@@ -352,11 +352,21 @@ void BattleEvent::postCombatSpecialistPhase(Game* game) {
 
     if(removeSpecialistsA && !a->getSpecialists().empty()) {
         addMessage(b->getOwnerID(), b->getOwner()->getName() + "'s Assassin kills all enemy specialists.");
-        while(!a->getSpecialists().empty()) game->removeSpecialist(a->getSpecialists().front());
+
+        std::list<Specialist*> specialists = a->getSpecialists();
+
+        for(Specialist* s : specialists) {
+            if(s->getOwnerID() != b->getOwnerID()) game->removeSpecialist(s);
+        }
     }
     if(removeSpecialistsB && !b->getSpecialists().empty()) {
         addMessage(a->getOwnerID(), a->getOwner()->getName() + "'s Assassin kills all enemy specialists.");
-        while(!b->getSpecialists().empty()) game->removeSpecialist(b->getSpecialists().front());
+
+        std::list<Specialist*> specialists = b->getSpecialists();
+
+        for(Specialist* s : specialists) {
+            if(s->getOwnerID() != a->getOwnerID()) game->removeSpecialist(s);
+        }
     }
 
     setPhaseUnits();

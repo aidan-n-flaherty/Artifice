@@ -34,9 +34,8 @@ func init(game, player, username, dailyProduction, units, capacity, winCount, wi
 	$MarginContainer/HBoxContainer/MarginContainer/Capacity.max_value = largest
 	$MarginContainer/HBoxContainer/MarginContainer/Capacity.modulate = color
 	
-	var bannerColor = color #.darkened(0.5)
 	var banner = $MarginContainer/HBoxContainer/MarginContainer/Units/Banner
-	banner.init(bannerID, bannerColor, Color(1,1,1,0))
+	banner.init(bannerID, [color.r * 200, color.g * 200, color.b * 200], [200, 200, 200])
 	
 	$MarginContainer/HBoxContainer/MarginContainer/MarginContainer/VBox/HBox1/factoryIcon.modulate = color
 	$MarginContainer/HBoxContainer/MarginContainer/MarginContainer/VBox/HBox1/gensIcon.modulate = color

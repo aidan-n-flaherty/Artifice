@@ -8,5 +8,5 @@ func _ready():
 	resize()
 
 func resize():
-	self.material.set_shader_parameter("screenWidth", get_viewport().size.x)
-	self.material.set_shader_parameter("screenHeight", get_viewport().size.y)
+	$Panel.material.set_shader_parameter("screenWidth", get_viewport().size.x)
+	$Panel.material.set_shader_parameter("screenHeight", get_viewport().size.y)

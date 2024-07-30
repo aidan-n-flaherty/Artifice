@@ -20,6 +20,10 @@ using namespace godot;
 
 FloorDisplay::FloorDisplay(GameInterface* gameInterface) : gameInterface(gameInterface) {}
 
+void FloorDisplay::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("setUIScale"), &FloorDisplay::setUIScale);
+}
+
 void FloorDisplay::_draw() {
     if(!gameInterface || !gameInterface->getGame() || !gameInterface->getCompleteGame() || !gameInterface->getCurrentGame() || !gameInterface->getFullGame()) return;
 
@@ -31,7 +35,7 @@ void FloorDisplay::_draw() {
     SubViewport* viewport = cast_to<SubViewport>(get_parent());
     Node3D* cameraPivot = cast_to<Node3D>(viewport->get_parent());
 
-    int pixels = 10;
+    double pixels = 10.0 / uiScale;
 
     double rootX = cameraPivot->get_position().x - viewport->get_size().x/2.0/pixels;
     double rootY = cameraPivot->get_position().z - viewport->get_size().y/2.0/pixels + 100;

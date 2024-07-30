@@ -19,6 +19,7 @@ func _ready():
 	GameData.loadGame.connect(viewGame)
 	GameData.loadPrevious.connect(viewPrevious)
 	GameData.loadCurrent.connect(viewCurrent)
+	GameData.loadCustomizeProfile.connect(viewCustomizeProfile)
 
 func viewGame(gameID: int, past: bool):
 	self.gameID = gameID
@@ -43,6 +44,9 @@ func viewPrevious():
 
 func viewCurrent():
 	$AnimationPlayer.play("fade_to_current")
+	
+func viewCustomizeProfile():
+	$AnimationPlayer.play("fade_to_customize")
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -70,3 +74,5 @@ func _on_animation_player_animation_finished(anim_name):
 	elif anim_name == "fade_to_current":
 		GameData.currentTab = "res://CurrentGameList.tscn"
 		GameData.goto_scene("res://MainMenu.tscn")
+	elif anim_name == "fade_to_customize":
+		GameData.viewCustomizeCompletion()

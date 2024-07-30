@@ -29,9 +29,9 @@ script = ExtResource("1_fna5p")
 modulate = Color(0, 0, 0, 1)
 layout_mode = 2
 theme = ExtResource("2_i6hew")
+theme_override_styles/normal = SubResource("StyleBoxFlat_d1qk0")
 theme_override_styles/hover = SubResource("StyleBoxFlat_d1qk0")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_qmnui")
-theme_override_styles/normal = SubResource("StyleBoxFlat_d1qk0")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2

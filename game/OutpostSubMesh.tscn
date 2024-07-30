@@ -1,257 +1,67 @@
-[gd_scene load_steps=15 format=3 uid="uid://b01b6amie746a"]
+[gd_scene load_steps=14 format=3 uid="uid://b01b6amie746a"]
 
-[ext_resource type="PackedScene" uid="uid://be40a30mo8arh" path="res://JellyfishMesh.tscn" id="1_lpng5"]
-[ext_resource type="ArrayMesh" uid="uid://vm3hfhd8sd3l" path="res://resources/outpost/factoryComponent1.obj" id="2_joppx"]
-[ext_resource type="ArrayMesh" uid="uid://do3ghbwo7vewu" path="res://resources/outpost/factoryComponent3.obj" id="3_26sn2"]
-[ext_resource type="ArrayMesh" uid="uid://c2q0yws0yrovc" path="res://resources/outpost/factoryComponent2.obj" id="4_445if"]
-[ext_resource type="ArrayMesh" uid="uid://bk7whboonr5ub" path="res://resources/outpost/generatorComponent1.obj" id="5_yww7n"]
-[ext_resource type="ArrayMesh" uid="uid://dlbijp8w0hxdj" path="res://resources/outpost/generatorComponent2.obj" id="6_385e0"]
-[ext_resource type="PackedScene" uid="uid://tk76ksppk2n" path="res://resources/outpost/mine.blend" id="7_bo7nc"]
-[ext_resource type="Texture2D" uid="uid://c4qhl5pkr6yj0" path="res://resources/images/banner.png" id="8_uxnbf"]
+[ext_resource type="ArrayMesh" uid="uid://b18vy37f6n14i" path="res://resources/outpost/shieldAlternate3.obj" id="9_wgdl0"]
+[ext_resource type="Shader" path="res://Jellyfish.gdshader" id="10_c53s2"]
+[ext_resource type="Script" path="res://Shield.gd" id="11_e61k7"]
+[ext_resource type="Texture2D" uid="uid://diw18q4etg5il" path="res://resources/icons/FactoryIcon.png" id="11_wdbw3"]
+[ext_resource type="Texture2D" uid="uid://cpecsai8tlnce" path="res://resources/icons/GeneratorIcon.png" id="13_nck7m"]
+[ext_resource type="Texture2D" uid="uid://6xer52x07bei" path="res://resources/icons/MineIcon.png" id="14_hoqvx"]
+[ext_resource type="Texture2D" uid="uid://dwxs1nqum3qbg" path="res://resources/icons/QuestionMark.png" id="15_ocn8j"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ccc40"]
-shading_mode = 0
-albedo_color = Color(0, 0, 0, 1)
-disable_receive_shadows = true
-
-[sub_resource type="CylinderMesh" id="CylinderMesh_ac0u5"]
-material = SubResource("StandardMaterial3D_ccc40")
-top_radius = 6.5
-bottom_radius = 6.5
-height = 0.25
-radial_segments = 32
-rings = 1
-cap_bottom = false
-
-[sub_resource type="TorusMesh" id="TorusMesh_ij3q2"]
-inner_radius = 6.0
-outer_radius = 7.0
-rings = 32
-ring_segments = 16
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hejsr"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hq2pk"]
 resource_local_to_scene = true
 shading_mode = 0
-albedo_color = Color(0, 0, 0, 1)
-disable_receive_shadows = true
+albedo_color = Color(1, 0, 1, 1)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kbieb"]
-resource_local_to_scene = true
-albedo_color = Color(0, 0, 0, 1)
-metallic = 0.5
+[sub_resource type="Gradient" id="Gradient_oeevq"]
+offsets = PackedFloat32Array(0.25, 0.433824, 0.551471, 0.992647, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0.564962, 0.564962, 0.564962, 1, 0.804743, 0.804743, 0.804743, 1, 1, 1, 1, 1, 1, 1, 1, 1)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5sbhk"]
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_44dwb"]
+gradient = SubResource("Gradient_oeevq")
+fill = 1
+fill_from = Vector2(0.5, 0.518939)
+fill_to = Vector2(0, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_tc2ko"]
+noise_type = 2
+frequency = 0.0166
+fractal_octaves = 8
+cellular_distance_function = 1
+cellular_jitter = 0.8
+cellular_return_type = 6
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_txva8"]
+width = 256
+height = 256
+seamless = true
+noise = SubResource("FastNoiseLite_tc2ko")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_d8w8k"]
 resource_local_to_scene = true
-emission_enabled = true
-emission = Color(1, 1, 1, 1)
-emission_energy_multiplier = 2.0
+render_priority = 0
+shader = ExtResource("10_c53s2")
+shader_parameter/speed = 0.01
+shader_parameter/dark = false
+shader_parameter/outOfSonar = false
+shader_parameter/id = 0
+shader_parameter/screen_texture = SubResource("NoiseTexture2D_txva8")
+shader_parameter/gradient = SubResource("GradientTexture2D_44dwb")
 
 [node name="Outpost" type="Node3D"]
 
-[node name="floor" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 14, 2.08165e-12)
-mesh = SubResource("CylinderMesh_ac0u5")
-skeleton = NodePath("../..")
+[node name="Shield" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 0, 20.9943, 0)
+mesh = ExtResource("9_wgdl0")
+surface_material_override/3 = SubResource("StandardMaterial3D_hq2pk")
+surface_material_override/8 = SubResource("ShaderMaterial_d8w8k")
+script = ExtResource("11_e61k7")
+factory = ExtResource("11_wdbw3")
+generator = ExtResource("13_nck7m")
+mine = ExtResource("14_hoqvx")
+unknown = ExtResource("15_ocn8j")
 
-[node name="ring" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 14, 2.08165e-12)
-cast_shadow = 0
-mesh = SubResource("TorusMesh_ij3q2")
-skeleton = NodePath("../..")
-surface_material_override/0 = SubResource("StandardMaterial3D_hejsr")
-
-[node name="JellyfishMesh" parent="." instance=ExtResource("1_lpng5")]
-transform = Transform3D(0.707107, 1.60554e-24, 0.707107, 3.48787e-16, 1, -3.48787e-16, -0.707107, 4.93259e-16, 0.707107, 2.08165e-12, 15, 2.08165e-12)
-
-[node name="City" type="Node3D" parent="."]
-
-[node name="Factory" type="Node3D" parent="City"]
-transform = Transform3D(-0.459619, 3.65013e-16, 0.459619, 2.26712e-16, 0.74, -2.26712e-16, -0.459619, 2.55659e-22, -0.459619, 0, 14.1479, 0)
-
-[node name="Base" type="Node3D" parent="City/Factory"]
-
-[node name="factoryComponent1" type="MeshInstance3D" parent="City/Factory/Base"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 2.08165e-12, 1.5)
-mesh = ExtResource("2_joppx")
-surface_material_override/0 = SubResource("StandardMaterial3D_kbieb")
-surface_material_override/1 = SubResource("StandardMaterial3D_5sbhk")
-
-[node name="factoryComponent2" type="MeshInstance3D" parent="City/Factory/Base"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 2.08165e-12, 1.5)
-mesh = ExtResource("2_joppx")
-surface_material_override/0 = SubResource("StandardMaterial3D_kbieb")
-surface_material_override/1 = SubResource("StandardMaterial3D_5sbhk")
-
-[node name="factoryComponent3" type="MeshInstance3D" parent="City/Factory/Base"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 2.08165e-12, -1.5)
-mesh = ExtResource("2_joppx")
-surface_material_override/0 = SubResource("StandardMaterial3D_kbieb")
-surface_material_override/1 = SubResource("StandardMaterial3D_5sbhk")
-
-[node name="factoryComponent4" type="MeshInstance3D" parent="City/Factory/Base"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 2.08165e-12, -1.5)
-mesh = ExtResource("2_joppx")
-surface_material_override/0 = SubResource("StandardMaterial3D_kbieb")
-surface_material_override/1 = SubResource("StandardMaterial3D_5sbhk")
-
-[node name="Columns" type="Node3D" parent="City/Factory"]
-
-[node name="factoryComponent1" type="MeshInstance3D" parent="City/Factory/Columns"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 4.5)
-mesh = ExtResource("3_26sn2")
-surface_material_override/0 = SubResource("StandardMaterial3D_kbieb")
-surface_material_override/1 = SubResource("StandardMaterial3D_5sbhk")
-
-[node name="factoryComponent2" type="MeshInstance3D" parent="City/Factory/Columns"]
-transform = Transform3D(-4.37114e-08, 3.48787e-16, 1, 3.48787e-16, 1, -3.48787e-16, -1, 3.48787e-16, -4.37114e-08, 1.5, 2.08165e-12, 6)
-mesh = ExtResource("3_26sn2")
-surface_material_override/0 = SubResource("StandardMaterial3D_kbieb")
-surface_material_override/1 = SubResource("StandardMaterial3D_5sbhk")
-
-[node name="factoryComponent3" type="MeshInstance3D" parent="City/Factory/Columns"]
-transform = Transform3D(-4.37114e-08, 3.48787e-16, 1, 3.48787e-16, 1, -3.48787e-16, -1, 3.48787e-16, -4.37114e-08, -1.5, 2.08165e-12, 6)
-mesh = ExtResource("3_26sn2")
-surface_material_override/0 = SubResource("StandardMaterial3D_kbieb")
-surface_material_override/1 = SubResource("StandardMaterial3D_5sbhk")
-
-[node name="factoryComponent4" type="MeshInstance3D" parent="City/Factory/Columns"]
-transform = Transform3D(-1, 3.48787e-16, 8.74228e-08, 3.48787e-16, 1, -3.48787e-16, -8.74228e-08, -3.48787e-16, -1, 6, 2.08165e-12, 4.5)
-mesh = ExtResource("3_26sn2")
-surface_material_override/0 = SubResource("StandardMaterial3D_kbieb")
-surface_material_override/1 = SubResource("StandardMaterial3D_5sbhk")
-
-[node name="factoryComponent5" type="MeshInstance3D" parent="City/Factory/Columns"]
-transform = Transform3D(-1, 3.48787e-16, -1.50996e-07, 3.48787e-16, 1, -3.48787e-16, 1.50996e-07, -3.48787e-16, -1, 6, 0, -1.39256)
-mesh = ExtResource("3_26sn2")
-surface_material_override/0 = SubResource("StandardMaterial3D_kbieb")
-surface_material_override/1 = SubResource("StandardMaterial3D_5sbhk")
-
-[node name="factoryComponent6" type="MeshInstance3D" parent="City/Factory/Columns"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 2.08165e-12, -1.5)
-mesh = ExtResource("3_26sn2")
-surface_material_override/0 = SubResource("StandardMaterial3D_kbieb")
-surface_material_override/1 = SubResource("StandardMaterial3D_5sbhk")
-
-[node name="Glass" type="Node3D" parent="City/Factory"]
-
-[node name="factoryComponent1" type="MeshInstance3D" parent="City/Factory/Glass"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 2.08165e-12, -6)
-mesh = ExtResource("4_445if")
-surface_material_override/0 = SubResource("StandardMaterial3D_kbieb")
-surface_material_override/1 = SubResource("StandardMaterial3D_5sbhk")
-
-[node name="factoryComponent2" type="MeshInstance3D" parent="City/Factory/Glass"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 2.08165e-12, -3)
-mesh = ExtResource("4_445if")
-surface_material_override/0 = SubResource("StandardMaterial3D_kbieb")
-surface_material_override/1 = SubResource("StandardMaterial3D_5sbhk")
-
-[node name="factoryComponent3" type="MeshInstance3D" parent="City/Factory/Glass"]
-transform = Transform3D(-4.37114e-08, 3.48787e-16, 1, 3.48787e-16, 1, -3.48787e-16, -1, 3.48787e-16, -4.37114e-08, 1.5, 2.08165e-12, 1.5)
-mesh = ExtResource("4_445if")
-surface_material_override/0 = SubResource("StandardMaterial3D_kbieb")
-surface_material_override/1 = SubResource("StandardMaterial3D_5sbhk")
-
-[node name="factoryComponent4" type="MeshInstance3D" parent="City/Factory/Glass"]
-transform = Transform3D(-4.37114e-08, 3.48787e-16, 1, 3.48787e-16, 1, -3.48787e-16, -1, 3.48787e-16, -4.37114e-08, -1.5, 2.08165e-12, 1.5)
-mesh = ExtResource("4_445if")
-surface_material_override/0 = SubResource("StandardMaterial3D_kbieb")
-surface_material_override/1 = SubResource("StandardMaterial3D_5sbhk")
-
-[node name="Generator" type="Node3D" parent="City"]
-transform = Transform3D(-0.459619, 3.20619e-16, 0.459619, 2.26712e-16, 0.65, -2.26712e-16, -0.459619, -1.70262e-23, -0.459619, 0, 14.1479, 0)
-visible = false
-
-[node name="Base" type="Node3D" parent="City/Generator"]
-
-[node name="generatorComponent1" type="MeshInstance3D" parent="City/Generator/Base"]
-transform = Transform3D(1, -3.48787e-16, -1.37945e-09, 3.48787e-16, 0.999999, -3.48787e-16, -1.37945e-09, 3.48787e-16, 1, 2.08154e-12, 5.70482, 2.08175e-12)
-mesh = ExtResource("5_yww7n")
-surface_material_override/1 = SubResource("StandardMaterial3D_kbieb")
-surface_material_override/2 = SubResource("StandardMaterial3D_5sbhk")
-
-[node name="Columns" type="Node3D" parent="City/Generator"]
-
-[node name="generatorComponent1" type="MeshInstance3D" parent="City/Generator/Columns"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 4.5)
-mesh = ExtResource("6_385e0")
-surface_material_override/0 = SubResource("StandardMaterial3D_kbieb")
-surface_material_override/1 = SubResource("StandardMaterial3D_5sbhk")
-
-[node name="generatorComponent2" type="MeshInstance3D" parent="City/Generator/Columns"]
-transform = Transform3D(-4.37114e-08, 6.97575e-16, 1, -7.79511e-23, 1, -6.97575e-16, -1, -1.08443e-22, -4.37114e-08, 1.5, 2.08165e-12, 6)
-mesh = ExtResource("6_385e0")
-surface_material_override/0 = SubResource("StandardMaterial3D_kbieb")
-surface_material_override/1 = SubResource("StandardMaterial3D_5sbhk")
-
-[node name="generatorComponent3" type="MeshInstance3D" parent="City/Generator/Columns"]
-transform = Transform3D(-4.37114e-08, 6.97574e-16, 1, -7.79511e-23, 1, -6.97574e-16, -1, -1.08443e-22, -4.37114e-08, -1.5, 2.08165e-12, 6)
-mesh = ExtResource("6_385e0")
-surface_material_override/0 = SubResource("StandardMaterial3D_kbieb")
-surface_material_override/1 = SubResource("StandardMaterial3D_5sbhk")
-
-[node name="generatorComponent4" type="MeshInstance3D" parent="City/Generator/Columns"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 2.08165e-12, 4.5)
-mesh = ExtResource("6_385e0")
-surface_material_override/0 = SubResource("StandardMaterial3D_kbieb")
-surface_material_override/1 = SubResource("StandardMaterial3D_5sbhk")
-
-[node name="generatorComponent5" type="MeshInstance3D" parent="City/Generator/Columns"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 2.08165e-12, -1.5)
-mesh = ExtResource("6_385e0")
-surface_material_override/0 = SubResource("StandardMaterial3D_kbieb")
-surface_material_override/1 = SubResource("StandardMaterial3D_5sbhk")
-
-[node name="generatorComponent6" type="MeshInstance3D" parent="City/Generator/Columns"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, -1.39256)
-mesh = ExtResource("6_385e0")
-surface_material_override/0 = SubResource("StandardMaterial3D_kbieb")
-surface_material_override/1 = SubResource("StandardMaterial3D_5sbhk")
-
-[node name="Glass" type="Node3D" parent="City/Generator"]
-
-[node name="factoryComponent1" type="MeshInstance3D" parent="City/Generator/Glass"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 2.08165e-12, -6)
-mesh = ExtResource("4_445if")
-surface_material_override/0 = SubResource("StandardMaterial3D_kbieb")
-surface_material_override/1 = SubResource("StandardMaterial3D_5sbhk")
-
-[node name="factoryComponent2" type="MeshInstance3D" parent="City/Generator/Glass"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 2.08165e-12, -3)
-mesh = ExtResource("4_445if")
-surface_material_override/0 = SubResource("StandardMaterial3D_kbieb")
-surface_material_override/1 = SubResource("StandardMaterial3D_5sbhk")
-
-[node name="factoryComponent3" type="MeshInstance3D" parent="City/Generator/Glass"]
-transform = Transform3D(-4.37114e-08, 3.48787e-16, 1, 3.48787e-16, 1, -3.48787e-16, -1, 3.48787e-16, -4.37114e-08, 1.5, 2.08165e-12, 1.5)
-mesh = ExtResource("4_445if")
-surface_material_override/0 = SubResource("StandardMaterial3D_kbieb")
-surface_material_override/1 = SubResource("StandardMaterial3D_5sbhk")
-
-[node name="factoryComponent4" type="MeshInstance3D" parent="City/Generator/Glass"]
-transform = Transform3D(-4.37114e-08, 3.48787e-16, 1, 3.48787e-16, 1, -3.48787e-16, -1, 3.48787e-16, -4.37114e-08, -1.5, 2.08165e-12, 1.5)
-mesh = ExtResource("4_445if")
-surface_material_override/0 = SubResource("StandardMaterial3D_kbieb")
-surface_material_override/1 = SubResource("StandardMaterial3D_5sbhk")
-
-[node name="Mine" type="Node3D" parent="City"]
-transform = Transform3D(-0.671751, 4.68597e-16, 0.671751, 3.31348e-16, 0.95, -3.31348e-16, -0.671751, -3.22496e-23, -0.671751, 0, 14.1479, 0)
-visible = false
-
-[node name="Base" type="Node3D" parent="City/Mine"]
-transform = Transform3D(1.09, 0, 0, 0, 1.09, 0, 0, 0, 1.09, 0, 0, 0)
-
-[node name="mine" parent="City/Mine/Base" instance=ExtResource("7_bo7nc")]
-transform = Transform3D(-1.33434e-08, -3.48787e-16, -1, 1.04636e-15, 1, -3.48787e-16, 1, -1.04636e-15, 1.33434e-08, 0, 0, 0)
-
-[node name="mine2" parent="City/Mine/Base" instance=ExtResource("7_bo7nc")]
-transform = Transform3D(1.33434e-08, -9.32315e-15, -1, -8.74228e-08, -1, -5.53102e-16, -1, 8.74228e-08, 1.33434e-08, 0, 0, 0)
-
-[node name="Columns" type="Node3D" parent="City/Mine"]
-
-[node name="Glass" type="Node3D" parent="City/Mine"]
-
-[node name="FlagSprite" type="Sprite3D" parent="."]
-transform = Transform3D(-1, -3.25841e-07, 1.04216e-14, 3.25841e-07, -1, -9.11086e-22, 1.04216e-14, 0, 1, 2.08165e-12, 17.5386, -6.26854)
-pixel_size = 0.04
-texture = ExtResource("8_uxnbf")
+[node name="Icon" type="Sprite3D" parent="Shield"]
+transform = Transform3D(-0.707107, -0.707107, 3.09086e-08, 8.74228e-08, -4.37114e-08, 1, -0.707107, 0.707107, 9.27259e-08, 0, 0.817566, 0)
+pixel_size = 0.012
+texture = ExtResource("13_nck7m")

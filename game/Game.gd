@@ -194,12 +194,6 @@ func _process(delta):
 		$Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/VBoxContainer/HBoxContainer/Control/MarginContainer/MarginContainer/Label.text = ""
 	
 	if not game.isOffline():
-		if game.hasLost():
-			if not hasLost:
-				hasLost = true
-				
-				await GameData.viewEnd(gameID)
-		
 		if game.hasEnded() or GameData.isFinished(gameID):
 			if not viewingEnd:
 				viewingEnd = true
@@ -215,6 +209,14 @@ func _process(delta):
 				else:
 					$Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/EndGame.init(gameID)
 					$Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/EndGame.show()
+		elif game.hasLost():
+			if not hasLost:
+				hasLost = true
+				
+				await GameData.viewEnd(gameID)
+			
+			viewingEnd = false
+			$Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/EndGame.hide()
 		else:
 			viewingEnd = false
 			$Viewport/GameOverlay/MarginContainer/HBoxContainer/Overlay/EndGame.hide()

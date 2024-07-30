@@ -51,6 +51,7 @@ public:
     virtual int getProductionAmount() { return 0; };
 
     std::list<Specialist*> getSpecialists() const { return specialists; }
+    bool controlsAnySpecialists() const;
     virtual double getSpeed() const { return 0; };
 
     double getProjectedSpeed(PositionalObject* origin, PositionalObject* target, std::set<int> selectedSpecialists) const;

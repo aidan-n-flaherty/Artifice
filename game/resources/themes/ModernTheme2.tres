@@ -1,0 +1,80 @@
+[gd_resource type="Theme" load_steps=9 format=3 uid="uid://3bb3o8inw3n4"]
+
+[ext_resource type="FontFile" uid="uid://dx6ui122q4nlo" path="res://resources/fonts/astonpoliz/Astonpoliz.otf" id="1_1g2xw"]
+
+[sub_resource type="FontVariation" id="FontVariation_yq16t"]
+base_font = ExtResource("1_1g2xw")
+variation_embolden = 0.5
+spacing_glyph = 1
+spacing_space = 3
+spacing_top = 1
+spacing_bottom = -4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rt038"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0.0380709, 0.118566, 0.192524, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+shadow_color = Color(0, 0, 0, 0.27451)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tqa28"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_itkre"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0.0380709, 0.118566, 0.192524, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+shadow_color = Color(0, 0, 0, 0.27451)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o2dgk"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0.0235732, 0.0872632, 0.14793, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+shadow_color = Color(0, 0, 0, 0.27451)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tsg1k"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0.0113357, 0.0556088, 0.104129, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="FontVariation" id="FontVariation_e6xfk"]
+base_font = ExtResource("1_1g2xw")
+variation_embolden = 0.5
+spacing_glyph = 1
+spacing_space = 3
+spacing_top = 1
+spacing_bottom = -4
+
+[resource]
+Button/font_sizes/font_size = 30
+Button/fonts/font = SubResource("FontVariation_yq16t")
+Button/styles/disabled = SubResource("StyleBoxFlat_rt038")
+Button/styles/focus = SubResource("StyleBoxEmpty_tqa28")
+Button/styles/hover = SubResource("StyleBoxFlat_itkre")
+Button/styles/normal = SubResource("StyleBoxFlat_o2dgk")
+Button/styles/pressed = SubResource("StyleBoxFlat_tsg1k")
+Label/colors/font_color = Color(1, 1, 1, 0.392157)
+Label/font_sizes/font_size = 25
+Label/fonts/font = SubResource("FontVariation_e6xfk")

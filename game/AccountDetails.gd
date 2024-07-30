@@ -17,7 +17,9 @@ func init(userID: int):
 	self.isSelf = userID == GameData.getSelfID()
 	
 	GameData.userChanged.connect(updateUser)
-	$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/VBoxContainer/ScrollContainer/PastGameList/MarginContainer.add_theme_constant_override("margin_right", 0)
+	$MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/ScrollContainer/PastGameList/MarginContainer.add_theme_constant_override("margin_right", 0)
+	$MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/ScrollContainer/PastGameList/MarginContainer.add_theme_constant_override("margin_bottom", 0)
+	$MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/ScrollContainer/PastGameList/MarginContainer.add_theme_constant_override("margin_top", 0)
 	
 	if isSelf:
 		user = GameData.getSelf()
@@ -26,9 +28,9 @@ func init(userID: int):
 		
 		await GameData.loadSelf()
 	else:
-		$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/VBoxContainer/ScrollContainer/PastGameList.suppressReady()
-		$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/VBoxContainer/ScrollContainer/PastGameList.initUser(userID)
-		await $MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/VBoxContainer/ScrollContainer/PastGameList.init()
+		$MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/ScrollContainer/PastGameList.suppressReady()
+		$MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/ScrollContainer/PastGameList.initUser(userID)
+		await $MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/ScrollContainer/PastGameList.init()
 		await GameData.loadUser(userID)
 
 func updateUser(userID):
@@ -42,68 +44,63 @@ func updateUser(userID):
 	
 	if(!user): return
 	
-	$MarginContainer/ScrollContainer/VBoxContainer/ButtonMargins.visible = isSelf
+	$MarginContainer/VBoxContainer/CustomizeProfile.disabled = not isSelf
 	
-	var banner
-	banner = preload("res://Banner.tscn").instantiate()
-	var playerSelectedBanner = user.bannerID 	#retrieve from data
-	var pC = user.primaryBannerColor
-	var sC = user.secondaryBannerColor
-	var playerPrimaryColor = Color(pC[0], pC[1], pC[2]) #retrieve from data
-	var playerSecondaryColor =  Color(sC[0], sC[1], sC[2])  #retrieve from data
+	$MarginContainer/VBoxContainer/CustomizeProfile/MarginContainer/Panel/Banner.init(user.bannerID, user.primaryBannerColor, user.secondaryBannerColor)
 	
-	banner.init(playerSelectedBanner, playerPrimaryColor, playerSecondaryColor)
-	$MarginContainer/ScrollContainer/VBoxContainer/Banner.add_child(banner)
+	$MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/TestGame.visible = isSelf
+	$MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer/Restore.visible = isSelf
+	$MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer/Report.visible = not isSelf
+	$MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer/Block.visible = not isSelf
+	$MarginContainer/VBoxContainer/GridContainer/UsernameText.visible = isSelf
+	$MarginContainer/VBoxContainer/GridContainer/Username.visible = isSelf
+	$MarginContainer/VBoxContainer/GridContainer/UsernameText.editable = isSelf
+	$MarginContainer/VBoxContainer/GridContainer/UsernameText.text = user.username
+	$MarginContainer/VBoxContainer/CustomizeProfile/MarginContainer/MarginContainer/VBoxContainer/Username.text = user.username
+	$MarginContainer/VBoxContainer/CustomizeProfile/MarginContainer/MarginContainer/VBoxContainer/Rating.text = "Rank #" + str(user.userStats.placement + 1)
+	$MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer/VictoryContainer/MarginContainer/HBoxContainer/Victories.text = str(user.userStats.gamesWon)
+	$MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer/DefeatsContainer/MarginContainer/HBoxContainer/Defeats.text = str(user.userStats.gamesLost)
+	$MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer/TotalGamesContainer/MarginContainer/HBoxContainer/TotalGames.text = str(user.userStats.gamesPlayed)
+	$MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer/AverageRankContainer/MarginContainer/HBoxContainer/AverageRank.text = "N/A" if user.userStats.gamesPlayed == 0 else "%d%%" % int(user.userStats.averageRank * 100.0 / user.userStats.gamesPlayed)
+	$MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer/RatingContainer/MarginContainer/HBoxContainer/Rating.text = str(user.userStats.rating)
+	$MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer/PlacementContainer/MarginContainer/HBoxContainer/Placement.text = "#" + str(user.userStats.placement + 1)
 	
-	$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/TestGame.visible = isSelf
-	$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/Restore.visible = isSelf
-	$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/Report.visible = not isSelf
-	$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/Block.visible = not isSelf
-	$MarginContainer/ScrollContainer/VBoxContainer/GridContainer/UsernameText.editable = isSelf
-	$MarginContainer/ScrollContainer/VBoxContainer/GridContainer/UsernameText.text = user.username
-	$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/VictoryContainer/MarginContainer/HBoxContainer/Victories.text = str(user.userStats.gamesWon)
-	$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/DefeatsContainer/MarginContainer/HBoxContainer/Defeats.text = str(user.userStats.gamesLost)
-	$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/TotalGamesContainer/MarginContainer/HBoxContainer/TotalGames.text = str(user.userStats.gamesPlayed)
-	$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/AverageRankContainer/MarginContainer/HBoxContainer/AverageRank.text = "N/A" if user.userStats.gamesPlayed == 0 else "%d%%" % int(user.userStats.averageRank * 100.0 / user.userStats.gamesPlayed)
-	$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/RatingContainer/MarginContainer/HBoxContainer/Rating.text = str(user.userStats.rating)
-	$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/PlacementContainer/MarginContainer/HBoxContainer/Placement.text = "#" + str(user.userStats.placement + 1)
+	$MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer/Gold/MarginContainer/HBoxContainer/Gold.text = str(user.userStats.gold)
+	$MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer/Silver/MarginContainer/HBoxContainer/Silver.text = str(user.userStats.silver)
+	$MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer/Bronze/MarginContainer/HBoxContainer/Bronze.text = str(user.userStats.bronze)
 	
-	$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/Gold/MarginContainer/HBoxContainer/Gold.text = str(user.userStats.gold)
-	$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/Silver/MarginContainer/HBoxContainer/Silver.text = str(user.userStats.silver)
-	$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/Bronze/MarginContainer/HBoxContainer/Bronze.text = str(user.userStats.bronze)
+	$MarginContainer/VBoxContainer/GridContainer/PushNotifications.visible = isSelf
+	$MarginContainer/VBoxContainer/GridContainer/PushNotificationButtons.visible = isSelf
+	$MarginContainer/VBoxContainer/GridContainer/PushNotificationButtons/PushOn.set_pressed_no_signal(user.pushEnabled)
+	$MarginContainer/VBoxContainer/GridContainer/PushNotificationButtons/PushOff.set_pressed_no_signal(not user.pushEnabled)
 	
-	$MarginContainer/ScrollContainer/VBoxContainer/GridContainer/PushNotifications.visible = isSelf
-	$MarginContainer/ScrollContainer/VBoxContainer/GridContainer/PushNotificationButtons.visible = isSelf
-	$MarginContainer/ScrollContainer/VBoxContainer/GridContainer/PushNotificationButtons/PushOn.set_pressed_no_signal(user.pushEnabled)
-	$MarginContainer/ScrollContainer/VBoxContainer/GridContainer/PushNotificationButtons/PushOff.set_pressed_no_signal(not user.pushEnabled)
-	
-	$MarginContainer/ScrollContainer/VBoxContainer/GridContainer/ChatPushNotifications.visible = isSelf
-	$MarginContainer/ScrollContainer/VBoxContainer/GridContainer/ChatPushNotificationButtons.visible = isSelf
-	$MarginContainer/ScrollContainer/VBoxContainer/GridContainer/ChatPushNotificationButtons/PushOn.set_pressed_no_signal(user.chatPushEnabled)
-	$MarginContainer/ScrollContainer/VBoxContainer/GridContainer/ChatPushNotificationButtons/PushOff.set_pressed_no_signal(not user.chatPushEnabled)
+	$MarginContainer/VBoxContainer/GridContainer/ChatPushNotifications.visible = isSelf
+	$MarginContainer/VBoxContainer/GridContainer/ChatPushNotificationButtons.visible = isSelf
+	$MarginContainer/VBoxContainer/GridContainer/ChatPushNotificationButtons/PushOn.set_pressed_no_signal(user.chatPushEnabled)
+	$MarginContainer/VBoxContainer/GridContainer/ChatPushNotificationButtons/PushOff.set_pressed_no_signal(not user.chatPushEnabled)
 	
 	var settings = GameData.loadLocalSettings()
-	$MarginContainer/ScrollContainer/VBoxContainer/GridContainer/Graphics.visible = isSelf
-	$MarginContainer/ScrollContainer/VBoxContainer/GridContainer/GraphicsButtons.visible = isSelf
-	$MarginContainer/ScrollContainer/VBoxContainer/GridContainer/GraphicsButtons/PushOn.set_pressed_no_signal(not settings.has("graphics") or settings["graphics"] == "advanced")
-	$MarginContainer/ScrollContainer/VBoxContainer/GridContainer/GraphicsButtons/PushOff.set_pressed_no_signal(settings.has("graphics") and settings["graphics"] == "simple")
+	$MarginContainer/VBoxContainer/GridContainer/Graphics.visible = isSelf
+	$MarginContainer/VBoxContainer/GridContainer/GraphicsButtons.visible = isSelf
+	$MarginContainer/VBoxContainer/GridContainer/GraphicsButtons/PushOn.set_pressed_no_signal(not settings.has("graphics") or settings["graphics"] == "advanced")
+	$MarginContainer/VBoxContainer/GridContainer/GraphicsButtons/PushOff.set_pressed_no_signal(settings.has("graphics") and settings["graphics"] == "simple")
 	
-	$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/Delete.visible = isSelf
+	$MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer/Delete.visible = isSelf
 	
-	$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer/Leaderboard.visible = isSelf
-	$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer/Spacer.visible = isSelf
+	$MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer/Leaderboard.visible = isSelf
+	$MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer/Spacer.visible = isSelf
 	
 	if isSelf:
 		var users = await GameData.getRankings()
 		
-		for child in $MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/VBoxContainer/ScrollContainer/UserRankings/VBoxContainer.get_children():
+		for child in $MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/ScrollContainer/UserRankings/VBoxContainer.get_children():
 			child.queue_free()
 		
 		var i = 1
 		for player in users:
 			var node = preload("res://RankingView.tscn").instantiate()
 			node.init(player.id, player.username, player.userStats.rating, i)
-			$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/VBoxContainer/ScrollContainer/UserRankings/VBoxContainer.add_child(node)
+			$MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/ScrollContainer/UserRankings/VBoxContainer.add_child(node)
 			
 			i += 1
 
@@ -119,10 +116,10 @@ func _process(delta):
 
 func _on_username_text_text_changed(new_text):
 	if len(new_text) < 3 or len(new_text) > 20:
-		$MarginContainer/ScrollContainer/VBoxContainer/GridContainer/UsernameText["theme_override_colors/font_color"] = Color.FIREBRICK
+		$MarginContainer/VBoxContainer/GridContainer/UsernameText["theme_override_colors/font_color"] = Color.FIREBRICK
 		return
 	else:
-		$MarginContainer/ScrollContainer/VBoxContainer/GridContainer/UsernameText["theme_override_colors/font_color"] = Color.WHITE
+		$MarginContainer/VBoxContainer/GridContainer/UsernameText["theme_override_colors/font_color"] = Color.WHITE
 	user.username = new_text
 	
 	update = 1
@@ -176,7 +173,7 @@ func _on_delete_pressed():
 
 func _on_report_pressed():
 	if await GameData.reportUser(self.userID, "unspecified"):
-		$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/Report.visible = false
+		$MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer/Report.visible = false
 
 
 func _on_restore_pressed():
@@ -194,7 +191,7 @@ func _on_done_pressed():
 
 func _on_block_pressed():
 	if await GameData.blockUser(self.userID):
-		$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/Block.visible = false
+		$MarginContainer/VBoxContainer/HBoxContainer/ScrollContainer/Control/MarginContainer/Block.visible = false
 
 
 func _on_graphics_push_on_toggled(toggled_on):
@@ -208,21 +205,17 @@ func _on_graphics_push_off_toggled(toggled_on):
 
 
 func _on_customize_profile_pressed() -> void:
-	var customizeProfile = preload("res://CustomizeProfile.tscn").instantiate()
-	customizeProfile.init(userID)
-	GameData.goto_node(customizeProfile)
-	
-
+	GameData.gotoCustomizeProfile()
 
 func _on_test_game_pressed():
 	GameData.viewGame(-1, false)
 
 
 func _on_match_history_pressed():
-	$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/VBoxContainer/ScrollContainer/PastGameList.show()
-	$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/VBoxContainer/ScrollContainer/UserRankings.hide()
+	$MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/ScrollContainer/PastGameList.show()
+	$MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/ScrollContainer/UserRankings.hide()
 
 
 func _on_leaderboard_pressed():
-	$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/VBoxContainer/ScrollContainer/PastGameList.hide()
-	$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/VBoxContainer/ScrollContainer/UserRankings.show()
+	$MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/ScrollContainer/PastGameList.hide()
+	$MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/ScrollContainer/UserRankings.show()

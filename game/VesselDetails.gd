@@ -149,15 +149,9 @@ func _process(delta):
 	
 	if vessel.getOwnerID() != -1:
 		get_parent().playerName = game.getPlayer(vessel.getOwnerID()).getName()
-		var p =  game.getPlayer(vessel.getOwnerID())
-		var user = await GameData.getUser(p.getUserID())
-		if(!user):
-			bannerID = 0
-		else:
-			bannerID = user.bannerID
+		bannerID = game.getBannerID(vessel.getOwnerID())
 	else:
 		get_parent().playerName = "Neutral"
-		bannerID = 0
 	
 	get_parent().bannerID = bannerID
 	

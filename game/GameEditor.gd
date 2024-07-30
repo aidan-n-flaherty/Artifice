@@ -60,11 +60,12 @@ func setEditable(canEdit):
 		for specialist in SettingsDefault.getAllSpecialists():
 			var specialistName = SettingsDefault.getSpecialistName(specialist)
 			
-			var button = $"MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/VBoxContainer/ActiveHoursButtons/0".duplicate()
+			var button = $"MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows/VBoxContainer/ActiveHoursButtons/1".duplicate()
 			if button.toggled.is_connected(on_activeTimes_modified):
 				button.toggled.disconnect(on_activeTimes_modified)
 			button.name = str(specialist)
 			button.text = specialistName
+			button.size_flags_vertical = Control.SIZE_EXPAND_FILL
 			
 			button.toggle_mode = true
 			$MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Advanced/Grid/SpecialistBansButtons/SpecialistBansButtons.add_child(button)
@@ -120,10 +121,6 @@ func deserialize(gameID):
 	
 	var date = data["createdAt"]
 	var stringDate = Utilities.timeToDateStr(int(date))
-	
-	$MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/System/Grid/CreationDateText.text = stringDate
-	
-	$MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/System/Grid/VersionText.text = str(data.version)
 	
 	$MarginContainer/VBoxContainer/Passworded.visible = data.hasPassword
 	

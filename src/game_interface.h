@@ -62,6 +62,7 @@ private:
 	std::unordered_map<int, VesselNode*> vessels;
 	std::unordered_map<int, OutpostNode*> outposts;
 	std::unordered_map<int, PlayerNode*> players;
+	std::unordered_map<int, int> bannerIDs;
 
 	FloorDisplay* floorDisplay = nullptr;
 
@@ -163,6 +164,8 @@ public:
 	bool isSuspended() { return paused; }
 
 	int getUserGameID() { return userGameID; }
+
+	int getBannerID(int playerID) { return bannerIDs.find(playerID) != bannerIDs.end() ? bannerIDs[playerID] : 0; }
 
 	int getHires() {
 		return game && game->hasPlayer(userGameID) ? game->getPlayer(userGameID)->getHiresAt(settings.clientToGameTime(current) - game->getTime()) : -1;

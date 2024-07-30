@@ -1,16 +1,24 @@
-[gd_scene load_steps=6 format=3 uid="uid://ycxxhiua4fft"]
+[gd_scene load_steps=6 format=3 uid="uid://i6v846ydkaek"]
 
 [ext_resource type="Script" path="res://Banner.gd" id="1_g1fcq"]
 
 [sub_resource type="CanvasTexture" id="CanvasTexture_rdraw"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_bwqw8"]
+resource_local_to_scene = true
 texture = SubResource("CanvasTexture_rdraw")
+expand_margin_top = 400.0
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
 
-[sub_resource type="CanvasTexture" id="CanvasTexture_eowls"]
+[sub_resource type="CanvasTexture" id="CanvasTexture_6p0n5"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_na72i"]
-texture = SubResource("CanvasTexture_eowls")
+resource_local_to_scene = true
+texture = SubResource("CanvasTexture_6p0n5")
+expand_margin_top = 400.0
+axis_stretch_horizontal = 2
+axis_stretch_vertical = 2
 
 [node name="Banner" type="MarginContainer"]
 anchors_preset = 15

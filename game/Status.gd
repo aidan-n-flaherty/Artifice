@@ -39,8 +39,8 @@ func update():
 		var generators = p.getGenerators()
 		var color = p.getColor()
 		
-		var user = await GameData.getUser(p.getUserID())
-		var bannerID = user.bannerID
+		#var user = await GameData.getUser(p.getUserID())
+		var bannerID = game.getBannerID(p.getID())
 		
 		var playerStatus
 		

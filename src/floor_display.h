@@ -23,8 +23,10 @@ private:
 
     double currentTime;
 
+    double uiScale = 1.0;
+
 protected:
-	static void _bind_methods() {};
+	static void _bind_methods();
 
 public:
     FloorDisplay() {}
@@ -44,6 +46,8 @@ public:
     double getSimulatedDiff() { return simulatedDiff; }
 
     double getCurrent() { return currentTime; }
+
+    void setUIScale(double scale) { this->uiScale = scale; }
 };
 
 }

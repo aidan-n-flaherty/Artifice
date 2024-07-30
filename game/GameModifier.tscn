@@ -1,10 +1,11 @@
-[gd_scene load_steps=9 format=3 uid="uid://cji0ca8swtaxi"]
+[gd_scene load_steps=10 format=3 uid="uid://cji0ca8swtaxi"]
 
 [ext_resource type="PackedScene" uid="uid://biekuv7dddk3m" path="res://GameEditor.tscn" id="1_2tq6g"]
 [ext_resource type="Script" path="res://GameModifier.gd" id="2_ah1p0"]
+[ext_resource type="PackedScene" uid="uid://c04qxpqrgw5cq" path="res://Background.tscn" id="3_ft0ti"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_brtyh"]
-bg_color = Color(0.239216, 0.239216, 0.239216, 0.196078)
+bg_color = Color(0, 0, 0, 1)
 corner_radius_top_left = 30
 corner_radius_top_right = 30
 corner_radius_bottom_right = 30
@@ -24,9 +25,25 @@ corner_radius_bottom_left = 30
 clip_contents = true
 script = ExtResource("2_ah1p0")
 
-[node name="Panel2" type="Panel" parent="." index="0"]
+[node name="MarginContainer2" type="MarginContainer" parent="." index="0"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="Panel2" type="Panel" parent="MarginContainer2" index="0"]
+clip_children = 2
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_brtyh")
+
+[node name="Background" parent="MarginContainer2/Panel2" index="0" instance=ExtResource("3_ft0ti")]
+layout_mode = 2
+anchors_preset = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_right = 1080.0
+offset_bottom = 1920.0
 
 [node name="ranked" parent="MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/RankedButtons" index="0"]
 button_group = SubResource("ButtonGroup_xs45a")

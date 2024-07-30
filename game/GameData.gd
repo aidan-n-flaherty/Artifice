@@ -22,11 +22,13 @@ signal loadPrevious
 
 signal loadCurrent
 
+signal loadCustomizeProfile
+
 signal refreshBattle(gameID)
 
 signal transitionToAD
 
-var version = "1.19"
+var version = "1.20"
 
 var needsUpdate = false
 
@@ -395,6 +397,14 @@ func previous():
 	
 func gotoCurrent():
 	emit_signal("loadCurrent")
+	
+func gotoCustomizeProfile():
+	emit_signal("loadCustomizeProfile")
+
+func viewCustomizeCompletion():
+	var customizeProfile = preload("res://CustomizeProfile.tscn").instantiate()
+	customizeProfile.init()
+	goto_node(customizeProfile)
 
 func viewUser(id: int):
 	emit_signal("loadUserDetail", id)

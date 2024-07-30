@@ -1,8 +1,19 @@
-[gd_scene load_steps=19 format=3 uid="uid://c04qxpqrgw5cq"]
+[gd_scene load_steps=22 format=3 uid="uid://c04qxpqrgw5cq"]
 
 [ext_resource type="Shader" path="res://Background.gdshader" id="1_yal4h"]
 [ext_resource type="Texture2D" uid="uid://c2h0mmoo0o8wl" path="res://resources/images/pexels-tahmetler-8184179.jpg" id="2_1eac6"]
 [ext_resource type="Script" path="res://Background.gd" id="2_41fco"]
+
+[sub_resource type="Gradient" id="Gradient_5ip6q"]
+offsets = PackedFloat32Array(0.0588235, 1)
+colors = PackedColorArray(0.0155252, 0.0469222, 0.0930997, 1, 0.0672386, 0.166061, 0.253947, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_jnlxx"]
+gradient = SubResource("Gradient_5ip6q")
+fill_from = Vector2(1, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_hqp16"]
+texture = SubResource("GradientTexture2D_jnlxx")
 
 [sub_resource type="Gradient" id="Gradient_2s0lq"]
 colors = PackedColorArray(0.312466, 0.312466, 0.312466, 1, 0.781407, 0.781407, 0.781407, 1)
@@ -90,15 +101,22 @@ shader_parameter/noise3 = SubResource("NoiseTexture2D_l0w18")
 shader_parameter/noise4 = SubResource("NoiseTexture2D_bt0lp")
 shader_parameter/noise5 = ExtResource("2_1eac6")
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5fxya"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fktsi"]
 bg_color = Color(0, 0, 0, 1)
 
 [node name="Background" type="Panel"]
-material = SubResource("ShaderMaterial_8khd5")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_5fxya")
+theme_override_styles/panel = SubResource("StyleBoxTexture_hqp16")
 script = ExtResource("2_41fco")
+
+[node name="Panel" type="Panel" parent="."]
+visible = false
+material = SubResource("ShaderMaterial_8khd5")
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_fktsi")

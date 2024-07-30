@@ -37,35 +37,46 @@ var touchEventCurrent = []
 
 func _ready():
 	$FloorSprite.material_override.set_shader_parameter("screen_texture", $FloorDisplay.get_texture())
+	$FloorReflection.mesh.material.set_shader_parameter("screen", $Reflection.get_texture())
 	get_viewport().connect("size_changed", resize)
 	
 	resize()
 
 func resize():
 	var cameraX = 100.0 * (pow(get_viewport().size.x, 0.5) * 1.5 / pow(get_viewport().size.y, 0.5)) * ((minZoom + maxZoom)/2.0 + tanh(zoom) * (maxZoom - minZoom) / 2.0)
-	var cameraY = 100.0 * (pow(get_viewport().size.y, 0.5) * 3.0 / pow(get_viewport().size.x, 0.5))  * ((minZoom + maxZoom)/2.0 + tanh(zoom) * (maxZoom - minZoom) / 2.0)
+	var cameraY = 100.0 * (pow(get_viewport().size.y, 0.5) * 1.5 * sqrt(2) / pow(get_viewport().size.x, 0.5))  * ((minZoom + maxZoom)/2.0 + tanh(zoom) * (maxZoom - minZoom) / 2.0)
 	
 	$Camera3D.size = cameraX
-	$FloorDisplay.size = Vector2(10 * cameraX, 10 * cameraY)
+	$Reflection/InvertedCamera3D.size = cameraX
+	$FloorDisplay.size = Vector2(get_viewport().size.x, get_viewport().size.y * sqrt(2))
+	$FloorDisplay.get_child(0).setUIScale(cameraX * 10.0 / get_viewport().size.x)
+	$Reflection.size =  Vector2(get_viewport().size.x, get_viewport().size.y)
+	$FloorReflection.scale.z = cameraY/100.0
+	$FloorReflection.scale.x = cameraX/100.0
+	$FloorReflection.mesh.material.set_shader_parameter("cameraSize", cameraX)
+	$FloorReflection.mesh.material.set_shader_parameter("meshHeight", cameraY)
+	$FloorReflection.mesh.material.set_shader_parameter("meshWidth", cameraX)
 	$FloorSprite.scale.z = cameraY/100.0
 	$FloorSprite.scale.x = cameraX/100.0
-	$Terrain.mesh.material.set_shader_parameter("cameraSize", cameraX)
-	$Terrain.mesh.material.set_shader_parameter("meshHeight", cameraY)
-	$Terrain.mesh.material.set_shader_parameter("meshWidth", cameraX)
-	$Terrain.scale.z = cameraY/100.0
-	$Terrain.scale.x = cameraX/100.0
 	
 	#get_parent().get_node("WorldEnvironment").camera_attributes.dof_blur_far_distance = 315 * max(1.0, sqrt($Camera3D.size/100.0))
 
 func init(gameID: int):
 	self.game = GameData.getGame(gameID)
-	$Terrain.mesh.material.set_shader_parameter("mapWidth", game.getWidth())
-	$Terrain.mesh.material.set_shader_parameter("mapHeight", game.getHeight())
+	
+	$FloorReflection.mesh.material.set_shader_parameter("mapWidth", game.getWidth())
+	$FloorReflection.mesh.material.set_shader_parameter("mapHeight", game.getHeight())
+	
+	print(game.getWidth())
+	print(game.getHeight())
+	
 	
 	if GameData.localSettings.has("graphics") and GameData.localSettings["graphics"] == "simple":
-		$Terrain.mesh.material.set_shader_parameter("simple", true)
+		pass
+		#$Terrain.mesh.material.set_shader_parameter("simple", true)
 	else:
-		$Terrain.mesh.material.set_shader_parameter("simple", false)
+		pass
+		#$Terrain.mesh.material.set_shader_parameter("simple", false)
 	
 	$FloorDisplay.add_child(game.getFloorDisplay())
 	
@@ -108,6 +119,8 @@ func _process(delta):
 			updatePos()
 		
 		momentum *= 0.9
+		
+	$Reflection/InvertedCamera3D.position = position - Vector3(0, 300, 100)
 	
 	if game.canStartDrag() and dragging and selectedNode and targetPos:
 		if abs(lastDiff.x) > 0.75:

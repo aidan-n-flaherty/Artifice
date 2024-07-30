@@ -34,10 +34,7 @@ func _ready():
 		rot(get_node("Outpost"))
 	
 func rot(node):
-	node.get_node("City/Factory").rotation_degrees.y = 45 + 90 * get_parent().getID()
-	node.get_node("City/Generator").rotation_degrees.y = 45 + 90 * get_parent().getID()
-	
-	node.get_node("JellyfishMesh").setID(get_parent().getID())
+	node.get_node("Shield").rotation.y = PI * sin(27.0 * get_parent().getID())
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -97,13 +94,8 @@ func _process(delta):
 	if outpostName != get_parent().getName():
 		$Name.text = get_parent().getName()
 	
-	if (get_parent().canViewType() or get_parent().isInRadar()) and destroyed != get_parent().isBroken():
-		$Outpost/JellyfishMesh.setDark(get_parent().isBroken())
-	
 	if selected != get_parent().isSelected():
-		if get_parent().isSelected():
-			$Outpost/FlagSprite.modulate = get_parent().getColor().lightened(0.5)
-		else:
+		if not get_parent().isSelected():
 			color = null
 	
 	if selected:
@@ -112,18 +104,7 @@ func _process(delta):
 		$Outpost.position.y = 0.8 * $Outpost.position.y + 0.25 * cos(PI * sin(27.0 * get_parent().getID()) + 0.5 * elapsed)
 	
 	if color != get_parent().getColor():
-		var c = get_parent().getColor()
-		# $Outpost/City/Factory/Base/factoryComponent1.get_surface_override_material(0).albedo_color = c
-		$Outpost/ring.get_surface_override_material(0).albedo_color = get_parent().getColor().darkened(0.5)
-		$Outpost/FlagSprite.modulate = c
-		if get_parent().getOwnerID() == -1:
-			$Outpost/City/Factory/Base/factoryComponent1.get_surface_override_material(1).emission = Color.WHITE
-		else:
-			$Outpost/City/Factory/Base/factoryComponent1.get_surface_override_material(1).emission = c
-
-	$Outpost/FlagSprite.visible = get_parent().getOwnerID() != -1 and not get_parent().canViewType() and not get_parent().isInRadar()
-	
-	$Outpost/JellyfishMesh.setOutOfSonar(not get_parent().canViewType() and not get_parent().isInRadar())
+		$Outpost/Shield.setColor(get_parent().getColor())
 
 	units = get_parent().getUnits()
 	shield = get_parent().getShield()
@@ -134,25 +115,8 @@ func _process(delta):
 	
 	if get_parent().canViewType() or get_parent().isInRadar():
 		destroyed = get_parent().isBroken()
-	
-	$Outpost/JellyfishMesh.showLights(not get_parent().isInRadar() and not get_parent().canViewType())
-	
+
 	$RotationInvariant.visible = get_parent().isInRadar()
-	
-	if get_parent().canViewType() or get_parent().isInRadar():
-		$Outpost/ring.show()
-		
-		if not get_parent().isBroken():
-			$Outpost/City.show()
-			$Outpost/floor.show()
-		else:
-			$Outpost/City.hide()
-			$Outpost/floor.hide()
-	else:
-		if get_parent().getOwnerID() == -1:
-			$Outpost/ring.hide()
-		$Outpost/City.hide()
-		$Outpost/floor.hide()
 	
 	if not get_parent().isInRadar():
 		$FloorSprite.hide()
@@ -166,11 +130,20 @@ func _process(delta):
 		$Shield.show()
 		$Units.show()
 	
-	$Outpost/City/Factory.visible = get_parent().isFactory()
+	$Outpost/Shield.setDark(not get_parent().isInRadar() or get_parent().isBroken())
 	
-	$Outpost/City/Generator.visible = get_parent().isGenerator()
-	
-	$Outpost/City/Mine.visible = get_parent().isMine()
+	if not get_parent().canViewType() and not get_parent().isInRadar():
+		$Outpost/Shield.showUnknown()
+	elif get_parent().isBroken():
+		$Outpost/Shield.showDestroyed()
+	elif get_parent().isFactory():
+		$Outpost/Shield.showFactory()
+	elif get_parent().isGenerator():
+		$Outpost/Shield.showGenerator()
+	elif get_parent().isMine():
+		$Outpost/Shield.showMine()
+	else:
+		$Outpost/Shield.showDestroyed()
 	
 func addViewport():
 	if not get_node_or_null("SubViewport"):

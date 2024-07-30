@@ -33,22 +33,22 @@ shape = SubResource("CapsuleShape3D_s31l7")
 [node name="RotationInvariant" type="Node3D" parent="."]
 
 [node name="UnitsLabel" type="Label3D" parent="RotationInvariant"]
-transform = Transform3D(-1, -6.18172e-08, 6.18172e-08, 2.4663e-16, 0.707107, 0.707107, -8.74228e-08, 0.707107, -0.707107, 2.08165e-12, 2, -0.8)
+transform = Transform3D(-1, -6.18172e-08, 6.18172e-08, 2.4663e-16, 0.707107, 0.707107, -8.74228e-08, 0.707107, -0.707107, 2.08165e-12, 2.75736, -0.8)
 text = "99"
 font = SubResource("FontVariation_o1pwa")
 font_size = 390
 
 [node name="Gift" type="Sprite3D" parent="RotationInvariant"]
-transform = Transform3D(1, -1.02157e-16, 2.4663e-16, 2.4663e-16, 0.707107, -0.707107, -1.02157e-16, 0.707107, 0.707107, 0, 3.44388, 0.688488)
+transform = Transform3D(1, -1.02157e-16, 2.4663e-16, 2.4663e-16, 0.707107, -0.707107, -1.02157e-16, 0.707107, 0.707107, 0, 4.20124, 0.688488)
 texture = ExtResource("5_8xxne")
 
 [node name="Counter" type="MeshInstance3D" parent="."]
-transform = Transform3D(1.4, 0, 0, 0, 1.4, 0, 0, 0, 1.4, 0, 1.02743, 0)
+transform = Transform3D(1.4, 0, 0, 0, 1.4, 0, 0, 0, 1.4, 0, 1.15884, 0)
 mesh = ExtResource("6_j1yfp")
 surface_material_override/0 = SubResource("StandardMaterial3D_i1pm5")
 
 [node name="Color" type="MeshInstance3D" parent="."]
-transform = Transform3D(1.63, 0, 0, 0, 0.7, 0, 0, 0, 1.63, 2.08165e-12, 0.893262, 2.08165e-12)
+transform = Transform3D(1.63, 0, 0, 0, 0.7, 0, 0, 0, 1.63, 2.08165e-12, 1.02467, 2.08165e-12)
 cast_shadow = 0
 mesh = ExtResource("6_j1yfp")
 surface_material_override/0 = SubResource("StandardMaterial3D_5j0p0")

@@ -20,13 +20,14 @@ func setValues():
 	$Unselected.visible = not inQueue
 	$Joining.visible = false
 	
-	$Margin/Title.text = queue.queueName + ", " + str(queue.playerCount) + " out of " + str(queue.playerCap)
+	$Margin/VBoxContainer/Title.text = queue.queueName
+	$Margin/VBoxContainer/Players.text = str(queue.playerCount) + " out of " + str(queue.playerCap)
 
 func _on_selected_pressed():
 	GameData.leaveQueue(queueName)
 
 func _on_unselected_pressed():
-	$Margin/Title.text = "Joining Queue..."
+	$Margin/VBoxContainer/Title.text = "Joining Queue..."
 	
 	$Unselected.visible = false
 	$Joining.visible = true

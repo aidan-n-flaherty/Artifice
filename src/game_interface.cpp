@@ -99,6 +99,7 @@ void GameInterface::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("isOffline"), &GameInterface::isOffline);
 	ClassDB::bind_method(D_METHOD("getNextOfflineOrder"), &GameInterface::getNextOfflineOrder);
 	ClassDB::bind_method(D_METHOD("isSuspended"), &GameInterface::isSuspended);
+	ClassDB::bind_method(D_METHOD("getBannerID", "playerID"), &GameInterface::getBannerID);
 
 	// battles
 	ClassDB::bind_method(D_METHOD("getNextBattleEvent"), &GameInterface::getNextBattleEvent);
@@ -270,6 +271,7 @@ void GameInterface::init(int gameID, int userID, int seed, int startTime, bool f
 			std::string name = std::string(String(player["username"]).utf8().get_data());
 
 			playerMap[id] = std::make_tuple(name, userID, rating);
+			if(player.has("bannerID")) bannerIDs[id] = int(player["bannerID"]);
 		}
 	}
 	
