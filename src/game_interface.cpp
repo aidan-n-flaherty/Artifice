@@ -504,15 +504,19 @@ void GameInterface::_process(double delta) {
 		floorDisplay->setDiff(timeDiff, simulatedDiff, t);
 		floorDisplay->queue_redraw();
 
-		//telling the bots to make decisions
-		if(singleRun) return;
+		//code for the bots making decisions
+
+		//checking if there is any player in line to take a turn making decision
+		//and also checking if we are at the end of the list of players
+		//if not then initialize it to the start of the player list
 		std::unordered_map<int, Player*> playerList = fullGame->getPlayers();
-		for(std::unordered_map<int, Player*>::iterator iter = playerList.begin(); iter != playerList.end(); iter++) {
-			if(iter->second->isBot()) {
-				botLogic(iter->second->getUserID());
-			}
-		}
-		singleRun = true;
+		if(currentBot == playerList.end()) currentBot = playerList.begin();
+		
+		//if the current bot is in fact a player then we go through with orders
+		if(currentBot->second->isBot()) botLogic(currentBot->second->getUserID());
+
+		//iterating onto the next bot
+		++currentBot;
 	}
 }
 
@@ -787,16 +791,14 @@ void GameInterface::sendTo(int id) {
 
 
 //modified version of sendTo used by bots for communicating orders
-void GameInterface::botOrder(Outpost *myOp, Outpost *enemyOp) {
+void GameInterface::botOrder(Outpost *myOp, Outpost *enemyOp, int numUnits) {
 	double simulatedDiff = settings.clientToGameTime(getCurrent()) - simulatedGame->getTime();
 	
 	Outpost *o1 = myOp;
 
 	Outpost *o2 = enemyOp;
 
-	int units = myOp->getUnitsAt(simulatedDiff);
-
-	uint32_t parameters[] = { uint32_t(std::max(selectedSpecialists.empty() ? 1 : 0, int(percent * units))), myOp->getID(), enemyOp->getID() };
+	uint32_t parameters[] = { numUnits, myOp->getID(), enemyOp->getID() };
 	PackedInt32Array arguments;
 
 	for(int i = 0; i < 3; i++) arguments.push_back(parameters[i]);
@@ -813,7 +815,6 @@ void GameInterface::botOrder(Outpost *myOp, Outpost *enemyOp) {
 
 	if(!isOffline()) emit_signal("addOrder", "SEND", simulatedGame->getReferenceID(), current, arguments);
 	else addOrder("SEND", getNextOfflineOrder(), simulatedGame->getReferenceID(), false, current, isOffline() ? o1->getOwnerID() : userGameID, arguments, arguments.size());
-	UtilityFunctions::print("Happen2?");
 }
 
 //pass in the id of the bot and the bot will choose to make a decision
@@ -823,26 +824,56 @@ void GameInterface::botLogic(int id) {
 	std::unordered_map<int, Outpost*> outposts = game->getOutposts();
 	std::list<Outpost*> myOutposts = game->getPlayer(id)->getOutposts();
 
-	for(std::unordered_map<int, Outpost*>::iterator i = outposts.begin(); i != outposts.end(); ++i) {
+	//iterating through our outposts to try and find something to target
+	for(std::list<Outpost*>::iterator i = myOutposts.begin(); i != myOutposts.end(); ++i) {
+		Outpost *myOp = (*i);
+		Outpost *bestTarget = NULL;
+		int bestDistance;
+		int bestUnitAdvantage; 
 
-		//creating a pointer to the current outpost
-		Outpost *op = i->second;
-
-		//skipping if current outpost is owned by current player
-		if(op->getOwnerID() == id) continue;
-
-		//iterating through our outposts to try and find something better
-		for(std::list<Outpost*>::iterator j = myOutposts.begin(); j != myOutposts.end(); ++j) {
-			Outpost *myOp = (*j);
-
+		//running through the other outposts and comparing them to best target for this outpost
+		for(std::unordered_map<int, Outpost*>::iterator j = outposts.begin(); j != outposts.end(); ++i) {
+			//creating pointer to current outpost
+			Outpost* currentTarget = j->second;
 			
-			if(myOp->getUnits() > op->getUnits() + op->getMaxShield()) {
-				UtilityFunctions::print("Happen?");
-				botOrder(myOp, op);
-				return;
+			//skipping if current outpost is owned by current player
+			if(currentTarget->getOwnerID() == id) continue;
+			
+			//calculating unit advantage and distance from current outpost
+			//TODO: more advanced shield calculations
+			int currentUnitAdvantage = myOp->getUnits() - currentTarget->getUnits() - currentTarget->getMaxShield();
+			
+			//no point in finishing current iteration if not enough units to overtake a given outpost
+			if(currentUnitAdvantage <= 0) continue;
+
+			int currentDistance = myOp->distance(currentTarget->getPosition());
+
+			//if we currently lack a best target then take the first target we can beat
+			if(bestTarget == NULL) {
+				bestTarget = currentTarget;
+				bestDistance = currentDistance;
+				bestUnitAdvantage = currentUnitAdvantage;
+			}
+			//prioritizing unit advantage over distance for now
+			else if(currentUnitAdvantage > bestUnitAdvantage) {
+				bestTarget = currentTarget;
+				bestDistance = currentDistance;
+				bestUnitAdvantage = currentUnitAdvantage;
+			}
+			else if(currentUnitAdvantage == bestUnitAdvantage && currentDistance < bestDistance) {
+				bestTarget = currentTarget;
+				bestDistance = currentDistance;
+				bestUnitAdvantage = currentUnitAdvantage;
 			}
 		}
-	
+		
+		//if from our current outpost we have a valid target we will go after it
+		if(bestTarget != NULL) {
+			//leaving some units at our outpost for defense
+			int numUnits = myOp->getUnits() + (bestUnitAdvantage/2);
+			botOrder(myOp, bestTarget, numUnits);
+			return;
+		}
 	}
 }
 
