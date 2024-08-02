@@ -719,76 +719,84 @@ void GameInterface::release(int id) {
 }
 
 void GameInterface::sendTo(int id) {
+	//making sure something is currently selected
+	if(!getSelected()) return;
+
+	//checking if the player is attempting to order around a bot
+	//NOTE: the dummy in sandbox mode does not have the bot property
+	if(game->getPlayer(getSelected()->getOwnerID())->isBot()) return;
+
+	//if the selected object is not owned by the player and we are not in sandbox
+	//mode, then deny the function
+	if(getSelected()->getOwnerID() != getUserGameID() && !isOffline()) return;
+
+	//start of the actual function
 	PositionalObject* target = getObj(id);
 
 	if(current < getStartTime()) current = getStartTime() + epsilon;
 
 	double simulatedDiff = settings.clientToGameTime(getCurrent()) - simulatedGame->getTime();
 
-	if(getSelected() && (getSelected()->getOwnerID() == getUserGameID() || isOffline())) {
-		Vessel* v1 = dynamic_cast<Vessel*>(getSelected());
-		Outpost* o1 = dynamic_cast<Outpost*>(getSelected());
 
-		Vessel* v2 = dynamic_cast<Vessel*>(target);
-		Outpost* o2 = dynamic_cast<Outpost*>(target);
+	Vessel* v1 = dynamic_cast<Vessel*>(getSelected());
+	Outpost* o1 = dynamic_cast<Outpost*>(getSelected());
 
+	Vessel* v2 = dynamic_cast<Vessel*>(target);
+	Outpost* o2 = dynamic_cast<Outpost*>(target);
 
-		if(o1) {
-			if(v2 && !willSendWith(SpecialistType::PIRATE)) return;
+	if(o1) {
+		if(v2 && !willSendWith(SpecialistType::PIRATE)) return;
 
-			int units = getSelected()->getUnitsAt(simulatedDiff);
+		int units = getSelected()->getUnitsAt(simulatedDiff);
 
-			uint32_t parameters[] = { uint32_t(std::max(selectedSpecialists.empty() ? 1 : 0, int(percent * units))), uint32_t(selected), target->getID() };
-			PackedInt32Array arguments;
+		uint32_t parameters[] = { uint32_t(std::max(selectedSpecialists.empty() ? 1 : 0, int(percent * units))), uint32_t(selected), target->getID() };
+		PackedInt32Array arguments;
 
-			for(int i = 0; i < 3; i++) arguments.push_back(parameters[i]);
+		for(int i = 0; i < 3; i++) arguments.push_back(parameters[i]);
 
-			while(!selectedSpecialists.empty()) {
-				if(simulatedGame->getSpecialist(*selectedSpecialists.begin())->getOwnerID() == userGameID) {
-					arguments.push_back(uint32_t(*selectedSpecialists.begin()));
-					if(getNode(selected)) getNode(selected)->setSpecialistSelected(*selectedSpecialists.begin(), false);
-				}
-				selectedSpecialists.erase(selectedSpecialists.begin());
+		while(!selectedSpecialists.empty()) {
+			if(simulatedGame->getSpecialist(*selectedSpecialists.begin())->getOwnerID() == userGameID) {
+				arguments.push_back(uint32_t(*selectedSpecialists.begin()));
+				if(getNode(selected)) getNode(selected)->setSpecialistSelected(*selectedSpecialists.begin(), false);
 			}
-
-			if(getNode(selected)) getNode(selected)->clearSelectedSpecialists();
-
-			if(!isOffline()) emit_signal("addOrder", "SEND", simulatedGame->getReferenceID(), current, arguments);
-			else addOrder("SEND", getNextOfflineOrder(), simulatedGame->getReferenceID(), false, current, isOffline() ? o1->getOwnerID() : userGameID, arguments, arguments.size());
-
-			return;
-		} else if(v1) {
-			if(!getSelected()->controlsSpecialist(SpecialistType::NAVIGATOR)) return;
-
-			if(v2 && !getSelected()->controlsSpecialist(SpecialistType::PIRATE)) return;
-
-			uint32_t parameters[] = { uint32_t(selected), target->getID() };
-			PackedInt32Array arguments;
-
-			for(int i = 0; i < 2; i++) arguments.push_back(parameters[i]);
-
-			if(!isOffline()) emit_signal("addOrder", "REROUTE", simulatedGame->getReferenceID(), current, arguments);
-			else addOrder("REROUTE", getNextOfflineOrder(), simulatedGame->getReferenceID(), false, current, isOffline() ? v1->getOwnerID() : userGameID, arguments, arguments.size());
-			
-			return;
+			selectedSpecialists.erase(selectedSpecialists.begin());
 		}
+
+		if(getNode(selected)) getNode(selected)->clearSelectedSpecialists();
+
+		if(!isOffline()) emit_signal("addOrder", "SEND", simulatedGame->getReferenceID(), current, arguments);
+		else addOrder("SEND", getNextOfflineOrder(), simulatedGame->getReferenceID(), false, current, isOffline() ? o1->getOwnerID() : userGameID, arguments, arguments.size());
+
+		return;
+	} else if(v1) {
+		if(!getSelected()->controlsSpecialist(SpecialistType::NAVIGATOR)) return;
+
+		if(v2 && !getSelected()->controlsSpecialist(SpecialistType::PIRATE)) return;
+
+		uint32_t parameters[] = { uint32_t(selected), target->getID() };
+		PackedInt32Array arguments;
+
+		for(int i = 0; i < 2; i++) arguments.push_back(parameters[i]);
+
+		if(!isOffline()) emit_signal("addOrder", "REROUTE", simulatedGame->getReferenceID(), current, arguments);
+		else addOrder("REROUTE", getNextOfflineOrder(), simulatedGame->getReferenceID(), false, current, isOffline() ? v1->getOwnerID() : userGameID, arguments, arguments.size());
+		
+		return;
 	}
 }
 
 
 //modified version of sendTo used by bots for communicating orders
-void GameInterface::botOrder(Outpost* myOp, Outpost* enemyOp) {
-	//if(current < getStartTime()) current = getStartTime() + epsilon;
-
+void GameInterface::botOrder(Outpost *myOp, Outpost *enemyOp) {
 	double simulatedDiff = settings.clientToGameTime(getCurrent()) - simulatedGame->getTime();
 	
-	Outpost* o1 = myOp;
+	Outpost *o1 = myOp;
 
-	Outpost* o2 = enemyOp;
+	Outpost *o2 = enemyOp;
 
 	int units = myOp->getUnitsAt(simulatedDiff);
 
-	uint32_t parameters[] = { uint32_t(std::max(selectedSpecialists.empty() ? 1 : 0, int(percent * units))), uint32_t(selected), enemyOp->getID() };
+	uint32_t parameters[] = { uint32_t(std::max(selectedSpecialists.empty() ? 1 : 0, int(percent * units))), myOp->getID(), enemyOp->getID() };
 	PackedInt32Array arguments;
 
 	for(int i = 0; i < 3; i++) arguments.push_back(parameters[i]);
@@ -805,73 +813,37 @@ void GameInterface::botOrder(Outpost* myOp, Outpost* enemyOp) {
 
 	if(!isOffline()) emit_signal("addOrder", "SEND", simulatedGame->getReferenceID(), current, arguments);
 	else addOrder("SEND", getNextOfflineOrder(), simulatedGame->getReferenceID(), false, current, isOffline() ? o1->getOwnerID() : userGameID, arguments, arguments.size());
+	UtilityFunctions::print("Happen2?");
 }
 
 //pass in the id of the bot and the bot will choose to make a decision
 void GameInterface::botLogic(int id) {
-	//std::unordered_map<int, Outpost*> outposts = game->getOutposts();
 
-
-	//iterating through all current outposts and categorizing them
-	//into outposts the bot does and does not own
-	//being lazy about my datastructures and just storing everything in a vector
-	//I know this is like *the* bad gamedev practice but oh well
-	
-	
-	
+	//list of all outposts and list of our outposts
+	std::unordered_map<int, Outpost*> outposts = game->getOutposts();
 	std::list<Outpost*> myOutposts = game->getPlayer(id)->getOutposts();
-	
-	
-	
-	
-	//std::vector<Outpost*> enemyOutposts;
-	
-	/*
-	for(std::unordered_map<int, Outpost*>::iterator iter = outposts.begin(); iter != outposts.end(); ++iter) {
+
+	for(std::unordered_map<int, Outpost*>::iterator i = outposts.begin(); i != outposts.end(); ++i) {
 
 		//creating a pointer to the current outpost
-		Outpost* op = iter->second;
+		Outpost *op = i->second;
 
-		//determining if the outpost belongs to me or the enemy
-		if(id != op->getOwnerID()) enemyOutposts.push_back(op);
-		else myOutposts.push_back(op);
-	}*/
+		//skipping if current outpost is owned by current player
+		if(op->getOwnerID() == id) continue;
 
-	//iterating through all the enemy outposts and looking for one which we have enough units
-	//to massacre, for now not taking into account distance or specialists, or shield being lowered
+		//iterating through our outposts to try and find something better
+		for(std::list<Outpost*>::iterator j = myOutposts.begin(); j != myOutposts.end(); ++j) {
+			Outpost *myOp = (*j);
 
-	UtilityFunctions::print("My ID:");
-	UtilityFunctions::print(id);
-	UtilityFunctions::print("My outposts:");
-	/*
-	UtilityFunctions::print(myOutposts.size());
-	//UtilityFunctions::print("Enemy outposts:");
-	//UtilityFunctions::print(enemyOutposts.size());
-	UtilityFunctions::print("\n");
-
-
-	for(std::list<Outpost*>::iterator i = myOutposts.begin(); i != myOutposts.end(); i++) {
-		
-		UtilityFunctions::print("My Units: ");
-		UtilityFunctions::print((*i)->getUnits());
-
-		
-		if(myOutposts[j]->getUnits() > enemyOutposts[i]->getUnits() + enemyOutposts[i]->getMaxShield()) {
-			botOrder(myOutposts[i], enemyOutposts[i]);
+			
+			if(myOp->getUnits() > op->getUnits() + op->getMaxShield()) {
+				UtilityFunctions::print("Happen?");
+				botOrder(myOp, op);
+				return;
+			}
 		}
+	
 	}
-
-
-	for(int i = 0; i < enemyOutposts.size(); ++i) {
-		UtilityFunctions::print("enemy Units: ");
-		UtilityFunctions::print(enemyOutposts[i]->getUnits());
-		UtilityFunctions::print("Enemy Shield");
-		UtilityFunctions::print(enemyOutposts[i]->getMaxShield());
-
-	}
-
-	UtilityFunctions::print("\n");
-	UtilityFunctions::print("\n");*/
 }
 
 // event propagated from positional nodes, occurs when something is clicked on
