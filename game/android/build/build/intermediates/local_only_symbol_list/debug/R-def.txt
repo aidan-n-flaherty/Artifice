@@ -1,0 +1,10 @@
+R_DEF: Internal format may change without notice
+local
+drawable splash
+drawable splash_bg_color
+drawable splash_drawable
+mipmap icon
+mipmap icon_foreground
+string godot_project_name_string
+style GodotAppMainTheme
+style GodotAppSplashTheme

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="godot_project_name_string">Artifice</string>
+    <style name="GodotAppMainTheme" parent="@android:style/Theme.Black.NoTitleBar"/>
+    <style name="GodotAppSplashTheme" parent="@android:style/Theme.Black.NoTitleBar.Fullscreen">
+		<item name="android:windowBackground">@drawable/splash_drawable</item>
+		<item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
+	</style>
+</resources>

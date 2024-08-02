@@ -1,0 +1,62 @@
+[
+    {
+        "merged": "com.godot.game-merged_res-21:/mipmap-xxhdpi-v4_icon.png.flat",
+        "source": "com.godot.game-build-22:/mipmap-xxhdpi-v4/icon.png"
+    },
+    {
+        "merged": "com.godot.game-merged_res-21:/drawable-nodpi_splash_bg_color.png.flat",
+        "source": "com.godot.game-build-22:/drawable-nodpi/splash_bg_color.png"
+    },
+    {
+        "merged": "com.godot.game-merged_res-21:/mipmap-xhdpi-v4_icon_foreground.png.flat",
+        "source": "com.godot.game-build-22:/mipmap-xhdpi-v4/icon_foreground.png"
+    },
+    {
+        "merged": "com.godot.game-merged_res-21:/mipmap-xhdpi-v4_icon.png.flat",
+        "source": "com.godot.game-build-22:/mipmap-xhdpi-v4/icon.png"
+    },
+    {
+        "merged": "com.godot.game-merged_res-21:/mipmap-xxxhdpi-v4_icon_foreground.png.flat",
+        "source": "com.godot.game-build-22:/mipmap-xxxhdpi-v4/icon_foreground.png"
+    },
+    {
+        "merged": "com.godot.game-merged_res-21:/drawable_splash_drawable.xml.flat",
+        "source": "com.godot.game-build-22:/drawable/splash_drawable.xml"
+    },
+    {
+        "merged": "com.godot.game-merged_res-21:/mipmap-mdpi-v4_icon.png.flat",
+        "source": "com.godot.game-build-22:/mipmap-mdpi-v4/icon.png"
+    },
+    {
+        "merged": "com.godot.game-merged_res-21:/mipmap-xxhdpi-v4_icon_foreground.png.flat",
+        "source": "com.godot.game-build-22:/mipmap-xxhdpi-v4/icon_foreground.png"
+    },
+    {
+        "merged": "com.godot.game-merged_res-21:/drawable-nodpi_splash.png.flat",
+        "source": "com.godot.game-build-22:/drawable-nodpi/splash.png"
+    },
+    {
+        "merged": "com.godot.game-merged_res-21:/mipmap_icon.png.flat",
+        "source": "com.godot.game-build-22:/mipmap/icon.png"
+    },
+    {
+        "merged": "com.godot.game-merged_res-21:/mipmap-xxxhdpi-v4_icon.png.flat",
+        "source": "com.godot.game-build-22:/mipmap-xxxhdpi-v4/icon.png"
+    },
+    {
+        "merged": "com.godot.game-merged_res-21:/mipmap_icon_foreground.png.flat",
+        "source": "com.godot.game-build-22:/mipmap/icon_foreground.png"
+    },
+    {
+        "merged": "com.godot.game-merged_res-21:/mipmap-hdpi-v4_icon.png.flat",
+        "source": "com.godot.game-build-22:/mipmap-hdpi-v4/icon.png"
+    },
+    {
+        "merged": "com.godot.game-merged_res-21:/mipmap-hdpi-v4_icon_foreground.png.flat",
+        "source": "com.godot.game-build-22:/mipmap-hdpi-v4/icon_foreground.png"
+    },
+    {
+        "merged": "com.godot.game-merged_res-21:/mipmap-mdpi-v4_icon_foreground.png.flat",
+        "source": "com.godot.game-build-22:/mipmap-mdpi-v4/icon_foreground.png"
+    }
+]
