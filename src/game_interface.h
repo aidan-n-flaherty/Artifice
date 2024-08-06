@@ -32,6 +32,9 @@ class GameInterface : public Node3D {
     GDCLASS(GameInterface, Node3D)
 
 private:
+
+	bool singleRun = false;
+
 	std::shared_ptr<Game> tempGame = nullptr;
 
 	// stores all future game states
@@ -114,12 +117,9 @@ private:
 
 	int offlineOrderCounter = 0;
 
-	//keeps track of which bot calculates their turn on a given run of _process
-	std::unordered_map<int, Player*>::iterator currentBot;
-
 	Point mouse;
 
-	void botOrder(Outpost* myOp, Outpost* enemyOp, int numUnits);
+	void botOrder(Outpost* myOp, Outpost* enemyOp);
 	void botLogic(int id);
 
 protected:
