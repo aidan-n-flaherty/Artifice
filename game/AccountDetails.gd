@@ -37,11 +37,9 @@ func init(userID: int):
 		#dummy_label.text = str(i)
 		#$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/FriendsList/VBoxContainer.add_child(dummy_label)
 		
-	var friendView = preload("res://friendView.tscn").instantiate();
-	#$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/FriendsList/Friends.add_child(friendView);
-	print("first", $MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/FriendsList/Friends.get_child_count())
-	for i in 5:
-		print("hello ", i)
+	
+	for i in 5: # add in 5 dummy friends.
+		var friendView = preload("res://friendView.tscn").instantiate();
 		$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/FriendsList/Friends.add_child(friendView);
 
 func updateUser(userID):
@@ -196,5 +194,7 @@ func _on_graphics_push_off_toggled(toggled_on):
 
 
 func on_remove_friend_pressed():
-	#code to remove friend.
-	var thing;
+	print("Remove this friend")
+	for i in $MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/FriendsList/Friends.get_children():
+		i.visible = false;
+		$MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Control/MarginContainer/FriendsList/Friends.remove_child(i);

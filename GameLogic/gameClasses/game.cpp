@@ -54,14 +54,16 @@ Game::Game(GameSettings settings, int simulatorID, double startTime, double endT
                             //is generated from the given seed
 
     //check if the current GameSettings has number_of_teams initialized to some value that is > 1
-    if(this->settings->number_of_teams > 1 && players.size() % this->settings->number_of_teams == 0){
-        for(int i = 0; i < players.size(); i++) players[i]->setTeam(i / this->settings->number_of_teams); 
+    if(this->settings->number_of_teams > 1 && players.size() % this->settings->number_of_teams == 0){ 
+        for(int i = 0; i < players.size(); i++) players[i]->setTeam(i / this->settings->number_of_teams);                                               //change this line to something like
+                                                                                                            //for(int i = 0; i < players.size(); i++) players[i]->setTeam(players[i]->getTeamNum());
+                                                                                                                                                        //when finished team implementation. 
 
-        for(int i = players.size() - 1; i >= 0; i--) {
-            int j = gen() % players.size(); // generate a random number
+        for(int i = players.size() - 1; i >= 0; i--) { // go through every player, 
+            int j = gen() % players.size(); // get a random player.
 
-            int teamA = players[i]->getTeamID();
-            players[i]->setTeam(players[j]->getTeamID());
+            int teamA = players[i]->getTeamID();    // get i's team
+            players[i]->setTeam(players[j]->getTeamID()); //set i's team
             players[j]->setTeam(teamA);
         }
 

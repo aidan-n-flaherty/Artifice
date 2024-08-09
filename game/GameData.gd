@@ -1016,3 +1016,6 @@ func _exit_tree():
 	for game in games.values():
 		game.queue_free()
 	
+	
+func setTeam(gameID: int, teamNumber: int ): #passed game id, along with a team number. 
+	await HTTPManager.postReq("/updateTeams", {}, {"gameID": gameID, "teamNumber": teamNumber});

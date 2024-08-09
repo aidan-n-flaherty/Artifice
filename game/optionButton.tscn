@@ -1,4 +1,6 @@
-[gd_scene format=3 uid="uid://0cnavv1phwjl"]
+[gd_scene load_steps=2 format=3 uid="uid://0cnavv1phwjl"]
+
+[ext_resource type="Script" path="res://option_button.gd" id="1_0mn18"]
 
 [node name="OptionButton" type="MarginContainer"]
 modulate = Color(0, 1, 1, 1)
@@ -20,3 +22,6 @@ layout_mode = 2
 modulate = Color(0, 1, 1, 1)
 self_modulate = Color(0.47674, 1, 0.703874, 1)
 layout_mode = 2
+script = ExtResource("1_0mn18")
+
+[connection signal="item_selected" from="MarginContainer/OptionButton" to="MarginContainer/OptionButton" method="_on_item_selected"]

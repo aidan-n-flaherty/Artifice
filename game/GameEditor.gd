@@ -270,8 +270,8 @@ func updatePlayers(gameID, settings):
 
 	for	i in range(int(settings.playerCap)):
 		var playerView = preload("res://Game_PlayerView.tscn").instantiate()
-		var opButton = preload("res://optionButton.tscn").instantiate();
 		playerViews.append(playerView)
+		var opButton = preload("res://optionButton.tscn").instantiate()
 		$MarginContainer/VBoxContainer/Players/MarginContainer/PlayerList/GridContainer.add_child(opButton)
 		$MarginContainer/VBoxContainer/Players/MarginContainer/PlayerList/GridContainer.add_child(playerView)
 	
@@ -405,7 +405,6 @@ func on_activeTimes_modified(button_pressed: bool):
 
 func on_timescale_modified(button_pressed: bool, timescale):
 	simulationTimescale = timescale
-	
 	if button_pressed:
 		$MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHours.visible = simulationTimescale == "days"
 		$MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer/Basic/Grid/ActiveHoursRows.visible = simulationTimescale == "days"
@@ -420,7 +419,21 @@ func on_team_number_modified(button_pressed: bool):
 			child.get_child(1).get_child(0).clear() #need to clear first because adds twice. 
 			child.get_child(1).get_child(0).add_item("1")
 			child.get_child(1).get_child(0).add_item("2")
+		if (child.get_child(1).get_child(0)) is OptionButton && number_of_teams==3: 
+			#for 3 teams
+			child.get_child(1).get_child(0).clear()
+			child.get_child(1).get_child(0).add_item("1")
+			child.get_child(1).get_child(0).add_item("2")
+			child.get_child(1).get_child(0).add_item("3")
+		if (child.get_child(1).get_child(0)) is OptionButton && number_of_teams==4:
+			#for 4 teams
+			child.get_child(1).get_child(0).clear()
+			child.get_child(1).get_child(0).add_item("1")
+			child.get_child(1).get_child(0).add_item("2")
+			child.get_child(1).get_child(0).add_item("3")
+			child.get_child(1).get_child(0).add_item("4")
 		if (child.get_child(1).get_child(0)) is OptionButton && number_of_teams==5:
+			#for 5 teams
 			child.get_child(1).get_child(0).clear()
 			child.get_child(1).get_child(0).add_item("1")
 			child.get_child(1).get_child(0).add_item("2")
@@ -429,6 +442,11 @@ func on_team_number_modified(button_pressed: bool):
 			child.get_child(1).get_child(0).add_item("5")
 		if (child.get_child(1).get_child(0)) is OptionButton && number_of_teams==0:
 			child.get_child(1).get_child(0).clear()
+	#print out the selected team for said player.
+	var opButton = preload("res://optionButton.tscn").instantiate()
+	var index: int;
+	print(opButton.get_child(1).get_child(0)._on_item_selected(index))
+	print("selected player index", index) # prints out the player's index, though will probably have to be moved to when the team is updated.
 
 
 func _on_advanced_button_pressed():
