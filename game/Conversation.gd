@@ -52,6 +52,7 @@ func initTemp(gameID):
 	
 	for player in game.getPlayers():
 		if player.getUserID() == GameData.getID():
+			#when the viewing player's ID is reached, skip them
 			continue
 		
 		var playerTag = preload("res://PlayerTag.tscn").instantiate()

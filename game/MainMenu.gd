@@ -137,7 +137,8 @@ func _on_create_pressed():
 #guild menu
 
 func _on_guild_pressed():
-	if(GameData.loadGuild):
+	
+	if(GameData.loadGuild()):
 		switch_to(guildMemScreen)
 	else:
 		switch_to(guildSearchScreen)

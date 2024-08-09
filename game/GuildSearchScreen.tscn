@@ -1,10 +1,13 @@
-[gd_scene load_steps=8 format=3 uid="uid://dksyosmsis7cd"]
+[gd_scene load_steps=9 format=3 uid="uid://dksyosmsis7cd"]
 
 [ext_resource type="Script" path="res://GuildSearchScreen.gd" id="1_cgdaj"]
 [ext_resource type="PackedScene" uid="uid://c04qxpqrgw5cq" path="res://Background.tscn" id="1_i0kki"]
+[ext_resource type="Theme" uid="uid://tg7ina762c6q" path="res://resources/themes/UITheme.tres" id="3_hiqk8"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4p8pc"]
 bg_color = Color(0, 0, 0, 0.419608)
+expand_margin_top = 10.0
+expand_margin_bottom = 10.0
 
 [sub_resource type="LabelSettings" id="LabelSettings_mrd1e"]
 font_size = 67
@@ -36,6 +39,7 @@ layout_mode = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
+theme = ExtResource("3_hiqk8")
 theme_override_constants/margin_left = 50
 theme_override_constants/margin_right = 50
 theme_override_constants/margin_bottom = 25
@@ -58,6 +62,7 @@ layout_mode = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/GuildExplanation"]
 layout_mode = 2
+theme = ExtResource("3_hiqk8")
 theme_override_constants/margin_top = 15
 theme_override_constants/margin_bottom = 15
 
@@ -84,11 +89,44 @@ below, and request to be let in."
 label_settings = SubResource("LabelSettings_x22up")
 horizontal_alignment = 1
 
-[node name="TestJoinGuild" type="Button" parent="MarginContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="Create Guild" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme = ExtResource("3_hiqk8")
+theme_override_font_sizes/font_size = 29
+text = "Create Guild"
+
+[node name="TestJoinGuild" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
+theme = ExtResource("3_hiqk8")
 theme_override_font_sizes/font_size = 29
 text = "Click me to test joining a guild!"
 
-[connection signal="pressed" from="MarginContainer/VBoxContainer/TestJoinGuild" to="." method="_on_test_join_guild_pressed"]
+[node name="ListMargins" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme = ExtResource("3_hiqk8")
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 40
+
+[node name="Panel" type="Panel" parent="MarginContainer/VBoxContainer/ListMargins"]
+layout_mode = 2
+
+[node name="CreateGuildMenu" type="VBoxContainer" parent="MarginContainer/VBoxContainer/ListMargins"]
+layout_mode = 2
+
+[node name="ExitGuildMenu" type="Button" parent="MarginContainer/VBoxContainer/ListMargins/CreateGuildMenu"]
+layout_mode = 2
+size_flags_horizontal = 8
+text = "Exit Menu"
+
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/Create Guild" to="." method="_create_guild"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/TestJoinGuild" to="." method="_on_test_join_guild_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/ListMargins/CreateGuildMenu/ExitGuildMenu" to="." method="_on_exit_creat_guild_press"]

@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://tclpn61qvqfa"]
+[gd_scene load_steps=12 format=3 uid="uid://tclpn61qvqfa"]
 
 [ext_resource type="Script" path="res://GuildMemScreen.gd" id="1_dmpbr"]
 [ext_resource type="Theme" uid="uid://c4m6lidwyxgc" path="res://resources/UITheme.tres" id="2_3u3c2"]
@@ -32,11 +32,8 @@ content_margin_right = 25.0
 content_margin_bottom = 10.0
 bg_color = Color(0.196078, 0.439216, 0.94902, 0.501961)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1vtfj"]
-bg_color = Color(0.0745098, 0.0745098, 0.0745098, 0.87451)
-
-[sub_resource type="LabelSettings" id="LabelSettings_mwijy"]
-font_size = 25
+[sub_resource type="LabelSettings" id="LabelSettings_rrdqq"]
+font_size = 40
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2wj2h"]
 bg_color = Color(0.207843, 0.207843, 0.207843, 1)
@@ -125,31 +122,24 @@ text = "Manage Guild"
 
 [node name="ChatandLeaderMenu" type="MarginContainer" parent="MarginContainer/GuildInfoBox"]
 layout_mode = 2
+size_flags_vertical = 3
 theme_override_constants/margin_left = 25
 theme_override_constants/margin_top = 25
 theme_override_constants/margin_right = 25
 theme_override_constants/margin_bottom = 25
 
+[node name="Panel" type="Panel" parent="MarginContainer/GuildInfoBox/ChatandLeaderMenu"]
+layout_mode = 2
+
 [node name="Label" type="Label" parent="MarginContainer/GuildInfoBox/ChatandLeaderMenu"]
 layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_1vtfj")
-text = "Lorem ipsum odor amet, consectetuer adipiscing elit. 
-Taciti consectetur elit pretium tellus ante volutpat finibus tortor lacus. 
-Euismod magna nisl ipsum nascetur senectus. Volutpat mollis cras fusce parturient, at himenaeos eleifend mauris. 
-Porttitor tortor sollicitudin rhoncus mauris lacinia amet. 
-Nostra arcu aptent inceptos dignissim mollis iaculis tempor penatibus. Ante mollis potenti tristique vitae viverra efficitur non accumsan? Bibendum 
-aptent tempor placerat augue nulla neque ad. Et senectus at curae, pulvinar tristique leo condimentum quisque. 
-Ac dictumst ac lacus risus lectus risus elementum potenti malesuada.
-
-Sollicitudin feugiat lobortis ultricies torquent lacus blandit interdum. Condimentum nisl ex volutpat netus posuere suspendisse. 
-Imperdiet proin molestie curae gravida platea lorem vestibulum convallis. Gravida penatibus aliquet tellus cras fames pulvinar. Vel morbi curae, congue nec at mus cursus sed. 
-Donec lectus at feugiat tempor magna parturient tortor sodales. Metus natoque tincidunt fusce duis fringilla leo dui ac."
-label_settings = SubResource("LabelSettings_mwijy")
+text = "Placeholder Chat
+Text"
+label_settings = SubResource("LabelSettings_rrdqq")
 horizontal_alignment = 1
 text_overrun_behavior = 2
 
 [node name="LeaderMenu" type="MarginContainer" parent="MarginContainer/GuildInfoBox/ChatandLeaderMenu"]
-visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 15

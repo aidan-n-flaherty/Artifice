@@ -76,9 +76,9 @@ var iCloudEnabled = true
 
 var localSettings = {}
 
-var in_guild = true
-
 var user_guild
+
+var in_guild = true
 
 """func _apn_device(value):
 	pushToken = value

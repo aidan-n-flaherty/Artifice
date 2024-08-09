@@ -10,7 +10,7 @@ var max_members
 
 @export_file("*.tscn") var MainMenu
 
-var guild_leader = false
+var guild_leader = true
 #test variable to make sure that the button for guild leader menu only appears when someone is a
 #guild leader
 
@@ -28,13 +28,14 @@ func _ready():
 
 func init(guild_name):
 	
+	$MarginContainer/GuildInfoBox/ChatandLeaderMenu/LeaderMenu.visible = false
+	
 	self.guild_name = guild_name
 	
 	var margin_value = 50
 	
 	number_of_members = "3"
 	max_members = "50"
-	
 	
 	#Initialize the title box to display the retrieved guild name
 	$MarginContainer/GuildInfoBox/TitleBox/UserGuild.text = guild_name

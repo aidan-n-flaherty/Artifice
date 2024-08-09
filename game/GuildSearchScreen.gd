@@ -42,6 +42,8 @@ Drafting json object for guild storage:
 	{'GuildId':10 , 'GuildName':'Test', 'PlayerCount':10, 'Leaders':[ 1, 2, 3 ] }
 ]
 }
+
+Add a button to refresh the list of guilds?
 "
 
 # Called when the node enters the scene tree for the first time.
@@ -51,6 +53,10 @@ func _ready():
 func init(guild_name):
 	
 	self.guild_name = guild_name
+	
+	$MarginContainer/VBoxContainer/ListMargins/CreateGuildMenu.visible = false
+	
+	#Here is where the code for initializing the list of Guilds to join must be declared
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -62,3 +68,11 @@ func _process(delta):
 func _on_test_join_guild_pressed():
 	GameData.in_guild = true
 	emit_signal("guild_status_update")
+	
+func _create_guild():
+	print("This is where the HTTPS call would be!")
+	$MarginContainer/VBoxContainer/ListMargins/CreateGuildMenu.visible = true
+	
+func _on_exit_creat_guild_press():
+	$MarginContainer/VBoxContainer/ListMargins/CreateGuildMenu.visible = false
+	
