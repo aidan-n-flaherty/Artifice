@@ -504,15 +504,35 @@ void GameInterface::_process(double delta) {
 		floorDisplay->setDiff(timeDiff, simulatedDiff, t);
 		floorDisplay->queue_redraw();
 
-		//telling the bots to make decisions
-		if(singleRun) return;
+		//telling the bots to make decisions every 10 seconds
+		timeSinceLastBot += delta;
+		if(timeSinceLastBot <= 10) return;
+		timeSinceLastBot = 0;
+
+		//making a map of all players
 		std::unordered_map<int, Player*> playerList = fullGame->getPlayers();
+
+		//updating the counter for whose turn it is to make a decision
+		++currentBot;
+
+		//resetting counter if it gets too high
+		if(currentBot == (playerList.size() + 1)) currentBot = 0;
+
+		//counting which bot we are currently looking at
+		int iterCounter = 0;
+		
 		for(std::unordered_map<int, Player*>::iterator iter = playerList.begin(); iter != playerList.end(); iter++) {
-			if(iter->second->isBot()) {
+			if( iterCounter != currentBot) {
+				++iterCounter;
+				continue;
+			}
+			else if(iter->second->isBot()) {
+				UtilityFunctions::print("Giving bot a turn:");
+				UtilityFunctions::print(iter->second->getUserID());
 				botLogic(iter->second->getUserID());
+				break;
 			}
 		}
-		singleRun = true;
 	}
 }
 
@@ -787,13 +807,15 @@ void GameInterface::sendTo(int id) {
 
 
 //modified version of sendTo used by bots for communicating orders
-void GameInterface::botOrder(Outpost *myOp, Outpost *enemyOp) {
+void GameInterface::botOrder(Outpost *myOp, Outpost *enemyOp, int numUnits) {
 	double simulatedDiff = settings.clientToGameTime(getCurrent()) - simulatedGame->getTime();
 	
 	Outpost *o1 = myOp;
 
 	Outpost *o2 = enemyOp;
 
+	//ideally we can replace with numUnits, for now debug output complains
+	// about not having enough units when using numUnits instead
 	int units = myOp->getUnitsAt(simulatedDiff);
 
 	uint32_t parameters[] = { uint32_t(std::max(selectedSpecialists.empty() ? 1 : 0, int(percent * units))), myOp->getID(), enemyOp->getID() };
@@ -813,36 +835,212 @@ void GameInterface::botOrder(Outpost *myOp, Outpost *enemyOp) {
 
 	if(!isOffline()) emit_signal("addOrder", "SEND", simulatedGame->getReferenceID(), current, arguments);
 	else addOrder("SEND", getNextOfflineOrder(), simulatedGame->getReferenceID(), false, current, isOffline() ? o1->getOwnerID() : userGameID, arguments, arguments.size());
-	UtilityFunctions::print("Happen2?");
+}
+
+//simple helper function for updating current target of the bot
+void GameInterface::updateTarget(Outpost **currentTarget, int *currentDistance, int *currentUnitAdvantage, Outpost *newTarget, int newDistance, int newUnitAdvantage) {
+	*currentTarget = newTarget;
+	*currentDistance = newDistance;
+	*currentUnitAdvantage = newUnitAdvantage;
+}
+
+
+void GameInterface::conquestLogic(int id) {
+	//list of all outposts and list of our outposts
+	std::unordered_map<int, Outpost*> outposts = game->getOutposts();
+	std::list<Outpost*> myOutposts = game->getPlayer(id)->getOutposts();
+
+	//iterating through our outposts to try and find something to target
+	for(std::list<Outpost*>::iterator i = myOutposts.begin(); i != myOutposts.end(); ++i) {
+		Outpost *myOp = (*i);
+		Outpost *bestTarget = NULL;
+		int bestDistance;
+		int bestUnitAdvantage; 
+
+		//running through the other outposts and comparing them to best target for this outpost
+		for(std::unordered_map<int, Outpost*>::iterator j = outposts.begin(); j != outposts.end(); ++j) {
+			//creating pointer to current outpost
+			Outpost* currentTarget = j->second;
+			
+			//skipping if current outpost is owned by current player
+			if(currentTarget->getOwnerID() == id) continue;
+			
+			//calculating unit advantage and distance from current outpost
+			//TODO: more advanced shield calculations
+			int currentUnitAdvantage = myOp->getUnits() - currentTarget->getUnits() - currentTarget->getMaxShield();
+			
+			//no point in finishing current iteration if not enough units to overtake a given outpost
+			if(currentUnitAdvantage <= 0) continue;
+			
+			int currentDistance = myOp->distance(currentTarget->getPosition());
+
+			//if we currently lack a best target then take the first target we can beat
+			if(bestTarget == NULL) {
+				updateTarget(&bestTarget, &bestDistance, &bestUnitAdvantage, 
+				currentTarget, currentDistance, currentUnitAdvantage);
+			}
+			//for conquest prioritizing taking unclaimed bases over other players bases
+			else if(bestTarget->hasOwner() && !currentTarget->hasOwner()) {
+				updateTarget(&bestTarget, &bestDistance, &bestUnitAdvantage, 
+				currentTarget, currentDistance, currentUnitAdvantage);
+			}
+			//prioritizing unit advantage over distance for now
+			else if(currentUnitAdvantage > bestUnitAdvantage) {
+				updateTarget(&bestTarget, &bestDistance, &bestUnitAdvantage, 
+				currentTarget, currentDistance, currentUnitAdvantage);
+			}
+			//if everything else is equal then take the closer outpost
+			else if(currentUnitAdvantage == bestUnitAdvantage && currentDistance < bestDistance) {
+				updateTarget(&bestTarget, &bestDistance, &bestUnitAdvantage, 
+				currentTarget, currentDistance, currentUnitAdvantage);
+			}
+		}
+
+		//if from our current outpost we have a valid target we will go after it
+		if(bestTarget != NULL) {
+			//leaving some units at our outpost for defense
+			int numUnits = myOp->getUnits() + (bestUnitAdvantage/2);
+			botOrder(myOp, bestTarget, numUnits);
+			return;
+		} 
+	}
+}
+
+void GameInterface::miningLogic(int id) {
+	//list of all outposts and list of our outposts
+	std::unordered_map<int, Outpost*> outposts = game->getOutposts();
+	std::list<Outpost*> myOutposts = game->getPlayer(id)->getOutposts();
+
+	//iterating through our outposts to try and find something to target
+	for(std::list<Outpost*>::iterator i = myOutposts.begin(); i != myOutposts.end(); ++i) {
+		Outpost *myOp = (*i);
+		Outpost *bestTarget = NULL;
+		int bestDistance;
+		int bestUnitAdvantage; 
+
+		//running through the other outposts and comparing them to best target for this outpost
+		for(std::unordered_map<int, Outpost*>::iterator j = outposts.begin(); j != outposts.end(); ++j) {
+			//creating pointer to current outpost
+			Outpost* currentTarget = j->second;
+			
+			//skipping if current outpost is owned by current player
+			if(currentTarget->getOwnerID() == id) continue;
+			
+			//calculating unit advantage and distance from current outpost
+			//TODO: more advanced shield calculations
+			int currentUnitAdvantage = myOp->getUnits() - currentTarget->getUnits() - currentTarget->getMaxShield();
+			
+			//no point in finishing current iteration if not enough units to overtake a given outpost
+			if(currentUnitAdvantage <= 0) continue;
+
+			int currentDistance = myOp->distance(currentTarget->getPosition());
+
+			//if we currently lack a best target then take the first target we can beat
+			if(bestTarget == NULL) {
+				updateTarget(&bestTarget, &bestDistance, &bestUnitAdvantage, 
+				currentTarget, currentDistance, currentUnitAdvantage);
+			}
+			//prioritizing mines over other outpost types 
+			else if(bestTarget->getType() != OutpostType::MINE && currentTarget->getType() == OutpostType::MINE) {
+				updateTarget(&bestTarget, &bestDistance, &bestUnitAdvantage, 
+				currentTarget, currentDistance, currentUnitAdvantage);
+			}
+			//prioritizing unit advantage over distance
+			else if(currentUnitAdvantage > bestUnitAdvantage) {
+				updateTarget(&bestTarget, &bestDistance, &bestUnitAdvantage, 
+				currentTarget, currentDistance, currentUnitAdvantage);
+			}
+			else if(currentUnitAdvantage == bestUnitAdvantage && currentDistance < bestDistance) {
+				updateTarget(&bestTarget, &bestDistance, &bestUnitAdvantage, 
+				currentTarget, currentDistance, currentUnitAdvantage);
+			}
+		}
+
+		//if from our current outpost we have a valid target we will go after it
+		if(bestTarget != NULL) {
+			//leaving some units at our outpost for defense
+			int numUnits = myOp->getUnits() + (bestUnitAdvantage/2);
+			botOrder(myOp, bestTarget, numUnits);
+			return;
+		} 
+	}
+}
+
+void GameInterface::eliminationLogic(int id) {
+	//list of all outposts and list of our outposts
+	std::unordered_map<int, Outpost*> outposts = game->getOutposts();
+	std::list<Outpost*> myOutposts = game->getPlayer(id)->getOutposts();
+
+	//iterating through our outposts to try and find something to target
+	for(std::list<Outpost*>::iterator i = myOutposts.begin(); i != myOutposts.end(); ++i) {
+		Outpost *myOp = (*i);
+		Outpost *bestTarget = NULL;
+		int bestDistance;
+		int bestUnitAdvantage; 
+
+		//running through the other outposts and comparing them to best target for this outpost
+		for(std::unordered_map<int, Outpost*>::iterator j = outposts.begin(); j != outposts.end(); ++j) {
+			//creating pointer to current outpost
+			Outpost* currentTarget = j->second;
+			
+			//skipping if current outpost is owned by current player
+			if(currentTarget->getOwnerID() == id) continue;
+			
+			//calculating unit advantage and distance from current outpost
+			//TODO: more advanced shield calculations
+			int currentUnitAdvantage = myOp->getUnits() - currentTarget->getUnits() - currentTarget->getMaxShield();
+			
+			//no point in finishing current iteration if not enough units to overtake a given outpost
+			if(currentUnitAdvantage <= 0) continue;
+
+			int currentDistance = myOp->distance(currentTarget->getPosition());
+
+			//if we currently lack a best target then take the first target we can beat
+			if(bestTarget == NULL) {
+				updateTarget(&bestTarget, &bestDistance, &bestUnitAdvantage, 
+				currentTarget, currentDistance, currentUnitAdvantage);
+			}
+			//prioritizing owned outposts over unowned outposts
+			else if(!bestTarget->hasOwner() && currentTarget->hasOwner()) {
+				updateTarget(&bestTarget, &bestDistance, &bestUnitAdvantage, 
+				currentTarget, currentDistance, currentUnitAdvantage);
+			}
+			//prioritizing unit advantage over distance
+			else if(currentUnitAdvantage > bestUnitAdvantage) {
+				updateTarget(&bestTarget, &bestDistance, &bestUnitAdvantage, 
+				currentTarget, currentDistance, currentUnitAdvantage);
+			}
+			else if(currentUnitAdvantage == bestUnitAdvantage && currentDistance < bestDistance) {
+				updateTarget(&bestTarget, &bestDistance, &bestUnitAdvantage, 
+				currentTarget, currentDistance, currentUnitAdvantage);
+			}
+		}
+
+		//if from our current outpost we have a valid target we will go after it
+		if(bestTarget != NULL) {
+			//leaving some units at our outpost for defense
+			int numUnits = myOp->getUnits() + (bestUnitAdvantage/2);
+			botOrder(myOp, bestTarget, numUnits);
+			return;
+		} 
+	}
 }
 
 //pass in the id of the bot and the bot will choose to make a decision
 void GameInterface::botLogic(int id) {
 
-	//list of all outposts and list of our outposts
-	std::unordered_map<int, Outpost*> outposts = game->getOutposts();
-	std::list<Outpost*> myOutposts = game->getPlayer(id)->getOutposts();
-
-	for(std::unordered_map<int, Outpost*>::iterator i = outposts.begin(); i != outposts.end(); ++i) {
-
-		//creating a pointer to the current outpost
-		Outpost *op = i->second;
-
-		//skipping if current outpost is owned by current player
-		if(op->getOwnerID() == id) continue;
-
-		//iterating through our outposts to try and find something better
-		for(std::list<Outpost*>::iterator j = myOutposts.begin(); j != myOutposts.end(); ++j) {
-			Outpost *myOp = (*j);
-
-			
-			if(myOp->getUnits() > op->getUnits() + op->getMaxShield()) {
-				UtilityFunctions::print("Happen?");
-				botOrder(myOp, op);
-				return;
-			}
-		}
-	
+	//for some unknown reason all singleplayer gamemodes are currently seen as mining
+	if(settings.gameMode == Mode::CONQUEST) {
+		UtilityFunctions::print("conquest logic conquest");
+		conquestLogic(id);
+	}
+	if(settings.gameMode == Mode::MINING) {
+		UtilityFunctions::print("mining logic selected");
+		miningLogic(id);
+	}
+	if(settings.gameMode == Mode::ELIMINATION) {
+		UtilityFunctions::print("elimination logic selected");
+		eliminationLogic(id);
 	}
 }
 

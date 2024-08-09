@@ -33,8 +33,6 @@ class GameInterface : public Node3D {
 
 private:
 
-	bool singleRun = false;
-
 	std::shared_ptr<Game> tempGame = nullptr;
 
 	// stores all future game states
@@ -119,7 +117,18 @@ private:
 
 	Point mouse;
 
-	void botOrder(Outpost* myOp, Outpost* enemyOp);
+	int currentBot = -1;
+
+	double timeSinceLastBot = 5;
+
+	void botOrder(Outpost* myOp, Outpost* enemyOp, int numUnits);
+	
+	void updateTarget(Outpost **currentTarget, int *currentDistance, int *currentUnitAdvantage, 
+					Outpost *newTarget, int newDistance, int newUnitAdvantage);
+	
+	void conquestLogic(int id);
+	void miningLogic(int id);
+	void eliminationLogic(int id);
 	void botLogic(int id);
 
 protected:
